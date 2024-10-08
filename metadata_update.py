@@ -16,11 +16,13 @@ if __name__ == '__main__':
 
     # Removes the personal identifying columns from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
+    # TODO: confirm this list
     remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
               'addr1', 'addr2', 'addr3', 'addr4', 'city', 'state']
     df = df.drop(remove, axis=1, errors="ignore")
 
     # Prints the remaining columns for archivist review, in case any additional ones might contain private information.
+    # TODO: confirm this is desired
     print("\nColumns remaining in the constituent mail metadata after removing personal identifiers are listed below.")
     print("To remove any of these columns from the metadata, add them to the 'remove' list and run the script again.")
     for column_name in df.columns.tolist():
