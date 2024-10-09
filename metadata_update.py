@@ -1,8 +1,21 @@
 """
 Draft script to update the metadata file from a css/cms export to make it more usable.
 """
+import os
 import pandas as pd
 import sys
+
+
+def check_argument(arg_list):
+    """Verify the required script argument is present and a valid path"""
+
+    # Argument is missing (only the script path is present).
+    if len(arg_list) == 1:
+        return None, "Missing required argument: path to the metadata file"
+    elif not os.path.exists(arg_list[1]):
+        return None, f"Provided path does not exist: {arg_list[1]}"
+    else:
+        return arg_list[1], None
 
 
 def remove_pii(df):
@@ -21,9 +34,13 @@ def remove_pii(df):
 
 
 if __name__ == '__main__':
+
     # Gets the path to the metadata file from the script argument.
-    # TODO: error checking
-    md_path = sys.argv[1]
+    # If it is missing or not a valid path, prints an error and exits the script.
+    md_path, error_message = check_argument(sys.argv)
+    if error_message:
+        print(error_message)
+        sys.exit(1)
 
     # Reads the metadata file into a pandas dataframe.
     # TODO: limiting the number of rows for testing to avoid a ParserError within the data
