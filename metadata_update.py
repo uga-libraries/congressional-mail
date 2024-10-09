@@ -18,6 +18,32 @@ def check_argument(arg_list):
         return arg_list[1], None
 
 
+def read_metadata(path):
+    """Read the metadata file into a dataframe"""
+    # TODO: fix ParserError. Need to add nrows=1000 to read_csv to get it to read without errors
+    # TODO: document the encoding errors?
+
+    # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
+    # df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore')
+
+    # This will print the rows that have problems and skip them.
+    # Non-error rows are read into the dataframe.
+    # df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', on_bad_lines='warn')
+
+    # This will just skip the rows that have problems.
+    # Non-error rows are read into the dataframe.
+    # df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', on_bad_lines='skip')
+
+    # This will save all 4 data rows from the test but the last few columns it prints are blank.
+    # TODO: save this to a CSV so I can look at all the data.
+    df = pd.read_csv(path, delimiter='\t+', encoding_errors='ignore', engine='python')
+
+    # This is a temporary indicator for if anything was read to the dataframe.
+    print("Rows in the dataframe:", len(df.index))
+    print(df)
+    return df
+
+
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
@@ -43,9 +69,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Reads the metadata file into a pandas dataframe.
-    # TODO: limiting the number of rows for testing to avoid a ParserError within the data
-    # TODO: document the encoding errors?
-    md_df = pd.read_csv(md_path, delimiter="\t", nrows=1000, encoding_errors="ignore")
+    md_df = read_metadata(md_path)
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
