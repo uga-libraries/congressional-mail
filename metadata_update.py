@@ -55,5 +55,5 @@ if __name__ == '__main__':
     print("\nColumns remaining in the constituent mail metadata after removing personal identifiers are listed below.")
     print("To remove any of these columns from the metadata, add them to the 'remove' list and run the script again.")
     for column_name in md_df.columns.tolist():
-        print('\t', column_name)
+        print(f'\t{column_name}')
 
