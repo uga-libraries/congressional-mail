@@ -24,7 +24,7 @@ def read_metadata(path):
     # TODO: document the encoding errors?
 
     # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
-    # df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore')
+    df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore')
 
     # This will print the rows that have problems and skip them.
     # Non-error rows are read into the dataframe.
@@ -36,11 +36,11 @@ def read_metadata(path):
 
     # This will save all 4 data rows from the test but the last few columns it prints are blank.
     # TODO: save this to a CSV so I can look at all the data.
-    df = pd.read_csv(path, delimiter='\t+', encoding_errors='ignore', engine='python')
+    # df = pd.read_csv(path, delimiter='\t+', encoding_errors='ignore', engine='python')
 
     # This is a temporary indicator for if anything was read to the dataframe.
-    print("Rows in the dataframe:", len(df.index))
-    print(df)
+    # print("Rows in the dataframe:", len(df.index))
+    # print(df)
     return df
 
 
@@ -50,7 +50,7 @@ def remove_pii(df):
     # List of column names that should be removed. Includes names and address information.
     # TODO: confirm this list
     remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
-              'addr1', 'addr2', 'addr3', 'addr4', 'city', 'state']
+              'addr1', 'addr2', 'addr3', 'addr4', 'city']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
