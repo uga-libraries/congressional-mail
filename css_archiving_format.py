@@ -19,28 +19,18 @@ def check_argument(arg_list):
 
 
 def read_metadata(path):
-    """Read the metadata file into a dataframe"""
-    # TODO: fix ParserError. Need to add nrows=1000 to read_csv to get it to read without errors
+    """Read the metadata file into a dataframe
+
+    This does not need to stay a function if it ends up being one line,
+    but is for now to make it easier to test error handling.
+    """
+    # TODO: fix ParserError. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
-
-    # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
-    df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore', low_memory=False)
-
-    # This will print the rows that have problems and skip them.
-    # Non-error rows are read into the dataframe.
-    # df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', on_bad_lines='warn')
-
-    # This will just skip the rows that have problems.
-    # Non-error rows are read into the dataframe.
-    # df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', on_bad_lines='skip')
-
-    # This will save all 4 data rows from the test but the last few columns it prints are blank.
-    # TODO: save this to a CSV so I can look at all the data.
-    # df = pd.read_csv(path, delimiter='\t+', encoding_errors='ignore', engine='python')
+    df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', low_memory=False, on_bad_lines='warn')
 
     # This is a temporary indicator for if anything was read to the dataframe.
     # print("Rows in the dataframe:", len(df.index))
-    # print(df)
+
     return df
 
 
