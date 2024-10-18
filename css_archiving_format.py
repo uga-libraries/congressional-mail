@@ -59,9 +59,18 @@ def remove_pii(df):
 def split_md(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
+    # Saves rows without a year to a CSV.
+    # TODO: decide on name and where it saves.
+    df_undated = df[df['in_date'].isnull()]
+    df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
+
+    # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
+    df.dropna(subset=['in_date'], inplace=True)
+
     # Adds a column with the year received, which will be used to calculate the Congress Year.
     # Column in_date is an integer, formatted YYYYMMDD.
-    df['year'] = df['in_date'].astype(str).str[:4].astype(int)
+    # TODO: confirm that in_date is the correct date for this purpose.
+    df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
 
     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
     # First, if the year received is even, the Congress Year is year-1 to year.
@@ -71,6 +80,8 @@ def split_md(df, input_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
+    # TODO: decide on name and where it saves.
+    # TODO: confirm using CSV format.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
@@ -87,11 +98,14 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(md_path)
+    print("Rows in df:", len(md_df.index))
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
+    # TODO: decide on name and where it saves.
+    # TODO: confirm using CSV format.
     md_df.to_csv(os.path.join(os.path.dirname(md_path), 'CSS_Access_Copy.csv'), index=False)
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
