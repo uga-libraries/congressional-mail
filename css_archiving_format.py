@@ -1,6 +1,7 @@
 """
 Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -66,6 +67,26 @@ def remove_pii(df):
     return df
 
 
+def split_md(df, input_dir):
+    """Make one CSV per Congress Year in the folder with the original metadata file"""
+
+    # Adds a column with the year received, which will be used to calculate the Congress Year.
+    # Column in_date is an integer, formatted YYYYMMDD.
+    df['year'] = df['in_date'].astype(str).str[:4].astype(int)
+
+    # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
+    # First, if the year received is even, the Congress Year is year-1 to year.
+    # Second, if the year received is odd, the Congress Year is year to year+1.
+    df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
+    df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
+
+    # Splits the data by Congress Year received and saves each to a separate CSV.
+    # The year and congress_year columns are first removed, so the CSV only has the original columns.
+    for congress_year, cy_df in df.groupby('congress_year'):
+        cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
+        cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
+
+
 if __name__ == '__main__':
 
     # Gets the path to the metadata file from the script argument.
@@ -84,3 +105,5 @@ if __name__ == '__main__':
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     md_df.to_csv(os.path.join(os.path.dirname(md_path), 'CSS_Access_Copy.csv'), index=False)
 
+    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
+    split_md(md_df, os.path.dirname(md_path))
