@@ -55,7 +55,14 @@ def remove_pii(df):
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
-    df = df.drop(remove, axis=1, errors="ignore")
+    df = df.drop(remove, axis=1, errors='ignore')
+
+    # Prints the remaining columns for archivist review, in case any additional ones might contain private information.
+    # TODO: confirm this is desired
+    print("\nColumns remaining after removing personal identifiers are listed below.")
+    print("To remove any of these columns, add them to the 'remove' list in remove_pii() and run the script again.")
+    for column_name in df.columns.tolist():
+        print(f'\t{column_name}')
     
     return df
 
@@ -74,11 +81,4 @@ if __name__ == '__main__':
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
-
-    # Prints the remaining columns for archivist review, in case any additional ones might contain private information.
-    # TODO: confirm this is desired
-    print("\nColumns remaining in the constituent mail metadata after removing personal identifiers are listed below.")
-    print("To remove any of these columns from the metadata, add them to the 'remove' list and run the script again.")
-    for column_name in md_df.columns.tolist():
-        print(f'\t{column_name}')
 
