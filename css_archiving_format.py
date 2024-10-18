@@ -25,7 +25,6 @@ def read_metadata(path):
 
     # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
     df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore', low_memory=False)
-    print(df.head)
 
     # This will print the rows that have problems and skip them.
     # Non-error rows are read into the dataframe.
@@ -81,4 +80,7 @@ if __name__ == '__main__':
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
+
+    # Saves the redacted data to a CSV file in the folder with the original metadata file.
+    md_df.to_csv(os.path.join(os.path.dirname(md_path), 'CSS_Access_Copy.csv'), index=False)
 
