@@ -3,7 +3,7 @@ Tests for the function read_metadata(), which reads the DAT file into a pandas d
 """
 import os
 import unittest
-from metadata_update import read_metadata
+from css_archiving_format import read_metadata
 
 
 class MyTestCase(unittest.TestCase):

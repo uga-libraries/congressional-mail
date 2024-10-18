@@ -4,7 +4,7 @@ For input, tests use a list with argument values. In production, this would be t
 """
 import os
 import unittest
-from metadata_update import check_argument
+from css_archiving_format import check_argument
 
 
 class MyTestCase(unittest.TestCase):
@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
     def test_correct(self):
         """Test for when the required argument is present and the path exists."""
         # Runs the function being tested.
-        md_path, error_message = check_argument(['metadata_update.py', os.path.join('test_data', 'check_arg_md.dat')])
+        md_path, error_message = check_argument(['css_archiving_format.py', os.path.join('test_data', 'check_arg_md.dat')])
 
         # Tests the value of md_path.
         expected = os.path.join('test_data', 'check_arg_md.dat')
@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
     def test_missing(self):
         """Test for when the required argument is missing."""
         # Runs the function being tested.
-        md_path, error_message = check_argument(['metadata_update.py'])
+        md_path, error_message = check_argument(['css_archiving_format.py'])
 
         # Tests the value of md_path.
         self.assertEqual(md_path, None, "Problem with missing, md_path")
@@ -36,7 +36,7 @@ class MyTestCase(unittest.TestCase):
     def test_path_error(self):
         """Test for when the required argument is a path that does not exist."""
         # Runs the function being tested.
-        md_path, error_message = check_argument(['metadata_update.py', os.path.join('error', 'file.dat')])
+        md_path, error_message = check_argument(['css_archiving_format.py', os.path.join('error', 'file.dat')])
 
         # Tests the value of md_path.
         self.assertEqual(md_path, None, "Problem with path error, md_path")

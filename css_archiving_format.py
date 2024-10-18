@@ -1,5 +1,5 @@
 """
-Draft script to update the metadata file from a css/cms export to make it more usable.
+Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
 """
 import os
 import pandas as pd
@@ -25,6 +25,7 @@ def read_metadata(path):
 
     # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
     df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore')
+    print(df.head)
 
     # This will print the rows that have problems and skip them.
     # Non-error rows are read into the dataframe.
@@ -49,7 +50,8 @@ def remove_pii(df):
 
     # List of column names that should be removed. Includes names and address information.
     # TODO: confirm this list
-    remove = ['addr1', 'addr2', 'addr3', 'addr4', 'appellation', 'city', 'first', 'last', 'middle', 'org', 'prefix', 'suffix', 'title']
+    remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
+              'addr1', 'addr2', 'addr3', 'addr4', 'city']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.

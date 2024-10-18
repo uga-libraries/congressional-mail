@@ -5,7 +5,7 @@ and the content is just numbers instead of reasonable data for the column types.
 """
 import pandas as pd
 import unittest
-from metadata_update import remove_pii
+from css_archiving_format import remove_pii
 
 
 class MyTestCase(unittest.TestCase):

@@ -1,5 +1,5 @@
 """
-Tests for the script metadata_update.py
+Tests for the script css_archiving_format.py
 """
 import os
 import pandas as pd
@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
     def test_correct(self):
         """Test for when the script runs correctly."""
         # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', 'metadata_update.py')
+        script_path = os.path.join(os.getcwd(), '..', 'css_archiving_format.py')
         md_path = os.path.join('test_data', 'script_md.dat')
         output = subprocess.run(f"python {script_path} {md_path}", shell=True, stdout=subprocess.PIPE)
 
@@ -28,7 +28,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
-        script_path = os.path.join(os.getcwd(), '..', 'metadata_update.py')
+        script_path = os.path.join(os.getcwd(), '..', 'css_archiving_format.py')
 
         # Runs the script and tests that it exits.
         with self.assertRaises(subprocess.CalledProcessError):
