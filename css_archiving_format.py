@@ -24,7 +24,7 @@ def read_metadata(path):
     # TODO: document the encoding errors?
 
     # This is a temporary workaround (only gets first 1000 rows) to avoid the first row with errors.
-    df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore')
+    df = pd.read_csv(path, delimiter='\t', nrows=1000, encoding_errors='ignore', low_memory=False)
     print(df.head)
 
     # This will print the rows that have problems and skip them.
