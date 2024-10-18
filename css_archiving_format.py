@@ -1,7 +1,6 @@
 """
 Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
 """
-import numpy as np
 import os
 import pandas as pd
 import sys
