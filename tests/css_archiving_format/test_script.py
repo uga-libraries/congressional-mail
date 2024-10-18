@@ -18,10 +18,12 @@ def csv_to_list(csv_path):
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Remove script output, if it was made"""
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'CSS_Access_Copy.csv')
-        if os.path.exists(csv_path):
-            os.remove(csv_path)
+        """Remove script outputs, if they were made"""
+        filenames = ['CSS_Access_Copy.csv', '2021-2022.csv', '2023-2024.csv']
+        for filename in filenames:
+            file_path = os.path.join('test_data', filename)
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
     def test_correct(self):
         """Test for when the script runs correctly."""
@@ -65,7 +67,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'CSS_Access_Copy.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
