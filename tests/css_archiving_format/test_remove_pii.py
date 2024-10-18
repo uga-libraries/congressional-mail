@@ -19,11 +19,11 @@ class MyTestCase(unittest.TestCase):
         md_df = remove_pii(md_df)
 
         # Tests the columns of the returned dataframe are correct.
-        expected = ['zip', 'in_id', 'out_id']
+        expected = ['state', 'zip', 'in_id', 'out_id']
         self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for all present, columns")
 
         # Tests the values in the returned dataframe are correct.
-        expected = [[15, 16, 17]]
+        expected = [[14, 15, 16, 17]]
         self.assertEqual(md_df.values.tolist(), expected, "Problem with test for all present, values")
 
     def test_some_present(self):
