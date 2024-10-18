@@ -51,7 +51,7 @@ def remove_pii(df):
     # List of column names that should be removed. Includes names and address information.
     # TODO: confirm this list
     remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
-              'addr1', 'addr2', 'addr3', 'addr4', 'city']
+              'addr1', 'addr2', 'addr3', 'addr4']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
