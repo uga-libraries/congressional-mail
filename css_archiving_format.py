@@ -1,7 +1,6 @@
 """
 Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
 """
-import numpy as np
 import os
 import pandas as pd
 import sys
@@ -13,8 +12,10 @@ def check_argument(arg_list):
     # Argument is missing (only the script path is present).
     if len(arg_list) == 1:
         return None, "Missing required argument: path to the metadata file"
+    # Argument is present but not a valid path.
     elif not os.path.exists(arg_list[1]):
         return None, f"Provided path does not exist: {arg_list[1]}"
+    # Argument is correct.
     else:
         return arg_list[1], None
 
