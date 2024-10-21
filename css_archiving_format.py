@@ -1,5 +1,5 @@
 """
-Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
+Draft script to prepare access copies from an export in the CSS Archiving Format.
 """
 import os
 import pandas as pd
