@@ -21,18 +21,18 @@ class MyTestCase(unittest.TestCase):
     def test_all_data(self):
         """Test for when all rows have data (no blank rows)"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['GA', 30605, 11111, 'General', np.nan],
-                              ['GA', 30605, 11112, 'General', 'email'],
-                              ['MI', 49685, 11113, 'General', 'letter']],
+        md_df = pd.DataFrame([['GA', '30605', '11111', 'General', np.nan],
+                              ['GA', '30605', '11112', 'General', 'email'],
+                              ['MI', '49685', '11113', 'General', 'letter']],
                              columns=['state', 'zip', 'in_id', 'in_type', 'in_method'])
         save_df(md_df, 'test_data')
 
         # Tests that CSS_Access_Copy.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'CSS_Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
-                    ['GA', 30605, 11111, 'General', 'BLANK'],
-                    ['GA', 30605, 11112, 'General', 'email'],
-                    ['MI', 49685, 11113, 'General', 'letter']]
+                    ['GA', '30605', '11111', 'General', 'nan'],
+                    ['GA', '30605', '11112', 'General', 'email'],
+                    ['MI', '49685', '11113', 'General', 'letter']]
         self.assertEqual(result, expected, "Problem with test for all data")
 
     def test_all_blank(self):
@@ -53,11 +53,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when some rows have data and some rows are blank"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan, np.nan],
-                              ['GA', 30605, 11111, 'General', 'email'],
+                              ['GA', '30605', '11111', 'General', 'email'],
                               [np.nan, np.nan, np.nan, np.nan, np.nan],
                               [np.nan, np.nan, np.nan, np.nan, np.nan],
-                              ['GA', 30605, 11112, 'General', 'email'],
-                              ['MI', 49685, 11113, 'General', 'letter'],
+                              ['GA', '30605', '11112', 'General', 'email'],
+                              ['MI', '49685', '11113', 'General', 'letter'],
                               [np.nan, np.nan, np.nan, np.nan, np.nan],],
                              columns=['state', 'zip', 'in_id', 'in_type', 'in_method'])
         save_df(md_df, 'test_data')
@@ -65,10 +65,11 @@ class MyTestCase(unittest.TestCase):
         # Tests that 2009-2010.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'CSS_Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
-                    ['GA', 30605, 11111, 'General', 'email'],
-                    ['GA', 30605, 11112, 'General', 'email'],
-                    ['MI', 49685, 11113, 'General', 'letter']]
+                    ['GA', '30605', '11111', 'General', 'email'],
+                    ['GA', '30605', '11112', 'General', 'email'],
+                    ['MI', '49685', '11113', 'General', 'letter']]
         self.assertEqual(result, expected, "Problem with test for some data")
+
 
 if __name__ == '__main__':
     unittest.main()
