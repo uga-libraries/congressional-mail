@@ -1,6 +1,7 @@
 """
 Draft script to update the metadata file from an export in the CSS Archiving Format to make it more usable.
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -26,7 +27,7 @@ def read_metadata(path):
     """
     # TODO: fix ParserError. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
-    df = pd.read_csv(path, delimiter='\t', encoding_errors='ignore', low_memory=False, on_bad_lines='warn')
+    df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
 
     # This is a temporary indicator for if anything was read to the dataframe.
     # print("Rows in the dataframe:", len(df.index))
