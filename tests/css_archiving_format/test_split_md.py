@@ -47,6 +47,30 @@ class MyTestCase(unittest.TestCase):
                     [30602, 19881202, 'cats', 19890105, 'pets']]
         self.assertEqual(result, expected, "Problem with test for both even and odd years, 1987-1988")
 
+    def test_date_blank(self):
+        """Test for when some of the letters do not have a date (in_date column is blank)"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        md_df = pd.DataFrame([[30601, 19950104, 'cats', 19950105, np.nan],
+                              [30601, np.nan, 'dogs', np.nan, 'pets'],
+                              [30602, 19961202, 'cats', 19970105, 'pets'],
+                              [30602, np.nan, 'cats', np.nan, 'pets']],
+                             columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
+        split_md(md_df, 'test_data')
+
+        # Tests that 1995-1996.csv has the correct values.
+        result = csv_to_list(os.path.join('test_data', '1995-1996.csv'))
+        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
+                    [30601, 19950104, 'cats', 19950105, 'BLANK'],
+                    [30602, 19961202, 'cats', 19970105, 'pets']]
+        self.assertEqual(result, expected, "Problem with test for date blank, 1995-1996")
+
+        # Tests that undated has the correct values.
+        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
+        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
+                    [30601, 'BLANK', 'dogs', 'BLANK', 'pets'],
+                    [30602, 'BLANK', 'cats', 'BLANK', 'pets']]
+        self.assertEqual(result, expected, "Problem with test for date blank, undated")
+
     def test_even_years(self):
         """Test for when the letters are from even numbered years"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -70,30 +94,6 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
                     [30603, 20020505, 'oranges', 20020509, 'fruit']]
         self.assertEqual(result, expected, "Problem with test for even years, 2001-2002")
-
-    def test_no_date(self):
-        """Test for when some of the letters do not have a date"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        md_df = pd.DataFrame([[30601, 19950104, 'cats', 19950105, np.nan],
-                              [30601, np.nan, 'dogs', np.nan, 'pets'],
-                              [30602, 19961202, 'cats', 19970105, 'pets'],
-                              [30602, np.nan, 'cats', np.nan, 'pets']],
-                             columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
-
-        # Tests that 1995-1996.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '1995-1996.csv'))
-        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
-                    [30601, 19950104, 'cats', 19950105, 'BLANK'],
-                    [30602, 19961202, 'cats', 19970105, 'pets']]
-        self.assertEqual(result, expected, "Problem with test for no date, 1995-1996")
-
-        # Tests that undated has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
-        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
-                    [30601, 'BLANK', 'dogs', 'BLANK', 'pets'],
-                    [30602, 'BLANK', 'cats', 'BLANK', 'pets']]
-        self.assertEqual(result, expected, "Problem with test for no date, undated")
 
     def test_odd_years(self):
         """Test for when the letters are from odd numbered years"""
