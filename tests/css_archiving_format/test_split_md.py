@@ -21,14 +21,16 @@ class MyTestCase(unittest.TestCase):
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-    def test_both_years(self):
-        """Test for when the letters are from even and odd numbered years"""
+    def test_all(self):
+        """Test for a combination of all date values: even, odd, blank, and text"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        md_df = pd.DataFrame([[30601, 19870104, 'cats', 19880105, 'pets'],
-                              [30601, 19881001, 'dogs', 19881005, 'pets'],
+        md_df = pd.DataFrame([[30601, 19870104, 'cats', np.nan, 'pets'],
+                              [30601, 19881001, 'dogs', 19881005, np.nan],
                               [30602, 19881202, 'cats', 19890105, 'pets'],
+                              [30602, np.nan, 'cats', 19890105, 'pets'],
                               [30603, 19810505, 'oranges', 19810509, 'fruit'],
-                              [30603, 19820505, 'oranges', 19820509, 'fruit']],
+                              [30603, 19820505, 'oranges', 19820509, 'fruit'],
+                              [30603, 'date_error', 'oranges', 19820509, 'fruit']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
         split_md(md_df, 'test_data')
 
@@ -37,15 +39,22 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
                     [30603, 19810505, 'oranges', 19810509, 'fruit'],
                     [30603, 19820505, 'oranges', 19820509, 'fruit']]
-        self.assertEqual(result, expected, "Problem with test for both even and odd years, 1981-1982")
+        self.assertEqual(result, expected, "Problem with test for all years, 1981-1982")
 
         # Tests that 1987-1988.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1987-1988.csv'))
         expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
-                    [30601, 19870104, 'cats', 19880105, 'pets'],
-                    [30601, 19881001, 'dogs', 19881005, 'pets'],
+                    [30601, 19870104, 'cats', 'BLANK', 'pets'],
+                    [30601, 19881001, 'dogs', 19881005, 'BLANK'],
                     [30602, 19881202, 'cats', 19890105, 'pets']]
-        self.assertEqual(result, expected, "Problem with test for both even and odd years, 1987-1988")
+        self.assertEqual(result, expected, "Problem with test for all years, 1987-1988")
+
+        # Tests that undated.csv has the correct values.
+        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
+        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
+                    [30602, 'BLANK', 'cats', 19890105, 'pets'],
+                    [30603, 'date_error', 'oranges', 19820509, 'fruit']]
+        self.assertEqual(result, expected, "Problem with test for all years, 1987-1988")
 
     def test_date_blank(self):
         """Test for when some of the letters do not have a date (in_date column is blank)"""
