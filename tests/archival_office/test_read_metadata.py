@@ -1,5 +1,5 @@
 """
-Tests for the function read_metadata(), which reads the dat file into a dataframe.
+Test for the function read_metadata(), which reads the dat file into a dataframe.
 """
 import os
 import unittest
@@ -10,10 +10,11 @@ class MyTestCase(unittest.TestCase):
 
     def test_function(self):
         """Test for when the function works correctly"""
-        # TODO: decide on variations and make input separate from the script
-        md_df = read_metadata(os.path.join('test_data', 'script_md.dat'))
+        # Runs the function being tested.
+        md_df = read_metadata(os.path.join('test_data', 'read_md.dat'))
 
-        md_df.fillna('', inplace=True)
+        # Tests the dataframe has the expected columns and values.
+        # First converts the resulting dataframe into a list, with blanks filled with '', for easier comparison.
         result = [md_df.columns.tolist()] + md_df.values.tolist()
         expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                      'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
