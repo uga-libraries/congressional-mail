@@ -23,6 +23,7 @@ def read_metadata(path):
 
     # Save as a dataframe, with column names.
     # TODO: verify these column names.
+    # TODO: add error handling for if the data is not the expected number of columns?
     columns_list = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
