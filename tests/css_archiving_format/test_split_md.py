@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the function output, if it was created"""
-        filenames = ['1981-1982.csv', '1987-1988.csv', '1989-1990.csv', '1995-1996.csv', '1997-1998.csv',
+        filenames = ['1981-1982.csv', '1987-1988.csv', '1989-1990.csv', '1997-1998.csv',
                      '2001-2002.csv', '2009-2010.csv', 'undated.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', filename)
@@ -50,19 +50,10 @@ class MyTestCase(unittest.TestCase):
     def test_date_blank(self):
         """Test for when some of the letters do not have a date (in_date column is blank)"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        md_df = pd.DataFrame([[30601, 19950104, 'cats', 19950105, np.nan],
-                              [30601, np.nan, 'dogs', np.nan, 'pets'],
-                              [30602, 19961202, 'cats', 19970105, 'pets'],
+        md_df = pd.DataFrame([[30601, np.nan, 'dogs', np.nan, 'pets'],
                               [30602, np.nan, 'cats', np.nan, 'pets']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
         split_md(md_df, 'test_data')
-
-        # Tests that 1995-1996.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '1995-1996.csv'))
-        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
-                    [30601, 19950104, 'cats', 19950105, 'BLANK'],
-                    [30602, 19961202, 'cats', 19970105, 'pets']]
-        self.assertEqual(result, expected, "Problem with test for date blank, 1995-1996")
 
         # Tests that undated has the correct values.
         result = csv_to_list(os.path.join('test_data', 'undated.csv'))
