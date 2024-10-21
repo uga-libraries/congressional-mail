@@ -59,13 +59,15 @@ def remove_pii(df):
 def split_md(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
-    # Saves rows without a year to a CSV.
+    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
+    # TODO: confirm that text in place of date should be the same as blank date.
+    # TODO: confirm if should have a maximum size, in case there are too many without dates to open a spreadsheet.
     # TODO: decide on name and where it saves.
-    df_undated = df[df['in_date'].isnull()]
+    df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
-    df.dropna(subset=['in_date'], inplace=True)
+    df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
 
     # Adds a column with the year received, which will be used to calculate the Congress Year.
     # Column in_date is an integer, formatted YYYYMMDD.

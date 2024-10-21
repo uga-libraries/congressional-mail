@@ -71,6 +71,21 @@ class MyTestCase(unittest.TestCase):
                     [30602, 'BLANK', 'cats', 'BLANK', 'pets']]
         self.assertEqual(result, expected, "Problem with test for date blank, undated")
 
+    def test_date_text(self):
+        """Test for when data entry errors results in text rather than date (in_date column is a string)"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        md_df = pd.DataFrame([[30601, 'error', 'cats', 19950105, 'pets'],
+                              [30601, 'error_date', 'dogs', 19950105, 'pets']],
+                             columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
+        split_md(md_df, 'test_data')
+
+        # Tests that undated has the correct values.
+        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
+        expected = [['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'],
+                    [30601, 'error', 'cats', 19950105, 'pets'],
+                    [30601, 'error_date', 'dogs', 19950105, 'pets']]
+        self.assertEqual(result, expected, "Problem with test for date text, undated")
+
     def test_even_years(self):
         """Test for when the letters are from even numbered years"""
         # Makes a dataframe to use as test input and runs the function being tested.
