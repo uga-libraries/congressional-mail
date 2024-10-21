@@ -70,7 +70,7 @@ def save_df(df, input_dir):
     df.to_csv(os.path.join(input_dir, 'CSS_Access_Copy.csv'), index=False)
 
 
-def split_md(df, input_dir):
+def split_congress_year(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
@@ -122,4 +122,4 @@ if __name__ == '__main__':
     save_df(md_df, os.path.dirname(md_path))
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
-    split_md(md_df, os.path.dirname(md_path))
+    split_congress_year(md_df, os.path.dirname(md_path))

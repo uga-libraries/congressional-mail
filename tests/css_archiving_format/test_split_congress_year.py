@@ -1,12 +1,12 @@
 """
-Tests for the function split_md(), which makes one CSV for letters received in each Congress Year.
+Tests for the function split_congress_year(), which makes one CSV for letters received in each Congress Year.
 To simplify input, tests use dataframes with only some of the columns present in a real css/cms export
 """
 import numpy as np
 import os
 import pandas as pd
 import unittest
-from css_archiving_format import split_md
+from css_archiving_format import split_congress_year
 from test_script import csv_to_list
 
 
@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
                               ['30603', '19820505', 'oranges', '19820509', 'fruit'],
                               ['30603', 'date_error', 'oranges', '19820509', 'fruit']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
+        split_congress_year(md_df, 'test_data')
 
         # Tests that 1981-1982.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1981-1982.csv'))
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30601', np.nan, 'dogs', np.nan, 'pets'],
                               ['30602', np.nan, 'cats', np.nan, 'pets']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
+        split_congress_year(md_df, 'test_data')
 
         # Tests that undated has the correct values.
         result = csv_to_list(os.path.join('test_data', 'undated.csv'))
@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30601', 'error', 'cats', '19950105', 'pets'],
                               ['30601', 'error_date', 'dogs', '19950105', 'pets']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
+        split_congress_year(md_df, 'test_data')
 
         # Tests that undated has the correct values.
         result = csv_to_list(os.path.join('test_data', 'undated.csv'))
@@ -94,7 +94,7 @@ class MyTestCase(unittest.TestCase):
                               ['30602', '19901202', 'cats', '19910105', 'pets'],
                               ['30603', '20020505', 'oranges', '20020509', 'fruit']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
+        split_congress_year(md_df, 'test_data')
 
         # Tests that 1989-1990.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1989-1990.csv'))
@@ -118,7 +118,7 @@ class MyTestCase(unittest.TestCase):
                               ['30602', '19971202', 'cats', '19980105', 'pets'],
                               ['30603', '20090505', 'oranges', '20090509', 'fruit']],
                              columns=['zip', 'in_date', 'in_topic', 'out_date', 'out_topic'])
-        split_md(md_df, 'test_data')
+        split_congress_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1997-1998.csv'))
