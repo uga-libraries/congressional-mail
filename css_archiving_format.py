@@ -56,6 +56,18 @@ def remove_pii(df):
     return df
 
 
+def save_df(df, input_dir):
+    """Make one CSV with all data in the folder with the original metadata file"""
+
+    # Removes blank rows, which are present in some of the data exports.
+    df.dropna(how='all', inplace=True)
+
+    # Saves the dataframe to a CSV.
+    # TODO: decide on name and where it saves.
+    # TODO: confirm using CSV format.
+    df.to_csv(os.path.join(input_dir, 'CSS_Access_Copy.csv'), index=False)
+
+
 def split_md(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
@@ -100,15 +112,13 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(md_path)
-    print("Rows in df:", len(md_df.index))
+    # print("Rows in df:", len(md_df.index))
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
-    # TODO: decide on name and where it saves.
-    # TODO: confirm using CSV format.
-    md_df.to_csv(os.path.join(os.path.dirname(md_path), 'CSS_Access_Copy.csv'), index=False)
+    save_df(md_df, os.path.dirname(md_path))
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
     split_md(md_df, os.path.dirname(md_path))
