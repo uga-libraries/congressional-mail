@@ -34,27 +34,62 @@ class MyTestCase(unittest.TestCase):
 
         # Tests that it prints the correct message.
         result = output.stdout.decode('utf-8')
-        expected = ()
+        expected = ("\r\nColumns remaining after removing personal identifiers are listed below.\r\nTo remove any of "
+                    "these columns, add them to the 'remove' list in remove_pii() and run the script "
+                    "again.\r\n\tcity\r\n\tstate_code\r\n\tzip_code\r\n\tcorrespondence_type\r\n"
+                    "\tcorrespondence_topic\r\n\tcorrespondence_subtopic\r\n\tletter_date\r\n\tstaffer_initials\r\n"
+                    "\tdocument_number\r\n\tcomments\r\n")
         self.assertEqual(result, expected, "Problem with test for correct, printed message")
 
         # Tests the contents of CSS_Access_Copy.csv.
         csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
         result = csv_to_list(csv_path)
-        expected = []
+        expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
+                     'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
+                    ['LOS ANGELES', 'CA', '12345', 'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
+                    ['CAIRO', 'GA', '30001', 'ISSUE', 'CASE', 'nan', '980801', 'TBD', 'nan', 'nan'],
+                    ['ATLANTA', 'GA', '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
+                    ['ATLANTA', 'GA', '30002', 'ISSUE', 'nan', 'nan', 'nan', 'FWIW', 'nan',
+                     'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
+                     'THE LAST ONE'],
+                    ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, CSS_Access_Copy.csv")
 
         # Tests the contents of 1997-1998.csv.
         csv_path = os.path.join('test_data', '1997-1998.csv')
         result = csv_to_list(csv_path)
-        expected = []
+        expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
+                     'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
+                    ['LOS ANGELES', 'CA', '12345', 'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
+                    ['CAIRO', 'GA', '30001', 'ISSUE', 'CASE', 'nan', '980801', 'TBD', 'nan', 'nan'],
+                    ['ATLANTA', 'GA', '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
+                    ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, 1997-1998")
 
         # Tests the contents of undated.csv.
         csv_path = os.path.join('test_data', 'undated.csv')
         result = csv_to_list(csv_path)
-        expected = []
+        expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
+                     'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
+                    ['ATLANTA', 'GA', '30002', 'ISSUE', 'nan', 'nan', 'nan', 'FWIW', 'nan',
+                     'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
+                     'THE LAST ONE']]
         self.assertEqual(result, expected, "Problem with test for correct, undated")
 
-        
+    def test_error_argument(self):
+        """Test for when the script exits due to an argument error."""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
+
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path}", shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = "Missing required argument: path to the metadata file\r\n"
+        self.assertEqual(result, expected, "Problem with test for error argument, printed error")
+
+
 if __name__ == '__main__':
     unittest.main()
