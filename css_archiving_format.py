@@ -26,11 +26,11 @@ def read_metadata(path):
     This does not need to stay a function if it ends up being one line,
     but is for now to make it easier to test error handling.
     """
-    # TODO: fix ParserError. Rows that are printed by on_bad_lines='warn' are not included in the output.
+    # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
     df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
 
-    # This is a temporary indicator for if anything was read to the dataframe.
+    # TODO: delete. This is a temporary indicator for testing if anything was read to the dataframe.
     # print("Rows in the dataframe:", len(df.index))
 
     return df
@@ -65,7 +65,7 @@ def save_df(df, input_dir):
     df.dropna(how='all', inplace=True)
 
     # Saves the dataframe to a CSV.
-    # TODO: decide on name and where it saves.
+    # TODO: decide on file name and where it saves.
     # TODO: confirm using CSV format.
     df.to_csv(os.path.join(input_dir, 'CSS_Access_Copy.csv'), index=False)
 
@@ -74,9 +74,9 @@ def split_md(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
-    # TODO: confirm that text in place of date should be the same as blank date.
-    # TODO: confirm if should have a maximum size, in case there are too many without dates to open a spreadsheet.
-    # TODO: decide on name and where it saves.
+    # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
+    # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
+    # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
 
@@ -84,8 +84,8 @@ def split_md(df, input_dir):
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
 
     # Adds a column with the year received, which will be used to calculate the Congress Year.
-    # Column in_date is an integer, formatted YYYYMMDD.
-    # TODO: confirm that in_date is the correct date for this purpose.
+    # Column in_date is formatted YYYYMMDD.
+    # TODO: confirm that in_date is the correct date for this purpose. Also have out_date.
     df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
 
     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
@@ -96,7 +96,7 @@ def split_md(df, input_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    # TODO: decide on name and where it saves.
+    # TODO: decide on file name and where it saves.
     # TODO: confirm using CSV format.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
@@ -114,7 +114,6 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(md_path)
-    # print("Rows in df:", len(md_df.index))
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
