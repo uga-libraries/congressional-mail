@@ -31,6 +31,27 @@ def read_metadata(path):
     return df
 
 
+def remove_pii(df):
+    """Remove columns with personally identifiable information (name and address) if they are present"""
+
+    # List of column names that should be removed. Includes names and address information.
+    # TODO: confirm this list
+    remove = ['name', 'title', 'organization', 'address_line_1', 'address_line_2']
+
+    # Removes every column on the remove list from the dataframe, if they are present.
+    # Nothing happens, due to errors="ignore", if any are not present.
+    df = df.drop(remove, axis=1, errors='ignore')
+
+    # Prints the remaining columns for archivist review, in case any additional ones might contain private information.
+    # TODO: confirm this is desired
+    print("\nColumns remaining after removing personal identifiers are listed below.")
+    print("To remove any of these columns, add them to the 'remove' list in remove_pii() and run the script again.")
+    for column_name in df.columns.tolist():
+        print(f'\t{column_name}')
+
+    return df
+
+
 if __name__ == '__main__':
 
     # Gets the path to the metadata file from the script argument.
@@ -44,6 +65,7 @@ if __name__ == '__main__':
     md_df = read_metadata(md_path)
 
     # Removes columns with personally identifiable information, if they are present.
+    md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     # save_df(md_df, os.path.dirname(md_path))
