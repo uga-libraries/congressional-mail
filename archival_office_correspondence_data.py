@@ -4,7 +4,7 @@ Draft script to prepare access copies from an export in the Archival Office Corr
 import os
 import pandas as pd
 import sys
-from css_archiving_format import check_argument, save_df, split_congress_year
+from css_archiving_format import check_argument, save_df
 
 
 def read_metadata(path):
@@ -107,4 +107,4 @@ if __name__ == '__main__':
     save_df(md_df, os.path.dirname(md_path))
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
-    # split_congress_year(md_df, os.path.dirname(md_path))
+    split_congress_year(md_df, os.path.dirname(md_path))
