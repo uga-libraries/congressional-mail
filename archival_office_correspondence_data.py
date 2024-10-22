@@ -1,37 +1,33 @@
 """
-Draft script to prepare access copies from an export in the CSS Archiving Format.
+Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
 """
 import os
 import pandas as pd
 import sys
-
-
-def check_argument(arg_list):
-    """Verify the required script argument is present and a valid path"""
-
-    # Argument is missing (only the script path is present).
-    if len(arg_list) == 1:
-        return None, "Missing required argument: path to the metadata file"
-    # Argument is present but not a valid path.
-    elif not os.path.exists(arg_list[1]):
-        return None, f"Provided path does not exist: {arg_list[1]}"
-    # Argument is correct.
-    else:
-        return arg_list[1], None
+from css_archiving_format import check_argument, save_df
 
 
 def read_metadata(path):
-    """Read the metadata file into a dataframe
+    """Read the metadata file into a dataframe"""
 
-    This does not need to stay a function if it ends up being one line,
-    but is for now to make it easier to test error handling.
-    """
-    # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
-    # TODO: document the encoding errors?
-    df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
+    # Makes a list from the file contents with one list per row and one item per column,
+    # splitting the data into columns based on the character position and removing extra spaces.
+    # TODO: original data can be all caps. Should we change the case or leave it?
+    rows_list = []
+    positions = [(0, 39), (39, 69), (69, 99), (99, 129), (129, 159), (159, 189), (189, 191), (191, 201), (201, 251),
+                 (251, 301), (301, 351), (351, 357), (357, 361), (361, 371), (371, 471)]
+    with open(path) as open_file:
+        for line in open_file:
+            row_list = [line[slice(*pos)].strip() for pos in positions]
+            rows_list.append(row_list)
 
-    # TODO: delete. This is a temporary indicator for testing if anything was read to the dataframe.
-    # print("Rows in the dataframe:", len(df.index))
+    # Save as a dataframe, with column names.
+    # TODO: verify these column names.
+    # TODO: add error handling for if the data is not the expected number of columns?
+    columns_list = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
+                    'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
+                    'letter_date', 'staffer_initials', 'document_number', 'comments']
+    df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
 
     return df
 
@@ -41,8 +37,7 @@ def remove_pii(df):
 
     # List of column names that should be removed. Includes names and address information.
     # TODO: confirm this list
-    remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
-              'addr1', 'addr2', 'addr3', 'addr4']
+    remove = ['name', 'title', 'organization', 'address_line_1', 'address_line_2']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
@@ -54,20 +49,8 @@ def remove_pii(df):
     print("To remove any of these columns, add them to the 'remove' list in remove_pii() and run the script again.")
     for column_name in df.columns.tolist():
         print(f'\t{column_name}')
-    
+
     return df
-
-
-def save_df(df, input_dir):
-    """Make one CSV with all data in the folder with the original metadata file"""
-
-    # Removes blank rows, which are present in some of the data exports.
-    df.dropna(how='all', inplace=True)
-
-    # Saves the dataframe to a CSV.
-    # TODO: decide on file name and where it saves.
-    # TODO: confirm using CSV format.
-    df.to_csv(os.path.join(input_dir, 'CSS_Access_Copy.csv'), index=False)
 
 
 def split_congress_year(df, input_dir):
@@ -77,16 +60,19 @@ def split_congress_year(df, input_dir):
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
     # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
     # TODO: decide on file name and where it saves.
-    df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
+    df_undated = df[pd.to_numeric(df['letter_date'], errors='coerce').isnull()]
     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
-    df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
+    df = df[pd.to_numeric(df['letter_date'], errors='coerce').notnull()].copy()
 
     # Adds a column with the year received, which will be used to calculate the Congress Year.
-    # Column in_date is formatted YYYYMMDD.
-    # TODO: confirm that in_date is the correct date for this purpose. Also have out_date.
-    df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
+    # Column letter_date is formatted YYMMDD.
+    # First the two digit year is extracted, and then it is made a four-digit year by adding 1900 or 2000.
+    # TODO: confirm 1960 as the cut off for 1900s vs 2000s.
+    df.loc[:, 'year'] = df['letter_date'].astype(str).str[:2].astype(int)
+    df.loc[df['year'] >= 60, 'year'] = df['year'] + 1900
+    df.loc[df['year'] < 60, 'year'] = df['year'] + 2000
 
     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
     # First, if the year received is even, the Congress Year is year-1 to year.
