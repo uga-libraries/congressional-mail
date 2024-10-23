@@ -53,13 +53,15 @@ def read_metadata(paths):
                                'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out',
                                'reminder_date', 'update_date', 'response_type', 'address_id', 'email_address',
                                'household_flag', 'household_id', 'group_name', 'salutation'])
-    df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'person_id', 'communication_id', 'communication_code', 'position'])
+    df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'person_id', 'communication_id', 'document_type',
+                               'communication_document_name', 'communication_document_id', 'file_location',
+                               'file_name'])
 
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
     df = df_1b.merge(df_2a, on='person_id', how='outer')
-    df = df.merge(df_2b, on='', how='outer')
+    df = df.merge(df_2c, on='communication_id', how='outer')
 
     return df
 
