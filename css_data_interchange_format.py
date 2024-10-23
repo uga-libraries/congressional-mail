@@ -11,7 +11,7 @@ from css_archiving_format import save_df
 def get_paths(arg_list):
     """Get the paths to the data tables in the folder supplied as script argument"""
 
-    paths = {}
+    paths_dict = {}
     errors = []
 
     # Argument is missing (only the script path is present).
@@ -30,11 +30,11 @@ def get_paths(arg_list):
         for file in expected_files:
             if os.path.exists(os.path.join(arg_list[1], file)):
                 # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
-                paths[file[4:6]] = os.path.join(arg_list[1], file)
+                paths_dict[file[4:6]] = os.path.join(arg_list[1], file)
             else:
                 errors.append(f'Metadata file {file} is not in the metadata folder')
 
-    return paths, errors
+    return paths_dict, errors
 
 
 def read_metadata(paths):
@@ -67,14 +67,14 @@ if __name__ == '__main__':
 
     # Gets the paths to the metadata files from the script argument.
     # If the script argument is missing or any are not valid paths, prints the errors and exits the script.
-    paths_dict, errors_list = get_paths(sys.argv)
+    paths_dictionary, errors_list = get_paths(sys.argv)
     if len(errors_list) > 0:
         for error in errors_list:
             print(error)
         sys.exit(1)
 
     # Reads the metadata files and combines into a pandas dataframe.
-    md_df = read_metadata(paths_dict)
+    md_df = read_metadata(paths_dictionary)
 
     # Removes columns with personally identifiable information, if they are present.
 
