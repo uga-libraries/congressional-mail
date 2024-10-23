@@ -17,7 +17,8 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the value of paths
         expected = {'out_1B': os.path.join('test_data', 'get_paths_correct', 'out_1B.dat'),
-                    'out_2A': os.path.join('test_data', 'get_paths_correct', 'out_2A.dat')}
+                    'out_2A': os.path.join('test_data', 'get_paths_correct', 'out_2A.dat'),
+                    'out_2B': os.path.join('test_data', 'get_paths_correct', 'out_2B.dat')}
         self.assertEqual(paths, expected, "Problem with test for correct, paths")
 
         # Tests the value of errors_list
@@ -63,7 +64,8 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the value of errors_list
         expected = ['Metadata file out_1B.dat is not in the metadata folder',
-                    'Metadata file out_2A.dat is not in the metadata folder']
+                    'Metadata file out_2A.dat is not in the metadata folder',
+                    'Metadata file out_2B.dat is not in the metadata folder']
         self.assertEqual(errors_list, expected, "Problem with test for no metadata, errors_list")
 
 

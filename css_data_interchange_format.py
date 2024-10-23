@@ -1,5 +1,6 @@
 """
 Draft script to prepare access copies from an export in the CSS Data Interchange Format.
+Required argument: path to the metadata folder (contains all needed DAT files).
 """
 import os
 import pandas as pd
@@ -25,7 +26,7 @@ def get_paths(arg_list):
     # If it is missing, it adds to the errors list.
     else:
         # TODO: finalize the tables to include
-        expected_files = ['out_1B.dat', 'out_2A.dat']
+        expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2B.dat']
         for file in expected_files:
             if os.path.exists(os.path.join(arg_list[1], file)):
                 paths[file[:6]] = os.path.join(arg_list[1], file)
