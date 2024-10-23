@@ -29,7 +29,8 @@ def get_paths(arg_list):
         expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2B.dat']
         for file in expected_files:
             if os.path.exists(os.path.join(arg_list[1], file)):
-                paths[file[:6]] = os.path.join(arg_list[1], file)
+                # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
+                paths[file[4:6]] = os.path.join(arg_list[1], file)
             else:
                 errors.append(f'Metadata file {file} is not in the metadata folder')
 

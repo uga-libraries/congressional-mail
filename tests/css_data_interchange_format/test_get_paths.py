@@ -16,9 +16,9 @@ class MyTestCase(unittest.TestCase):
                                         os.path.join('test_data', 'get_paths_correct')])
 
         # Tests the value of paths
-        expected = {'out_1B': os.path.join('test_data', 'get_paths_correct', 'out_1B.dat'),
-                    'out_2A': os.path.join('test_data', 'get_paths_correct', 'out_2A.dat'),
-                    'out_2B': os.path.join('test_data', 'get_paths_correct', 'out_2B.dat')}
+        expected = {'1B': os.path.join('test_data', 'get_paths_correct', 'out_1B.dat'),
+                    '2A': os.path.join('test_data', 'get_paths_correct', 'out_2A.dat'),
+                    '2B': os.path.join('test_data', 'get_paths_correct', 'out_2B.dat')}
         self.assertEqual(paths, expected, "Problem with test for correct, paths")
 
         # Tests the value of errors_list
