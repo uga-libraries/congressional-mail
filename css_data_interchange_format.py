@@ -26,7 +26,7 @@ def get_paths(arg_list):
     # If it is missing, it adds to the errors list.
     else:
         # TODO: finalize the tables to include
-        expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2B.dat']
+        expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat']
         for file in expected_files:
             if os.path.exists(os.path.join(arg_list[1], file)):
                 # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
@@ -43,22 +43,23 @@ def read_metadata(paths):
     # Read each metadata file in the paths dictionary into a separate dataframe,
     # including supplying the column headings.
     # TODO: confirm these column names
-    df_1b = pd.read_csv(paths['out_1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        header=None, names=['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag',
-                                            'default_address_flag', 'title', 'organization_name', 'address_line_1',
-                                            'address_line_2', 'address_line_3', 'address_line_4', 'city', 'state_code',
-                                            'zip_code', 'carrier_route', 'county', 'country', 'district', 'precinct',
-                                            'no_mail_flag', 'deliverability'])
-    df_2a = pd.read_csv(paths['out_2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        header=None, names=['record_type', 'person_id', 'communication_id', 'workflow_id',
-                                            'workflow_person_id', 'communication_type', 'user_id', 'approved_by',
-                                            'status', 'date_in', 'date_out', 'reminder_date', 'update_date',
-                                            'response_type', 'address_id', 'email_address', 'household_flag',
-                                            'household_id', 'group_name', 'salutation'])
+    df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag',
+                               'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
+                               'address_line_3', 'address_line_4', 'city', 'state_code', 'zip_code', 'carrier_route',
+                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'deliverability'])
+    df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'person_id', 'communication_id', 'workflow_id', 'workflow_person_id',
+                               'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out',
+                               'reminder_date', 'update_date', 'response_type', 'address_id', 'email_address',
+                               'household_flag', 'household_id', 'group_name', 'salutation'])
+    df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'person_id', 'communication_id', 'communication_code', 'position'])
 
-    # Combine the dataframes using the ID column.
+    # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
     df = df_1b.merge(df_2a, on='person_id', how='outer')
+    df = df.merge(df_2b, on='', how='outer')
 
     return df
 
