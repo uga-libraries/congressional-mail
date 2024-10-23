@@ -24,6 +24,7 @@ def get_paths(arg_list):
     # If the metadata file is present, it updates the dictionary value for that path.
     # If it is missing, it adds to the errors list.
     else:
+        # TODO: finalize the tables to include
         expected_files = ['out_1B.dat', 'out_2A.dat']
         for file in expected_files:
             if os.path.exists(os.path.join(arg_list[1], file)):
@@ -32,6 +33,32 @@ def get_paths(arg_list):
                 errors.append(f'Metadata file {file} is not in the metadata folder')
 
     return paths, errors
+
+
+def read_metadata(paths):
+    """Combine the metadata files into a dataframe"""
+
+    # Read each metadata file in the paths dictionary into a separate dataframe,
+    # including supplying the column headings.
+    # TODO: confirm these column names
+    df_1b = pd.read_csv(paths['out_1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        header=None, names=['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag',
+                                            'default_address_flag', 'title', 'organization_name', 'address_line_1',
+                                            'address_line_2', 'address_line_3', 'address_line_4', 'city', 'state_code',
+                                            'zip_code', 'carrier_route', 'county', 'country', 'district', 'precinct',
+                                            'no_mail_flag', 'deliverability'])
+    df_2a = pd.read_csv(paths['out_2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        header=None, names=['record_type', 'person_id', 'communication_id', 'workflow_id',
+                                            'workflow_person_id', 'communication_type', 'user_id', 'approved_by',
+                                            'status', 'date_in', 'date_out', 'reminder_date', 'update_date',
+                                            'response_type', 'address_id', 'email_address', 'household_flag',
+                                            'household_id', 'group_name', 'salutation'])
+
+    # Combine the dataframes using the ID column.
+    # If an id is only in one table, the data is still included and has blanks for columns from the other table.
+    df = df_1b.merge(df_2a, on='person_id', how='outer')
+
+    return df
 
 
 if __name__ == '__main__':
@@ -45,6 +72,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Reads the metadata files and combines into a pandas dataframe.
+    md_df = read_metadata(paths_dict)
 
     # Removes columns with personally identifiable information, if they are present.
 
