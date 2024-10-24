@@ -1,0 +1,1 @@
+Metadata folder without any of the required metadata files.

@@ -68,6 +68,21 @@ class MyTestCase(unittest.TestCase):
                     'Metadata file out_2C.dat is not in the metadata folder']
         self.assertEqual(errors_list, expected, "Problem with test for no metadata, errors_list")
 
+    def test_some_metadata(self):
+        """Test for when the metadata folder does not contain all of the required metadata files"""
+        # Runs the function being tested.
+        paths, errors_list = get_paths(['css_data_interchange_format.py',
+                                        os.path.join('test_data', 'get_paths_missing_some')])
+
+        # Tests the value of paths
+        expected = {'2A': os.path.join('test_data', 'get_paths_missing_some', 'out_2A.dat')}
+        self.assertEqual(paths, expected, "Problem with test for no metadata, paths")
+
+        # Tests the value of errors_list
+        expected = ['Metadata file out_1B.dat is not in the metadata folder',
+                    'Metadata file out_2C.dat is not in the metadata folder']
+        self.assertEqual(errors_list, expected, "Problem with test for no metadata, errors_list")
+
 
 if __name__ == '__main__':
     unittest.main()
