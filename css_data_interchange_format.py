@@ -66,6 +66,32 @@ def read_metadata(paths):
     return df
 
 
+def remove_pii(df):
+    """Remove columns with personally identifiable information (name and address) if they are present"""
+
+    # List of column names that should be removed. Includes names and address information.
+    # As well as identifiers that are no longer needed after combining tables.
+    # TODO: confirm this list
+    remove = ['record_type_x', 'person_id_x', 'address_id_x', 'address_type', 'primary_flag', 'default_address_flag',
+              'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
+              'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'record_type_y',
+              'communication_id', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id_y', 'email_address',
+              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y', 'communication_document_id']
+
+    # Removes every column on the remove list from the dataframe, if they are present.
+    # Nothing happens, due to errors="ignore", if any are not present.
+    df = df.drop(remove, axis=1, errors='ignore')
+
+    # Prints the remaining columns for archivist review, in case any additional ones might contain private information.
+    # TODO: confirm this is desired
+    print("\nColumns remaining after removing personal identifiers are listed below.")
+    print("To remove any of these columns, add them to the 'remove' list in remove_pii() and run the script again.")
+    for column_name in df.columns.tolist():
+        print(f'\t{column_name}')
+
+    return df
+
+
 if __name__ == '__main__':
 
     # Gets the paths to the metadata files from the script argument.
