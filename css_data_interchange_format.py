@@ -106,6 +106,7 @@ if __name__ == '__main__':
     md_df = read_metadata(paths_dictionary)
 
     # Removes columns with personally identifiable information, if they are present.
+    md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata files.
 
