@@ -36,7 +36,6 @@ class MyTestCase(unittest.TestCase):
                      '11100011', 'imail', '8', 'nan', 'C', '19990501', '19990507', 'nan', '19990501', 'imail',
                      '200001', 'name@gmail.com', 'nan', 'nan', 'HMO', 'Mr. and Mrs. Name', '2C', '1000001', 'OUTGOING',
                      r'..\documents\formletters\insurance.doc', 'nan', 'nan', 'insurance.doc'],
-
                     ['1B', '1000003', '200003', 'HO', 'nan', 'nan', 'nan', 'nan', '300 Elm', 'Apt 3', 'nan', 'nan',
                      'Marietta', 'GA', '30062-1613', 'R026', 'Cobb', 'USA', 'GA06', 'nan', 'nan', 'D', '2A', '1100003',
                      'nan', '11100012', 'usmail', 'INTERN1', 'nan', 'C', '19990607', '19990617', 'nan', '19990607',
