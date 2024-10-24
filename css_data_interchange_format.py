@@ -109,5 +109,6 @@ if __name__ == '__main__':
     md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata files.
+    save_df(md_df, os.path.dirname(sys.argv[1]))
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata files.
