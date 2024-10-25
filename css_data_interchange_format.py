@@ -76,7 +76,7 @@ def remove_pii(df):
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'record_type_y',
               'communication_id', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id_y', 'email_address',
-              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y', 'communication_document_id']
+              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.

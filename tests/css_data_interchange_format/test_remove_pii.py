@@ -34,12 +34,13 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
-                    'document_type', 'communication_document_name', 'file_location', 'file_name']
+                    'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                    'file_name']
         self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for all present, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['13', '14', '15', '18', '27', '29', '30', '31', '32', '33', '34', '35',
-                     '40', '44', '45', '47', '48']]
+                     '40', '44', '45', '46', '47', '48']]
         self.assertEqual(md_df.values.tolist(), expected, "Problem with test for all present, values")
 
     def test_some_present(self):
