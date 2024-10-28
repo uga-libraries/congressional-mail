@@ -68,6 +68,7 @@ def read_metadata(paths):
 
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
+    # TODO need error handling if the id is blank?
     df = df_1b.merge(df_2a, on='person_id', how='outer')
     df = df.merge(df_2c, on='communication_id', how='outer')
 
@@ -82,7 +83,7 @@ def remove_pii(df):
 
     # List of column names that should be removed. Includes names and address information
     # and "extra" columns due to extra blank columns at the end of each row in the export.
-    # TODO: confirm this list
+    # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
@@ -100,7 +101,6 @@ def split_congress_year(df, input_dir):
     """Make one CSV per Congress Year in the folder with the original metadata files"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
-    # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
     # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['date_in'], errors='coerce').isnull()]
