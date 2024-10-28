@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         filenames = ['CSS_Access_Copy.csv', '1999-2000.csv', '2011-2012.csv', 'undated.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', filename)
+            file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
         subprocess.run(f"python {script_path} {md_path}", shell=True)
 
         # Tests the contents of CSS_Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
+        csv_path = os.path.join('test_data', 'script', 'CSS_Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -67,7 +67,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, CSS_Access_Copy.csv")
 
         # Tests the contents of 1999-2000.csv.
-        csv_path = os.path.join('test_data', '1999-2000.csv')
+        csv_path = os.path.join('test_data', 'script', '1999-2000.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -94,7 +94,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 1999-2000")
 
         # Tests the contents of 2011-2012.csv.
-        csv_path = os.path.join('test_data', '2011-2012.csv')
+        csv_path = os.path.join('test_data', 'script', '2011-2012.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -106,7 +106,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 2011-2012")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
