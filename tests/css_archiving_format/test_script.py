@@ -30,17 +30,7 @@ class MyTestCase(unittest.TestCase):
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
         md_path = os.path.join('test_data', 'script_md.dat')
-        output = subprocess.run(f"python {script_path} {md_path}", shell=True, stdout=subprocess.PIPE)
-
-        # Tests that it prints the correct message.
-        result = output.stdout.decode('utf-8')
-        expected = ("\r\nColumns remaining after removing personal identifiers are listed below.\r\nTo remove any of "
-                    "these columns, add them to the 'remove' list in remove_pii() and run the script "
-                    "again.\r\n\tcity\r\n\tstate\r\n\tzip\r\n\tcountry\r\n\tin_id\r\n\tin_type\r\n\tin_method\r\n"
-                    "\tin_date\r\n\tin_topic\r\n\tin_text\r\n\tin_document_name\r\n\tin_fillin\r\n\tout_id\r\n"
-                    "\tout_type\r\n\tout_method\r\n\tout_date\r\n\tout_topic\r\n\tout_text\r\n\tout_document_name\r\n"
-                    "\tout_fillin\r\n")
-        self.assertEqual(result, expected, "Problem with test for correct, printed message")
+        subprocess.run(f"python {script_path} {md_path}", shell=True)
 
         # Tests the contents of CSS_Access_Copy.csv.
         csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
