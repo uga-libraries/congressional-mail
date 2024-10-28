@@ -43,16 +43,18 @@ def read_metadata(paths):
     # Read each metadata file in the paths dictionary into a separate dataframe,
     # including supplying the column headings.
     # TODO: confirm these column names
+    # TODO: be more flexible about expected extra columns at the end of the export
     df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                         names=['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag',
                                'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
                                'address_line_3', 'address_line_4', 'city', 'state_code', 'zip_code', 'carrier_route',
-                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'deliverability'])
+                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'deliverability',
+                               'extra1', 'extra2', 'extra3', 'extra4'])
     df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                         names=['record_type', 'person_id', 'communication_id', 'workflow_id', 'workflow_person_id',
                                'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out',
                                'reminder_date', 'update_date', 'response_type', 'address_id', 'email_address',
-                               'household_flag', 'household_id', 'group_name', 'salutation'])
+                               'household_flag', 'household_id', 'group_name', 'salutation', 'extra'])
     df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                         names=['record_type', 'person_id', 'communication_id', 'document_type',
                                'communication_document_name', 'communication_document_id', 'file_location',
@@ -70,13 +72,15 @@ def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
     # List of column names that should be removed. Includes names and address information.
-    # As well as identifiers that are no longer needed after combining tables.
+    # As well as identifiers that are no longer needed after combining tables
+    # and "extra" columns due to extra blank columns at the end of each row in the export.
     # TODO: confirm this list
     remove = ['record_type_x', 'person_id_x', 'address_id_x', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'record_type_y',
               'communication_id', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id_y', 'email_address',
-              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y']
+              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y',
+              'extra', 'extra1', 'extra2', 'extra3', 'extra4']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
