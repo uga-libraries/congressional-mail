@@ -62,14 +62,9 @@ def read_metadata(paths):
 
     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
     # Otherwise, it would be too much data to merge.
-    df_1b = df_1b.drop(['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag', 'title',
-                        'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
-                        'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability',
-                        'extra1', 'extra2', 'extra3', 'extra4'], axis=1, errors='ignore')
-    df_2a = df_2a.drop(['record_type', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id', 'email_address',
-                        'household_flag', 'household_id', 'salutation', 'extra'],
-                       axis=1, errors='ignore')
-    df_2c = df_2c.drop(['record_type', 'person_id'], axis=1, errors='ignore')
+    df_1b = remove_pii(df_1b)
+    df_2a = remove_pii(df_2a)
+    df_2c = remove_pii(df_2c)
 
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
