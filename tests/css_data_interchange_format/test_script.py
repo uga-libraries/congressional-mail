@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
         md_path = os.path.join('test_data', 'script')
-        output = subprocess.run(f"python {script_path} {md_path}", shell=True, stdout=subprocess.PIPE)
+        subprocess.run(f"python {script_path} {md_path}", shell=True)
 
         # Tests the contents of CSS_Access_Copy.csv.
         csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
