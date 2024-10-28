@@ -72,7 +72,7 @@ def read_metadata(paths):
     df = df.merge(df_2c, on='communication_id', how='outer')
 
     # Remove ID columns only used for merging.
-    df = df.drop(['person_id', 'communication_id'], axis=1, errors='ignore')
+    df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
 
     return df
 
