@@ -60,10 +60,24 @@ def read_metadata(paths):
                                'communication_document_name', 'communication_document_id', 'file_location',
                                'file_name'])
 
+    # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
+    # Otherwise, it would be too much data to merge.
+    df_1b = df_1b.drop(['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag', 'title',
+                        'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
+                        'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability',
+                        'extra1', 'extra2', 'extra3', 'extra4'], axis=1, errors='ignore')
+    df_2a = df_2a.drop(['record_type', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id', 'email_address',
+                        'household_flag', 'household_id', 'salutation', 'extra'],
+                       axis=1, errors='ignore')
+    df_2c = df_2c.drop(['record_type', 'person_id'], axis=1, errors='ignore')
+
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
     df = df_1b.merge(df_2a, on='person_id', how='outer')
     df = df.merge(df_2c, on='communication_id', how='outer')
+
+    # Remove ID columns only used for merging.
+    df = df.drop(['person_id', 'communication_id'], axis=1, errors='ignore')
 
     return df
 
@@ -71,16 +85,14 @@ def read_metadata(paths):
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
-    # List of column names that should be removed. Includes names and address information.
-    # As well as identifiers that are no longer needed after combining tables
+    # List of column names that should be removed. Includes names and address information
     # and "extra" columns due to extra blank columns at the end of each row in the export.
     # TODO: confirm this list
-    remove = ['record_type_x', 'person_id_x', 'address_id_x', 'address_type', 'primary_flag', 'default_address_flag',
+    remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
-              'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'record_type_y',
-              'communication_id', 'workflow_id', 'workflow_person_id', 'user_id', 'address_id_y', 'email_address',
-              'household_flag', 'household_id', 'salutation', 'record_type', 'person_id_y',
-              'extra', 'extra1', 'extra2', 'extra3', 'extra4']
+              'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
+              'workflow_person_id', 'user_id', 'address_id_y', 'email_address', 'household_flag', 'household_id',
+              'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
@@ -142,8 +154,8 @@ if __name__ == '__main__':
     # Reads the metadata files and combines into a pandas dataframe.
     md_df = read_metadata(paths_dictionary)
 
-    # Removes columns with personally identifiable information, if they are present.
-    md_df = remove_pii(md_df)
+    # # Removes columns with personally identifiable information, if they are present.
+    # md_df = remove_pii(md_df)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata files.
     save_df(md_df, os.path.dirname(sys.argv[1]))
