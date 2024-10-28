@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['CSS_Access_Copy.csv', '2021-2022.csv', '2023-2024.csv']
+        filenames = ['CSS_Access_Copy.csv', '1999-2000.csv', '2011-2012.csv', 'undated.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
@@ -36,47 +36,98 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout.decode('utf-8')
         expected = ("\r\nColumns remaining after removing personal identifiers are listed below.\r\nTo remove any of "
                     "these columns, add them to the 'remove' list in remove_pii() and run the script "
-                    "again.\r\n\tcity\r\n\tstate\r\n\tzip\r\n\tcountry\r\n\tin_id\r\n\tin_type\r\n\tin_method\r\n"
-                    "\tin_date\r\n\tin_topic\r\n\tin_text\r\n\tin_document_name\r\n\tin_fillin\r\n\tout_id\r\n"
-                    "\tout_type\r\n\tout_method\r\n\tout_date\r\n\tout_topic\r\n\tout_text\r\n\tout_document_name\r\n"
-                    "\tout_fillin\r\n")
+                    "again.\r\n\tcity\r\n\tstate_code\r\n\tzip_code\r\n\tcountry\r\n\tcommunication_type\r\n"
+                    "\tapproved_by\r\n\tstatus\r\n\tdate_in\r\n\tdate_out\r\n\treminder_date\r\n\tupdate_date\r\n"
+                    "\tresponse_type\r\n\tgroup_name\r\n\tdocument_type\r\n\tcommunication_document_name\r\n"
+                    "\tcommunication_document_id\r\n\tfile_location\r\n\tfile_name\r\n")
         self.assertEqual(result, expected, "Problem with test for correct, printed message")
 
         # Tests the contents of CSS_Access_Copy.csv.
         csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan', 'fileA100',
-                     'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'Case', 'Email', '20230202', 'B1^B2', 'Note', 'fileB200',
-                     'nan', 'r200', 'Case', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
-                     'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
+                     'usmail', 'TOUR5', 'OUTGOING', r'..\documents\formletters\flag.doc.doc', 'flag.doc', ' ', 'nan'],
+                    ['Atlanta', 'GA', '30327-4346', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan', 'usmail',
+                     'nan', 'OUTGOING', r'..\documents\formletters\30046.doc.doc', '30046.doc', ' ', 'nan'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
+                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\inttax.doc.doc', 'inttax.doc',
+                     ' ', 'nan'],
+                    ['Smyrna', 'GA', '30080-1944', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan',
+                     'usmail', 'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
+                     'Airline Passenger BOR Act2 1999', ' ', 'nan'],
+                    ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
+                     '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\2076104.doc',
+                     'nan', ' ', 'nan'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990315', '19990402', 'nan', '19990315',
+                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\busintax.doc.doc', 'busintax.doc',
+                     ' ', 'nan'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
+                     '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html', '2103422',
+                     ' ', 'nan'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'nan', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan'],
+                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
+                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
+                     ' ', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, CSS_Access_Copy.csv")
 
-        # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', '2021-2022.csv')
+        # Tests the contents of 1999-2000.csv.
+        csv_path = os.path.join('test_data', '1999-2000.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan', 'fileA100',
-                     'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, 2021-2022")
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
+                     'usmail', 'TOUR5', 'OUTGOING', r'..\documents\formletters\flag.doc.doc', 'flag.doc',
+                     ' ', 'nan'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
+                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\inttax.doc.doc', 'inttax.doc',
+                     ' ', 'nan'],
+                    ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
+                     '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\2076104.doc',
+                     'nan', ' ', 'nan'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990315', '19990402', 'nan', '19990315',
+                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\busintax.doc.doc', 'busintax.doc',
+                     ' ', 'nan'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'nan', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan'],
+                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
+                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
+                     ' ', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for correct, 1999-2000")
 
-        # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', '2023-2024.csv')
+        # Tests the contents of 2011-2012.csv.
+        csv_path = os.path.join('test_data', '2011-2012.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'Case', 'Email', '20230202', 'B1^B2', 'Note', 'fileB200',
-                     'nan', 'r200', 'Case', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
-                     'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, 2023-2024")
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
+                     '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '2103422', ' ', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for correct, 2011-2012")
+
+        # Tests the contents of undated.csv.
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'undated.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    ['Atlanta', 'GA', '30327-4346', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan', 'usmail',
+                     'nan', 'OUTGOING', r'..\documents\formletters\30046.doc.doc', '30046.doc', ' ', 'nan'],
+                    ['Smyrna', 'GA', '30080-1944', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan', 'usmail',
+                     'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
+                     'Airline Passenger BOR Act2 1999', ' ', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for correct, undated")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
