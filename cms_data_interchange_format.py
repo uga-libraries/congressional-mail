@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import sys
 from css_archiving_format import save_df
+from css_data_interchange_format import split_congress_year
 
 
 def get_paths(arg_list):
@@ -113,3 +114,6 @@ if __name__ == '__main__':
 
     # Saves the redacted data to a CSV file in the folder with the original metadata files.
     save_df(md_df, sys.argv[1])
+
+    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata files.
+    split_congress_year(md_df, sys.argv[1])
