@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['CSS_Access_Copy.csv', '2021-2022.csv', '2023-2024.csv']
+        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
@@ -32,8 +32,8 @@ class MyTestCase(unittest.TestCase):
         md_path = os.path.join('test_data', 'script_md.dat')
         subprocess.run(f"python {script_path} {md_path}", shell=True)
 
-        # Tests the contents of CSS_Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
+        # Tests the contents of Access_Copy.csv.
+        csv_path = os.path.join('test_data', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'r200', 'Case', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
                     ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
                      'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, CSS_Access_Copy.csv")
+        self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
 
         # Tests the contents of 2021-2022.csv.
         csv_path = os.path.join('test_data', '2021-2022.csv')

@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['CSS_Access_Copy.csv', '1997-1998.csv', 'undated.csv']
+        filenames = ['Access_Copy.csv', '1997-1998.csv', 'undated.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
@@ -32,8 +32,8 @@ class MyTestCase(unittest.TestCase):
         md_path = os.path.join('test_data', 'script_md.dat')
         subprocess.run(f"python {script_path} {md_path}", shell=True)
 
-        # Tests the contents of CSS_Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
+        # Tests the contents of Access_Copy.csv.
+        csv_path = os.path.join('test_data', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
                      'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
                      'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
                      'THE LAST ONE'],
                     ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, CSS_Access_Copy.csv")
+        self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
 
         # Tests the contents of 1997-1998.csv.
         csv_path = os.path.join('test_data', '1997-1998.csv')

@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the function output, if it was created"""
-        output_path = os.path.join('test_data', 'CSS_Access_Copy.csv')
+        output_path = os.path.join('test_data', 'Access_Copy.csv')
         if os.path.exists(output_path):
             os.remove(output_path)
 
@@ -28,7 +28,7 @@ class MyTestCase(unittest.TestCase):
         save_df(md_df, 'test_data')
 
         # Tests that CSS_Access_Copy.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'CSS_Access_Copy.csv'))
+        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
                     ['GA', '30605', '11111', 'General', 'nan'],
                     ['GA', '30605', '11112', 'General', 'email'],
@@ -45,7 +45,7 @@ class MyTestCase(unittest.TestCase):
         save_df(md_df, 'test_data')
 
         # Tests that 2009-2010.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'CSS_Access_Copy.csv'))
+        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method']]
         self.assertEqual(result, expected, "Problem with test for all blank")
 
@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         save_df(md_df, 'test_data')
 
         # Tests that 2009-2010.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'CSS_Access_Copy.csv'))
+        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
                     ['GA', '30605', '11111', 'General', 'email'],
                     ['GA', '30605', '11112', 'General', 'email'],
