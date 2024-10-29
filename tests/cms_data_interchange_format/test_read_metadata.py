@@ -15,16 +15,6 @@ class MyTestCase(unittest.TestCase):
                       '2C': os.path.join('test_data', 'read', '2C.out')}
         md_df = read_metadata(paths_dict)
 
-        # # Tests the value of md_df
-        # md_df.fillna('nan', inplace=True)
-        # result = [md_df.columns.tolist()] + md_df.values.tolist()
-        # expected = [['constituent_id', 'correspondence_id', 'correspondence_type', 'staff', 'date_in', 'date_out',
-        #             'tickler_date', 'update_date', 'response_type'],
-        #             ['1', '1001', 'LETTER', 'Staffer_1', '20220110', '20220110', 'nan', '20220110', 'LETTER'],
-        #             ['2', '2002', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'nan', '20220220', 'EMAIL'],
-        #             ['3', '3003', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'nan', '20220330', 'EMAIL']]
-        # self.assertEqual(result, expected, "Problem with test for function read_metadata")
-
         # Tests the value of md_df
         md_df.fillna('nan', inplace=True)
         result = [md_df.columns.tolist()] + md_df.values.tolist()
