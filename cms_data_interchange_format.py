@@ -53,7 +53,7 @@ def read_metadata(paths):
     df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                         names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type',
                                'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
-                               'address_id', 'household_flag', 'household_id'])
+                               'address_id', 'household_flag', 'household_id', 'extra1', 'extra2'])
     df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                         names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'])
     df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
@@ -90,7 +90,7 @@ def remove_pii(df):
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag', 'title',
               'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'agency_code', 'household_flag',
-              'household_id']
+              'household_id', 'extra1', 'extra2']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.

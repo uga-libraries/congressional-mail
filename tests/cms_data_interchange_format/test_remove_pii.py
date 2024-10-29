@@ -32,10 +32,10 @@ class MyTestCase(unittest.TestCase):
     def test_2a(self):
         """Test for columns in table 2A."""
         # Makes a dataframe to use as test input.
-        md_df = pd.DataFrame([['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']],
+        md_df = pd.DataFrame([['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']],
                              columns=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type',
                                       'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
-                                      'address_id', 'household_flag', 'household_id'])
+                                      'address_id', 'household_flag', 'household_id', 'extra1', 'extra2'])
         md_df = remove_pii(md_df)
 
         # Tests the columns of the returned dataframe are correct.
