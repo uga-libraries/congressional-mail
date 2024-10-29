@@ -3,6 +3,7 @@ Draft script to prepare access copies from an export in the CMS Data Interchange
 Required argument: path to the metadata folder (contains all needed DAT files).
 """
 import os
+import pandas as pd
 import sys
 
 
@@ -35,96 +36,65 @@ def get_paths(arg_list):
     return paths_dict, errors
 
 
-# def read_metadata(paths):
-#     """Combine the metadata files into a dataframe"""
-#
-#     # Read each metadata file in the paths dictionary into a separate dataframe,
-#     # including supplying the column headings.
-#     # TODO: confirm these column names
-#     # TODO: be more flexible about expected extra columns at the end of the export
-#     df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-#                         names=['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag',
-#                                'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
-#                                'address_line_3', 'address_line_4', 'city', 'state_code', 'zip_code', 'carrier_route',
-#                                'county', 'country', 'district', 'precinct', 'no_mail_flag', 'deliverability',
-#                                'extra1', 'extra2', 'extra3', 'extra4'])
-#     df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-#                         names=['record_type', 'person_id', 'communication_id', 'workflow_id', 'workflow_person_id',
-#                                'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out',
-#                                'reminder_date', 'update_date', 'response_type', 'address_id', 'email_address',
-#                                'household_flag', 'household_id', 'group_name', 'salutation', 'extra'])
-#     df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-#                         names=['record_type', 'person_id', 'communication_id', 'document_type',
-#                                'communication_document_name', 'communication_document_id', 'file_location',
-#                                'file_name'])
-#
-#     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
-#     # Otherwise, it would be too much data to merge.
-#     df_1b = remove_pii(df_1b)
-#     df_2a = remove_pii(df_2a)
-#     df_2c = remove_pii(df_2c)
-#
-#     # Combine the dataframes using ID columns.
-#     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
-#     # TODO need error handling if the id is blank?
-#     df = df_1b.merge(df_2a, on='person_id', how='outer')
-#     df = df.merge(df_2c, on='communication_id', how='outer')
-#
-#     # Remove ID columns only used for merging.
-#     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
-#
-#     return df
-#
-#
-# def remove_pii(df):
-#     """Remove columns with personally identifiable information (name and address) if they are present"""
-#
-#     # List of column names that should be removed. Includes names and address information
-#     # and "extra" columns due to extra blank columns at the end of each row in the export.
-#     # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
-#     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
-#               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
-#               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
-#               'workflow_person_id', 'user_id', 'address_id_y', 'email_address', 'household_flag', 'household_id',
-#               'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4']
-#
-#     # Removes every column on the remove list from the dataframe, if they are present.
-#     # Nothing happens, due to errors="ignore", if any are not present.
-#     df = df.drop(remove, axis=1, errors='ignore')
-#
-#     return df
-#
-#
-# def split_congress_year(df, input_dir):
-#     """Make one CSV per Congress Year in the folder with the original metadata files"""
-#
-#     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
-#     # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
-#     # TODO: decide on file name and where it saves.
-#     df_undated = df[pd.to_numeric(df['date_in'], errors='coerce').isnull()]
-#     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
-#
-#     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
-#     df = df[pd.to_numeric(df['date_in'], errors='coerce').notnull()].copy()
-#
-#     # Adds a column with the year received, which will be used to calculate the Congress Year.
-#     # Column in_date is formatted YYYYMMDD.
-#     # TODO: confirm that in_date is the correct date for this purpose.
-#     df.loc[:, 'year'] = df['date_in'].astype(str).str[:4].astype(int)
-#
-#     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
-#     # First, if the year received is even, the Congress Year is year-1 to year.
-#     # Second, if the year received is odd, the Congress Year is year to year+1.
-#     df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
-#     df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
-#
-#     # Splits the data by Congress Year received and saves each to a separate CSV.
-#     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-#     # TODO: decide on file name and where it saves.
-#     # TODO: confirm using CSV format.
-#     for congress_year, cy_df in df.groupby('congress_year'):
-#         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-#         cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
+def read_metadata(paths):
+    """Combine the metadata files into a dataframe"""
+
+    # Read each metadata file in the paths dictionary into a separate dataframe,
+    # including supplying the column headings.
+    # TODO: confirm these column names
+    # TODO: be more flexible about expected extra columns at the end of the export
+    df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
+                               'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
+                               'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
+                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code'])
+    df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type',
+                               'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+                               'address_id', 'household_flag', 'household_id'])
+    df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'])
+    df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                        names=['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
+                               'document_type', 'correspondence_document_name', 'file_location'])
+
+    # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
+    # Otherwise, it would be too much data to merge.
+    df_1b = remove_pii(df_1b)
+    df_2a = remove_pii(df_2a)
+    df_2b = remove_pii(df_2b)
+    df_2c = remove_pii(df_2c)
+
+    # Combine the dataframes using ID columns.
+    # If an id is only in one table, the data is still included and has blanks for columns from the other table.
+    # TODO need error handling if the id is blank?
+    df = df_1b.merge(df_2a, on='constituent_id', how='outer')
+    df = df.merge(df_2b, on='correspondence_id', how='outer')
+    df = df.merge(df_2c, on='correspondence_id', how='outer')
+
+    # Remove ID columns only used for merging.
+    df = df.drop(['constituent_id_x', 'constituent_id_y', 'constituent_id', 'correspondence_id'],
+                 axis=1, errors='ignore')
+
+    return df
+
+
+def remove_pii(df):
+    """Remove columns with personally identifiable information (name and address) if they are present"""
+
+    # List of column names that should be removed. Includes names and address information
+    # and "extra" columns due to extra blank columns at the end of each row in the export.
+    # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
+    remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag', 'title',
+              'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
+              'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'agency_code', 'household_flag',
+              'household_id']
+
+    # Removes every column on the remove list from the dataframe, if they are present.
+    # Nothing happens, due to errors="ignore", if any are not present.
+    df = df.drop(remove, axis=1, errors='ignore')
+
+    return df
 
 
 if __name__ == '__main__':
