@@ -5,6 +5,7 @@ Required argument: path to the metadata folder (contains all needed DAT files).
 import os
 import pandas as pd
 import sys
+from css_archiving_format import save_df
 
 
 def get_paths(arg_list):
@@ -107,3 +108,8 @@ if __name__ == '__main__':
             print(error)
         sys.exit(1)
 
+    # Reads the metadata files and combines into a pandas dataframe.
+    md_df = read_metadata(paths_dictionary)
+
+    # Saves the redacted data to a CSV file in the folder with the original metadata files.
+    save_df(md_df, sys.argv[1])
