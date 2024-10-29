@@ -1,5 +1,6 @@
 """
 Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
+Required argument: path to the DAT file with the metadata export.
 """
 import os
 import pandas as pd

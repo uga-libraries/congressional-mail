@@ -1,6 +1,6 @@
 """
 Draft script to prepare access copies from an export in the CMS Data Interchange Format.
-Required argument: path to the metadata folder (contains all needed DAT files).
+Required argument: path to the metadata folder (contains all needed OUT files).
 """
 import os
 import pandas as pd
