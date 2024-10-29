@@ -60,7 +60,7 @@ def save_df(df, input_dir):
     # Saves the dataframe to a CSV.
     # TODO: decide on file name and where it saves.
     # TODO: confirm using CSV format.
-    df.to_csv(os.path.join(input_dir, 'CSS_Access_Copy.csv'), index=False)
+    df.to_csv(os.path.join(input_dir, 'Access_Copy.csv'), index=False)
 
 
 def split_congress_year(df, input_dir):
