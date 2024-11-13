@@ -37,6 +37,25 @@ def read_metadata(path):
     return df
 
 
+def remove_casework(df):
+    """Remove rows with topics or text that indicate they are case mail"""
+
+    # Removes row if column in_topic includes one of the topics that indicates casework.
+    # There may be more than one topic in that column.
+    # Deletes rows are saved to a log for review.
+    casework_topics = ['Casework', 'Casework Issues', 'Prison Case']
+    df = df[~df['in_topic'].str.contains('|'.join(casework_topics))]
+
+    # Removes row if column in_text includes a phrase that indicates casework.
+    # These are more exact because there is text with the word case related to caseworkers, legal cases,
+    # and even indicating something is not case work which should be retained.
+    casework_phrases = ['case.prison', 'Outgoing Info: casework', 'Outgoing Info: case work',
+                        'forwarded original on to case work', 'down for casework']
+    df = df[~df['in_text'].str.contains('|'.join(casework_phrases))]
+
+    return df
+
+
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
