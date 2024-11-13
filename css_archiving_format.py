@@ -62,7 +62,7 @@ def remove_casework(df, input_dir):
 
     # Remaining rows with "case" in any column are saved to a log for review.
     # This may be another pattern that indicates casework or may be another use of the word case.
-    includes_case = np.column_stack([df[col].str.contains('case', case=False) for col in df])
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
     return df
@@ -142,6 +142,9 @@ if __name__ == '__main__':
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
+
+    # Removes rows for casework, if they are present.
+    md_df = remove_casework(md_df, md_path)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     save_df(md_df, os.path.dirname(md_path))
