@@ -20,7 +20,8 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the deletion log, if made by the test"""
-        paths = [os.path.join('test_data', 'text_deletion_log.csv'),
+        paths = [os.path.join('test_data', 'row_includes_case_log.csv'),
+                 os.path.join('test_data', 'text_deletion_log.csv'),
                  os.path.join('test_data', 'topic_deletion_log.csv')]
         for path in paths:
             if os.path.exists(path):
@@ -52,7 +53,13 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'nan', 'Outgoing Info: case work, letter is y'],
                     ['30603', 'nan', 'Answer topic x, forwarded original on to case work'],
                     ['30604', 'nan', 'Send down for casework']]
-        self.assertEqual(result, expected, "Problem with test for in_text, log")
+        self.assertEqual(result, expected, "Problem with test for in_text, deletion log")
+
+        # Tests the values of the row includes case log are correct.
+        result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30605', 'nan', 'This is not casework']]
+        self.assertEqual(result, expected, "Problem with test for in_text, case log")
 
     def test_in_topic_exact(self):
         """Test for when the column in_topic exactly matches a topic that indicates casework"""
@@ -76,12 +83,17 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Casework', 'nan'],
                     ['30602', 'Casework Issues', 'nan'],
                     ['30604', 'Prison Case', 'note']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, log")
+        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, deletion log")
+
+        # Tests the values of the row includes case log are correct.
+        result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, case log")
 
     def test_in_topic_partial(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Keep', ''],
+        md_df = pd.DataFrame([['30600', 'Keep', 'CASE OF THE CENTURY'],
                               ['30601', 'Healthcare^Casework', ''],
                               ['30602', 'Casework Issues^Social Security', 'note'],
                               ['30603', 'Prison Case^No Reply', ''],
@@ -92,7 +104,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
         expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'Keep', '']]
+                    ['30600', 'Keep', 'CASE OF THE CENTURY']]
         self.assertEqual(result, expected, "Problem with test for in_topic, partial match, df")
 
         # Tests the values in the deletion log are correct.
@@ -102,7 +114,13 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'Casework Issues^Social Security', 'note'],
                     ['30603', 'Prison Case^No Reply', 'nan'],
                     ['30604', 'Casework^Casework Issues', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, partial match, log")
+        self.assertEqual(result, expected, "Problem with test for in_topic, partial match, deletion log")
+
+        # Tests the values of the row includes case log are correct.
+        result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30600', 'Keep', 'CASE OF THE CENTURY']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, partial match, case log")
 
 
 if __name__ == '__main__':

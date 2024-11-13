@@ -2,6 +2,7 @@
 Draft script to prepare access copies from an export in the CSS Archiving Format.
 Required argument: path to the DAT file with the metadata export.
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -58,6 +59,11 @@ def remove_casework(df, input_dir):
     df[df['in_text'].str.contains('|'.join(casework_phrases))].to_csv(os.path.join(input_dir, 'text_deletion_log.csv'),
                                                                       index=False)
     df = df[~df['in_text'].str.contains('|'.join(casework_phrases))]
+
+    # Remaining rows with "case" in any column are saved to a log for review.
+    # This may be another pattern that indicates casework or may be another use of the word case.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
     return df
 
