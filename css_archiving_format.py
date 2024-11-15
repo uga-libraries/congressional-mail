@@ -45,23 +45,23 @@ def remove_casework(df, input_dir):
     # There may be more than one topic in that column.
     # Deleted rows are saved to a log for review.
     # TODO: combine deleted content into a single log.
-    casework_topics = ['Casework', 'Casework Issues', 'Prison Case']
-    df[df['in_topic'].str.contains('|'.join(casework_topics))].to_csv(os.path.join(input_dir, 'topic_deletion_log.csv'),
-                                                                      index=False)
-    df = df[~df['in_topic'].str.contains('|'.join(casework_topics))]
+    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
+    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    df[casework_topic].to_csv(os.path.join(input_dir, 'topic_deletion_log.csv'), index=False)
+    df = df[~casework_topic]
 
-    # Removes row if column in_text includes a phrase that indicates casework.
-    # These are more exact because there is text with the word case related to caseworkers, legal cases,
-    # and even indicating something is not case work which should be retained.
+    # Removes row if any column includes the text "casework".
+    # This removes some rows where the text indicates they are not casework,
+    # which is necessary to protect privacy and keep time required reasonable.
     # Deleted rows are saved to a log for review.
-    casework_phrases = ['case.prison', 'Outgoing Info: casework', 'Outgoing Info: case work',
-                        'forwarded original on to case work', 'down for casework']
-    df[df['in_text'].str.contains('|'.join(casework_phrases))].to_csv(os.path.join(input_dir, 'text_deletion_log.csv'),
-                                                                      index=False)
-    df = df[~df['in_text'].str.contains('|'.join(casework_phrases))]
+    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_anywhere_deletion_log.csv'),
+                                                 index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
 
     # Remaining rows with "case" in any column are saved to a log for review.
-    # This may be another pattern that indicates casework or may be another use of the word case.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    # TODO: make this log or accept result as is? Needed for testing anyway.
     includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
@@ -144,7 +144,7 @@ if __name__ == '__main__':
     md_df = remove_pii(md_df)
 
     # Removes rows for casework, if they are present.
-    md_df = remove_casework(md_df, md_path)
+    md_df = remove_casework(md_df, os.path.dirname(md_path))
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     save_df(md_df, os.path.dirname(md_path))

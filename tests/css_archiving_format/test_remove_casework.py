@@ -20,46 +20,49 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the deletion log, if made by the test"""
-        paths = [os.path.join('test_data', 'row_includes_case_log.csv'),
-                 os.path.join('test_data', 'text_deletion_log.csv'),
+        paths = [os.path.join('test_data', 'casework_anywhere_deletion_log.csv'),
+                 os.path.join('test_data', 'row_includes_case_log.csv'),
                  os.path.join('test_data', 'topic_deletion_log.csv')]
         for path in paths:
             if os.path.exists(path):
                 os.remove(path)
 
-    def test_in_text(self):
-        """Test for when the column in_text contains a phrase that indicates casework"""
+    def test_casework(self):
+        """Test for when a column contains the word casework (is deleted)"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', '', 'Letter case.prison'],
+        md_df = pd.DataFrame([['30600', '', 'Just in case'],
                               ['30601', '', 'Outgoing Info: casework, letter is x'],
-                              ['30602', '', 'Outgoing Info: case work, letter is y'],
+                              ['30602', '', 'Outgoing Info: letter is y'],
                               ['30603', '', 'Answer topic x, forwarded original on to case work'],
                               ['30604', '', 'Send down for casework'],
-                              ['30605', '', 'This is not casework']],
+                              ['30605', '', 'This is not casework'],
+                              ['casework', '', '']],
                              columns=['zip', 'in_topic', 'in_text'])
         md_df = remove_casework(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
         expected = [['zip', 'in_topic', 'in_text'],
-                    ['30605', '', 'This is not casework']]
-        self.assertEqual(result, expected, "Problem with test for in_text, df")
+                    ['30600', '', 'Just in case'],
+                    ['30602', '', 'Outgoing Info: letter is y'],
+                    ['30603', '', 'Answer topic x, forwarded original on to case work']]
+        self.assertEqual(result, expected, "Problem with test for casework, df")
 
-        # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'text_deletion_log.csv'))
+        # Tests the values in the casework anywhere deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'casework_anywhere_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'nan', 'Letter case.prison'],
                     ['30601', 'nan', 'Outgoing Info: casework, letter is x'],
-                    ['30602', 'nan', 'Outgoing Info: case work, letter is y'],
-                    ['30603', 'nan', 'Answer topic x, forwarded original on to case work'],
-                    ['30604', 'nan', 'Send down for casework']]
-        self.assertEqual(result, expected, "Problem with test for in_text, deletion log")
+                    ['30604', 'nan', 'Send down for casework'],
+                    ['30605', 'nan', 'This is not casework'],
+                    ['casework', 'nan', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for casework, deletion log")
 
         # Tests the values of the row includes case log are correct.
         result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
-                    ['30605', 'nan', 'This is not casework']]
-        self.assertEqual(result, expected, "Problem with test for in_text, case log")
+                    ['30600', 'nan', 'Just in case'],
+                    ['30603', 'nan', 'Answer topic x, forwarded original on to case work']]
+        self.assertEqual(result, expected, "Problem with test for casework, case log")
 
     def test_in_topic_exact(self):
         """Test for when the column in_topic exactly matches a topic that indicates casework"""
