@@ -2,6 +2,7 @@
 Draft script to prepare access copies from an export in the CSS Data Interchange Format.
 Required argument: path to the metadata folder (contains all needed DAT files).
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -74,6 +75,32 @@ def read_metadata(paths):
 
     # Remove ID columns only used for merging.
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
+
+    return df
+
+
+def remove_casework(df, input_dir):
+    """Remove rows with topics or text that indicate they are case mail"""
+
+    # Removes row if column group_name starts with "CASE".
+    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
+    # Deleted rows are saved to a log for review.
+    # TODO: combine deleted content into a single log.
+    group = df['group_name'].str.startswith('CASE', na=False)
+    df[group].to_csv(os.path.join(input_dir, 'group_deletion_log.csv'), index=False)
+    df = df[~group]
+
+    # Removes row if any column includes the text "casework".
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_deletion_log.csv'), index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
+
+    # Remaining rows with "case" in any column are saved to a log for review.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    # TODO: make this log or accept result as is? Needed for testing anyway.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
     return df
 
