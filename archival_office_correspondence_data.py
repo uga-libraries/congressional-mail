@@ -14,7 +14,6 @@ def read_metadata(path):
 
     # Makes a list from the file contents with one list per row and one item per column,
     # splitting the data into columns based on the character position and removing extra spaces.
-    # TODO: original data can be all caps. Should we change the case or leave it?
     rows_list = []
     positions = [(0, 39), (39, 69), (69, 99), (99, 129), (129, 159), (159, 189), (189, 191), (191, 201), (201, 251),
                  (251, 301), (301, 351), (351, 357), (357, 361), (361, 371), (371, 471)]
@@ -68,7 +67,6 @@ def split_congress_year(df, input_dir):
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
-    # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['letter_date'], errors='coerce').isnull()]
     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
@@ -93,7 +91,6 @@ def split_congress_year(df, input_dir):
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     # TODO: decide on file name and where it saves.
-    # TODO: confirm using CSV format.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)

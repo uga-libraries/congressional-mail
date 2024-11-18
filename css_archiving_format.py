@@ -32,9 +32,6 @@ def read_metadata(path):
     # TODO: document the encoding errors?
     df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
 
-    # TODO: delete. This is a temporary indicator for testing if anything was read to the dataframe.
-    # print("Rows in the dataframe:", len(df.index))
-
     return df
 
 
@@ -61,7 +58,6 @@ def remove_casework(df, input_dir):
 
     # Remaining rows with "case" in any column are saved to a log for review.
     # This may show us another pattern that indicates casework or may be another use of the word case.
-    # TODO: make this log or accept result as is? Needed for testing anyway.
     includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
@@ -91,7 +87,6 @@ def save_df(df, input_dir):
 
     # Saves the dataframe to a CSV.
     # TODO: decide on file name and where it saves.
-    # TODO: confirm using CSV format.
     df.to_csv(os.path.join(input_dir, 'Access_Copy.csv'), index=False)
 
 
@@ -100,7 +95,6 @@ def split_congress_year(df, input_dir):
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
-    # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
@@ -110,7 +104,6 @@ def split_congress_year(df, input_dir):
 
     # Adds a column with the year received, which will be used to calculate the Congress Year.
     # Column in_date is formatted YYYYMMDD.
-    # TODO: confirm that in_date is the correct date for this purpose. Also have out_date.
     df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
 
     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
@@ -122,7 +115,6 @@ def split_congress_year(df, input_dir):
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     # TODO: decide on file name and where it saves.
-    # TODO: confirm using CSV format.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
