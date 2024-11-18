@@ -5,6 +5,7 @@ Use the metadata files produced by this script for making access copies
 Script arguments: path to the folder with the exported content and the export type.
 Use the type name from the script (e.g., css_archiving_format)
 """
+import numpy as np
 import os
 import sys
 
@@ -45,6 +46,87 @@ def check_arguments(arg_list):
     return ex_path, ex_type, errors
 
 
+def remove_metadata_archival_office(df, input_dir):
+    """Remove metadata rows for casework for the archival_office_correspondence_data type and log the results"""
+
+    # Removes row if any column includes the text "CASE".
+    # It is typically within the columns correspondence_topic or comments
+    # and includes a few rows that are not really casework, such as "Casey" or his "on the case" catchphrase,
+    # which is necessary to protect privacy and keep time required reasonable.
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('CASE', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_deletion_log.csv'), index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
+
+    return df
+
+
+def remove_metadata_cms_data(df, input_dir):
+    """Remove metadata rows for casework for the cms_data_interchange_format type and log the results"""
+
+    # Rows with "case" in any column are saved to a log for review.
+    # We have not found casework in this export type, but this will let us catch it in future donations.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
+
+    return df
+
+
+def remove_metadata_css_archiving(df, input_dir):
+    """Remove metadata rows for casework for the css_archiving_format type and log the results"""
+
+    # Removes row if column in_topic includes one of the topics that indicates casework.
+    # There may be more than one topic in that column.
+    # Deleted rows are saved to a log for review.
+    # TODO: combine deleted content into a single log.
+    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
+    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    df[casework_topic].to_csv(os.path.join(input_dir, 'topic_deletion_log.csv'), index=False)
+    df = df[~casework_topic]
+
+    # Removes row if any column includes the text "casework".
+    # This removes some rows where the text indicates they are not casework,
+    # which is necessary to protect privacy and keep time required reasonable.
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_anywhere_deletion_log.csv'),
+                                                 index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
+
+    # Remaining rows with "case" in any column are saved to a log for review.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
+
+    return df
+
+
+def remove_metadata_css_data(df, input_dir):
+    """Remove metadata rows for casework for the css_data_interchange_format type and log the results."""
+
+    # Removes row if column group_name starts with "CASE".
+    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
+    # Deleted rows are saved to a log for review.
+    # TODO: combine deleted content into a single log.
+    group = df['group_name'].str.startswith('CASE', na=False)
+    df[group].to_csv(os.path.join(input_dir, 'group_deletion_log.csv'), index=False)
+    df = df[~group]
+
+    # Removes row if any column includes the text "casework".
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_deletion_log.csv'), index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
+
+    # Remaining rows with "case" in any column are saved to a log for review.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
+
+    return df
+
+
 if __name__ == '__main__':
 
     # Gets the path to the folder with the data export and the export type from the script arguments.
@@ -55,6 +137,6 @@ if __name__ == '__main__':
             print(error)
         sys.exit(1)
 
-    # TODO Remove from metadata and produce logs, using export-specific function.
+    # Removes rows for casework from metadata and produces logs of what is deleted and remaining rows with "case".
 
     # TODO Delete the letters based on the deletion log.
