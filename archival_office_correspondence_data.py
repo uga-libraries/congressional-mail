@@ -2,6 +2,7 @@
 Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
 Required argument: path to the DAT file with the metadata export.
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -28,6 +29,21 @@ def read_metadata(path):
                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
     df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
+
+    return df
+
+
+def remove_casework(df, input_dir):
+    """Remove rows with topics or text that indicate they are case mail"""
+
+    # Removes row if any column includes the text "CASE".
+    # It is typically within the columns correspondence_topic or comments
+    # and includes a few rows that are not really casework, such as "Casey" or his "on the case" catchphrase,
+    # which is necessary to protect privacy and keep time required reasonable.
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('CASE', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_deletion_log.csv'), index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
 
     return df
 
@@ -94,6 +110,9 @@ if __name__ == '__main__':
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
+
+    # Removes rows for casework, if they are present.
+    md_df = remove_casework(md_df, os.path.dirname(md_path))
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     save_df(md_df, os.path.dirname(md_path))

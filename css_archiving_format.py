@@ -2,6 +2,7 @@
 Draft script to prepare access copies from an export in the CSS Archiving Format.
 Required argument: path to the DAT file with the metadata export.
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -30,6 +31,35 @@ def read_metadata(path):
     # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
     df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
+
+    return df
+
+
+def remove_casework(df, input_dir):
+    """Remove rows with topics or text that indicate they are case mail"""
+
+    # Removes row if column in_topic includes one of the topics that indicates casework.
+    # There may be more than one topic in that column.
+    # Deleted rows are saved to a log for review.
+    # TODO: combine deleted content into a single log.
+    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
+    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    df[casework_topic].to_csv(os.path.join(input_dir, 'topic_deletion_log.csv'), index=False)
+    df = df[~casework_topic]
+
+    # Removes row if any column includes the text "casework".
+    # This removes some rows where the text indicates they are not casework,
+    # which is necessary to protect privacy and keep time required reasonable.
+    # Deleted rows are saved to a log for review.
+    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_anywhere_deletion_log.csv'),
+                                                 index=False)
+    df = df.loc[~includes_casework.any(axis=1)]
+
+    # Remaining rows with "case" in any column are saved to a log for review.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(input_dir, 'row_includes_case_log.csv'), index=False)
 
     return df
 
@@ -104,6 +134,9 @@ if __name__ == '__main__':
 
     # Removes columns with personally identifiable information, if they are present.
     md_df = remove_pii(md_df)
+
+    # Removes rows for casework, if they are present.
+    md_df = remove_casework(md_df, os.path.dirname(md_path))
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
     save_df(md_df, os.path.dirname(md_path))
