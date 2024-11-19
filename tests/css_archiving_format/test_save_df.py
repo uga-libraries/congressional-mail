@@ -14,43 +14,46 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the function output, if it was created"""
-        output_path = os.path.join('test_data', 'Access_Copy.csv')
+        output_path = os.path.join(os.path.dirname('test_data'), 'Access_Copy.csv')
         if os.path.exists(output_path):
             os.remove(output_path)
 
-    def test_all_data(self):
-        """Test for when all rows have data (no blank rows)"""
+    def test_access_all_data(self):
+        """Test for when all rows have data (no blank rows) (script_mode is access)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['GA', '30605', '11111', 'General', np.nan],
                               ['GA', '30605', '11112', 'General', 'email'],
                               ['MI', '49685', '11113', 'General', 'letter']],
                              columns=['state', 'zip', 'in_id', 'in_type', 'in_method'])
-        save_df(md_df, 'test_data')
 
-        # Tests that CSS_Access_Copy.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
+        output_directory = os.path.dirname('test_data')
+        save_df(md_df, os.path.join(output_directory, 'Access_Copy.csv'))
+
+        # Tests that Access_Copy.csv has the correct values.
+        result = csv_to_list(os.path.join(output_directory, 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
                     ['GA', '30605', '11111', 'General', 'nan'],
                     ['GA', '30605', '11112', 'General', 'email'],
                     ['MI', '49685', '11113', 'General', 'letter']]
-        self.assertEqual(result, expected, "Problem with test for all data")
+        self.assertEqual(result, expected, "Problem with test for access, all data")
 
-    def test_all_blank(self):
-        """Test for when all rows are blank (no data)"""
+    def test_access_all_blank(self):
+        """Test for when all rows are blank (no data) (script_mode is access)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan, np.nan],
                               [np.nan, np.nan, np.nan, np.nan, np.nan],
                               [np.nan, np.nan, np.nan, np.nan, np.nan]],
                              columns=['state', 'zip', 'in_id', 'in_type', 'in_method'])
-        save_df(md_df, 'test_data')
+        output_directory = os.path.dirname('test_data')
+        save_df(md_df, os.path.join(output_directory, 'Access_Copy.csv'))
 
-        # Tests that 2009-2010.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
+        # Tests that Access_Copy.csv has the correct values.
+        result = csv_to_list(os.path.join(output_directory, 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method']]
-        self.assertEqual(result, expected, "Problem with test for all blank")
+        self.assertEqual(result, expected, "Problem with test for access, all blank")
 
-    def test_some_data(self):
-        """Test for when some rows have data and some rows are blank"""
+    def test_access_some_data(self):
+        """Test for when some rows have data and some rows are blank (script_mode is access)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan, np.nan],
                               ['GA', '30605', '11111', 'General', 'email'],
@@ -58,17 +61,18 @@ class MyTestCase(unittest.TestCase):
                               [np.nan, np.nan, np.nan, np.nan, np.nan],
                               ['GA', '30605', '11112', 'General', 'email'],
                               ['MI', '49685', '11113', 'General', 'letter'],
-                              [np.nan, np.nan, np.nan, np.nan, np.nan],],
+                              [np.nan, np.nan, np.nan, np.nan, np.nan]],
                              columns=['state', 'zip', 'in_id', 'in_type', 'in_method'])
-        save_df(md_df, 'test_data')
+        output_directory = os.path.dirname('test_data')
+        save_df(md_df, os.path.join(output_directory, 'Access_Copy.csv'))
 
-        # Tests that 2009-2010.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'Access_Copy.csv'))
+        # Tests that Access_Copy.csv has the correct values.
+        result = csv_to_list(os.path.join(output_directory, 'Access_Copy.csv'))
         expected = [['state', 'zip', 'in_id', 'in_type', 'in_method'],
                     ['GA', '30605', '11111', 'General', 'email'],
                     ['GA', '30605', '11112', 'General', 'email'],
                     ['MI', '49685', '11113', 'General', 'letter']]
-        self.assertEqual(result, expected, "Problem with test for some data")
+        self.assertEqual(result, expected, "Problem with test for access, some data")
 
 
 if __name__ == '__main__':
