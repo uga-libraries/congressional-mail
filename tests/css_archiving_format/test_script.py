@@ -20,8 +20,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv',
-                     'casework_anywhere_deletion_log.csv', 'row_includes_case_log.csv', 'topic_deletion_log.csv']
+        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'deletion_log.csv', 'row_includes_case_log.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -98,23 +97,8 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
         self.assertEqual(result, expected, "Problem with test for preservation, DAT")
 
-        # Tests the contents of the casework anywhere deletion log.
-        csv_path = os.path.join('test_data', 'script', 'casework_anywhere_deletion_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['Ms.', 'Ann', 'A.', 'Anderson', 'nan', 'MD', 'nan', 'nan', '123 A St', 'nan', 'nan', 'nan',
-                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan',
-                     'file_casework', 'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan'],
-                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
-                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan',
-                     'fileC300', 'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'reply_casework', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, casework deletion log")
-
-        # Tests the contents of the topic deletion log.
-        csv_path = os.path.join('test_data', 'script', 'topic_deletion_log.csv')
+        # Tests the contents of the deletion log.
+        csv_path = os.path.join('test_data', 'script', 'deletion_log.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
@@ -129,8 +113,14 @@ class MyTestCase(unittest.TestCase):
                     ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
                      'F city', 'FL', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
                      'Social Security^Casework', 'nan', 'fileF100', 'nan', 'r600', 'General', 'Email', '20210111',
-                     'formF', 'nan', 'replyF100', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, topic deletion log")
+                     'formF', 'nan', 'replyF100', 'nan'],
+                    ['Ms.', 'Ann', 'A.', 'Anderson', 'nan', 'MD', 'nan', 'nan', '123 A St', 'nan', 'nan', 'nan',
+                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan',
+                     'file_casework', 'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan'],
+                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan',
+                     'fileC300', 'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'reply_casework', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for preservation, deletion log")
 
         # Tests the contents of the case log.
         csv_path = os.path.join('test_data', 'script', 'row_includes_case_log.csv')
