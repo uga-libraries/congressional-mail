@@ -63,14 +63,16 @@ def read_metadata(path):
 def remove_casework(df, output_dir):
     """Remove rows with topics or text that indicate they are case mail and log results"""
 
+    # Deletion log path (used multiple times)
+    del_log = os.path.join(output_dir, 'deletion_log.csv')
+
     # Removes row if column in_topic includes one of the topics that indicates casework, if any.
     # There may be more than one topic in that column.
     # Deleted rows are saved to a log for review.
-    # TODO: combine deleted content into a single log.
     topics_list = ['Casework', 'Casework Issues', 'Prison Case']
     casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
     if len(df[casework_topic].index) > 0:
-        df[casework_topic].to_csv(os.path.join(output_dir, 'topic_deletion_log.csv'), index=False)
+        df[casework_topic].to_csv(del_log, index=False)
         df = df[~casework_topic]
 
     # Removes row if any column includes the text "casework", if any.
@@ -79,8 +81,7 @@ def remove_casework(df, output_dir):
     # Deleted rows are saved to a log for review.
     includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
     if len(df.loc[includes_casework.any(axis=1)].index) > 0:
-        df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(output_dir, 'casework_anywhere_deletion_log.csv'),
-                                                     index=False)
+        df.loc[includes_casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
         df = df.loc[~includes_casework.any(axis=1)]
 
     # Remaining rows with "case" in any column are saved to a log for review, if any.

@@ -20,14 +20,39 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the deletion log, if made by the test"""
-        paths = [os.path.join('test_data', 'casework_anywhere_deletion_log.csv'),
-                 os.path.join('test_data', 'row_includes_case_log.csv'),
-                 os.path.join('test_data', 'topic_deletion_log.csv')]
+        paths = [os.path.join('test_data', 'deletion_log.csv'),
+                 os.path.join('test_data', 'row_includes_case_log.csv')]
         for path in paths:
             if os.path.exists(path):
                 os.remove(path)
 
-    def test_casework(self):
+    def test_all_casework(self):
+        """Test for when every row is casework (all deleted)"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'Casework Issues', ''],
+                              ['30601', 'Health', 'This is casework'],
+                              ['30602', 'Prison Case', '']],
+                             columns=['zip', 'in_topic', 'in_text'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the returned dataframe is empty (columns only).
+        result = df_to_list(md_df)
+        expected = [['zip', 'in_topic', 'in_text']]
+        self.assertEqual(result, expected, "Problem with test for all casework, df")
+
+        # Tests the values in the deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30600', 'Casework Issues', 'nan'],
+                    ['30602', 'Prison Case', 'nan'],
+                    ['30601', 'Health', 'This is casework']]
+        self.assertEqual(result, expected, "Problem with test for all casework, deletion log")
+
+        # Tests that no case log was made.
+        result = os.path.exists(os.path.join('test_data', 'row_includes_case_log.csv'))
+        self.assertEqual(result, False, "Problem with test for in_topic, exact match, case log")
+
+    def test_casework_keyword(self):
         """Test for when a column contains the word casework (is deleted)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', 'Just in case'],
@@ -46,23 +71,23 @@ class MyTestCase(unittest.TestCase):
                     ['30600', '', 'Just in case'],
                     ['30602', '', 'Outgoing Info: letter is y'],
                     ['30603', '', 'Answer topic x, forwarded original on to case work']]
-        self.assertEqual(result, expected, "Problem with test for casework, df")
+        self.assertEqual(result, expected, "Problem with test for casework keyword, df")
 
-        # Tests the values in the casework anywhere deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'casework_anywhere_deletion_log.csv'))
+        # Tests the values in the deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30601', 'nan', 'Outgoing Info: casework, letter is x'],
                     ['30604', 'nan', 'Send down for casework'],
                     ['30605', 'nan', 'This is not casework'],
                     ['casework', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for casework, deletion log")
+        self.assertEqual(result, expected, "Problem with test for casework keyword, deletion log")
 
         # Tests the values of the row includes case log are correct.
         result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'nan', 'Just in case'],
                     ['30603', 'nan', 'Answer topic x, forwarded original on to case work']]
-        self.assertEqual(result, expected, "Problem with test for casework, case log")
+        self.assertEqual(result, expected, "Problem with test for casework keyword, case log")
 
     def test_in_topic_exact(self):
         """Test for when the column in_topic exactly matches a topic that indicates casework"""
@@ -81,7 +106,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for in_topic, exact match, df")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'topic_deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'Casework', 'nan'],
                     ['30602', 'Casework Issues', 'nan'],
@@ -110,7 +135,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for in_topic, partial match, df")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'topic_deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30601', 'Healthcare^Casework', 'nan'],
                     ['30602', 'Casework Issues^Social Security', 'note'],
@@ -140,8 +165,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for no casework, df")
 
         # Tests that no deletion log was made.
-        result = os.path.exists(os.path.join('test_data', 'topic_deletion_log.csv'))
+        result = os.path.exists(os.path.join('test_data', 'deletion_log.csv'))
         self.assertEqual(result, False, "Problem with test for no casework, deletion log")
+
+        # Tests that no case log was made.
+        result = os.path.exists(os.path.join('test_data', 'row_includes_case_log.csv'))
+        self.assertEqual(result, False, "Problem with test for no casework, case log")
 
 
 if __name__ == '__main__':
