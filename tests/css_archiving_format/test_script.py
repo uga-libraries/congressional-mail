@@ -21,33 +21,33 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', filename)
+            file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-    def test_correct(self):
-        """Test for when the script runs correctly."""
+    def test_correct_access(self):
+        """Test for when the script runs correctly and is in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        md_path = os.path.join('test_data', 'script_md.dat')
-        subprocess.run(f"python {script_path} {md_path}", shell=True)
+        input_directory = os.path.join('test_data', 'script', 'access_test')
+        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'Access_Copy.csv')
+        csv_path = os.path.join('test_data', 'script', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan', 'fileA100',
                      'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'Case', 'Email', '20230202', 'B1^B2', 'Note', 'fileB200',
-                     'nan', 'r200', 'Case', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
+                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2', 'Note',
+                     'fileB200', 'nan', 'r200', 'General', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
                     ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
                      'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
 
         # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', '2021-2022.csv')
+        csv_path = os.path.join('test_data', 'script', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
@@ -57,13 +57,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', '2023-2024.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'Case', 'Email', '20230202', 'B1^B2', 'Note', 'fileB200',
-                     'nan', 'r200', 'Case', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
+                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2', 'Note',
+                     'fileB200', 'nan', 'r200', 'General', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
                     ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
                      'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, 2023-2024")
