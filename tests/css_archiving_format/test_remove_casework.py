@@ -52,6 +52,40 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'Health', 'This is casework']]
         self.assertEqual(result, expected, "Problem with test for all casework, deletion log")
 
+    def test_case_phase(self):
+        """Test for when a column contains a phrase that indicates casework (is deleted)"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', 'I added to case'],
+                              ['30601', '', 'Already opened a case'],
+                              ['30602', 'Closed Case', ''],
+                              ['30603', 'Open Case', ''],
+                              ['30604', '', 'Mary started case yesterday'],
+                              ['30605', 'Roads', 'Not a case']],
+                             columns=['zip', 'in_topic', 'in_text'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30605', 'Roads', 'Not a case']]
+        self.assertEqual(result, expected, "Problem with test for case phrase, df")
+
+        # Tests the values of the case remains log are correct.
+        result = df_to_list(md_df)
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30605', 'Roads', 'Not a case']]
+        self.assertEqual(result, expected, "Problem with test for case phrase, case remains log")
+
+        # Tests the values in the deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30600', 'nan', 'I added to case'],
+                    ['30601', 'nan', 'Already opened a case'],
+                    ['30602', 'Closed Case', 'nan'],
+                    ['30603', 'Open Case', 'nan'],
+                    ['30604', 'nan', 'Mary started case yesterday']]
+        self.assertEqual(result, expected, "Problem with test for case phrase, deletion log")
+
     def test_casework_keyword(self):
         """Test for when a column contains the word casework (is deleted)"""
         # Makes a dataframe to use as test input and runs the function.
