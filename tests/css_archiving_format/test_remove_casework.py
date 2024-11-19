@@ -88,10 +88,9 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'Prison Case', 'note']]
         self.assertEqual(result, expected, "Problem with test for in_topic, exact match, deletion log")
 
-        # Tests the values of the row includes case log are correct.
-        result = csv_to_list(os.path.join('test_data', 'row_includes_case_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, case log")
+        # Tests that no case log was made.
+        result = os.path.exists(os.path.join('test_data', 'row_includes_case_log.csv'))
+        self.assertEqual(result, False, "Problem with test for in_topic, exact match, case log")
 
     def test_in_topic_partial(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
@@ -124,6 +123,25 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'Keep', 'CASE OF THE CENTURY']]
         self.assertEqual(result, expected, "Problem with test for in_topic, partial match, case log")
+
+    def test_no_casework(self):
+        """Test for when there are no indicators of casework, so the logs are not made"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'Keep', ''],
+                              ['30601', 'Healthcare', '']],
+                             columns=['zip', 'in_topic', 'in_text'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['zip', 'in_topic', 'in_text'],
+                    ['30600', 'Keep', ''],
+                    ['30601', 'Healthcare', '']]
+        self.assertEqual(result, expected, "Problem with test for no casework, df")
+
+        # Tests that no deletion log was made.
+        result = os.path.exists(os.path.join('test_data', 'topic_deletion_log.csv'))
+        self.assertEqual(result, False, "Problem with test for no casework, deletion log")
 
 
 if __name__ == '__main__':
