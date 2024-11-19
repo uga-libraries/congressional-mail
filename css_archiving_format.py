@@ -49,11 +49,7 @@ def check_arguments(arg_list):
 
 
 def read_metadata(path):
-    """Read the metadata file into a dataframe
-
-    This does not need to stay a function if it ends up being one line,
-    but is for now to make it easier to test error handling.
-    """
+    """Read the metadata file into a dataframe"""
     # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
     df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
@@ -108,14 +104,14 @@ def remove_pii(df):
     return df
 
 
-def split_congress_year(df, input_dir):
-    """Make one CSV per Congress Year in the folder with the original metadata file"""
+def split_congress_year(df, output_dir):
+    """Make one CSV per Congress Year"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
-    df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
+    df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
@@ -135,7 +131,7 @@ def split_congress_year(df, input_dir):
     # TODO: decide on file name and where it saves.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
 if __name__ == '__main__':
@@ -159,7 +155,7 @@ if __name__ == '__main__':
     if script_mode == 'access':
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
-        split_congress_year(md_df, os.path.dirname(metadata_path))
+        split_congress_year(md_df, output_directory)
     else:
         md_df = remove_casework(md_df, os.path.dirname(metadata_path))
         md_df.to_csv(os.path.join(output_directory, os.path.basename(metadata_path)), sep='\t', index=False)
