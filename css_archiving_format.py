@@ -107,11 +107,12 @@ def remove_pii(df):
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
-    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
+    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
-    df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
+    if len(df_undated.index) > 0:
+        df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
