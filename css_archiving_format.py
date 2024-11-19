@@ -58,6 +58,9 @@ def read_metadata(path):
     # TODO: document the encoding errors?
     df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
 
+    # Removes blank rows, which are present in some of the data exports.
+    df.dropna(how='all', inplace=True)
+
     return df
 
 
@@ -103,17 +106,6 @@ def remove_pii(df):
     df = df.drop(remove, axis=1, errors='ignore')
     
     return df
-
-
-def save_df(df, csv_path):
-    """Make one CSV with all data in the specified location"""
-
-    # Removes blank rows, which are present in some of the data exports.
-    df.dropna(how='all', inplace=True)
-
-    # Saves the dataframe to a CSV.
-    # TODO: decide on file name and where it saves.
-    df.to_csv(csv_path, index=False)
 
 
 def split_congress_year(df, input_dir):
@@ -166,8 +158,8 @@ if __name__ == '__main__':
     # For preservation, removes rows for casework and deletes the casework files themselves.
     if script_mode == 'access':
         md_df = remove_pii(md_df)
-        save_df(md_df, os.path.join(output_directory, 'Access_Copy.csv'))
+        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, os.path.dirname(metadata_path))
     else:
         md_df = remove_casework(md_df, os.path.dirname(metadata_path))
-        save_df(md_df, os.path.join(output_directory, os.path.basename(metadata_path)))
+        md_df.to_csv(os.path.join(output_directory, os.path.basename(metadata_path)), sep='\t', index=False)
