@@ -3,6 +3,7 @@ Tests for the script css_archiving_format.py
 """
 import os
 import pandas as pd
+import shutil
 import subprocess
 import unittest
 
@@ -19,12 +20,14 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'archiving_correspondence.dat',
+        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv',
                      'casework_anywhere_deletion_log.csv', 'row_includes_case_log.csv', 'topic_deletion_log.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
+        if os.path.exists(os.path.join('test_data', 'script', 'preservation_test')):
+            shutil.rmtree(os.path.join('test_data', 'script', 'preservation_test'))
 
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
@@ -71,13 +74,17 @@ class MyTestCase(unittest.TestCase):
 
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'preservation_test_copy'),
+                        os.path.join('test_data', 'script', 'preservation_test'))
+
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
         input_directory = os.path.join('test_data', 'script', 'preservation_test')
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
         # Tests the contents of archiving_correspondence.dat.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence.dat')
+        csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence.dat')
         result = csv_to_list(csv_path, '\t')
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
