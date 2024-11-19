@@ -88,7 +88,7 @@ def remove_casework(df, output_dir):
     # This may show us another pattern that indicates casework or may be another use of the word case.
     includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     if len(df.loc[includes_case.any(axis=1)].index) > 0:
-        df.loc[includes_case.any(axis=1)].to_csv(os.path.join(output_dir, 'row_includes_case_log.csv'), index=False)
+        df.loc[includes_case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
     return df
 

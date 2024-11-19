@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'deletion_log.csv', 'row_includes_case_log.csv']
+        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv', 'deletion_log.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -97,6 +97,18 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
         self.assertEqual(result, expected, "Problem with test for preservation, DAT")
 
+        # Tests the contents of the case remains log.
+        csv_path = os.path.join('test_data', 'script', 'case_remains_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
+                    ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
+                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan', 'fileG100',
+                     'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for preservation, case remains log")
+
         # Tests the contents of the deletion log.
         csv_path = os.path.join('test_data', 'script', 'deletion_log.csv')
         result = csv_to_list(csv_path)
@@ -121,18 +133,6 @@ class MyTestCase(unittest.TestCase):
                      '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan',
                      'fileC300', 'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'reply_casework', 'nan']]
         self.assertEqual(result, expected, "Problem with test for preservation, deletion log")
-
-        # Tests the contents of the case log.
-        csv_path = os.path.join('test_data', 'script', 'row_includes_case_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
-                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan', 'fileG100',
-                     'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, case log")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
