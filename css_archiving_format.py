@@ -102,6 +102,22 @@ def remove_casework(df, output_dir):
     return df
 
 
+def remove_casework_letters(output_dir):
+    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+
+    # Reads the deletion log into a dataframe, if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(output_dir, 'deletion_log.csv'))
+    except FileNotFoundError:
+        return
+
+    # Deletes letters received based on in_document_name.
+
+    # Deletes letters sent based on in_document_name.
+    # Only individual letters, not form letters, are deleted.
+
+
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
@@ -173,3 +189,4 @@ if __name__ == '__main__':
     else:
         md_df = remove_casework(md_df, output_directory)
         md_df.to_csv(metadata_path, sep='\t', index=False)
+        remove_casework_letters(output_directory)
