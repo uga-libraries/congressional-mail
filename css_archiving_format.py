@@ -61,7 +61,7 @@ def read_metadata(path):
 
 
 def remove_casework(df, output_dir):
-    """Remove rows with topics or text that indicate they are case mail and log results"""
+    """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
     # Deletion log path (used multiple times)
     del_log = os.path.join(output_dir, 'deletion_log.csv')
