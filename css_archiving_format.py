@@ -2,10 +2,14 @@
 Draft script to prepare access copies from an export in the CSS Archiving Format.
 Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
+import csv
+from datetime import date, datetime
+import hashlib
 import numpy as np
 import os
 import pandas as pd
 import sys
+import time
 
 
 def check_arguments(arg_list):
@@ -46,6 +50,27 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_path, mode, errors
+
+
+def file_deletion_log(log_path, file_path, header=False):
+    """Make or update the file deletion log, so data is saved as soon as a file is deleted"""
+
+    # Makes a new log with a header row.
+    if header is True:
+        with open(log_path, 'w') as log:
+            log_writer = csv.writer(log)
+            log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateModified', 'MD5', 'DateDeleted'])
+
+    # Calculates the values for the file.
+    size_kb = round(int(os.path.getsize(file_path))/1000, 1)
+    date_c = datetime.strptime(time.ctime(os.path.getctime(file_path)), '%a %b %d %H:%M:%S %Y').strftime('%Y-%m-%d')
+    md5 = hashlib.md5(file_path).hexdigest().upper()
+    date_d = date.today().strftime('%Y-%m-%d')
+
+    # ADds the file to the log.
+    with open(log_path, 'a') as log:
+        log_writer = csv.writer(log)
+        log_writer.writerow([file_path, size_kb, date_c, md5, date_d])
 
 
 def read_metadata(path):
@@ -113,6 +138,10 @@ def remove_casework_letters(input_dir):
         print(f"No deletion log in {os.path.dirname(input_dir)}")
         return
 
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, True)
+
     # Deletes letters received based on in_document_name.
     # If there is a document name, it is formatted ..\documents\BlobExport\objects\filename.txt
     in_doc_df = df.dropna(subset=['in_document_name']).copy()
@@ -121,6 +150,7 @@ def remove_casework_letters(input_dir):
         file_path = name.replace('..', input_dir)
         if os.path.exists(file_path):
             os.remove(file_path)
+            file_deletion_log(log_path, file_path)
 
     # Deletes individual letters (not form letters) sent based on out_document_name.
     # If there is a document name for an individual, it is formatted ..\documents\BlobExport\indivletters\filename.txt
@@ -132,6 +162,7 @@ def remove_casework_letters(input_dir):
             file_path = name.replace('..', input_dir)
             if os.path.exists(file_path):
                 os.remove(file_path)
+                file_deletion_log(log_path, file_path)
 
 
 def remove_pii(df):
