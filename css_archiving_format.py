@@ -114,6 +114,13 @@ def remove_casework_letters(input_dir):
         return
 
     # Deletes letters received based on in_document_name.
+    # If there is a document name, it is formatted ..\documents\BlobExport\objects\filename.txt
+    in_doc_df = df.dropna(subset=['in_document_name']).copy()
+    in_doc_list = in_doc_df['in_document_name'].tolist()
+    for name in in_doc_list:
+        file_path = name.replace('..', input_dir)
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
     # Deletes letters sent based on in_document_name.
     # Only individual letters, not form letters, are deleted.
