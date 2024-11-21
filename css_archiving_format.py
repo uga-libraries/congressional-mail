@@ -122,8 +122,16 @@ def remove_casework_letters(input_dir):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-    # Deletes letters sent based on in_document_name.
-    # Only individual letters, not form letters, are deleted.
+    # Deletes individual letters (not form letters) sent based on out_document_name.
+    # If there is a document name for an individual, it is formatted ..\documents\BlobExport\indivletters\filename.txt
+    # Form letters are ..\documents\BlobExport\formletters\filename.txt
+    out_doc_df = df.dropna(subset=['out_document_name']).copy()
+    out_doc_list = out_doc_df['out_document_name'].tolist()
+    for name in out_doc_list:
+        if 'indivletters' in name:
+            file_path = name.replace('..', input_dir)
+            if os.path.exists(file_path):
+                os.remove(file_path)
 
 
 def remove_pii(df):
