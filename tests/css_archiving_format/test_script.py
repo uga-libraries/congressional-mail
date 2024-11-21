@@ -20,7 +20,8 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv', 'deletion_log.csv']
+        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv',
+                     'metadata_deletion_log.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -110,7 +111,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for preservation, case remains log")
 
         # Tests the contents of the deletion log.
-        csv_path = os.path.join('test_data', 'script', 'deletion_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'metadata_deletion_log.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',

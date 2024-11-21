@@ -64,7 +64,7 @@ def remove_casework(df, output_dir):
     """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
     # Deletion log path (used multiple times)
-    del_log = os.path.join(output_dir, 'deletion_log.csv')
+    del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
 
     # Removes row if column in_topic includes one of the topics that indicates casework, if any.
     # There may be more than one topic in that column.
@@ -108,7 +108,7 @@ def remove_casework_letters(input_dir):
     # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
     # If it is not, there are no files to delete.
     try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'deletion_log.csv'))
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'metadata_deletion_log.csv'))
     except FileNotFoundError:
         print(f"No deletion log in {os.path.dirname(input_dir)}")
         return

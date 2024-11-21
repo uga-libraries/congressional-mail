@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         """Delete the deletion log, if made by the test"""
         paths = [os.path.join('test_data', 'case_remains_log.csv'),
-                 os.path.join('test_data', 'deletion_log.csv')]
+                 os.path.join('test_data', 'metadata_deletion_log.csv')]
         for path in paths:
             if os.path.exists(path):
                 os.remove(path)
@@ -45,7 +45,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, False, "Problem with test for in_topic, exact match, case remains log")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'Casework Issues', 'nan'],
                     ['30602', 'Prison Case', 'nan'],
@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for case phrase, case remains log")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'nan', 'I added to case'],
                     ['30601', 'nan', 'Already opened a case'],
@@ -115,7 +115,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for casework keyword, case remains log")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30601', 'nan', 'Outgoing Info: casework, letter is x'],
                     ['30604', 'nan', 'Send down for casework'],
@@ -144,7 +144,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, False, "Problem with test for in_topic, exact match, case remains log")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30600', 'Casework', 'nan'],
                     ['30602', 'Casework Issues', 'nan'],
@@ -175,7 +175,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for in_topic, partial match, case remains log")
 
         # Tests the values in the deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'deletion_log.csv'))
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip', 'in_topic', 'in_text'],
                     ['30601', 'Healthcare^Casework', 'nan'],
                     ['30602', 'Casework Issues^Social Security', 'note'],
@@ -203,7 +203,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, False, "Problem with test for no casework, case remains log")
 
         # Tests that no deletion log was made.
-        result = os.path.exists(os.path.join('test_data', 'deletion_log.csv'))
+        result = os.path.exists(os.path.join('test_data', 'metadata_deletion_log.csv'))
         self.assertEqual(result, False, "Problem with test for no casework, deletion log")
 
 
