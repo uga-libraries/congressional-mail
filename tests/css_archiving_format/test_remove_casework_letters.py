@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
         remove_casework_letters(input_directory)
 
         result = files_in_dir(input_directory)
-        expected = ['form_a.txt', 'text.txt', '100.txt']
+        expected = ['form_a.txt', 'test.txt', '100.txt']
         self.assertEqual(result, expected)
 
 
