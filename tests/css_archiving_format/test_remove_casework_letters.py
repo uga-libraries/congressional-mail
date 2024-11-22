@@ -30,6 +30,9 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(os.path.join(output_dir, f'file_deletion_log_{today}.csv')):
             os.remove(os.path.join(output_dir, f'file_deletion_log_{today}.csv'))
 
+        if os.path.exists(os.path.join('test_data', 'remove_casework_letters', 'path_error', f'file_deletion_log_{today}.csv')):
+            os.remove(os.path.join('test_data', 'remove_casework_letters', 'path_error', f'file_deletion_log_{today}.csv'))
+
     def test_function(self):
         """Initial test for the development of the function"""
         # Makes a copy of the test data in the repo, since the script alters the data.
