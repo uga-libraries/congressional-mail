@@ -52,7 +52,7 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
-def file_deletion_log(log_path, file_path, header=False):
+def file_deletion_log(log_path, file_path, header=False, note=None):
     """Make or update the file deletion log, so data is saved as soon as a file is deleted"""
 
     # Makes a new log with a header row.
@@ -61,6 +61,13 @@ def file_deletion_log(log_path, file_path, header=False):
         with open(log_path, 'w') as log:
             log_writer = csv.writer(log)
             log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
+
+    # Adds a row for a file that could not be deleted to an existing log.
+    elif note:
+        # Adds the file to the log.
+        with open(log_path, 'a') as log:
+            log_writer = csv.writer(log)
+            log_writer.writerow([file_path, None, None, None, None, note])
 
     # Adds a row of data to an existing log.
     else:
@@ -75,7 +82,7 @@ def file_deletion_log(log_path, file_path, header=False):
         # Adds the file to the log.
         with open(log_path, 'a') as log:
             log_writer = csv.writer(log)
-            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, None])
+            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, note])
 
 
 def read_metadata(path):
@@ -153,9 +160,11 @@ def remove_casework_letters(input_dir):
     in_doc_list = in_doc_df['in_document_name'].tolist()
     for name in in_doc_list:
         file_path = name.replace('..', input_dir)
-        if os.path.exists(file_path):
+        try:
             file_deletion_log(log_path, file_path)
             os.remove(file_path)
+        except FileNotFoundError:
+            file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
     # Deletes individual letters (not form letters) sent based on out_document_name.
     # If there is a document name for an individual, it is formatted ..\documents\BlobExport\indivletters\filename.txt
@@ -165,9 +174,11 @@ def remove_casework_letters(input_dir):
     for name in out_doc_list:
         if 'indivletters' in name:
             file_path = name.replace('..', input_dir)
-            if os.path.exists(file_path):
+            try:
                 file_deletion_log(log_path, file_path)
                 os.remove(file_path)
+            except FileNotFoundError:
+                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):

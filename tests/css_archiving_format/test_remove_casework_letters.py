@@ -63,6 +63,30 @@ class MyTestCase(unittest.TestCase):
         expected = ['form_a.txt', 'test.txt', '100.txt']
         self.assertEqual(result, expected, "Problem with test for directory contents")
 
+    def test_path_error(self):
+        """Initial test for the development of the function, FileNotFoundError"""
+        # Runs the function being tested.
+        output_dir = os.path.join('test_data', 'remove_casework_letters', 'path_error')
+        input_directory = os.path.join(output_dir, 'css_export')
+        remove_casework_letters(input_directory)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\BlobExport\objects\111111.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\objects\222222.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\objects\333333.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\indivletters\400.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\indivletters\500.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError']]
+        self.assertEqual(result, expected, "Problem with test for file deletion log")
+
 
 if __name__ == '__main__':
     unittest.main()
