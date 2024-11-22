@@ -8,6 +8,7 @@ import hashlib
 import numpy as np
 import os
 import pandas as pd
+import re
 import sys
 import time
 
@@ -169,17 +170,22 @@ def remove_casework_letters(input_dir):
             file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
     # Deletes individual letters (not form letters) sent based on out_document_name.
-    # If there is a document name for an individual, it is formatted ..\documents\BlobExport\indivletters\filename.txt
-    # Form letters are ..\documents\BlobExport\formletters\filename.txt
     out_doc_df = df.dropna(subset=['out_document_name']).copy()
     out_doc_list = out_doc_df['out_document_name'].tolist()
     for name in out_doc_list:
-        if 'indivletters' in name:
-            file_path = name.replace('..', input_dir)
-            try:
+        # Paths for formletters include the folder "formletter" or "form".
+        if 'form' not in name:
+            # Make an absolute path from name, which starts ..\documents or \\name-office\dos.
+            if name.startswith('..'):
+                file_path = name.replace('..', input_dir)
+            else:
+                file_path = re.sub('\\\\\\\\[a-z]+-[a-z]+', '', name)
+                file_path = input_dir + file_path
+            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
+            if os.path.isfile(file_path):
                 file_deletion_log(log_path, file_path)
                 os.remove(file_path)
-            except FileNotFoundError:
+            elif not os.path.exists(file_path):
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
