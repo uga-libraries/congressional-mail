@@ -56,21 +56,26 @@ def file_deletion_log(log_path, file_path, header=False):
     """Make or update the file deletion log, so data is saved as soon as a file is deleted"""
 
     # Makes a new log with a header row.
+    # If a file already exists with this name, it will be overwritten.
     if header is True:
         with open(log_path, 'w') as log:
             log_writer = csv.writer(log)
-            log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateModified', 'MD5', 'DateDeleted'])
+            log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
 
-    # Calculates the values for the file.
-    size_kb = round(int(os.path.getsize(file_path))/1000, 1)
-    date_c = datetime.strptime(time.ctime(os.path.getctime(file_path)), '%a %b %d %H:%M:%S %Y').strftime('%Y-%m-%d')
-    md5 = hashlib.md5(file_path).hexdigest().upper()
-    date_d = date.today().strftime('%Y-%m-%d')
+    # Adds a row of data to an existing log.
+    else:
+        # Calculates the values for the file.
+        size_kb = round(int(os.path.getsize(file_path))/1000, 1)
+        date_c = datetime.strptime(time.ctime(os.path.getctime(file_path)), '%a %b %d %H:%M:%S %Y').strftime('%Y-%m-%d')
+        with open(file_path, 'rb') as f:
+            file_data = f.read()
+        md5 = hashlib.md5(file_data).hexdigest().upper()
+        date_d = date.today().strftime('%Y-%m-%d')
 
-    # ADds the file to the log.
-    with open(log_path, 'a') as log:
-        log_writer = csv.writer(log)
-        log_writer.writerow([file_path, size_kb, date_c, md5, date_d])
+        # Adds the file to the log.
+        with open(log_path, 'a') as log:
+            log_writer = csv.writer(log)
+            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, None])
 
 
 def read_metadata(path):
@@ -149,8 +154,8 @@ def remove_casework_letters(input_dir):
     for name in in_doc_list:
         file_path = name.replace('..', input_dir)
         if os.path.exists(file_path):
-            os.remove(file_path)
             file_deletion_log(log_path, file_path)
+            os.remove(file_path)
 
     # Deletes individual letters (not form letters) sent based on out_document_name.
     # If there is a document name for an individual, it is formatted ..\documents\BlobExport\indivletters\filename.txt
@@ -161,8 +166,8 @@ def remove_casework_letters(input_dir):
         if 'indivletters' in name:
             file_path = name.replace('..', input_dir)
             if os.path.exists(file_path):
-                os.remove(file_path)
                 file_deletion_log(log_path, file_path)
+                os.remove(file_path)
 
 
 def remove_pii(df):
