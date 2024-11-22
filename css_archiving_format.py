@@ -61,14 +61,14 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
     # Makes a new log with a header row.
     # If a file already exists with this name, it will be overwritten.
     if header is True:
-        with open(log_path, 'w') as log:
+        with open(log_path, 'w', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
 
     # Adds a row for a file that could not be deleted to an existing log.
     elif note:
         # Adds the file to the log.
-        with open(log_path, 'a') as log:
+        with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, None, None, None, None, note])
 
@@ -83,7 +83,7 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
         date_d = date.today().strftime('%Y-%m-%d')
 
         # Adds the file to the log.
-        with open(log_path, 'a') as log:
+        with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, size_kb, date_c, date_d, md5, note])
 
