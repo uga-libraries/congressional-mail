@@ -1,0 +1,6 @@
+File,SizeKB,DateCreated,DateDeleted,MD5,Notes
+test_data\remove_casework_letters\path_error\css_export\documents\BlobExport\objects\111111.txt,,,,,Cannot delete: FileNotFoundError
+test_data\remove_casework_letters\path_error\css_export\documents\BlobExport\objects\222222.txt,,,,,Cannot delete: FileNotFoundError
+test_data\remove_casework_letters\path_error\css_export\documents\BlobExport\objects\333333.txt,,,,,Cannot delete: FileNotFoundError
+test_data\remove_casework_letters\path_error\css_export\documents\BlobExport\indivletters\400.txt,,,,,Cannot delete: FileNotFoundError
+test_data\remove_casework_letters\path_error\css_export\documents\BlobExport\indivletters\500.txt,,,,,Cannot delete: FileNotFoundError
