@@ -1,6 +1,7 @@
 """
 Tests for the script css_archiving_format.py
 """
+from datetime import date
 import os
 import pandas as pd
 import shutil
@@ -21,7 +22,7 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         """Remove script outputs, if they were made"""
         filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv',
-                     'metadata_deletion_log.csv']
+                     'metadata_deletion_log.csv', f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"]
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
