@@ -69,6 +69,9 @@ def read_metadata(path):
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
     df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
 
+    # Removes blank rows, which are present in some of the data exports.
+    df.dropna(how='all', inplace=True)
+
     return df
 
 
