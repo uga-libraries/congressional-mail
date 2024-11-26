@@ -154,14 +154,12 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Removes columns with personally identifiable information, if they are present.
-    md_df = remove_pii(md_df)
-
-    # Removes rows for casework, if they are present.
-    md_df = remove_casework(md_df, output_directory)
-
-    # Saves the redacted data to a CSV file in the folder with the original metadata file.
-    save_df(md_df, output_directory)
-
-    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
-    split_congress_year(md_df, output_directory)
+    # For access, removes columns with PII and makes a copy of the data split by congress year.
+    # For preservation, removes rows for casework and deletes the casework files themselves.
+    if script_mode == 'access':
+        md_df = remove_pii(md_df)
+        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        split_congress_year(md_df, output_directory)
+    else:
+        md_df = remove_casework(md_df, output_directory)
+        md_df.to_csv(metadata_path, sep='\t', index=False)
