@@ -78,7 +78,7 @@ def read_metadata(path):
 
 
 def remove_casework(df, output_dir):
-    """Remove rows with topics or text that indicate they are case mail"""
+    """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
     # Removes row if any column includes the text "CASE".
     # It is typically within the columns correspondence_topic or comments
