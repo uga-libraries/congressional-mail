@@ -72,7 +72,7 @@ def read_metadata(path):
     return df
 
 
-def remove_casework(df, input_dir):
+def remove_casework(df, output_dir):
     """Remove rows with topics or text that indicate they are case mail"""
 
     # Removes row if any column includes the text "CASE".
@@ -81,7 +81,7 @@ def remove_casework(df, input_dir):
     # which is necessary to protect privacy and keep time required reasonable.
     # Deleted rows are saved to a log for review.
     includes_casework = np.column_stack([df[col].str.contains('CASE', case=False, na=False) for col in df])
-    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(input_dir, 'casework_deletion_log.csv'), index=False)
+    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(output_dir, 'casework_deletion_log.csv'), index=False)
     df = df.loc[~includes_casework.any(axis=1)]
 
     return df
@@ -101,14 +101,14 @@ def remove_pii(df):
     return df
 
 
-def split_congress_year(df, input_dir):
+def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year in the folder with the original metadata file"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
     # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
     # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['letter_date'], errors='coerce').isnull()]
-    df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
+    df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['letter_date'], errors='coerce').notnull()].copy()
@@ -132,7 +132,7 @@ def split_congress_year(df, input_dir):
     # TODO: decide on file name and where it saves.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
 if __name__ == '__main__':
@@ -145,6 +145,9 @@ if __name__ == '__main__':
             print(error)
         sys.exit(1)
 
+    # Calculates parent folder of the input_directory, which is where script outputs are saved.
+    output_directory = os.path.dirname(input_directory)
+
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
@@ -152,10 +155,10 @@ if __name__ == '__main__':
     md_df = remove_pii(md_df)
 
     # Removes rows for casework, if they are present.
-    md_df = remove_casework(md_df, os.path.dirname(metadata_path))
+    md_df = remove_casework(md_df, output_directory)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata file.
-    save_df(md_df, os.path.dirname(metadata_path))
+    save_df(md_df, output_directory)
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
-    split_congress_year(md_df, os.path.dirname(metadata_path))
+    split_congress_year(md_df, output_directory)
