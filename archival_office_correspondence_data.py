@@ -1,6 +1,6 @@
 """
-Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
-Required argument: path to the DAT file with the metadata export.
+Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
+Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
 from datetime import date
 import numpy as np
