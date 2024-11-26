@@ -2,10 +2,12 @@
 Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
 Required argument: path to the DAT file with the metadata export.
 """
+from datetime import date
 import numpy as np
 import os
 import pandas as pd
 import sys
+from css_archiving_format import file_deletion_log
 
 
 def check_arguments(arg_list):
@@ -90,6 +92,29 @@ def remove_casework(df, output_dir):
     return df
 
 
+def remove_casework_letters(input_dir):
+    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+
+    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'metadata_deletion_log.csv'))
+    except FileNotFoundError:
+        print(f"No deletion log in {os.path.dirname(input_dir)}")
+        return
+
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, True)
+
+    # TODO
+    # Deletes letters received based on in_document_name.
+    # If there is a document name, it is formatted ????????
+
+    # TODO
+    # Deletes individual letters (not form letters) sent based on out_document_name.
+
+
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
@@ -164,3 +189,4 @@ if __name__ == '__main__':
     else:
         md_df = remove_casework(md_df, output_directory)
         md_df.to_csv(metadata_path, sep='\t', index=False)
+        remove_casework_letters(input_directory)
