@@ -21,24 +21,26 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         filenames = ['Access_Copy.csv', '1997-1998.csv', 'undated.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', filename)
+            file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-    def test_correct(self):
-        """Test for when the script runs correctly."""
+    def test_access(self):
+        """Test for when the script runs in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
-        md_path = os.path.join('test_data', 'script_md.dat')
-        subprocess.run(f"python {script_path} {md_path}", shell=True)
+        input_directory = os.path.join('test_data', 'script', 'access_test')
+        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
+
+        output_directory = os.path.join('test_data', 'script')
 
         # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'Access_Copy.csv')
+        csv_path = os.path.join(output_directory, 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
                      'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
                     ['LOS ANGELES', 'CA', '12345', 'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
-                    ['CAIRO', 'GA', '30001', 'ISSUE', 'CASE', 'nan', '980801', 'TBD', 'nan', 'nan'],
+                    ['CAIRO', 'GA', '30001', 'ISSUE', 'nan', 'nan', '980801', 'TBD', 'nan', 'nan'],
                     ['ATLANTA', 'GA', '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
                     ['ATLANTA', 'GA', '30002', 'ISSUE', 'nan', 'nan', 'nan', 'FWIW', 'nan',
                      'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
@@ -47,18 +49,18 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
 
         # Tests the contents of 1997-1998.csv.
-        csv_path = os.path.join('test_data', '1997-1998.csv')
+        csv_path = os.path.join(output_directory, '1997-1998.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
                      'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
                     ['LOS ANGELES', 'CA', '12345', 'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
-                    ['CAIRO', 'GA', '30001', 'ISSUE', 'CASE', 'nan', '980801', 'TBD', 'nan', 'nan'],
+                    ['CAIRO', 'GA', '30001', 'ISSUE', 'nan', 'nan', '980801', 'TBD', 'nan', 'nan'],
                     ['ATLANTA', 'GA', '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
                     ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
         self.assertEqual(result, expected, "Problem with test for correct, 1997-1998")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'undated.csv')
+        csv_path = os.path.join(output_directory, 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
                      'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments'],
