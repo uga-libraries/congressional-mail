@@ -87,7 +87,7 @@ def remove_casework(df, output_dir):
     # Deleted rows, if any, are saved to a log for review.
     case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'casework_deletion_log.csv'), index=False)
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'metadata_deletion_log.csv'), index=False)
         df = df.loc[~case.any(axis=1)]
 
     return df
