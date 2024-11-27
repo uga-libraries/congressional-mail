@@ -1,0 +1,3 @@
+city,state_code,zip_code,correspondence_type,correspondence_topic,correspondence_subtopic,letter_date,staffer_initials,document_number,comments
+Athens,GA,30600,ISSUE,CASE,,,JPD,,Q123456
+Athens,GA,30601,ISSUE,CASE,,,JPD,,Q50
