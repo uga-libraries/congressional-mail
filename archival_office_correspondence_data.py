@@ -94,7 +94,7 @@ def remove_casework(df, output_dir):
 
 
 def remove_casework_letters(input_dir):
-    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+    """Remove casework letters received from constituents (no individual letters sent back by the office)"""
 
     # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
     # If it is not, there are no files to delete.
@@ -104,16 +104,26 @@ def remove_casework_letters(input_dir):
         print(f"No deletion log in {os.path.dirname(input_dir)}")
         return
 
-    # Creates a file deletion log, with a header row.
-    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    file_deletion_log(log_path, None, True)
+    # Deletes letters received, based on the document name in the comments column, if any.
+    # If there is a document name, it is formatted Q######, referring to a file named #.txt.
+    comments_df = df.dropna(subset=['comments']).copy()
+    q_df = comments_df[comments_df['comments'].str.startswith('Q')].copy()
+    q_list = q_df['comments'].tolist()
+    if len(q_list) > 0:
 
-    # TODO
-    # Deletes letters received based on in_document_name.
-    # If there is a document name, it is formatted ????????
+        # Creates a file deletion log, with a header row.
+        log_path = os.path.join(os.path.dirname(input_dir),
+                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+        file_deletion_log(log_path, None, True)
 
-    # TODO
-    # Deletes individual letters (not form letters) sent based on out_document_name.
+        for q_number in q_list:
+            # Change "text" to match the folder name in the export which contains the letters, if different.
+            file_path = os.path.join(input_dir, 'text', f"{q_number.replace('Q', '')}.txt")
+            try:
+                file_deletion_log(log_path, file_path)
+                os.remove(file_path)
+            except FileNotFoundError:
+                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):
