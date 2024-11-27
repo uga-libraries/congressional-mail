@@ -72,7 +72,8 @@ def read_metadata(path):
     df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
 
     # Removes blank rows, which are present in some of the data exports.
-    df.dropna(how='all', inplace=True)
+    # Blank rows have an empty string in every column.
+    df = df[~(df == '').all(axis=1)]
 
     return df
 
