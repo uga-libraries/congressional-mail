@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the deletion log, if made by the test"""
-        log_path = os.path.join('test_data', 'casework_deletion_log.csv')
+        log_path = os.path.join('test_data', 'metadata_deletion_log.csv')
         if os.path.exists(log_path):
             os.remove(log_path)
 
@@ -44,8 +44,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments']]
         self.assertEqual(result, expected, "Problem with test for casework - all, df")
 
-        # Tests the values in the casework deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'casework_deletion_log.csv'))
+        # Tests the values in the metadata deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
                     ['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
                     ['30601', 'ITEM', 'CASE', 'nan'],
@@ -77,8 +77,8 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'ITEM', 'TR-RAL', 'NOTE']]
         self.assertEqual(result, expected, "Problem with test for casework - some, df")
 
-        # Tests the values in the casework deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'casework_deletion_log.csv'))
+        # Tests the values in the metadata deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
                     ['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
                     ['30601', 'ITEM', 'CASE', 'nan'],
@@ -105,10 +105,9 @@ class MyTestCase(unittest.TestCase):
                     ['30603', 'ITEM', 'TR-RAL', 'SENT TO ATL']]
         self.assertEqual(result, expected, "Problem with test for no casework, df")
 
-        # Tests the values in the casework deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'casework_deletion_log.csv'))
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for no casework, deletion log")
+        # Tests the metadata deletion log was not made.
+        result = os.path.exists(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        self.assertEqual(result, False, "Problem with test for no casework, deletion log")
 
 
 if __name__ == '__main__':
