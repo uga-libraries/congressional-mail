@@ -84,10 +84,11 @@ def remove_casework(df, output_dir):
     # It is typically within the columns correspondence_topic or comments
     # and includes a few rows that are not really casework, such as "Casey" or his "on the case" catchphrase,
     # which is necessary to protect privacy and keep time required reasonable.
-    # Deleted rows are saved to a log for review.
-    includes_casework = np.column_stack([df[col].str.contains('CASE', case=False, na=False) for col in df])
-    df.loc[includes_casework.any(axis=1)].to_csv(os.path.join(output_dir, 'casework_deletion_log.csv'), index=False)
-    df = df.loc[~includes_casework.any(axis=1)]
+    # Deleted rows, if any, are saved to a log for review.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'casework_deletion_log.csv'), index=False)
+        df = df.loc[~case.any(axis=1)]
 
     return df
 
