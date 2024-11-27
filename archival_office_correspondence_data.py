@@ -41,7 +41,7 @@ def check_arguments(arg_list):
         if arg_list[2] in ('access', 'preservation'):
             mode = arg_list[2]
         else:
-            errors.append(f"Provided mode '{arg_list[2]} is not 'access' or 'preservation'")
+            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
 
     # More than the expected two required arguments are present.
     if len(arg_list) > 3:
