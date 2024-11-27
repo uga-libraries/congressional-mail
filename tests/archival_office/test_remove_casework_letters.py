@@ -6,16 +6,7 @@ import os
 import shutil
 import unittest
 from archival_office_correspondence_data import remove_casework_letters
-from test_script import csv_to_list
-
-
-def files_in_dir(dir_path):
-    """Make a list of every file in a directory, for testing the result of the function"""
-    file_list = []
-    for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            file_list.append(file)
-    return file_list
+from test_script import csv_to_list, files_in_dir
 
 
 class MyTestCase(unittest.TestCase):
