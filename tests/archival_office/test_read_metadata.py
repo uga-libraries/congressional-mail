@@ -1,5 +1,5 @@
 """
-Test for the function read_metadata(), which reads the dat file into a dataframe.
+Tests for the function read_metadata(), which reads the dat file into a dataframe.
 """
 import os
 import unittest
@@ -8,10 +8,10 @@ from archival_office_correspondence_data import read_metadata
 
 class MyTestCase(unittest.TestCase):
 
-    def test_function(self):
-        """Test for when the function works correctly"""
+    def test_no_blank(self):
+        """Test for when the metadata file has no blank rows"""
         # Runs the function being tested.
-        md_df = read_metadata(os.path.join('test_data', 'read_md.dat'))
+        md_df = read_metadata(os.path.join('test_data', 'read_metadata', 'archive.dat'))
 
         # Tests the dataframe has the expected columns and values.
         # First converts the resulting dataframe into a list, with blanks filled with '', for easier comparison.
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
                      'CASE', 'TR-HWY', '', '', 'RA', '555QRS667', 'ANOTHER NOTE'],
                     ['LAST B, FIRST B MIDDLE, JR.', '', '', '200 ROAD', 'APT 5B', 'CITY A', 'GA', '30001',
                      'ISSUE', 'TR-RAL', '', '980104', 'NOP', '', '']]
-        self.assertEqual(result, expected, "Problem with test for function")
+        self.assertEqual(result, expected, "Problem with test for no blank rows")
 
 
 if __name__ == '__main__':
