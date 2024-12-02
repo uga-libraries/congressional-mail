@@ -228,14 +228,15 @@ if __name__ == '__main__':
     # Calculates parent folder of the input_directory, which is where script outputs are saved.
     output_directory = os.path.dirname(input_directory)
 
-    # Reads the metadata files and combines into a pandas dataframe.
+    # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(metadata_paths_dict)
 
-    # Removes rows for casework, if they are present.
-    md_df = remove_casework(md_df, output_directory)
-
-    # Saves the redacted data to a CSV file.
-    md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
-
-    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata files.
-    split_congress_year(md_df, output_directory)
+    # For access, makes a copy of the data split by congress year.
+    # For preservation, removes rows for casework and deletes the casework files themselves.
+    if script_mode == 'access':
+        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        split_congress_year(md_df, output_directory)
+    else:
+        md_df = remove_casework(md_df, output_directory)
+        md_df.to_csv(os.path.join(output_directory, 'Preservation_Copy.csv'), sep='\t', index=False)
+        remove_casework_letters(input_directory)
