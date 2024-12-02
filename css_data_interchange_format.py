@@ -1,12 +1,11 @@
 """
-Draft script to prepare access copies from an export in the CSS Data Interchange Format.
+Draft script to prepare preservation and access copies from an export in the CSS Data Interchange Format.
 Required argument: path to the metadata folder (contains all needed DAT files).
 """
 import numpy as np
 import os
 import pandas as pd
 import sys
-from css_archiving_format import save_df
 
 
 def get_paths(arg_list):
@@ -75,6 +74,10 @@ def read_metadata(paths):
 
     # Remove ID columns only used for merging.
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
+
+    # Removes blank rows, which are present in some of the data exports.
+    # Blank rows have an empty string in every column.
+    df = df[~(df == '').all(axis=1)]
 
     return df
 
