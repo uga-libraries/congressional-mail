@@ -2,10 +2,12 @@
 Draft script to prepare preservation and access copies from an export in the CSS Data Interchange Format.
 Required argument: path to the metadata folder (contains all needed DAT files).
 """
+from datetime import date
 import numpy as np
 import os
 import pandas as pd
 import sys
+from css_archiving_format import file_deletion_log
 
 
 def get_paths(arg_list):
@@ -110,6 +112,39 @@ def remove_casework(df, output_dir):
         df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
     return df
+
+
+def remove_casework_letters(input_dir):
+    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+
+    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'metadata_deletion_log.csv'))
+    except FileNotFoundError:
+        print(f"No deletion log in {os.path.dirname(input_dir)}")
+        return
+
+    # Deletes letters received and sent based on communication_document_name.
+    doc_df = df.dropna(subset=['communication_document_name']).copy()
+    doc_list = doc_df['communication_document_name'].tolist()
+    if len(doc_list) > 0:
+
+        # Creates a file deletion log, with a header row.
+        log_path = os.path.join(os.path.dirname(input_dir),
+                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+        file_deletion_log(log_path, None, True)
+
+        # If there is a document name, it is formatted ..\documents\FOLDER\filename.ext
+        # Does not delete form letters, which are in FOLDER formletters
+        for name in doc_list:
+            if 'formletters' not in name:
+                file_path = name.replace('..', input_dir)
+                try:
+                    file_deletion_log(log_path, file_path)
+                    os.remove(file_path)
+                except FileNotFoundError:
+                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):
