@@ -83,15 +83,30 @@ class MyTestCase(unittest.TestCase):
         """Test for when the archive.dat file is not in the input_directory"""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'no_metadata')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir]
+        sys_argv = ['archival_office_correspondence_data.py', input_dir, 'preservation']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
         self.assertEqual(input_directory, input_dir, "Problem with missing metadata, input_directory")
         self.assertEqual(metadata_path, None, "Problem with missing metadata, metadata_path")
-        self.assertEqual(script_mode, None, "Problem with missing metadata, script_mode")
+        self.assertEqual(script_mode, 'preservation', "Problem with missing metadata, script_mode")
         self.assertEqual(errors_list, ['No archive.dat file in the input_directory'],
                          "Problem with missing metadata, errors_list")
+
+    def test_missing_one(self):
+        """Test for when one required argument (script_mode) is missing"""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['archival_office_correspondence_data.py', input_dir]
+        input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        self.assertEqual(input_directory, input_dir, "Problem with missing one, input_directory")
+        self.assertEqual(metadata_path, os.path.join(input_dir, 'archive.dat'),
+                         "Problem with missing one, metadata_path")
+        self.assertEqual(script_mode, None, "Problem with missing one, script_mode")
+        self.assertEqual(errors_list, ['Missing one of the required arguments, input_directory or script_mode'],
+                         "Problem with missing one, errors_list")
 
     def test_too_many(self):
         """Test for when too many arguments are provided, with none being expected values"""

@@ -22,6 +22,7 @@ def check_arguments(arg_list):
     # Both arguments are missing (only the script path is present).
     if len(arg_list) == 1:
         errors.append("Missing required arguments, input_directory and script_mode")
+        return input_dir, md_path, mode, errors
 
     # At least the first argument is present.
     # Verifies it is a valid path, and if so that it contains the expected DAT file.
@@ -42,6 +43,8 @@ def check_arguments(arg_list):
             mode = arg_list[2]
         else:
             errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
+    else:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
 
     # More than the expected two required arguments are present.
     if len(arg_list) > 3:
