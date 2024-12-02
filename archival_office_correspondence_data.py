@@ -85,15 +85,42 @@ def read_metadata(path):
 def remove_casework(df, output_dir):
     """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
-    # Removes row if any column includes the text "CASE".
-    # It is typically within the columns correspondence_topic or comments
-    # and includes a few rows that are not really casework, such as "Casey" or his "on the case" catchphrase,
-    # which is necessary to protect privacy and keep time required reasonable.
+    # Deletion log path (used multiple times)
+    del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
+
+    # Removes row if the correspondence_type column includes the text "case" (case-insensitive).
     # Deleted rows, if any, are saved to a log for review.
+    corr_type = df['correspondence_type'].str.contains('case', case=False, na=False)
+    if len(df[corr_type].index) > 0:
+        df[corr_type].to_csv(del_log, index=False)
+        df = df[~corr_type]
+
+    # Removes row if the correspondence_topic column includes the text "case" (case-insensitive).
+    # Deleted rows, if any, are saved to a log for review.
+    corr_topic = df['correspondence_topic'].str.contains('case', case=False, na=False)
+    if len(df[corr_topic].index) > 0:
+        df[corr_topic].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df[~corr_topic]
+
+    # Removes row if the correspondence_subtopic column includes the text "case" (case-insensitive).
+    # Deleted rows, if any, are saved to a log for review.
+    corr_subtopic = df['correspondence_subtopic'].str.contains('case', case=False, na=False)
+    if len(df[corr_subtopic].index) > 0:
+        df[corr_subtopic].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df[~corr_subtopic]
+
+    # Removes row if the comments column includes the text "case" (case-insensitive).
+    # Deleted rows, if any, are saved to a log for review.
+    comments = df['comments'].str.contains('case', case=False, na=False)
+    if len(df[comments].index) > 0:
+        df[comments].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df[~comments]
+
+    # Remaining rows with "case" in any column are saved to a log for review, if any.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
     case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
     if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'metadata_deletion_log.csv'), index=False)
-        df = df.loc[~case.any(axis=1)]
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
     return df
 
@@ -110,7 +137,7 @@ def remove_casework_letters(input_dir):
         return
 
     # Deletes letters received, based on the document name in the comments column, if any.
-    # If there is a document name, it is formatted Q######, referring to a file named #.txt.
+    # If there is a document name, it is formatted "Q# optional text", referring to a file named #.txt.
     comments_df = df.dropna(subset=['comments']).copy()
     q_df = comments_df[comments_df['comments'].str.startswith('Q')].copy()
     q_list = q_df['comments'].tolist()
@@ -123,6 +150,7 @@ def remove_casework_letters(input_dir):
 
         for q_number in q_list:
             # Change "text" to match the folder name in the export which contains the letters, if different.
+            q_number = q_number.split(' ')[0]
             file_path = os.path.join(input_dir, 'text', f"{q_number.replace('Q', '')}.txt")
             try:
                 file_deletion_log(log_path, file_path)

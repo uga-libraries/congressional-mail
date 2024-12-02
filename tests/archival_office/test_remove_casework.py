@@ -19,95 +19,162 @@ def df_to_list(df):
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Delete the deletion log, if made by the test"""
-        log_path = os.path.join('test_data', 'metadata_deletion_log.csv')
-        if os.path.exists(log_path):
-            os.remove(log_path)
+        """Delete the logs, if made by the test"""
+        log_paths = [os.path.join('test_data', 'case_remains_log.csv'),
+                     os.path.join('test_data', 'metadata_deletion_log.csv')]
+        for log_path in log_paths:
+            if os.path.exists(log_path):
+                os.remove(log_path)
 
-    def test_casework_all(self):
-        """Test for when every row contains the word case and is deleted"""
+    def test_case_comments(self):
+        """Test for when the column comments contains the string "case" and is deleted"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
-                              ['30601', 'ITEM', 'CASE', ''],
-                              ['30602', 'ITEM', ', CASE', ''],
-                              ['30603', 'ITEM', 'OF-GEN, CASE', ''],
-                              ['30604', 'ITEM', 'TR-RAL', 'SENT TO CASEWORK'],
-                              ['30605', 'ITEM', 'TR-RAL', 'SENT TO CASE WORK, ATL'],
-                              ['30606', 'ITEM', 'TR-RAL', 'CASE'],
-                              ['30607', 'CASE WORK', '', ''],
-                              ['CASEWORK', '', '', '']],
-                             columns=['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'])
+        md_df = pd.DataFrame([['30600', 'type', 'topic', 'subtopic', 'I AM ON THE CASE'],
+                              ['30601', 'type', 'topic', 'subtopic', 'Casework'],
+                              ['30602', 'type', 'topic', 'subtopic', 'SEND CASE TO ATL'],
+                              ['30603', 'type', 'topic', 'subtopic', 'case']],
+                             columns=['zip_code', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
         md_df = remove_casework(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for casework - all, df")
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - comments, df")
 
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
-                    ['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
-                    ['30601', 'ITEM', 'CASE', 'nan'],
-                    ['30602', 'ITEM', ', CASE', 'nan'],
-                    ['30603', 'ITEM', 'OF-GEN, CASE', 'nan'],
-                    ['30604', 'ITEM', 'TR-RAL', 'SENT TO CASEWORK'],
-                    ['30605', 'ITEM', 'TR-RAL', 'SENT TO CASE WORK, ATL'],
-                    ['30606', 'ITEM', 'TR-RAL', 'CASE'],
-                    ['30607', 'CASE WORK', 'nan', 'nan'],
-                    ['CASEWORK', 'nan', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for casework - all, deletion log")
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30600', 'type', 'topic', 'subtopic', 'I AM ON THE CASE'],
+                    ['30601', 'type', 'topic', 'subtopic', 'Casework'],
+                    ['30602', 'type', 'topic', 'subtopic', 'SEND CASE TO ATL'],
+                    ['30603', 'type', 'topic', 'subtopic', 'case']]
+        self.assertEqual(result, expected, "Problem with test for case - comments, deletion log")
 
-    def test_casework_some(self):
-        """Test for when some rows contain the word case and is deleted"""
+    def test_case_subtopic(self):
+        """Test for when the column correspondence_subtopic contains the string "case" and is deleted"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
-                              ['30601', 'ITEM', 'CASE', ''],
-                              ['30602', 'ITEM', 'OF-GEN', 'NOTE'],
-                              ['30603', 'ITEM', 'OF-GEN, CASE', ''],
-                              ['30604', 'ITEM', 'TR-RAL', 'NOTE'],
-                              ['30605', 'ITEM', 'TR-RAL', 'SENT TO CASE WORK, ATL']],
-                             columns=['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'])
+        md_df = pd.DataFrame([['30600', 'type', 'topic', 'LEGAL CASE', 'comments'],
+                              ['30601', 'type', 'topic', 'Casework', 'comments'],
+                              ['30602', 'type', 'topic', 'NEW CASE SS', 'comments'],
+                              ['30603', 'type', 'topic', 'case', 'comments']],
+                             columns=['zip_code', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
         md_df = remove_casework(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
-                    ['30602', 'ITEM', 'OF-GEN', 'NOTE'],
-                    ['30604', 'ITEM', 'TR-RAL', 'NOTE']]
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - subtopic, df")
+
+        # Tests the values in the metadata deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30600', 'type', 'topic', 'LEGAL CASE', 'comments'],
+                    ['30601', 'type', 'topic', 'Casework', 'comments'],
+                    ['30602', 'type', 'topic', 'NEW CASE SS', 'comments'],
+                    ['30603', 'type', 'topic', 'case', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - subtopic, deletion log")
+
+    def test_case_topic(self):
+        """Test for when the correspondence_topic contains the string "case" and is deleted"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'type', 'LEGAL CASE', 'subtopic', 'comments'],
+                              ['30601', 'type', 'Casework', 'subtopic', 'comments'],
+                              ['30602', 'type', 'SEND CASE TO ATL', 'subtopic', 'comments'],
+                              ['30603', 'type', 'case', 'subtopic', 'comments']],
+                             columns=['zip_code', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - topic, df")
+
+        # Tests the values in the metadata deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30600', 'type', 'LEGAL CASE', 'subtopic', 'comments'],
+                    ['30601', 'type', 'Casework', 'subtopic', 'comments'],
+                    ['30602', 'type', 'SEND CASE TO ATL', 'subtopic', 'comments'],
+                    ['30603', 'type', 'case', 'subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - topic, deletion log")
+
+    def test_case_type(self):
+        """Test for when the column correspondence_type contains the string "case" and is deleted"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'CASE', 'topic', 'subtopic', 'comments'],
+                              ['30601', 'Casework', 'topic', 'subtopic', 'comments'],
+                              ['30602', 'legal case', 'topic', 'subtopic', 'comments']],
+                             columns=['zip_code', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - type, df")
+
+        # Tests the values in the metadata deletion log are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30600', 'CASE', 'topic', 'subtopic', 'comments'],
+                    ['30601', 'Casework', 'topic', 'subtopic', 'comments'],
+                    ['30602', 'legal case', 'topic', 'subtopic', 'comments']]
+        self.assertEqual(result, expected, "Problem with test for case - type, deletion log")
+
+    def test_casework_some(self):
+        """Test for when some rows contain the string case and are deleted, and one row is not"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'CASE', 'VET', '', ''],
+                              ['30601', 'ITEM', 'CASEWORK', '', 'Q1234'],
+                              ['30602', 'ITEM', 'OF-GEN, CASE', '', 'NOTE'],
+                              ['30603', 'ITEM', 'OF-GEN', 'Legal Case', ''],
+                              ['30604', 'ITEM', 'TR-RAL', '', 'SENT TO CASE WORK, ATL'],
+                              ['30605', 'ITEM', 'TR-RAL', '', '']],
+                             columns=['zip_code', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
+        md_df = remove_casework(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30605', 'ITEM', 'TR-RAL', '', '']]
         self.assertEqual(result, expected, "Problem with test for casework - some, df")
 
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
-                    ['30600', 'ITEM', 'PR', 'I AM ON THE CASE'],
-                    ['30601', 'ITEM', 'CASE', 'nan'],
-                    ['30603', 'ITEM', 'OF-GEN, CASE', 'nan'],
-                    ['30605', 'ITEM', 'TR-RAL', 'SENT TO CASE WORK, ATL']]
+        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['30600', 'CASE', 'VET', 'nan', 'nan'],
+                    ['30601', 'ITEM', 'CASEWORK', 'nan', 'Q1234'],
+                    ['30602', 'ITEM', 'OF-GEN, CASE', 'nan', 'NOTE'],
+                    ['30603', 'ITEM', 'OF-GEN', 'Legal Case', 'nan'],
+                    ['30604', 'ITEM', 'TR-RAL', 'nan', 'SENT TO CASE WORK, ATL']]
         self.assertEqual(result, expected, "Problem with test for casework - some, deletion log")
 
     def test_no_casework(self):
-        """Test for when no rows contain the word case and nothing is deleted"""
+        """Test for when none of the tested columns contain the string case and nothing is deleted"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'ITEM', 'PR', 'I AM ON IT'],
-                              ['30601', 'ITEM', 'OF-GEN', 'NOTE'],
-                              ['30602', 'ITEM', 'TR-RAL', 'NOTE'],
-                              ['30603', 'ITEM', 'TR-RAL', 'SENT TO ATL']],
-                             columns=['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'])
+        md_df = pd.DataFrame([['CASEYVILLE', 'ITEM', 'PR', '', 'I AM ON IT'],
+                              ['ATHENS', 'ITEM', 'OF-GEN', '', 'NOTE'],
+                              ['CASE', 'ITEM', 'TR-RAL', '', 'NOTE']],
+                             columns=['city', 'correspondence_type', 'correspondence_topic',
+                                      'correspondence_subtopic', 'comments'])
         md_df = remove_casework(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
-        expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'comments'],
-                    ['30600', 'ITEM', 'PR', 'I AM ON IT'],
-                    ['30601', 'ITEM', 'OF-GEN', 'NOTE'],
-                    ['30602', 'ITEM', 'TR-RAL', 'NOTE'],
-                    ['30603', 'ITEM', 'TR-RAL', 'SENT TO ATL']]
+        expected = [['city', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['CASEYVILLE', 'ITEM', 'PR', '', 'I AM ON IT'],
+                    ['ATHENS', 'ITEM', 'OF-GEN', '', 'NOTE'],
+                    ['CASE', 'ITEM', 'TR-RAL', '', 'NOTE']]
         self.assertEqual(result, expected, "Problem with test for no casework, df")
 
         # Tests the metadata deletion log was not made.
         result = os.path.exists(os.path.join('test_data', 'metadata_deletion_log.csv'))
         self.assertEqual(result, False, "Problem with test for no casework, deletion log")
+    
 
 
 if __name__ == '__main__':
