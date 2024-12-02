@@ -42,6 +42,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
         self.assertEqual(result, expected, "Problem with test for case - comments, df")
 
+        # Tests the case remains log was not made.
+        result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
+        self.assertEqual(result, False, "Problem with test for case - comments, case log")
+
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
@@ -66,6 +70,10 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(md_df)
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
         self.assertEqual(result, expected, "Problem with test for case - subtopic, df")
+
+        # Tests the case remains log was not made.
+        result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
+        self.assertEqual(result, False, "Problem with test for case - subtopic, case log")
 
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
@@ -92,6 +100,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
         self.assertEqual(result, expected, "Problem with test for case - topic, df")
 
+        # Tests the case remains log was not made.
+        result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
+        self.assertEqual(result, False, "Problem with test for case - topic, case log")
+
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
@@ -115,6 +127,10 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(md_df)
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
         self.assertEqual(result, expected, "Problem with test for case - type, df")
+
+        # Tests the case remains log was not made.
+        result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
+        self.assertEqual(result, False, "Problem with test for case - type, case log")
 
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
@@ -142,6 +158,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
                     ['30605', 'ITEM', 'TR-RAL', '', '']]
         self.assertEqual(result, expected, "Problem with test for casework - some, df")
+
+        # Tests the case remains log was not made.
+        result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
+        self.assertEqual(result, False, "Problem with test for casework - some, case log")
 
         # Tests the values in the metadata deletion log are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
@@ -171,10 +191,16 @@ class MyTestCase(unittest.TestCase):
                     ['CASE', 'ITEM', 'TR-RAL', '', 'NOTE']]
         self.assertEqual(result, expected, "Problem with test for no casework, df")
 
+        # Tests the values in the case remains log are correct.
+        result = csv_to_list(os.path.join('test_data', 'case_remains_log.csv'))
+        expected = [['city', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
+                    ['CASEYVILLE', 'ITEM', 'PR', 'nan', 'I AM ON IT'],
+                    ['CASE', 'ITEM', 'TR-RAL', 'nan', 'NOTE']]
+        self.assertEqual(result, expected, "Problem with test for no casework, case log")
+
         # Tests the metadata deletion log was not made.
         result = os.path.exists(os.path.join('test_data', 'metadata_deletion_log.csv'))
         self.assertEqual(result, False, "Problem with test for no casework, deletion log")
-    
 
 
 if __name__ == '__main__':
