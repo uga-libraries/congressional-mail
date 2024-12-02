@@ -83,28 +83,31 @@ def read_metadata(paths):
 
 
 def remove_casework(df, output_dir):
-    """Remove rows with topics or text that indicate they are casework and log results"""
+    """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
     # Deletion log path (used multiple times)
     del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
 
-    # Removes row if column group_name starts with "CASE".
+    # Removes row if column group_name starts with "CASE", if any.
     # There are other groups which included "case" that are retained, referring to legal cases of national interest.
     # Deleted rows are saved to a log for review.
     group = df['group_name'].str.startswith('CASE', na=False)
-    df[group].to_csv(os.path.join(del_log), index=False)
-    df = df[~group]
+    if len(df[group].index) > 0:
+        df[group].to_csv(del_log, index=False)
+        df = df[~group]
 
-    # Removes row if any column includes the text "casework".
+    # Removes row if any column includes the text "casework", if any.
     # Deleted rows, if any, are saved to a log for review.
-    includes_casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    df.loc[includes_casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-    df = df.loc[~includes_casework.any(axis=1)]
+    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    if len(df.loc[casework.any(axis=1)].index) > 0:
+        df.loc[casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df.loc[~casework.any(axis=1)]
 
-    # Remaining rows with "case" in any column are saved to a log for review.
+    # Remaining rows with "case" in any column are saved to a log for review, if any.
     # This may show us another pattern that indicates casework or may be another use of the word case.
-    includes_case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    df.loc[includes_case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
     return df
 
