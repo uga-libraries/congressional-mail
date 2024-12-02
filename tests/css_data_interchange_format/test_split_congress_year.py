@@ -89,6 +89,10 @@ class MyTestCase(unittest.TestCase):
                     ['FL', '32448-5365', '20121231', 'SSCUTS1']]
         self.assertEqual(result, expected, "Problem with test for even years, 2011-2012")
 
+        # Tests that undated.csv was not made.
+        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        self.assertEqual(result, False, "Problem with test for even years, undated")
+
     def test_odd_years(self):
         """Test for when the letters are from odd numbered years"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -110,6 +114,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30328-4628', '20091015', 'TOUR']]
         self.assertEqual(result, expected, "Problem with test for odd years, 2009-2010")
+
+        # Tests that undated.csv was not made.
+        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        self.assertEqual(result, False, "Problem with test for odd years, undated")
 
 
 if __name__ == '__main__':
