@@ -20,6 +20,7 @@ def check_arguments(arg_list):
     errors = []
 
     # Both arguments are missing (only the script path is present).
+    # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
         errors.append("Missing required arguments, input_directory and script_mode")
         return input_dir, md_path, mode, errors
