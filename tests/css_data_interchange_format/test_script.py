@@ -21,19 +21,19 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         filenames = ['Access_Copy.csv', '1999-2000.csv', '2011-2012.csv', 'undated.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', 'script', filename)
+            file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-    def test_correct(self):
-        """Test for when the script runs correctly."""
+    def test_access(self):
+        """Test for when the script runs correctly in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
-        md_path = os.path.join('test_data', 'script')
-        subprocess.run(f"python {script_path} {md_path}", shell=True)
+        input_directory = os.path.join('test_data', 'script')
+        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'script', 'Access_Copy.csv')
+        csv_path = os.path.join('test_data', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -64,10 +64,10 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
                      ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
+        self.assertEqual(result, expected, "Problem with test for access, Access_Copy.csv")
 
         # Tests the contents of 1999-2000.csv.
-        csv_path = os.path.join('test_data', 'script', '1999-2000.csv')
+        csv_path = os.path.join('test_data', '1999-2000.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -91,10 +91,10 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
                      ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, 1999-2000")
+        self.assertEqual(result, expected, "Problem with test for access, 1999-2000")
 
         # Tests the contents of 2011-2012.csv.
-        csv_path = os.path.join('test_data', 'script', '2011-2012.csv')
+        csv_path = os.path.join('test_data', '2011-2012.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -103,10 +103,10 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html',
                      '2103422', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, 2011-2012")
+        self.assertEqual(result, expected, "Problem with test for access, 2011-2012")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'script', 'undated.csv')
+        csv_path = os.path.join('test_data', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -117,7 +117,7 @@ class MyTestCase(unittest.TestCase):
                     ['Smyrna', 'GA', '30080-1944', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan', 'usmail',
                      'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
                      'Airline Passenger BOR Act2 1999', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, undated")
+        self.assertEqual(result, expected, "Problem with test for access, undated")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
