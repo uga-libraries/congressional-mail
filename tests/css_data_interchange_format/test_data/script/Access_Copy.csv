@@ -1,0 +1,10 @@
+city,state_code,zip_code,country,communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,document_type,communication_document_name,communication_document_id,file_location,file_name
+Ellijay,GA,30540,USA,usmail,,C,20000427,20000427,,20000427,usmail,TOUR5,OUTGOING,..\documents\formletters\flag.doc.doc,flag.doc, ,
+Atlanta,GA,30327-4346,USA,usmail,,C,,,,,usmail,,OUTGOING,..\documents\formletters\30046.doc.doc,30046.doc, ,
+ , ,,POLAND,usmail,,C,19990331,19990402,,19990331,usmail,INTTAX,OUTGOING,..\documents\formletters\inttax.doc.doc,inttax.doc, ,
+Smyrna,GA,30080-1944,USA,usmail,,C,,,,,usmail,,OUTGOING,..\documents\formletters\Airline Passenger BOR Act2 1999.doc,Airline Passenger BOR Act2 1999, ,
+Marietta,GA,30067-8581,USA,,513,C,20000427,20000427,,20000427,imail,,OUTGOING,..\documents\indivletters\2076104.doc,, ,
+ , ,,POLAND,usmail,,C,19990315,19990402,,19990315,usmail,INTTAX,OUTGOING,..\documents\formletters\busintax.doc.doc,busintax.doc, ,
+Marietta,GA,30062-1668,USA,,513,C,20120914,20120914,,20120914,imail,,OUTGOING,..\documents\formletters\2103422.html,2103422, ,
+Marietta,GA,30062-1668,USA,,551,C,19990315,19990402,,19990315,imail,,INCOMING,..\documents\objects\4007000.eml,,1c8614bf01caf83e00010e44.eml,
+Washington,DC,20420-0002,USA,,513,C,19990721,19990721,,19990721,imail,,OUTGOING,..\documents\formletters\208956.html,208956, ,

@@ -29,11 +29,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when the script runs correctly in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script')
+        input_directory = os.path.join('test_data', 'script', 'access_test')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'Access_Copy.csv')
+        csv_path = os.path.join('test_data', 'script', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -67,7 +67,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, Access_Copy.csv")
 
         # Tests the contents of 1999-2000.csv.
-        csv_path = os.path.join('test_data', '1999-2000.csv')
+        csv_path = os.path.join('test_data', 'script', '1999-2000.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -94,7 +94,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, 1999-2000")
 
         # Tests the contents of 2011-2012.csv.
-        csv_path = os.path.join('test_data', '2011-2012.csv')
+        csv_path = os.path.join('test_data', 'script', '2011-2012.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -106,7 +106,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, 2011-2012")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
