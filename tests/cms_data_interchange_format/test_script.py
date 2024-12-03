@@ -21,19 +21,19 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'undated.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', 'script', filename)
+            file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-    def test_correct(self):
-        """Test for when the script runs correctly."""
+    def test_access(self):
+        """Test for when the script runs correctly in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
-        md_path = os.path.join('test_data', 'script')
-        subprocess.run(f"python {script_path} {md_path}", shell=True)
+        input_directory = os.path.join('test_data', 'script')
+        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of CSS_Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'script', 'Access_Copy.csv')
+        csv_path = os.path.join('test_data', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -51,7 +51,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
 
         # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', 'script', '2021-2022.csv')
+        csv_path = os.path.join('test_data', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -65,7 +65,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join('test_data', 'script', '2023-2024.csv')
+        csv_path = os.path.join('test_data', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for correct, 2023-2024")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'script', 'undated.csv')
+        csv_path = os.path.join('test_data', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
         # Runs the script and tests that it prints the correct error.
         output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
         result = output.stdout.decode('utf-8')
-        expected = "Missing required argument: path to the metadata folder\r\n"
+        expected = "Missing required arguments, input_directory and script_mode\r\n"
         self.assertEqual(result, expected, "Problem with test for error argument, printed error")
 
 
