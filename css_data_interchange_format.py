@@ -1,6 +1,6 @@
 """
 Draft script to prepare preservation and access copies from an export in the CSS Data Interchange Format.
-Required argument: path to the metadata folder (contains all needed DAT files).
+Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
 from datetime import date
 import numpy as np

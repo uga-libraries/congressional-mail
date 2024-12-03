@@ -1,6 +1,6 @@
 """
-Draft script to prepare access copies from an export in the CMS Data Interchange Format.
-Required argument: path to the metadata folder (contains all needed OUT files).
+Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
+Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
 import os
 import pandas as pd
