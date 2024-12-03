@@ -2,6 +2,7 @@
 Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
 Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
@@ -54,6 +55,16 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_paths, mode, errors
+
+
+def check_casework(df, output_dir):
+    """Make log of rows with "case" to identify casework in future exports (none in collection currently)"""
+
+    # Rows with "case" in any column are saved to a log for review, if any.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
 
 def read_metadata(paths):
