@@ -78,6 +78,10 @@ def read_metadata(paths):
     df = df.drop(['constituent_id_x', 'constituent_id_y', 'constituent_id', 'correspondence_id'],
                  axis=1, errors='ignore')
 
+    # Removes blank rows, which are present in some of the data exports.
+    # Blank rows have an empty string in every column.
+    df = df[~(df == '').all(axis=1)]
+
     return df
 
 
