@@ -113,11 +113,14 @@ if __name__ == '__main__':
             print(error)
         sys.exit(1)
 
-    # Reads the metadata files and combines into a pandas dataframe.
+    # Calculates parent folder of the input_directory, which is where script outputs are saved.
+    output_directory = os.path.dirname(sys.argv[1])
+
+    # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(paths_dictionary)
 
     # Saves the redacted data to a CSV file in the folder with the original metadata files.
-    save_df(md_df, sys.argv[1])
+    save_df(md_df, output_directory)
 
     # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata files.
-    split_congress_year(md_df, sys.argv[1])
+    split_congress_year(md_df, output_directory)
