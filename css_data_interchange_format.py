@@ -98,7 +98,7 @@ def read_metadata(paths):
 
     # Removes blank rows, which are present in some of the data exports.
     # Blank rows have an empty string in every column.
-    df = df[~(df == '').all(axis=1)]
+    df.dropna(how='all', inplace=True)
 
     return df
 
