@@ -8,33 +8,52 @@ import sys
 from css_data_interchange_format import split_congress_year
 
 
-def get_paths(arg_list):
-    """Get the paths to the data tables in the folder supplied as script argument"""
+def check_arguments(arg_list):
+    """Verify the required script arguments are present and valid and get the paths to the metadata files"""
 
-    paths_dict = {}
+    # Default values for the variables calculated by this function.
+    input_dir = None
+    md_paths = {}
+    mode = None
     errors = []
 
-    # Argument is missing (only the script path is present).
+    # Both arguments are missing (only the script path is present).
+    # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
-        errors.append("Missing required argument: path to the metadata folder")
-    # Argument is present but not a valid path.
-    elif not os.path.exists(arg_list[1]):
-        errors.append(f"Provided path to metadata folder does not exist: {arg_list[1]}")
-    # Argument is correct.
-    # Tests the paths to each expected metadata file.
-    # If the metadata file is present, it updates the dictionary value for that path.
-    # If it is missing, it adds to the errors list.
-    else:
-        # TODO: finalize the tables to include
-        expected_files = ['1B.out', '2A.out', '2B.out', '2C.out']
-        for file in expected_files:
-            if os.path.exists(os.path.join(arg_list[1], file)):
-                # Key is extracted from the filename, for example 2A.out has a key of 2A.
-                paths_dict[file[:2]] = os.path.join(arg_list[1], file)
-            else:
-                errors.append(f'Metadata file {file} is not in the metadata folder')
+        errors.append("Missing required arguments, input_directory and script_mode")
+        return input_dir, md_paths, mode, errors
 
-    return paths_dict, errors
+    # At least the first argument is present.
+    # Verifies it is a valid path, and if so gets the paths to the expected metadata files.
+    if len(arg_list) > 1:
+        if os.path.exists(arg_list[1]):
+            input_dir = arg_list[1]
+            # TODO: finalize the tables to include
+            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out']
+            for file in expected_files:
+                if os.path.exists(os.path.join(input_dir, file)):
+                    # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
+                    md_paths[file[:2]] = os.path.join(input_dir, file)
+                else:
+                    errors.append(f'Metadata file {file} is not in the input_directory')
+        else:
+            errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
+
+    # Both required arguments are present.
+    # Verifies the second is one of the expected modes.
+    if len(arg_list) > 2:
+        if arg_list[2] in ('access', 'preservation'):
+            mode = arg_list[2]
+        else:
+            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
+    else:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
+
+    # More than the expected two required arguments are present.
+    if len(arg_list) > 3:
+        errors.append("Provided more than the required arguments, input_directory and script_mode")
+
+    return input_dir, md_paths, mode, errors
 
 
 def read_metadata(paths):
@@ -104,19 +123,19 @@ def remove_pii(df):
 
 if __name__ == '__main__':
 
-    # Gets the paths to the metadata files from the script argument.
-    # If the script argument is missing or any are not valid paths, prints the errors and exits the script.
-    paths_dictionary, errors_list = get_paths(sys.argv)
+    # Validates the script argument values and calculates the paths to the metadata files.
+    # If there are any errors, prints them and exits the script.
+    input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys.argv)
     if len(errors_list) > 0:
         for error in errors_list:
             print(error)
         sys.exit(1)
 
     # Calculates parent folder of the input_directory, which is where script outputs are saved.
-    output_directory = os.path.dirname(sys.argv[1])
+    output_directory = os.path.dirname(input_directory)
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
-    md_df = read_metadata(paths_dictionary)
+    md_df = read_metadata(metadata_paths_dict)
 
     # Saves the redacted data to a CSV file.
     md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
