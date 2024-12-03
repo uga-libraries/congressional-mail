@@ -149,6 +149,9 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_paths_dict)
 
     # For access, makes a copy of the data split by congress year.
+    # For preservation, makes a log of rows with "case" for detecting casework.
     if script_mode == 'access':
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
+    else:
+        check_casework(md_df, output_directory)
