@@ -9,9 +9,9 @@ import subprocess
 import unittest
 
 
-def csv_to_list(csv_path, delimiter=','):
+def csv_to_list(csv_path):
     """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
-    df = pd.read_csv(csv_path, delimiter=delimiter, dtype=str)
+    df = pd.read_csv(csv_path, dtype=str)
     df = df.fillna('nan')
     csv_list = [df.columns.tolist()] + df.values.tolist()
     return csv_list
@@ -85,8 +85,8 @@ class MyTestCase(unittest.TestCase):
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
         # Tests the contents of archiving_correspondence.dat.
-        csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence.dat')
-        result = csv_to_list(csv_path, '\t')
+        csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence_redacted.csv')
+        result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
                     ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
                      'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan', 'fileG100',
                      'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, DAT")
+        self.assertEqual(result, expected, "Problem with test for preservation, CSV")
 
         # Tests the contents of the case remains log.
         csv_path = os.path.join('test_data', 'script', 'case_remains_log.csv')

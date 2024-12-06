@@ -256,5 +256,5 @@ if __name__ == '__main__':
         split_congress_year(md_df, output_directory)
     else:
         md_df = remove_casework(md_df, output_directory)
-        md_df.to_csv(metadata_path, sep='\t', index=False)
+        md_df.to_csv(metadata_path.replace('.dat', '_redacted.csv'), index=False)
         remove_casework_letters(input_directory)
