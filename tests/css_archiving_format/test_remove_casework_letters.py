@@ -50,15 +50,15 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\BlobExport\objects\111111.txt'.replace('..', input_directory),
-                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'nan'],
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'casework'],
                     [r'..\documents\BlobExport\objects\222222.txt'.replace('..', input_directory),
-                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'nan'],
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'casework'],
                     [r'..\documents\BlobExport\objects\333333.txt'.replace('..', input_directory),
-                     '5.3', today, today, 'B98DDA428D28A598F8820EAA6AB515B6', 'nan'],
+                     '5.3', today, today, 'B98DDA428D28A598F8820EAA6AB515B6', 'casework'],
                     [r'..\documents\BlobExport\indivletters\400.txt'.replace('..', input_directory),
-                     '2.4', today, today, '4CF163BB5919075DD6FEB7FC8D2AF3A8', 'nan'],
+                     '2.4', today, today, '4CF163BB5919075DD6FEB7FC8D2AF3A8', 'casework'],
                     [r'..\documents\BlobExport\indivletters\500.txt'.replace('..', input_directory),
-                     '1.8', today, today, '64ADE70B27A5D7923C5D3805B5671668', 'nan']]
+                     '1.8', today, today, '64ADE70B27A5D7923C5D3805B5671668', 'casework']]
         self.assertEqual(result, expected, "Problem with test for file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.

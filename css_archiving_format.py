@@ -72,20 +72,17 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, None, None, None, None, note])
 
-    # Adds a row of data to an existing log.
+    # Adds a row for a file that can be deleted to an existing log.
     else:
-        # Calculates the values for the file.
         size_kb = round(int(os.path.getsize(file_path))/1000, 1)
         date_c = datetime.strptime(time.ctime(os.path.getctime(file_path)), '%a %b %d %H:%M:%S %Y').strftime('%Y-%m-%d')
         with open(file_path, 'rb') as f:
             file_data = f.read()
         md5 = hashlib.md5(file_data).hexdigest().upper()
         date_d = date.today().strftime('%Y-%m-%d')
-
-        # Adds the file to the log.
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
-            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, note])
+            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, 'casework'])
 
 
 def read_metadata(path):

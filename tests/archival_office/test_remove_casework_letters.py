@@ -42,11 +42,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [os.path.join(input_directory, 'text', '100001.txt'),
-                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'nan'],
+                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'casework'],
                     [os.path.join(input_directory, 'text', '200002.txt'),
-                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'nan'],
+                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'casework'],
                     [os.path.join(input_directory, 'text', '300003.txt'),
-                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'nan']]
+                     '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'casework']]
         self.assertEqual(result, expected, "Problem with test for deletion, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
