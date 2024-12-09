@@ -17,21 +17,39 @@ def csv_to_list(csv_path):
     return csv_list
 
 
+def files_in_dir(dir_path):
+    """Make a list of every file in a directory, for testing the result of the function"""
+    file_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            file_list.append(file)
+    return file_list
+
+
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
+        # Files saved in the parent of input_directory.
         filenames = ['archiving_correspondence_redacted.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv',
                      'metadata_deletion_log.csv', f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"]
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
-        if os.path.exists(os.path.join('test_data', 'script', 'preservation_test')):
-            shutil.rmtree(os.path.join('test_data', 'script', 'preservation_test'))
+
+        # Copy of input_directory made for this test.
+        folders = ['access_test', 'preservation_test']
+        for folder in folders:
+            if os.path.exists(os.path.join('test_data', 'script', folder)):
+                shutil.rmtree(os.path.join('test_data', 'script', folder))
 
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'access_test_copy'),
+                        os.path.join('test_data', 'script', 'access_test'))
+
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
         input_directory = os.path.join('test_data', 'script', 'access_test')
@@ -84,7 +102,7 @@ class MyTestCase(unittest.TestCase):
         input_directory = os.path.join('test_data', 'script', 'preservation_test')
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
-        # Tests the contents of archiving_correspondence.dat.
+        # Tests the contents of archiving correspondence edited csv.
         csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence_edited.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
@@ -93,11 +111,13 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Mr.', 'Bill', 'B.', 'Blue', 'nan', 'nan', 'nan', 'nan', '234 B St', 'Apt 7', 'nan', 'nan',
                      'B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2', 'Note',
-                     'fileB200', 'nan', 'r200', 'General', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
+                     r'..\documents\BlobExport\objects\222222.txt', 'nan', 'r200', 'General', 'Email', '20230212',
+                     'B', 'nan', r'..\documents\BlobExport\objects\B.txt', 'nan'],
                     ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
-                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan', 'fileG100',
-                     'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, CSV")
+                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan',
+                     r'..\documents\BlobExport\objects\777777.txt', 'nan', 'r700', 'General', 'Email', '20210111',
+                     'nan', 'nan', r'..\documents\BlobExport\indivletters\000007.txt', 'Court case']]
+        self.assertEqual(result, expected, "Problem with test for preservation, edited csv")
 
         # Tests the contents of the case remains log.
         csv_path = os.path.join('test_data', 'script', 'case_remains_log.csv')
@@ -107,11 +127,33 @@ class MyTestCase(unittest.TestCase):
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
-                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan', 'fileG100',
-                     'nan', 'r700', 'General', 'Email', '20210111', 'formG', 'nan', 'reply_case', 'nan']]
+                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan',
+                     r'..\documents\BlobExport\objects\777777.txt', 'nan', 'r700', 'General', 'Email', '20210111',
+                     'nan', 'nan', r'..\documents\BlobExport\indivletters\000007.txt', 'Court case']]
         self.assertEqual(result, expected, "Problem with test for preservation, case remains log")
 
-        # Tests the contents of the deletion log.
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        csv_path = os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv")
+        result = csv_to_list(csv_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\BlobExport\objects\444444.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\objects\555555.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\objects\111111.txt'.replace('..', input_directory),
+                     '0.0', today, today, '49C13D076A41E65DBE137D695E22A6A7', 'casework'],
+                    [r'..\documents\BlobExport\objects\333333.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\indivletters\000005.txt'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\BlobExport\indivletters\000001.txt'.replace('..', input_directory),
+                     '0.1', today, today, '21E65C7B733959A8B3E6071EB0748BF6', 'casework'],
+                    [r'..\documents\BlobExport\indivletters\000003.txt'.replace('..', input_directory),
+                    '3.5', today, today, '3E273CCDD4D24DBFCD55B519999BABC7', 'casework']]
+        self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
+
+        # Tests the contents of the metadata deletion log.
         csv_path = os.path.join('test_data', 'script', 'metadata_deletion_log.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
@@ -120,21 +162,39 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Ms.', 'Diane', 'D.', 'Dudly', 'nan', 'nan', 'nan', 'nan', '456 D St', 'nan', 'nan', 'nan',
                      'D city', 'DE', '45678', 'nan', 'd100', 'General', 'Email', '20210101', 'Prison Case', 'nan',
-                     'fileD100', 'nan', 'r400', 'General', 'Email', '20210111', 'formD', 'nan', 'replyD100', 'nan'],
+                     r'..\documents\BlobExport\objects\444444.txt', 'nan', 'r400', 'General', 'Email', '20210111',
+                     'D', 'nan', r'..\documents\BlobExport\formletters\D.txt', 'nan'],
                     ['Ms.', 'Emma', 'E.', 'Evans', 'nan', 'nan', 'nan', 'nan', '567 E St', 'nan', 'nan', 'nan',
                      'E city', 'ME', '56789', 'nan', 'e100', 'General', 'Email', '20210101', 'Casework Issues', 'nan',
-                     'fileE100', 'nan', 'r500', 'General', 'Email', '20210111', 'formE', 'nan', 'replyE100', 'nan'],
+                     r'..\documents\BlobExport\objects\555555.txt', 'nan', 'r500', 'General', 'Email', '20210111',
+                     'E', 'nan', r'..\documents\BlobExport\indivletters\000005.txt', 'nan'],
                     ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
                      'F city', 'FL', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
-                     'Social Security^Casework', 'nan', 'fileF100', 'nan', 'r600', 'General', 'Email', '20210111',
-                     'formF', 'nan', 'replyF100', 'nan'],
+                     'Social Security^Casework', 'nan', 'nan', 'nan', 'r600',
+                     'General', 'Email', '20210111', 'F', 'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan'],
                     ['Ms.', 'Ann', 'A.', 'Anderson', 'nan', 'MD', 'nan', 'nan', '123 A St', 'nan', 'nan', 'nan',
-                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan',
-                     'file_casework', 'nan', 'r100', 'General', 'Email', '20210111', 'formA', 'nan', 'replyA100', 'nan'],
+                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'This is casework',
+                     r'..\documents\BlobExport\objects\111111.txt', 'nan', 'r100', 'General', 'Email', '20210111',
+                     'nan', 'nan', r'..\documents\BlobExport\indivletters\000001.txt', 'nan'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
-                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan',
-                     'fileC300', 'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'reply_casework', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, deletion log")
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1',
+                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General',
+                     'Email', '20240313', 'C', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for preservation, metadata deletion log")
+
+        # Tests the contents of the input_directory, that all files that should be deleted are gone.
+        result = files_in_dir(input_directory)
+        expected = ['archiving_correspondence.dat', 'archiving_correspondence_edited.csv', 'B.txt', 'C.txt',
+                    'D.txt', 'F.txt', '000007.txt', '222222.txt', '666666.txt', '777777.txt']
+        self.assertEqual(result, expected, "Problem with test for preservation, input_directory contents")
+
+        # Tests the access script mode outputs were not made.
+        output_directory = os.path.join('test_data', 'script')
+        result = [os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
+                  os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
+                  os.path.exists(os.path.join(output_directory, '2023-2024.csv'))]
+        expected = [False, False, False]
+        self.assertEqual(result, expected, "Problem with test for preservation, access script mode outputs")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
