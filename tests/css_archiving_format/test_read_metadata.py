@@ -1,6 +1,7 @@
 """
 Tests for the function read_metadata(), which reads the DAT file into a pandas dataframe.
 To keep the inputs organized, the DAT file is named with the test condition rather than archiving_correspondence.dat
+TODO find a character that causes the encoding error, so it can be tested.
 """
 import os
 import unittest

@@ -89,7 +89,12 @@ def read_metadata(path):
     """Read the metadata file into a dataframe"""
     # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
     # TODO: document the encoding errors?
-    df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
+    try:
+        df = pd.read_csv(path, delimiter='\t', dtype=str, on_bad_lines='warn')
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
 
     # Removes blank rows, which are present in some of the data exports.
     df.dropna(how='all', inplace=True)
