@@ -253,13 +253,13 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # For access, removes columns with PII and makes a copy of the data split by congress year.
-    # For preservation, removes rows for casework and deletes the casework files themselves.
+    # Removes rows for casework from the metadata and deletes the casework files themselves.
+    md_df = remove_casework(md_df, output_directory)
+    md_df.to_csv(metadata_path.replace('.dat', '_edited.csv'), index=False)
+    remove_casework_letters(input_directory)
+
+    # For access, removes columns with PII from the metadata and makes a copy of the data split by congress year.
     if script_mode == 'access':
         md_df = remove_pii(md_df)
-        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
-    else:
-        md_df = remove_casework(md_df, output_directory)
-        md_df.to_csv(metadata_path.replace('.dat', '_redacted.csv'), index=False)
-        remove_casework_letters(input_directory)

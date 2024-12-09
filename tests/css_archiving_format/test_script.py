@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv',
+        filenames = ['archiving_correspondence_redacted.csv', '2021-2022.csv', '2023-2024.csv', 'case_remains_log.csv',
                      'metadata_deletion_log.csv', f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"]
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
@@ -37,8 +37,8 @@ class MyTestCase(unittest.TestCase):
         input_directory = os.path.join('test_data', 'script', 'access_test')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
-        # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'script', 'Access_Copy.csv')
+        # Tests the contents of archiving_correspondence_redacted.csv.
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
@@ -49,7 +49,7 @@ class MyTestCase(unittest.TestCase):
                      'fileB200', 'nan', 'r200', 'General', 'Email', '20230212', 'formB', 'nan', 'replyB200', 'nan'],
                     ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1', 'nan', 'fileC300',
                      'nan', 'r300', 'General', 'Email', '20240313', 'formC', 'nan', 'replyC300', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, Access_Copy.csv")
+        self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
         csv_path = os.path.join('test_data', 'script', '2021-2022.csv')
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
         # Tests the contents of archiving_correspondence.dat.
-        csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence_redacted.csv')
+        csv_path = os.path.join('test_data', 'script', 'preservation_test', 'archiving_correspondence_edited.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
