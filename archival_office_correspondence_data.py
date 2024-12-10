@@ -225,7 +225,7 @@ if __name__ == '__main__':
     # For preservation, removes rows for casework and deletes the casework files themselves.
     if script_mode == 'access':
         md_df = remove_pii(md_df)
-        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        md_df.to_csv(os.path.join(output_directory, 'archive_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
     else:
         md_df = remove_casework(md_df, output_directory)
