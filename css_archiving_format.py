@@ -56,7 +56,8 @@ def check_arguments(arg_list):
 
 
 def file_deletion_log(log_path, file_path, header=False, note=None):
-    """Make or update the file deletion log, so data is saved as soon as a file is deleted"""
+    """Make or update the file deletion log, so data is saved as soon as a file is deleted
+    Modelled after https://github.com/uga-libraries/accessioning-scripts/blob/main/technical-appraisal-logs.py"""
 
     # Makes a new log with a header row.
     # If a file already exists with this name, it will be overwritten.
@@ -87,8 +88,6 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
 
 def read_metadata(path):
     """Read the metadata file into a dataframe"""
-    # TODO: document ParserError?. Rows that are printed by on_bad_lines='warn' are not included in the output.
-    # TODO: document the encoding errors?
     try:
         df = pd.read_csv(path, delimiter='\t', dtype=str, on_bad_lines='warn')
     except UnicodeDecodeError:
@@ -195,7 +194,6 @@ def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
     # List of column names that should be removed. Includes names and address information.
-    # TODO: confirm this list
     remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
               'addr1', 'addr2', 'addr3', 'addr4']
 
@@ -210,8 +208,6 @@ def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
-    # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
-    # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
         df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
@@ -231,7 +227,6 @@ def split_congress_year(df, output_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    # TODO: decide on file name and where it saves.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
