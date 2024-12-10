@@ -9,9 +9,9 @@ import subprocess
 import unittest
 
 
-def csv_to_list(csv_path, delimiter=','):
+def csv_to_list(csv_path):
     """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
-    df = pd.read_csv(csv_path, delimiter=delimiter, dtype=str)
+    df = pd.read_csv(csv_path, dtype=str)
     df = df.fillna('nan')
     csv_list = [df.columns.tolist()] + df.values.tolist()
     return csv_list
@@ -112,9 +112,9 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join('test_data', 'script')
         today = date.today().strftime('%Y-%m-%d')
 
-        # Tests the contents of archive.dat.
-        csv_path = os.path.join(input_directory, 'archive.dat')
-        result = csv_to_list(csv_path, '\t')
+        # Tests the contents of archive_edited.csv.
+        csv_path = os.path.join(input_directory, 'archive_edited.csv')
+        result = csv_to_list(csv_path)
         expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                      'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                      'letter_date', 'staffer_initials', 'document_number', 'comments'],
@@ -124,7 +124,7 @@ class MyTestCase(unittest.TestCase):
                      '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
                     ['SMITH', 'nan', 'AN INSTITUTE', 'PO BOX 123', '1000 MAIN', 'COLUMBUS', 'GA', '30003', 'ISSUE',
                      'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'Comment']]
-        self.assertEqual(result, expected, "Problem with test for preservation, DAT")
+        self.assertEqual(result, expected, "Problem with test for preservation, archive_edited.csv")
 
         # Tests the contents of the file deletion log.
         csv_path = os.path.join(output_directory, f"file_deletion_log_{today}.csv")
