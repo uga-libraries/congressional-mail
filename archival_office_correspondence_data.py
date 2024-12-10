@@ -177,8 +177,6 @@ def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
-    # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
-    # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['letter_date'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
         df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
@@ -189,7 +187,6 @@ def split_congress_year(df, output_dir):
     # Adds a column with the year received, which will be used to calculate the Congress Year.
     # Column letter_date is formatted YYMMDD.
     # First the two digit year is extracted, and then it is made a four-digit year by adding 1900 or 2000.
-    # TODO: confirm 1960 as the cut off for 1900s vs 2000s.
     df.loc[:, 'year'] = df['letter_date'].astype(str).str[:2].astype(int)
     df.loc[df['year'] >= 60, 'year'] = df['year'] + 1900
     df.loc[df['year'] < 60, 'year'] = df['year'] + 2000
@@ -202,7 +199,6 @@ def split_congress_year(df, output_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    # TODO: decide on file name and where it saves.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
