@@ -77,6 +77,7 @@ def read_metadata(path):
 
     # Removes blank rows, which are present in some of the data exports.
     # Blank rows have an empty string in every column.
+    # Source: Microsoft Copilot
     df = df[~(df == '').all(axis=1)]
 
     return df
