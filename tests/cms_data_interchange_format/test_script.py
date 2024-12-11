@@ -32,7 +32,19 @@ class MyTestCase(unittest.TestCase):
         input_directory = os.path.join('test_data', 'script')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
-        # Tests the contents of CSS_Access_Copy.csv.
+        # Tests the contents of case_remains_log.csv.
+        csv_path = os.path.join('test_data', 'case_remains_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'nan',
+                     '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'nan'],
+                    ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'nan',
+                     '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for access, case_remains_log.csv")
+
+        # Tests the contents of Access_Copy.csv.
         csv_path = os.path.join('test_data', 'Access_Copy.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
@@ -115,7 +127,7 @@ class MyTestCase(unittest.TestCase):
                      '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'nan'],
                     ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'nan',
                      '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for correct, undated")
+        self.assertEqual(result, expected, "Problem with test for preservation, case_remains_log.csv")
 
 
 if __name__ == '__main__':
