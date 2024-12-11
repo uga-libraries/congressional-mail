@@ -74,20 +74,48 @@ def read_metadata(paths):
     # including supplying the column headings.
     # TODO: confirm these column names
     # TODO: be more flexible about expected extra columns at the end of the export
-    df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
-                               'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
-                               'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
-                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code'])
-    df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type',
-                               'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
-                               'address_id', 'household_flag', 'household_id', 'extra1', 'extra2'])
-    df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'])
-    df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
-                               'document_type', 'correspondence_document_name', 'file_location'])
+    columns_1b = ['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
+                  'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
+                  'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
+                  'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code']
+    columns_2a = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type', 'staff',
+                  'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type', 'address_id',
+                  'household_flag', 'household_id', 'extra1', 'extra2']
+    columns_2b = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position']
+    columns_2c = ['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number', 'document_type',
+                  'correspondence_document_name', 'file_location']
+
+    try:
+        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_1b)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 1B.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_1b)
+
+    try:
+        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2a)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2A.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2a)
+
+    try:
+        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2b)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2B.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2b)
+
+    try:
+        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2c)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2C.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2c)
 
     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
     # Otherwise, it would be too much data to merge.
