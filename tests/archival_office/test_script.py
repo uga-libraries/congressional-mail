@@ -37,17 +37,77 @@ class MyTestCase(unittest.TestCase):
             if os.path.exists(file_path):
                 os.remove(file_path)
 
+        if os.path.exists(os.path.join('test_data', 'script', 'access_test')):
+            shutil.rmtree(os.path.join('test_data', 'script', 'access_test'))
+
         if os.path.exists(os.path.join('test_data', 'script', 'preservation_test')):
             shutil.rmtree(os.path.join('test_data', 'script', 'preservation_test'))
 
     def test_access(self):
         """Test for when the script runs in access mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'access_test_copy'),
+                        os.path.join('test_data', 'script', 'access_test'))
+
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
         input_directory = os.path.join('test_data', 'script', 'access_test')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         output_directory = os.path.join('test_data', 'script')
+        today = date.today().strftime('%Y-%m-%d')
+
+        # Tests the contents of archive_edited.csv.
+        csv_path = os.path.join(input_directory, 'archive_edited.csv')
+        result = csv_to_list(csv_path)
+        expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
+                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
+                     'letter_date', 'staffer_initials', 'document_number', 'comments'],
+                    ['MILLER, FRANK A., MR.', 'nan', 'nan', '123 HOLLYWOOD', 'nan', 'LOS ANGELES', 'CA', '12345',
+                     'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
+                    ['NEWTON, I.M.', 'INVENTOR', 'nan', '9000 ROAD', 'nan', 'CAIRO', 'GA', '30001', 'ISSUE',
+                     'nan', 'nan', '980801', 'TBD', 'nan', 'nan'],
+                    ['OLIVIA, JOAN, DR.', 'PROFESSOR', 'nan', 'BIG UNIVERSITY', 'ABC ST', 'ATLANTA', 'GA',
+                     '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
+                    ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE',
+                     'nan', 'nan', 'nan', 'FWIW', 'nan',
+                     'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
+                     'THE LAST ONE'],
+                    ['SMITH', 'nan', 'AN INSTITUTE', 'PO BOX 123', '1000 MAIN', 'COLUMBUS', 'GA', '30003', 'ISSUE',
+                     'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for access, archive_edited.csv")
+
+        # Tests the case remains log was not made.
+        csv_path = os.path.join(output_directory, 'case_remains_log.csv')
+        result = os.path.exists(csv_path)
+        self.assertEqual(result, False, "Problem with test for access, case remains log")
+
+        # Tests the contents of the file deletion log.
+        csv_path = os.path.join(output_directory, f"file_deletion_log_{today}.csv")
+        result = csv_to_list(csv_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [os.path.join(input_directory, 'text', '111111.txt'),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [os.path.join(input_directory, 'text', '444444.txt'), '0.1', today, today,
+                     'C29C5262DF8A6B0072322ED6942BE134', 'casework']]
+        self.assertEqual(result, expected, "Problem with test for access, file deletion log")
+
+        # Tests the contents of the metadata deletion log.
+        csv_path = os.path.join(output_directory, 'metadata_deletion_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
+                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
+                     'letter_date', 'staffer_initials', 'document_number', 'comments'],
+                    ['MILLER, FRANK A., MR.', 'nan', 'nan', '123 HOLLYWOOD', 'nan', 'LOS ANGELES', 'CA', '12345',
+                     'ISSUE', 'CASE', 'nan', '970813', 'FWIW', '725SAT100', 'Q111111'],
+                    ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE', 'CASE',
+                     'nan', 'nan', 'FWIW', 'nan', 'Q444444']]
+        self.assertEqual(result, expected, "Problem with test for access, metadata deletion log")
+
+        # Tests the correct files were deleted.
+        result = files_in_dir(os.path.join(input_directory, 'text'))
+        expected = ['123456.txt']
+        self.assertEqual(result, expected, "Problem with test for access, files deleted")
 
         # Tests the contents of archive_redacted.csv.
         csv_path = os.path.join(output_directory, 'archive_redacted.csv')
