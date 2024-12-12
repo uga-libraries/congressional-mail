@@ -228,7 +228,6 @@ def split_congress_year(df, output_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    # TODO: decide on file name and where it saves.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
@@ -250,12 +249,14 @@ if __name__ == '__main__':
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(metadata_paths_dict)
 
-    # For access, makes a copy of the data split by congress year.
-    # For preservation, removes rows for casework and deletes the casework files themselves.
+    # Removes rows for casework and deletes the casework files themselves.
+    md_df = remove_casework(md_df, output_directory)
+    md_df.to_csv(os.path.join(output_directory, 'Preservation_Copy.csv'), index=False)
+    remove_casework_letters(input_directory)
+
+    # For access, makes a copy of the metadata with tables merged and PII removed and
+    # makes a copy of the data split by congress year.
     if script_mode == 'access':
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
-    else:
-        md_df = remove_casework(md_df, output_directory)
-        md_df.to_csv(os.path.join(output_directory, 'Preservation_Copy.csv'), sep='\t', index=False)
-        remove_casework_letters(input_directory)
+
