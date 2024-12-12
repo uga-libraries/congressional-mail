@@ -1,3 +1,0 @@
-city,state_code,zip_code,country,communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,document_type,communication_document_name,communication_document_id,file_location,file_name
-Atlanta,GA,30327-4346,USA,usmail,,C,,,,,usmail,,OUTGOING,..\documents\formletters\30046.doc.doc,30046.doc, ,
-Smyrna,GA,30080-1944,USA,usmail,,C,,,,,usmail,,OUTGOING,..\documents\formletters\Airline Passenger BOR Act2 1999.doc,Airline Passenger BOR Act2 1999, ,
