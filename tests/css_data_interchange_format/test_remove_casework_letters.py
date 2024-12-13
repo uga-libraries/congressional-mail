@@ -20,7 +20,8 @@ class MyTestCase(unittest.TestCase):
 
         today = date.today().strftime('%Y-%m-%d')
         paths = [os.path.join(test_dir, 'deletion', f'file_deletion_log_{today}.csv'),
-                 os.path.join(test_dir, 'file_not_found', f'file_deletion_log_{today}.csv')]
+                 os.path.join(test_dir, 'file_not_found', f'file_deletion_log_{today}.csv'),
+                 os.path.join(test_dir, 'no_deletion_form', f'file_deletion_log_{today}.csv')]
         for path in paths:
             if os.path.exists(path):
                 os.remove(path)
