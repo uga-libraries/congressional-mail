@@ -9,7 +9,9 @@ import os
 import re
 import sys
 import css_archiving_format as css_a
+import cms_data_interchange_format as cms_dif
 import css_data_interchange_format as css_dif
+import archival_office_correspondence_data as ao
 
 
 def log(input_dir, row_data):
@@ -58,6 +60,26 @@ def match_css_archiving(df, input_dir):
     print(f"Out of {files} files in the metadata, {match_percent}% ({matches}) were in the export")
 
 
+def match_cms_dif(df, input_dir):
+    """Log every file and print totals"""
+    matches = 0
+    log(input_dir, ['Found', 'Path'])
+
+    doc_df = df.dropna(subset=['correspondence_document_name']).copy()
+    doc_list = doc_df['correspondence_document_name'].unique().tolist()
+    for name in doc_list:
+        file_path = os.path.join(input_dir, 'documents', 'documents', name)
+        if os.path.exists(file_path):
+            log(input_dir, [True, file_path])
+            matches += 1
+        else:
+            log(input_dir, [False, file_path])
+
+    files = len(doc_list)
+    match_percent = round(matches / files * 100, 2)
+    print(f"Out of {files} files in the metadata, {match_percent}% ({matches}) were in the CMS DIF export")
+
+
 def match_css_dif(df, input_dir):
     """Log every file and print totals"""
     files = 0
@@ -87,9 +109,13 @@ if __name__ == '__main__':
     # md_df = css_a.remove_casework(md_df, os.path.dirname(input_directory))
     # match_css_archiving(md_df, input_directory)
 
-    # CSS Data Interchange Format
-    input_directory, metadata_paths_dict, script_mode, errors_list = css_dif.check_arguments(sys.argv)
-    md_df = css_dif.read_metadata(metadata_paths_dict)
-    md_df = css_dif.remove_casework(md_df, os.path.dirname(input_directory))
-    match_css_dif(md_df, input_directory)
-    
+    # CMS Data Interchange Format
+    input_directory, metadata_paths_dict, script_mode, errors_list = cms_dif.check_arguments(sys.argv)
+    md_df = cms_dif.read_metadata(metadata_paths_dict)
+    match_cms_dif(md_df, input_directory)
+
+    # # CSS Data Interchange Format
+    # input_directory, metadata_paths_dict, script_mode, errors_list = css_dif.check_arguments(sys.argv)
+    # md_df = css_dif.read_metadata(metadata_paths_dict)
+    # md_df = css_dif.remove_casework(md_df, os.path.dirname(input_directory))
+    # match_css_dif(md_df, input_directory)
