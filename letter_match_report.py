@@ -3,6 +3,9 @@ Temporary script to determine how many of the non-casework letters match the exp
 Using check_arguments to get metadata path(s), even though don't need script mode otherwise.
 Nothing is deleted, so this can be run on the original accession.
 If decide to keep, will need to generalize more.
+
+Trying a different strategy (comparison_report.py),
+but leaving this for now in case this ends up being better.
 """
 import csv
 import os
