@@ -56,6 +56,27 @@ def directory_df(parent_dir, col_name, start=None):
     return df
 
 
+def multi_level_directory_df(parent_dir, col_name):
+    """Make df with relative path from parent dir where file can be any level within that,
+    using the same column name as the metadata"""
+    paths = []
+    for root, dirs, files in os.walk(parent_dir):
+        for file in files:
+            paths.append(os.path.join(root, file))
+    df = pd.DataFrame(paths, columns=[col_name])
+    return df
+
+
+def multi_column_metadata(df, input_dir):
+    """Make metadata df combining columns in_document_name and out_document_name, with edits"""
+    in_doc = df['in_document_name'].drop_duplicates().dropna().copy()
+    df['out_document_name'] = df['out_document_name'].replace('\\\\\\\\[a-z]+-[a-z]+', re.escape(input_dir), regex=True)
+    out_doc = df['out_document_name'].drop_duplicates().dropna().copy()
+    combined = pd.concat([in_doc, out_doc])
+    combined_df = combined.to_frame(name='doc_name')
+    return combined_df
+
+
 if __name__ == '__main__':
 
     # # CMS Data Interchange Format
@@ -74,3 +95,11 @@ if __name__ == '__main__':
                           os.path.join('..', 'documents'))
     md = md_df['communication_document_name'].drop_duplicates().dropna().copy()
     compare(dir_df, md, input_directory)
+
+    # # CSS Archiving Format
+    # input_directory, metadata_path, script_mode, errors_list = css_a.check_arguments(sys.argv)
+    # md_df = css_a.read_metadata(metadata_path)
+    # md_df = css_a.remove_casework(md_df, os.path.dirname(input_directory))
+    # dir_df = multi_level_directory_df(os.path.join(input_directory, 'dos'), 'doc_name')
+    # md = multi_column_metadata(md_df, input_directory)
+    # compare(dir_df, md, input_directory)
