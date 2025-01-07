@@ -3,6 +3,7 @@ Temporary script to determine how many of the non-casework letters match the exp
 finding letters just in the metadata and letters just in the directory.
 Whereas letter_match_report.py was my first try, and it only checked if letters in the metadata were in the directory.
 
+Comment out the other export types in main before running.
 Using check_arguments to get metadata path(s), even though don't need script mode otherwise.
 Nothing is deleted, so this can be run on the original accession.
 """
@@ -40,22 +41,36 @@ def compare(df_dir, df_md, input_dir):
     print(f"and {counts['both']} ({round(counts['both'] / total * 100, 2)}%) matched")
 
 
-def directory_df(parent_dir, col_name):
+def directory_df(parent_dir, col_name, start=None):
     """Make df with relative path from folder within parent_dir to every file,
+    with the option of adding the same text to the beginning of all paths (start),
     using the same column name as the metadata"""
     paths = []
     for folder in os.listdir(parent_dir):
         for file in os.listdir(os.path.join(parent_dir, folder)):
-            paths.append(os.path.join(folder, file))
+            file_path = os.path.join(folder, file)
+            if start:
+                file_path = os.path.join(start, file_path)
+            paths.append(file_path)
     df = pd.DataFrame(paths, columns=[col_name])
     return df
 
 
 if __name__ == '__main__':
 
-    # CMS Data Interchange Format
-    input_directory, metadata_paths_dict, script_mode, errors_list = cms_dif.check_arguments(sys.argv)
-    md_df = cms_dif.read_metadata(metadata_paths_dict)
-    dir_df = directory_df(os.path.join(input_directory, 'documents', 'documents'), 'correspondence_document_name')
-    md = md_df['correspondence_document_name'].drop_duplicates().dropna().copy()
+    # # CMS Data Interchange Format
+    # input_directory, metadata_paths_dict, script_mode, errors_list = cms_dif.check_arguments(sys.argv)
+    # md_df = cms_dif.read_metadata(metadata_paths_dict)
+    # dir_df = directory_df(os.path.join(input_directory, 'documents', 'documents'), 'correspondence_document_name')
+    # md = md_df['correspondence_document_name'].drop_duplicates().dropna().copy()
+    # compare(dir_df, md, input_directory)
+
+    # CSS Data Interchange Format
+    input_directory, metadata_paths_dict, script_mode, errors_list = css_dif.check_arguments(sys.argv)
+    md_df = css_dif.read_metadata(metadata_paths_dict)
+    md_df = css_dif.remove_casework(md_df, os.path.dirname(input_directory))
+    dir_df = directory_df(os.path.join(input_directory, 'documents', 'blobexport'),
+                          'communication_document_name',
+                          os.path.join('..', 'documents'))
+    md = md_df['communication_document_name'].drop_duplicates().dropna().copy()
     compare(dir_df, md, input_directory)
