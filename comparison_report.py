@@ -67,10 +67,14 @@ def multi_level_directory_df(parent_dir, col_name):
     return df
 
 
-def multi_column_metadata(df, input_dir):
+def multi_column_metadata(df, input_dir, export):
     """Make metadata df combining columns in_document_name and out_document_name, with edits"""
+    if export == 'documents':
+        df = df.replace('BlobExport', 'blobexport', regex=True)
     in_doc = df['in_document_name'].drop_duplicates().dropna().copy()
-    df['out_document_name'] = df['out_document_name'].replace('\\\\\\\\[a-z]+-[a-z]+', re.escape(input_dir), regex=True)
+    if export == 'dos':
+        df['out_document_name'] = df['out_document_name'].replace('\\\\\\\\[a-z]+-[a-z]+',
+                                                                  re.escape(input_dir), regex=True)
     out_doc = df['out_document_name'].drop_duplicates().dropna().copy()
     combined = pd.concat([in_doc, out_doc])
     combined_df = combined.to_frame(name='doc_name')
@@ -86,20 +90,29 @@ if __name__ == '__main__':
     # md = md_df['correspondence_document_name'].drop_duplicates().dropna().copy()
     # compare(dir_df, md, input_directory)
 
-    # CSS Data Interchange Format
-    input_directory, metadata_paths_dict, script_mode, errors_list = css_dif.check_arguments(sys.argv)
-    md_df = css_dif.read_metadata(metadata_paths_dict)
-    md_df = css_dif.remove_casework(md_df, os.path.dirname(input_directory))
-    dir_df = directory_df(os.path.join(input_directory, 'documents', 'blobexport'),
-                          'communication_document_name',
-                          os.path.join('..', 'documents'))
-    md = md_df['communication_document_name'].drop_duplicates().dropna().copy()
-    compare(dir_df, md, input_directory)
+    # # CSS Data Interchange Format
+    # input_directory, metadata_paths_dict, script_mode, errors_list = css_dif.check_arguments(sys.argv)
+    # md_df = css_dif.read_metadata(metadata_paths_dict)
+    # md_df = css_dif.remove_casework(md_df, os.path.dirname(input_directory))
+    # dir_df = directory_df(os.path.join(input_directory, 'documents', 'blobexport'),
+    #                       'communication_document_name',
+    #                       os.path.join('..', 'documents'))
+    # md = md_df['communication_document_name'].drop_duplicates().dropna().copy()
+    # compare(dir_df, md, input_directory)
 
-    # # CSS Archiving Format
+    # # CSS Archiving Format: dos folder
     # input_directory, metadata_path, script_mode, errors_list = css_a.check_arguments(sys.argv)
     # md_df = css_a.read_metadata(metadata_path)
     # md_df = css_a.remove_casework(md_df, os.path.dirname(input_directory))
     # dir_df = multi_level_directory_df(os.path.join(input_directory, 'dos'), 'doc_name')
-    # md = multi_column_metadata(md_df, input_directory)
+    # md = multi_column_metadata(md_df, input_directory, 'dos')
     # compare(dir_df, md, input_directory)
+
+    # CSS Archiving Format: documents folder
+    input_directory, metadata_path, script_mode, errors_list = css_a.check_arguments(sys.argv)
+    md_df = css_a.read_metadata(metadata_path)
+    md_df = css_a.remove_casework(md_df, os.path.dirname(input_directory))
+    dir_df = directory_df(os.path.join(input_directory, 'documents', 'blobexport'),
+                          'doc_name', os.path.join('..', 'documents', 'blobexport'))
+    md = multi_column_metadata(md_df, input_directory, 'documents')
+    compare(dir_df, md, input_directory)
