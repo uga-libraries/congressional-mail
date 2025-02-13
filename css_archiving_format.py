@@ -138,45 +138,21 @@ def find_casework_rows(df, output_dir):
 
 
 def remove_casework_rows(df, output_dir):
-    """Remove metadata rows with topics or text that indicate they are casework and log results"""
+    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
 
-    # Deletion log path (used multiple times)
-    del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
+    # Reads the case delete log into a dataframe, which is in output_dir if it is present.
+    # If it is not, there are no rows to delete.
+    try:
+        df_delete = pd.read_csv(os.path.join(output_dir, 'case_delete_log.csv'))
+    except FileNotFoundError:
+        print(f"No case delete log in {output_dir}")
+        return
 
-    # Removes row if column in_topic includes one of the topics that indicates casework, if any.
-    # There may be more than one topic in that column.
-    # Deleted rows are saved to a log for review.
-    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
-    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
-    if len(df[casework_topic].index) > 0:
-        df[casework_topic].to_csv(del_log, index=False)
-        df = df[~casework_topic]
+    # Makes an updated dataframe with just rows in df that are not in df_delete.
+    df_merge = df.merge(df_delete, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
-    # Removes row if any column includes the text "casework", if any.
-    # This removes some rows where the text indicates they are not casework,
-    # which is necessary to protect privacy and keep time required reasonable.
-    # Deleted rows are saved to a log for review.
-    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    if len(df.loc[casework.any(axis=1)].index) > 0:
-        df.loc[casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df.loc[~casework.any(axis=1)]
-
-    # Removes row if any column has a phrase with "case" that indicates casework, if any.
-    # Specific phrases are used, instead of just "case", to avoid unnecessarily removing other content like legal cases.
-    # Deleted rows are saved to a log for review.
-    case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
-    case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
-    if len(df.loc[case_phrase.any(axis=1)].index) > 0:
-        df.loc[case_phrase.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df.loc[~case_phrase.any(axis=1)]
-
-    # Remaining rows with "case" in any column are saved to a log for review, if any.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
-    return df
+    return df_update
 
 
 def remove_casework_letters(input_dir):
@@ -284,15 +260,17 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Finds rows in the metadata that are for casework.
-    casework_df = find_casework_rows(md_df, output_directory)
+    # Finds rows in the metadata that are for casework and saves to a CSV.
+    find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
+    # It uses the log from find_casework_rows() to know what to delete.
     if script_mode == 'preservation':
         remove_casework_letters(input_directory)
 
     # For access, removes rows for casework and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
+    # It uses the log from find_casework_rows() to know what to delete.
     if script_mode == 'access':
         md_df = remove_casework_rows(md_df, output_directory)
         md_df = remove_pii(md_df)
