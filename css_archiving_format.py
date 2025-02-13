@@ -101,6 +101,42 @@ def read_metadata(path):
     return df
 
 
+def find_casework_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are casework and log results"""
+
+    # Deletion log path (used multiple times)
+    del_log = os.path.join(output_dir, 'case_delete_log.csv')
+
+    # Logs for deletion if column in_topic includes one or more of the topics that indicates casework.
+    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
+    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    if len(df[casework_topic].index) > 0:
+        df[casework_topic].to_csv(del_log, index=False)
+        df = df[~casework_topic]
+
+    # Logs for deletion if any column includes the text "casework".
+    # This includes a few rows with phrases like "this is not casework",
+    # which is necessary to protect privacy and keep time required reasonable.
+    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    if len(df.loc[casework.any(axis=1)].index) > 0:
+        df.loc[casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df.loc[~casework.any(axis=1)]
+
+    # Logs for deletion if any column has a phrase with "case" that indicates casework.
+    # Specific phrases are used to avoid unnecessarily removing other topics like legal cases.
+    case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
+    case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
+    if len(df.loc[case_phrase.any(axis=1)].index) > 0:
+        df.loc[case_phrase.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
+        df = df.loc[~case_phrase.any(axis=1)]
+
+    # Makes a second log with any remaining rows with "case" in any column.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+
+
 def remove_casework_rows(df, output_dir):
     """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
@@ -249,7 +285,7 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_path)
 
     # Finds rows in the metadata that are for casework.
-    casework_df = 'TBD'
+    casework_df = find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     if script_mode == 'preservation':
