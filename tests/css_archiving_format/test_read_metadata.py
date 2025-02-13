@@ -6,7 +6,13 @@ TODO find a character that causes the encoding error, so it can be tested.
 import os
 import unittest
 from css_archiving_format import read_metadata
-from test_remove_casework import df_to_list
+
+
+def df_to_list(df):
+    """Convert a dataframe to a list for easier comparison"""
+    df.fillna('nan', inplace=True)
+    df_list = [df.columns.tolist()] + df.values.tolist()
+    return df_list
 
 
 class MyTestCase(unittest.TestCase):
