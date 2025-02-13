@@ -5,7 +5,7 @@ To simplify input, tests use dataframes with only some of the columns present in
 import os
 import pandas as pd
 import unittest
-from css_archiving_format import remove_casework
+from css_archiving_format import remove_casework_rows
 from test_script import csv_to_list
 
 
@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'Health', 'This is casework'],
                               ['30602', 'Prison Case', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the returned dataframe is empty (columns only).
         result = df_to_list(md_df)
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
                               ['30604', '', 'Mary started case yesterday'],
                               ['30605', 'Roads', 'Not a case']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
                               ['30605', '', 'This is not casework'],
                               ['casework', '', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
@@ -131,7 +131,7 @@ class MyTestCase(unittest.TestCase):
                               ['30602', 'Casework Issues', ''],
                               ['30604', 'Prison Case', 'note']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
@@ -160,7 +160,7 @@ class MyTestCase(unittest.TestCase):
                               ['30603', 'Prison Case^No Reply', ''],
                               ['30604', 'Casework^Casework Issues', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)
@@ -189,7 +189,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Keep', ''],
                               ['30601', 'Healthcare', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        md_df = remove_casework(md_df, 'test_data')
+        md_df = remove_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)

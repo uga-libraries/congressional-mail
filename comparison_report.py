@@ -111,7 +111,7 @@ if __name__ == '__main__':
     # CSS Archiving Format: documents folder
     input_directory, metadata_path, script_mode, errors_list = css_a.check_arguments(sys.argv)
     md_df = css_a.read_metadata(metadata_path)
-    md_df = css_a.remove_casework(md_df, os.path.dirname(input_directory))
+    md_df = css_a.remove_casework_rows(md_df, os.path.dirname(input_directory))
     dir_df = directory_df(os.path.join(input_directory, 'documents', 'blobexport'),
                           'doc_name', os.path.join('..', 'documents', 'blobexport'))
     md = multi_column_metadata(md_df, input_directory, 'documents')

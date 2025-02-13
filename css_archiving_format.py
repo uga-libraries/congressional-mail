@@ -101,7 +101,7 @@ def read_metadata(path):
     return df
 
 
-def remove_casework(df, output_dir):
+def remove_casework_rows(df, output_dir):
     """Remove metadata rows with topics or text that indicate they are casework and log results"""
 
     # Deletion log path (used multiple times)
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     # For access, removes rows for casework and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
     if script_mode == 'access':
-        md_df = remove_casework(md_df, output_directory)
+        md_df = remove_casework_rows(md_df, output_directory)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
