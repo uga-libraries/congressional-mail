@@ -182,12 +182,12 @@ def remove_casework_rows(df, output_dir):
 def remove_casework_letters(input_dir):
     """Remove casework letters received from constituents and individual casework letters sent back by the office"""
 
-    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # Reads the case delete log into a dataframe, which is in the parent folder of input_dir if it is present.
     # If it is not, there are no files to delete.
     try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'metadata_deletion_log.csv'))
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
     except FileNotFoundError:
-        print(f"No deletion log in {os.path.dirname(input_dir)}")
+        print(f"No case delete log in {os.path.dirname(input_dir)}")
         return
 
     # Creates a file deletion log, with a header row.
