@@ -263,7 +263,6 @@ if __name__ == '__main__':
 
     # For access, removes rows for casework and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
-    # It uses the log from find_casework_rows() to know what to delete.
     if script_mode == 'access':
         md_df = remove_casework_rows(md_df, casework_df)
         md_df = remove_pii(md_df)
