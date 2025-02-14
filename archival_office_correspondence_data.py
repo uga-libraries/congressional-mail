@@ -228,9 +228,10 @@ if __name__ == '__main__':
     # Finds rows in the metadata that are for casework and saves to a CSV.
     casework_df = find_casework_rows(md_df, output_directory)
 
-    # Removes rows for casework from the metadata and deletes the casework files themselves.
-    md_df.to_csv(metadata_path.replace('.dat', '_edited.csv'), index=False)
-    remove_casework_letters(input_directory)
+    # For preservation, deletes the casework files, which is an appraisal decision.
+    # It uses the log from find_casework_rows() to know what to delete.
+    if script_mode == 'preservation':
+        remove_casework_letters(input_directory)
 
     # For access, removes rows for casework and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
