@@ -1,11 +1,94 @@
 """
-Draft script to prepare access copies from an export in the Archival Office Correspondence Data format.
-Required argument: path to the DAT file with the metadata export.
+Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
+Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
+from datetime import date
+import numpy as np
 import os
 import pandas as pd
 import sys
-from css_archiving_format import check_argument, save_df
+from css_archiving_format import file_deletion_log
+
+
+def check_arguments(arg_list):
+    """Verify the required script arguments are present and valid and get the path to the metadata file"""
+
+    # Default values for the variables calculated by this function.
+    input_dir = None
+    md_path = None
+    mode = None
+    errors = []
+
+    # Both arguments are missing (only the script path is present).
+    # Return immediately, or it would also have the error one missing required argument.
+    if len(arg_list) == 1:
+        errors.append("Missing required arguments, input_directory and script_mode")
+        return input_dir, md_path, mode, errors
+
+    # At least the first argument is present.
+    # Verifies it is a valid path, and if so that it contains the expected DAT file.
+    if len(arg_list) > 1:
+        if os.path.exists(arg_list[1]):
+            input_dir = arg_list[1]
+            if os.path.exists(os.path.join(input_dir, 'archive.dat')):
+                md_path = os.path.join(input_dir, 'archive.dat')
+            else:
+                errors.append(f"No archive.dat file in the input_directory")
+        else:
+            errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
+
+    # Both required arguments are present.
+    # Verifies the second is one of the expected modes.
+    if len(arg_list) > 2:
+        if arg_list[2] in ('access', 'preservation'):
+            mode = arg_list[2]
+        else:
+            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
+    else:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
+
+    # More than the expected two required arguments are present.
+    if len(arg_list) > 3:
+        errors.append("Provided more than the required arguments, input_directory and script_mode")
+
+    return input_dir, md_path, mode, errors
+
+
+def find_casework_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are casework,
+     return as df and log results"""
+
+    # Column correspondence_type includes the text "case" (case-insensitive).
+    corr_type = df['correspondence_type'].str.contains('case', case=False, na=False)
+    df_type = df[corr_type]
+    df = df[~corr_type]
+
+    # Column correspondence_topic includes the text "case" (case-insensitive).
+    corr_topic = df['correspondence_topic'].str.contains('case', case=False, na=False)
+    df_topic = df[corr_topic]
+    df = df[~corr_topic]
+
+    # Column correspondence_subtopic includes the text "case" (case-insensitive).
+    corr_subtopic = df['correspondence_subtopic'].str.contains('case', case=False, na=False)
+    df_subtopic = df[corr_subtopic]
+    df = df[~corr_subtopic]
+
+    # Column comments includes the text "case" (case-insensitive).
+    comments = df['comments'].str.contains('case', case=False, na=False)
+    df_comments = df[comments]
+    df = df[~comments]
+
+    # Makes a log with any remaining rows with "case" in any column.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate casework
+    # and also saves to a log for review for any that are not really casework.
+    df_casework = pd.concat([df_type, df_topic, df_subtopic, df_comments], axis=0, ignore_index=True)
+    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
+    return df_casework
 
 
 def read_metadata(path):
@@ -13,7 +96,6 @@ def read_metadata(path):
 
     # Makes a list from the file contents with one list per row and one item per column,
     # splitting the data into columns based on the character position and removing extra spaces.
-    # TODO: original data can be all caps. Should we change the case or leave it?
     rows_list = []
     positions = [(0, 39), (39, 69), (69, 99), (99, 129), (129, 159), (159, 189), (189, 191), (191, 201), (201, 251),
                  (251, 301), (301, 351), (351, 357), (357, 361), (361, 371), (371, 471)]
@@ -30,7 +112,56 @@ def read_metadata(path):
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
     df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
 
+    # Removes blank rows, which are present in some of the data exports.
+    # Blank rows have an empty string in every column.
+    # Source: Microsoft Copilot
+    df = df[~(df == '').all(axis=1)]
+
     return df
+
+
+def remove_casework_rows(df, df_case):
+    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
+
+    # Makes an updated dataframe with just rows in df that are not in df_case.
+    df_merge = df.merge(df_case, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
+
+    return df_update
+
+
+def remove_casework_letters(input_dir):
+    """Remove casework letters received from constituents (no individual letters sent back by the office)"""
+
+    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
+    except FileNotFoundError:
+        print(f"No deletion log in {os.path.dirname(input_dir)}")
+        return
+
+    # Deletes letters received, based on the document name in the comments column, if any.
+    # If there is a document name, it is formatted "Q# optional text", referring to a file named #.txt.
+    comments_df = df.dropna(subset=['comments']).copy()
+    q_df = comments_df[comments_df['comments'].str.startswith('Q')].copy()
+    q_list = q_df['comments'].tolist()
+    if len(q_list) > 0:
+
+        # Creates a file deletion log, with a header row.
+        log_path = os.path.join(os.path.dirname(input_dir),
+                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+        file_deletion_log(log_path, None, True)
+
+        for q_number in q_list:
+            # Change "text" to match the folder name in the export which contains the letters, if different.
+            q_number = q_number.split(' ')[0]
+            file_path = os.path.join(input_dir, 'text', f"{q_number.replace('Q', '')}.txt")
+            try:
+                file_deletion_log(log_path, file_path)
+                os.remove(file_path)
+            except FileNotFoundError:
+                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):
@@ -47,15 +178,13 @@ def remove_pii(df):
     return df
 
 
-def split_congress_year(df, input_dir):
-    """Make one CSV per Congress Year in the folder with the original metadata file"""
+def split_congress_year(df, output_dir):
+    """Make one CSV per Congress Year"""
 
-    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV.
-    # TODO: confirm that text in place of date should be in undated: usually an error in the number of columns.
-    # TODO: confirm if should have a maximum size, for ones that are still too large to open in a spreadsheet.
-    # TODO: decide on file name and where it saves.
+    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     df_undated = df[pd.to_numeric(df['letter_date'], errors='coerce').isnull()]
-    df_undated.to_csv(os.path.join(input_dir, 'undated.csv'), index=False)
+    if len(df_undated.index) > 0:
+        df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['letter_date'], errors='coerce').notnull()].copy()
@@ -63,7 +192,6 @@ def split_congress_year(df, input_dir):
     # Adds a column with the year received, which will be used to calculate the Congress Year.
     # Column letter_date is formatted YYMMDD.
     # First the two digit year is extracted, and then it is made a four-digit year by adding 1900 or 2000.
-    # TODO: confirm 1960 as the cut off for 1900s vs 2000s.
     df.loc[:, 'year'] = df['letter_date'].astype(str).str[:2].astype(int)
     df.loc[df['year'] >= 60, 'year'] = df['year'] + 1900
     df.loc[df['year'] < 60, 'year'] = df['year'] + 2000
@@ -76,30 +204,39 @@ def split_congress_year(df, input_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    # TODO: decide on file name and where it saves.
-    # TODO: confirm using CSV format.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(input_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
 if __name__ == '__main__':
 
-    # Gets the path to the metadata file from the script argument.
-    # If it is missing or not a valid path, prints an error and exits the script.
-    md_path, error_message = check_argument(sys.argv)
-    if error_message:
-        print(error_message)
+    # Validates the script argument values and calculates the path to the metadata file.
+    # If there are any errors, prints them and exits the script.
+    input_directory, metadata_path, script_mode, errors_list = check_arguments(sys.argv)
+    if len(errors_list) > 0:
+        for error in errors_list:
+            print(error)
         sys.exit(1)
 
+    # Calculates parent folder of the input_directory, which is where script outputs are saved.
+    output_directory = os.path.dirname(input_directory)
+
     # Reads the metadata file into a pandas dataframe.
-    md_df = read_metadata(md_path)
+    md_df = read_metadata(metadata_path)
 
-    # Removes columns with personally identifiable information, if they are present.
-    md_df = remove_pii(md_df)
+    # Finds rows in the metadata that are for casework and saves to a CSV.
+    casework_df = find_casework_rows(md_df, output_directory)
 
-    # Saves the redacted data to a CSV file in the folder with the original metadata file.
-    save_df(md_df, os.path.dirname(md_path))
+    # For preservation, deletes the casework files, which is an appraisal decision.
+    # It uses the log from find_casework_rows() to know what to delete.
+    if script_mode == 'preservation':
+        remove_casework_letters(input_directory)
 
-    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata file.
-    split_congress_year(md_df, os.path.dirname(md_path))
+    # For access, removes rows for casework and columns with PII from the metadata
+    # and makes a copy of the data split by congress year.
+    if script_mode == 'access':
+        md_df = remove_casework_rows(md_df, casework_df)
+        md_df = remove_pii(md_df)
+        md_df.to_csv(os.path.join(output_directory, 'archive_redacted.csv'), index=False)
+        split_congress_year(md_df, output_directory)

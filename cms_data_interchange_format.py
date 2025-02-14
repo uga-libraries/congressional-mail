@@ -1,41 +1,70 @@
 """
-Draft script to prepare access copies from an export in the CMS Data Interchange Format.
-Required argument: path to the metadata folder (contains all needed OUT files).
+Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
+Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
+import numpy as np
 import os
 import pandas as pd
 import sys
-from css_archiving_format import save_df
 from css_data_interchange_format import split_congress_year
 
 
-def get_paths(arg_list):
-    """Get the paths to the data tables in the folder supplied as script argument"""
+def check_arguments(arg_list):
+    """Verify the required script arguments are present and valid and get the paths to the metadata files"""
 
-    paths_dict = {}
+    # Default values for the variables calculated by this function.
+    input_dir = None
+    md_paths = {}
+    mode = None
     errors = []
 
-    # Argument is missing (only the script path is present).
+    # Both arguments are missing (only the script path is present).
+    # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
-        errors.append("Missing required argument: path to the metadata folder")
-    # Argument is present but not a valid path.
-    elif not os.path.exists(arg_list[1]):
-        errors.append(f"Provided path to metadata folder does not exist: {arg_list[1]}")
-    # Argument is correct.
-    # Tests the paths to each expected metadata file.
-    # If the metadata file is present, it updates the dictionary value for that path.
-    # If it is missing, it adds to the errors list.
-    else:
-        # TODO: finalize the tables to include
-        expected_files = ['1B.out', '2A.out', '2B.out', '2C.out']
-        for file in expected_files:
-            if os.path.exists(os.path.join(arg_list[1], file)):
-                # Key is extracted from the filename, for example 2A.out has a key of 2A.
-                paths_dict[file[:2]] = os.path.join(arg_list[1], file)
-            else:
-                errors.append(f'Metadata file {file} is not in the metadata folder')
+        errors.append("Missing required arguments, input_directory and script_mode")
+        return input_dir, md_paths, mode, errors
 
-    return paths_dict, errors
+    # At least the first argument is present.
+    # Verifies it is a valid path, and if so gets the paths to the expected metadata files.
+    if len(arg_list) > 1:
+        if os.path.exists(arg_list[1]):
+            input_dir = arg_list[1]
+            # TODO: finalize the tables to include
+            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out']
+            for file in expected_files:
+                if os.path.exists(os.path.join(input_dir, file)):
+                    # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
+                    md_paths[file[:2]] = os.path.join(input_dir, file)
+                else:
+                    errors.append(f'Metadata file {file} is not in the input_directory')
+        else:
+            errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
+
+    # Both required arguments are present.
+    # Verifies the second is one of the expected modes.
+    if len(arg_list) > 2:
+        if arg_list[2] in ('access', 'preservation'):
+            mode = arg_list[2]
+        else:
+            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
+    else:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
+
+    # More than the expected two required arguments are present.
+    if len(arg_list) > 3:
+        errors.append("Provided more than the required arguments, input_directory and script_mode")
+
+    return input_dir, md_paths, mode, errors
+
+
+def check_casework(df, output_dir):
+    """Make log of rows with "case" to identify casework in future exports (none in collection currently)"""
+
+    # Rows with "case" in any column are saved to a log for review, if any.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
 
 
 def read_metadata(paths):
@@ -45,20 +74,48 @@ def read_metadata(paths):
     # including supplying the column headings.
     # TODO: confirm these column names
     # TODO: be more flexible about expected extra columns at the end of the export
-    df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
-                               'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
-                               'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
-                               'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code'])
-    df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type',
-                               'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
-                               'address_id', 'household_flag', 'household_id', 'extra1', 'extra2'])
-    df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'])
-    df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                        names=['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
-                               'document_type', 'correspondence_document_name', 'file_location'])
+    columns_1b = ['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
+                  'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
+                  'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
+                  'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code']
+    columns_2a = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type', 'staff',
+                  'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type', 'address_id',
+                  'household_flag', 'household_id', 'extra1', 'extra2']
+    columns_2b = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position']
+    columns_2c = ['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number', 'document_type',
+                  'correspondence_document_name', 'file_location']
+
+    try:
+        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_1b)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 1B.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_1b)
+
+    try:
+        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2a)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2A.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2a)
+
+    try:
+        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2b)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2B.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2b)
+
+    try:
+        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2c)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2C.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2c)
 
     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
     # Otherwise, it would be too much data to merge.
@@ -77,6 +134,10 @@ def read_metadata(paths):
     # Remove ID columns only used for merging.
     df = df.drop(['constituent_id_x', 'constituent_id_y', 'constituent_id', 'correspondence_id'],
                  axis=1, errors='ignore')
+
+    # Removes blank rows, which are present in some of the data exports.
+    # Blank rows have an empty string in every column.
+    df.dropna(how='all', inplace=True)
 
     return df
 
@@ -101,19 +162,26 @@ def remove_pii(df):
 
 if __name__ == '__main__':
 
-    # Gets the paths to the metadata files from the script argument.
-    # If the script argument is missing or any are not valid paths, prints the errors and exits the script.
-    paths_dictionary, errors_list = get_paths(sys.argv)
+    # Validates the script argument values and calculates the paths to the metadata files.
+    # If there are any errors, prints them and exits the script.
+    input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys.argv)
     if len(errors_list) > 0:
         for error in errors_list:
             print(error)
         sys.exit(1)
 
-    # Reads the metadata files and combines into a pandas dataframe.
-    md_df = read_metadata(paths_dictionary)
+    # Calculates parent folder of the input_directory, which is where script outputs are saved.
+    output_directory = os.path.dirname(input_directory)
 
-    # Saves the redacted data to a CSV file in the folder with the original metadata files.
-    save_df(md_df, sys.argv[1])
+    # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
+    md_df = read_metadata(metadata_paths_dict)
 
-    # Saves a copy of the redacted data to one CSV per Congress Year in the folder with the original metadata files.
-    split_congress_year(md_df, sys.argv[1])
+    # Makes a log of rows with "case" for detecting casework.
+    # We have not observed casework yet in this export type, so cannot predict the patterns needed to identify it.
+    check_casework(md_df, output_directory)
+
+    # For access, makes a copy of the metadata with tables merged and PII removed and
+    # makes a copy of the data split by congress year.
+    if script_mode == 'access':
+        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        split_congress_year(md_df, output_directory)

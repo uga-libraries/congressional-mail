@@ -101,6 +101,10 @@ class MyTestCase(unittest.TestCase):
                     ['RIVERDALE', 'FR-GEN', '980505', 'AC']]
         self.assertEqual(result, expected, "Problem with test for 1900S, 1997-1998")
 
+        # Tests that undated.csv was not made.
+        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        self.assertEqual(result, False, "Problem with test for 1900s, undated")
+
     def test_2000s(self):
         """Test for when the years are from the 2000s (two-digit year is 59 or earlier"""
 
@@ -128,6 +132,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'TX-GEN', '590102', 'AC']]
         self.assertEqual(result, expected, "Problem with test for 2000s, 2059-2060")
+
+        # Tests that undated.csv was not made.
+        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        self.assertEqual(result, False, "Problem with test for 2000s, undated")
 
 
 if __name__ == '__main__':
