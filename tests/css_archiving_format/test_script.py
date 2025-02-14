@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(file_path)
 
         # Copy of input_directory made for this test.
-        folders = ['access_test', 'preservation_test']
+        folders = ['Access_Constituent_Mail_Export', 'Preservation_Constituent_Mail_Export']
         for folder in folders:
             if os.path.exists(os.path.join('test_data', 'script', folder)):
                 shutil.rmtree(os.path.join('test_data', 'script', folder))
@@ -47,12 +47,12 @@ class MyTestCase(unittest.TestCase):
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'access_test_copy'),
-                        os.path.join('test_data', 'script', 'access_test'))
+        shutil.copytree(os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export_copy'),
+                        os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'access_test')
+        input_directory = os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of the case delete log.
@@ -125,12 +125,12 @@ class MyTestCase(unittest.TestCase):
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'preservation_test_copy'),
-                        os.path.join('test_data', 'script', 'preservation_test'))
+        shutil.copytree(os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export_copy'),
+                        os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'preservation_test')
+        input_directory = os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export')
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
         # Tests the contents of the case delete log.
