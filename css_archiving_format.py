@@ -182,12 +182,12 @@ def remove_casework_letters(input_dir):
     for name in out_doc_list:
         # Paths for formletters include the folder "formletter" or "form".
         if 'form' not in name:
-            # Make an absolute path from name, which starts ..\documents or \\name-office\dos.
+            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
             if name.startswith('..'):
                 file_path = name.replace('..', input_dir)
                 file_path = file_path.replace('\\BlobExport', '')
             else:
-                file_path = re.sub('\\\\\\\\[a-z]+-[a-z]+', '', name)
+                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
                 file_path = input_dir + file_path
             # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
             if os.path.isfile(file_path):

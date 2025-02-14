@@ -16,7 +16,8 @@ class MyTestCase(unittest.TestCase):
 
         # Delete the copy of test data.
         test_dirs = [os.path.join('test_data', 'remove_casework_letters', 'in_document_name'),
-                     os.path.join('test_data', 'remove_casework_letters', 'out_document_name_blobexport')]
+                     os.path.join('test_data', 'remove_casework_letters', 'out_document_name_blobexport'),
+                     os.path.join('test_data', 'remove_casework_letters', 'out_document_name_dos')]
         for test_dir in test_dirs:
             if os.path.exists(os.path.join(test_dir, 'Name_Constituent_Mail_Export')):
                 shutil.rmtree(os.path.join(test_dir, 'Name_Constituent_Mail_Export'))
@@ -83,6 +84,33 @@ class MyTestCase(unittest.TestCase):
         expected = ['form_a.txt', '100.txt']
         self.assertEqual(result, expected, "Problem with test for out_document_name blobexport, directory contents")
 
+    def test_out_document_name_dos(self):
+        """Test for deleting files in the out_document_name column, for the path pattern including 'dos'"""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        output_dir = os.path.join('test_data', 'remove_casework_letters', 'out_document_name_dos')
+        shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
+                        os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
+
+        # Runs the function being tested.
+        input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
+        remove_casework_letters(input_dir)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\letter\111111.txt'.replace('..', input_dir),
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'casework'],
+                    [r'..\documents\letter\333333.txt'.replace('..', input_dir),
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'casework'], ]
+        self.assertEqual(result, expected, "Problem with test for out_document_name dos, file deletion log")
+
+        # Tests the contents of the input_dir, that all files that should be deleted are gone.
+        result = files_in_dir(input_dir)
+        expected = ['form_a.txt', 'test.txt', '222222.txt']
+        self.assertEqual(result, expected, "Problem with test for out_document_name dos, directory contents")
+
     def test_filenotfounderror(self):
         """Test for when files in the metadata are not present and cannot be deleted"""
         # Runs the function being tested.
@@ -95,9 +123,9 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [r'..\documents\BlobExport\objects\111111.txt'.replace('..', input_dir),
+                    [r'..\documents\objects\111111.txt'.replace('..', input_dir),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\BlobExport\indivletters\500.txt'.replace('..', input_dir),
+                    [r'..\documents\indivletters\500.txt'.replace('..', input_dir),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError']]
         self.assertEqual(result, expected, "Problem with test for file deletion log")
 
