@@ -169,6 +169,7 @@ def remove_casework_letters(input_dir):
     in_doc_list = in_doc_df['in_document_name'].tolist()
     for name in in_doc_list:
         file_path = name.replace('..', input_dir)
+        file_path = file_path.replace('\\BlobExport', '')
         try:
             file_deletion_log(log_path, file_path)
             os.remove(file_path)
@@ -184,6 +185,7 @@ def remove_casework_letters(input_dir):
             # Make an absolute path from name, which starts ..\documents or \\name-office\dos.
             if name.startswith('..'):
                 file_path = name.replace('..', input_dir)
+                file_path = file_path.replace('\\BlobExport', '')
             else:
                 file_path = re.sub('\\\\\\\\[a-z]+-[a-z]+', '', name)
                 file_path = input_dir + file_path
