@@ -138,19 +138,11 @@ def find_casework_rows(df, output_dir):
     return df_casework
 
 
-def remove_casework_rows(df, output_dir):
+def remove_casework_rows(df, df_case):
     """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
 
-    # Reads the case delete log into a dataframe, which is in output_dir if it is present.
-    # If it is not, there are no rows to delete.
-    try:
-        df_delete = pd.read_csv(os.path.join(output_dir, 'case_delete_log.csv'))
-    except FileNotFoundError:
-        print(f"No case delete log in {output_dir}")
-        return
-
-    # Makes an updated dataframe with just rows in df that are not in df_delete.
-    df_merge = df.merge(df_delete, how='left', indicator=True)
+    # Makes an updated dataframe with just rows in df that are not in df_case.
+    df_merge = df.merge(df_case, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
     return df_update
@@ -273,7 +265,7 @@ if __name__ == '__main__':
     # and makes a copy of the data split by congress year.
     # It uses the log from find_casework_rows() to know what to delete.
     if script_mode == 'access':
-        md_df = remove_casework_rows(md_df, output_directory)
+        md_df = remove_casework_rows(md_df, casework_df)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
