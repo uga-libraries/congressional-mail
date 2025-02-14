@@ -30,8 +30,8 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['archive_redacted.csv', '1997-1998.csv', 'undated.csv', 'case_remains_log.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'metadata_deletion_log.csv']
+        filenames = ['archive_redacted.csv', '1997-1998.csv', 'undated.csv', 'case_delete_log.csv',
+                     'case_remains_log.csv', f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"]
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -57,43 +57,8 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join('test_data', 'script')
         today = date.today().strftime('%Y-%m-%d')
 
-        # Tests the contents of archive_edited.csv.
-        csv_path = os.path.join(input_directory, 'archive_edited.csv')
-        result = csv_to_list(csv_path)
-        expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
-                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
-                     'letter_date', 'staffer_initials', 'document_number', 'comments'],
-                    ['MILLER, FRANK A., MR.', 'nan', 'nan', '123 HOLLYWOOD', 'nan', 'LOS ANGELES', 'CA', '12345',
-                     'ISSUE', 'HE-MAN', 'nan', '970813', 'FWIW', '725SAT100', 'CD123'],
-                    ['NEWTON, I.M.', 'INVENTOR', 'nan', '9000 ROAD', 'nan', 'CAIRO', 'GA', '30001', 'ISSUE',
-                     'nan', 'nan', '980801', 'TBD', 'nan', 'nan'],
-                    ['OLIVIA, JOAN, DR.', 'PROFESSOR', 'nan', 'BIG UNIVERSITY', 'ABC ST', 'ATLANTA', 'GA',
-                     '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
-                    ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE',
-                     'nan', 'nan', 'nan', 'FWIW', 'nan',
-                     'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
-                     'THE LAST ONE'],
-                    ['SMITH', 'nan', 'AN INSTITUTE', 'PO BOX 123', '1000 MAIN', 'COLUMBUS', 'GA', '30003', 'ISSUE',
-                     'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, archive_edited.csv")
-
-        # Tests the case remains log was not made.
-        csv_path = os.path.join(output_directory, 'case_remains_log.csv')
-        result = os.path.exists(csv_path)
-        self.assertEqual(result, False, "Problem with test for access, case remains log")
-
-        # Tests the contents of the file deletion log.
-        csv_path = os.path.join(output_directory, f"file_deletion_log_{today}.csv")
-        result = csv_to_list(csv_path)
-        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [os.path.join(input_directory, 'text', '111111.txt'),
-                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [os.path.join(input_directory, 'text', '444444.txt'), '0.1', today, today,
-                     'C29C5262DF8A6B0072322ED6942BE134', 'casework']]
-        self.assertEqual(result, expected, "Problem with test for access, file deletion log")
-
-        # Tests the contents of the metadata deletion log.
-        csv_path = os.path.join(output_directory, 'metadata_deletion_log.csv')
+        # Tests the contents of the case delete log.
+        csv_path = os.path.join(output_directory, 'case_delete_log.csv')
         result = csv_to_list(csv_path)
         expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                      'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
@@ -102,12 +67,12 @@ class MyTestCase(unittest.TestCase):
                      'ISSUE', 'CASE', 'nan', '970813', 'FWIW', '725SAT100', 'Q111111'],
                     ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE', 'CASE',
                      'nan', 'nan', 'FWIW', 'nan', 'Q444444']]
-        self.assertEqual(result, expected, "Problem with test for access, metadata deletion log")
+        self.assertEqual(result, expected, "Problem with test for access, case delete log")
 
-        # Tests the correct files were deleted.
-        result = files_in_dir(os.path.join(input_directory, 'text'))
-        expected = ['123456.txt']
-        self.assertEqual(result, expected, "Problem with test for access, files deleted")
+        # Tests the case remains log was not made.
+        csv_path = os.path.join(output_directory, 'case_remains_log.csv')
+        result = os.path.exists(csv_path)
+        self.assertEqual(result, False, "Problem with test for access, case remains log")
 
         # Tests the contents of archive_redacted.csv.
         csv_path = os.path.join(output_directory, 'archive_redacted.csv')
@@ -172,19 +137,19 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join('test_data', 'script')
         today = date.today().strftime('%Y-%m-%d')
 
-        # Tests the contents of archive_edited.csv.
-        csv_path = os.path.join(input_directory, 'archive_edited.csv')
+        # Tests the contents of the case delete log.
+        csv_path = os.path.join(output_directory, 'case_delete_log.csv')
         result = csv_to_list(csv_path)
         expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                      'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                      'letter_date', 'staffer_initials', 'document_number', 'comments'],
-                    ['NEWTON, I.M.', 'INVENTOR', 'nan', '9000 ROAD', 'nan', 'CAIRO', 'GA', '30001', 'ISSUE',
-                     'nan', 'nan', '980801', 'TBD', 'nan', 'Q222222'],
-                    ['OLIVIA, JOAN, DR.', 'PROFESSOR', 'nan', 'BIG UNIVERSITY', 'ABC ST', 'ATLANTA', 'GA',
-                     '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
-                    ['SMITH', 'nan', 'AN INSTITUTE', 'PO BOX 123', '1000 MAIN', 'CASEYVILLE', 'GA', '30003', 'ISSUE',
-                     'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'Comment']]
-        self.assertEqual(result, expected, "Problem with test for preservation, archive_edited.csv")
+                    ['MILLER, FRANK A., MR.', 'nan', 'nan', '123 HOLLYWOOD', 'nan', 'LOS ANGELES', 'CA', '12345',
+                     'ISSUE', 'CASE', 'nan', '970813', 'FWIW', '725SAT100', 'Q111111'],
+                    ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE', 'CASE',
+                     'nan', 'nan', 'FWIW', 'nan', 'Q444444'],
+                    ['Zayne', 'nan', 'nan', '456 Street', 'nan', 'ATLANTA', 'GA', '30004', 'ISSUE', 'CASE', 'nan',
+                     '980113', 'TBD', 'nan', 'Q000000']]
+        self.assertEqual(result, expected, "Problem with test for preservation, case delete log")
 
         # Tests the contents of the case remains log.
         csv_path = os.path.join(output_directory, 'case_remains_log.csv')
@@ -207,20 +172,6 @@ class MyTestCase(unittest.TestCase):
                     [os.path.join(input_directory, 'text', '000000.txt'), 'nan', 'nan', 'nan', 'nan',
                      'Cannot delete: FileNotFoundError']]
         self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
-
-        # Tests the contents of the metadata deletion log.
-        csv_path = os.path.join(output_directory, 'metadata_deletion_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
-                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
-                     'letter_date', 'staffer_initials', 'document_number', 'comments'],
-                    ['MILLER, FRANK A., MR.', 'nan', 'nan', '123 HOLLYWOOD', 'nan', 'LOS ANGELES', 'CA', '12345',
-                     'ISSUE', 'CASE', 'nan', '970813', 'FWIW', '725SAT100', 'Q111111'],
-                    ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE', 'CASE',
-                     'nan', 'nan', 'FWIW', 'nan', 'Q444444'],
-                    ['Zayne', 'nan', 'nan', '456 Street', 'nan', 'ATLANTA', 'GA', '30004', 'ISSUE', 'CASE', 'nan',
-                     '980113', 'TBD', 'nan', 'Q000000']]
-        self.assertEqual(result, expected, "Problem with test for preservation, metadata deletion log")
 
         # Tests the correct files were deleted.
         result = files_in_dir(os.path.join(input_directory, 'text'))
