@@ -80,42 +80,42 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan',
-                     r'..\documents\BlobExport\objects\111111.txt', 'nan', 'r100', 'General', 'Email', '20210111',
-                     'A', 'nan', r'..\documents\BlobExport\formletters\A', 'nan'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2', 'Note',
-                     r'..\documents\BlobExport\objects\222222.txt', 'nan', 'r200', 'General', 'Email', '20230212',
-                     'B', 'nan', r'..\documents\BlobExport\formletters\B', 'nan'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1', 'nan',
-                     r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General', 'Email', '20240313',
-                     'A', 'nan', r'..\documents\BlobExport\formletters\A', 'nan']]
+                     'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name'],
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\formletters\A'],
+                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
+                     'B', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
         csv_path = os.path.join('test_data', 'script', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'nan',
-                     r'..\documents\BlobExport\objects\111111.txt', 'nan', 'r100', 'General', 'Email', '20210111',
-                     'A', 'nan', r'..\documents\BlobExport\formletters\A', 'nan']]
+                     'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_document_name'],
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2021-2022.csv")
 
         # Tests the contents of 2023-2024.csv.
         csv_path = os.path.join(os.getcwd(), 'test_data', 'script', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2', 'Note',
-                     r'..\documents\BlobExport\objects\222222.txt', 'nan', 'r200', 'General', 'Email', '20230212',
-                     'B', 'nan', r'..\documents\BlobExport\formletters\B', 'nan'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1', 'nan',
-                     r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General', 'Email', '20240313',
-                     'A', 'nan', r'..\documents\BlobExport\formletters\A', 'nan']]
+                     'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_document_name'],
+                    ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
+                     'B', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2023-2024.csv")
 
         # Tests that no undated.csv was made.
