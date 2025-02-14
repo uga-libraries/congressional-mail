@@ -54,6 +54,43 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
+def find_casework_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are casework,
+     return as df and log results"""
+
+    # Column correspondence_type includes the text "case" (case-insensitive).
+    corr_type = df['correspondence_type'].str.contains('case', case=False, na=False)
+    df_type = df[corr_type]
+    df = df[~corr_type]
+
+    # Column correspondence_topic includes the text "case" (case-insensitive).
+    corr_topic = df['correspondence_topic'].str.contains('case', case=False, na=False)
+    df_topic = df[corr_topic]
+    df = df[~corr_topic]
+
+    # Column correspondence_subtopic includes the text "case" (case-insensitive).
+    corr_subtopic = df['correspondence_subtopic'].str.contains('case', case=False, na=False)
+    df_subtopic = df[corr_subtopic]
+    df = df[~corr_subtopic]
+
+    # Column comments includes the text "case" (case-insensitive).
+    comments = df['comments'].str.contains('case', case=False, na=False)
+    df_comments = df[comments]
+    df = df[~comments]
+
+    # Makes a log with any remaining rows with "case" in any column.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate casework
+    # and also saves to a log for review for any that are not really casework.
+    df_casework = pd.concat([df_type, df_topic, df_subtopic, df_comments], axis=0, ignore_index=True)
+    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
+    return df_casework
+
+
 def read_metadata(path):
     """Read the metadata file into a dataframe"""
 
@@ -220,6 +257,9 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
+
+    # Finds rows in the metadata that are for casework and saves to a CSV.
+    casework_df = find_casework_rows(md_df, output_directory)
 
     # Removes rows for casework from the metadata and deletes the casework files themselves.
     md_df = remove_casework(md_df, output_directory)
