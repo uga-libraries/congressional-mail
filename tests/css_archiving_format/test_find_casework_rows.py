@@ -199,7 +199,6 @@ class MyTestCase(unittest.TestCase):
                              columns=['zip', 'in_topic', 'in_text'])
         casework_df = find_casework_rows(md_df, 'test_data')
 
-        # TODO
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(casework_df)
         expected = [['zip', 'in_topic', 'in_text']]
