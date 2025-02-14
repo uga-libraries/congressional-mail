@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(file_path)
 
         # Copy of input_directory made for this test.
-        folders = ['access_test', 'preservation_test']
+        folders = ['Access_Constituent_Mail_Export', 'Preservation_Constituent_Mail_Export']
         for folder in folders:
             if os.path.exists(os.path.join('test_data', 'script', folder)):
                 shutil.rmtree(os.path.join('test_data', 'script', folder))
@@ -47,12 +47,12 @@ class MyTestCase(unittest.TestCase):
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'access_test_copy'),
-                        os.path.join('test_data', 'script', 'access_test'))
+        shutil.copytree(os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export_copy'),
+                        os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'access_test')
+        input_directory = os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of the case delete log.
@@ -125,12 +125,12 @@ class MyTestCase(unittest.TestCase):
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'preservation_test_copy'),
-                        os.path.join('test_data', 'script', 'preservation_test'))
+        shutil.copytree(os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export_copy'),
+                        os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'preservation_test')
+        input_directory = os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export')
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 
         # Tests the contents of the case delete log.
@@ -180,19 +180,19 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv")
         result = csv_to_list(csv_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [r'..\documents\BlobExport\objects\444444.txt'.replace('..', input_directory),
+                    [r'..\documents\objects\444444.txt'.replace('..', input_directory),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\BlobExport\objects\555555.txt'.replace('..', input_directory),
+                    [r'..\documents\objects\555555.txt'.replace('..', input_directory),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\BlobExport\objects\111111.txt'.replace('..', input_directory),
+                    [r'..\documents\objects\111111.txt'.replace('..', input_directory),
                      '0.0', today, today, '49C13D076A41E65DBE137D695E22A6A7', 'casework'],
-                    [r'..\documents\BlobExport\objects\333333.txt'.replace('..', input_directory),
+                    [r'..\documents\objects\333333.txt'.replace('..', input_directory),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\BlobExport\indivletters\000005.txt'.replace('..', input_directory),
+                    [r'..\documents\indivletters\000005.txt'.replace('..', input_directory),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\BlobExport\indivletters\000001.txt'.replace('..', input_directory),
+                    [r'..\documents\indivletters\000001.txt'.replace('..', input_directory),
                      '0.1', today, today, '21E65C7B733959A8B3E6071EB0748BF6', 'casework'],
-                    [r'..\documents\BlobExport\indivletters\000003.txt'.replace('..', input_directory),
+                    [r'..\documents\indivletters\000003.txt'.replace('..', input_directory),
                     '3.5', today, today, '3E273CCDD4D24DBFCD55B519999BABC7', 'casework']]
         self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
 
