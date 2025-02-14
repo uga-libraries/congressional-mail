@@ -1,11 +1,11 @@
 """
-Tests for the function remove_casework(), which removes rows that pertain to casework.
+Tests for the function find_casework_rows(), which finds rows that pertain to casework.
 To simplify input, tests use dataframes with only some of the columns present in a real export.
 """
 import os
 import pandas as pd
 import unittest
-from css_data_interchange_format import remove_casework
+from css_data_interchange_format import find_casework_rows
 from test_script import csv_to_list
 
 
@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         """Delete the logs, if made by the test"""
         log_paths = [os.path.join('test_data', 'case_remains_log.csv'),
-                     os.path.join('test_data', 'metadata_deletion_log.csv')]
+                     os.path.join('test_data', 'case_delete_log.csv')]
         for log_path in log_paths:
             if os.path.exists(log_path):
                 os.remove(log_path)
@@ -34,19 +34,23 @@ class MyTestCase(unittest.TestCase):
                               ['30602', 'CASE2', ''],
                               ['30603', '', 'Send casework to ATL']],
                              columns=['zip_code', 'group_name', 'communication_document_id'])
-        md_df = remove_casework(md_df, 'test_data')
+        casework_df = find_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
-        result = df_to_list(md_df)
-        expected = [['zip_code', 'group_name', 'communication_document_id']]
+        result = df_to_list(casework_df)
+        expected = [['zip_code', 'group_name', 'communication_document_id'],
+                    ['30600', 'CASE1', ''],
+                    ['30602', 'CASE2', ''],
+                    ['30601', '', 'This is casework'],
+                    ['30603', '', 'Send casework to ATL']]
         self.assertEqual(result, expected, "Problem with test for both, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
         self.assertEqual(result, False, "Problem with test for both, case log")
 
-        # Tests the values in the metadata deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        # Tests the values in the case delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
         expected = [['zip_code', 'group_name', 'communication_document_id'],
                     ['30600', 'CASE1', 'nan'],
                     ['30602', 'CASE2', 'nan'],
@@ -64,12 +68,16 @@ class MyTestCase(unittest.TestCase):
                               ['30604', 'AG CASEWORK', ''],
                               ['casework', '', '']],
                              columns=['zip_code', 'group_name', 'communication_document_id'])
-        md_df = remove_casework(md_df, 'test_data')
+        casework_df = find_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
-        result = df_to_list(md_df)
+        result = df_to_list(casework_df)
         expected = [['zip_code', 'group_name', 'communication_document_id'],
-                    ['30602', '', 'Special case'],]
+                    ['30600', '', 'Casework'],
+                    ['30601', '', 'This is casework'],
+                    ['30603', '', 'Send casework to ATL'],
+                    ['30604', 'AG CASEWORK', ''],
+                    ['casework', '', '']]
         self.assertEqual(result, expected, "Problem with test for casework, df")
 
         # Tests the values of the case remains log are correct.
@@ -78,8 +86,8 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'nan', 'Special case']]
         self.assertEqual(result, expected, "Problem with test for casework, case log")
 
-        # Tests the values in the metadata deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        # Tests the values in the case delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
         expected = [['zip_code', 'group_name', 'communication_document_id'],
                     ['30600', 'nan', 'Casework'],
                     ['30601', 'nan', 'This is casework'],
@@ -96,13 +104,13 @@ class MyTestCase(unittest.TestCase):
                               ['30602', 'CASE22', ''],
                               ['30603', 'EDUCATION', '']],
                              columns=['zip_code', 'group_name', 'communication_document_id'])
-        md_df = remove_casework(md_df, 'test_data')
+        casework_df = find_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
-        result = df_to_list(md_df)
+        result = df_to_list(casework_df)
         expected = [['zip_code', 'group_name', 'communication_document_id'],
-                    ['30601', 'COURT CASE', ''],
-                    ['30603', 'EDUCATION', '']]
+                    ['30600', 'CASE1', ''],
+                    ['30602', 'CASE22', '']]
         self.assertEqual(result, expected, "Problem with test for group_name, df")
 
         # Tests the values of the case remains log are correct.
@@ -111,8 +119,8 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'COURT CASE', 'nan']]
         self.assertEqual(result, expected, "Problem with test for group_name, case log")
 
-        # Tests the values in the metadata deletion log are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_deletion_log.csv'))
+        # Tests the values in the case delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
         expected = [['zip_code', 'group_name', 'communication_document_id'],
                     ['30600', 'CASE1', 'nan'],
                     ['30602', 'CASE22', 'nan']]
@@ -125,23 +133,21 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'Education', ''],
                               ['30602', 'Transportation', '']],
                              columns=['zip_code', 'group_name', 'communication_document_id'])
-        md_df = remove_casework(md_df, 'test_data')
+        casework_df = find_casework_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
-        result = df_to_list(md_df)
-        expected = [['zip_code', 'group_name', 'communication_document_id'],
-                    ['30600', 'Education', ''],
-                    ['30601', 'Education', ''],
-                    ['30602', 'Transportation', '']]
+        result = df_to_list(casework_df)
+        expected = [['zip_code', 'group_name', 'communication_document_id']]
         self.assertEqual(result, expected, "Problem with test for no casework, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
         self.assertEqual(result, False, "Problem with test for no casework, case log")
 
-        # Tests the metadata deletion log was not made.
-        result = os.path.exists(os.path.join('test_data', 'metadata_deletion_log.csv'))
-        self.assertEqual(result, False, "Problem with test for no casework, deletion log")
+        # Tests the values in the case delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
+        expected = [['zip_code', 'group_name', 'communication_document_id']]
+        self.assertEqual(result, expected, "Problem with test for no casework, deletion log")
 
 
 if __name__ == '__main__':

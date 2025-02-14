@@ -58,6 +58,34 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def find_casework_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are casework,
+     return as a df and log results"""
+
+    # Column group_name starts with "CASE", if any.
+    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
+    group = df['group_name'].str.startswith('CASE', na=False)
+    df_group = df[group]
+    df = df[~group]
+
+    # Any column includes the text "casework".
+    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
+    df_cw = df.loc[casework.any(axis=1)]
+    df = df.loc[~casework.any(axis=1)]
+
+    # Makes a log with any remaining rows with "case" in any column.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    if len(df.loc[case.any(axis=1)].index) > 0:
+        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate casework
+    # and also saves to a log for review for any that are not really casework.
+    df_casework = pd.concat([df_group, df_cw], axis=0, ignore_index=True)
+    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
+    return df_casework
+
+
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
@@ -248,6 +276,9 @@ if __name__ == '__main__':
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(metadata_paths_dict)
+
+    # Finds rows in the metadata that are for casework and saves to a CSV.
+    casework_df = find_casework_rows(md_df, output_directory)
 
     # Removes rows for casework and deletes the casework files themselves.
     md_df = remove_casework(md_df, output_directory)
