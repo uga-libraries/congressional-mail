@@ -120,47 +120,14 @@ def read_metadata(path):
     return df
 
 
-def remove_casework(df, output_dir):
-    """Remove metadata rows with topics or text that indicate they are casework and log results"""
+def remove_casework_rows(df, df_case):
+    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
 
-    # Deletion log path (used multiple times)
-    del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
+    # Makes an updated dataframe with just rows in df that are not in df_case.
+    df_merge = df.merge(df_case, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
-    # Removes row if the correspondence_type column includes the text "case" (case-insensitive).
-    # Deleted rows, if any, are saved to a log for review.
-    corr_type = df['correspondence_type'].str.contains('case', case=False, na=False)
-    if len(df[corr_type].index) > 0:
-        df[corr_type].to_csv(del_log, index=False)
-        df = df[~corr_type]
-
-    # Removes row if the correspondence_topic column includes the text "case" (case-insensitive).
-    # Deleted rows, if any, are saved to a log for review.
-    corr_topic = df['correspondence_topic'].str.contains('case', case=False, na=False)
-    if len(df[corr_topic].index) > 0:
-        df[corr_topic].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df[~corr_topic]
-
-    # Removes row if the correspondence_subtopic column includes the text "case" (case-insensitive).
-    # Deleted rows, if any, are saved to a log for review.
-    corr_subtopic = df['correspondence_subtopic'].str.contains('case', case=False, na=False)
-    if len(df[corr_subtopic].index) > 0:
-        df[corr_subtopic].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df[~corr_subtopic]
-
-    # Removes row if the comments column includes the text "case" (case-insensitive).
-    # Deleted rows, if any, are saved to a log for review.
-    comments = df['comments'].str.contains('case', case=False, na=False)
-    if len(df[comments].index) > 0:
-        df[comments].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df[~comments]
-
-    # Remaining rows with "case" in any column are saved to a log for review, if any.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
-    return df
+    return df_update
 
 
 def remove_casework_letters(input_dir):
@@ -262,12 +229,13 @@ if __name__ == '__main__':
     casework_df = find_casework_rows(md_df, output_directory)
 
     # Removes rows for casework from the metadata and deletes the casework files themselves.
-    md_df = remove_casework(md_df, output_directory)
     md_df.to_csv(metadata_path.replace('.dat', '_edited.csv'), index=False)
     remove_casework_letters(input_directory)
 
-    # For access, removes columns with PII and makes a copy of the data split by congress year.
+    # For access, removes rows for casework and columns with PII from the metadata
+    # and makes a copy of the data split by congress year.
     if script_mode == 'access':
+        md_df = remove_casework_rows(md_df, casework_df)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archive_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
