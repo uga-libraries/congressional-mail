@@ -200,9 +200,9 @@ def remove_casework_letters(input_dir):
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
-    # List of column names that should be removed. Includes names and address information.
+    # List of column names that should be removed because they include names or addresses.
     remove = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
-              'addr1', 'addr2', 'addr3', 'addr4']
+              'addr1', 'addr2', 'addr3', 'addr4', 'in_text', 'in_fillin', 'out_text', 'out_fillin']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
