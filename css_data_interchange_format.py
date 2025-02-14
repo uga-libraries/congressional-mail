@@ -150,34 +150,14 @@ def read_metadata(paths):
     return df
 
 
-def remove_casework(df, output_dir):
-    """Remove metadata rows with topics or text that indicate they are casework and log results"""
+def remove_casework_rows(df, df_case):
+    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
 
-    # Deletion log path (used multiple times)
-    del_log = os.path.join(output_dir, 'metadata_deletion_log.csv')
+    # Makes an updated dataframe with just rows in df that are not in df_case.
+    df_merge = df.merge(df_case, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
-    # Removes row if column group_name starts with "CASE", if any.
-    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
-    # Deleted rows are saved to a log for review.
-    group = df['group_name'].str.startswith('CASE', na=False)
-    if len(df[group].index) > 0:
-        df[group].to_csv(del_log, index=False)
-        df = df[~group]
-
-    # Removes row if any column includes the text "casework", if any.
-    # Deleted rows, if any, are saved to a log for review.
-    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    if len(df.loc[casework.any(axis=1)].index) > 0:
-        df.loc[casework.any(axis=1)].to_csv(del_log, mode='a', header=not os.path.exists(del_log), index=False)
-        df = df.loc[~casework.any(axis=1)]
-
-    # Remaining rows with "case" in any column are saved to a log for review, if any.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
-    return df
+    return df_update
 
 
 def remove_casework_letters(input_dir):
@@ -281,13 +261,12 @@ if __name__ == '__main__':
     casework_df = find_casework_rows(md_df, output_directory)
 
     # Removes rows for casework and deletes the casework files themselves.
-    md_df = remove_casework(md_df, output_directory)
-    md_df.to_csv(os.path.join(output_directory, 'Preservation_Copy.csv'), index=False)
     remove_casework_letters(input_directory)
 
     # For access, makes a copy of the metadata with tables merged and PII removed and
     # makes a copy of the data split by congress year.
     if script_mode == 'access':
+        md_df = remove_casework_rows(md_df, casework_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
