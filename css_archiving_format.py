@@ -136,6 +136,34 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
             log_writer.writerow([file_path, size_kb, date_c, date_d, md5, 'casework'])
 
 
+def find_academy_rows(df):
+    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column in_topic includes Academy Applicant or Military Service Academy.
+    in_topic = df['in_topic'].str.contains('|'.join(['Academy Applicant', 'Military Service Academy']), na=False)
+    df_in_topic = df[in_topic]
+    df = df[~in_topic]
+
+    # Column out_topic includes Academy Applicant or Military Service Academy.
+    out_topic = df['out_topic'].str.contains('|'.join(['Academy Applicant', 'Military Service Academy']), na=False)
+    df_out_topic = df[out_topic]
+    df = df[~out_topic]
+
+    # Column in_text includes "academy nomination" (case-insensitive).
+    in_text = df['in_text'].str.contains('academy nomination', case=False, na=False)
+    df_in_text = df[in_text]
+    df = df[~in_text]
+
+    # Column out_text includes "academy nomination" (case-insensitive).
+    out_text = df['out_text'].str.contains('academy nomination', case=False, na=False)
+    df_out_text = df[out_text]
+
+    # Makes a single dataframe with all rows that indicate academy applications.
+    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    return df_academy
+
+
 def find_appraisal_rows(df, output_dir):
     """Find metadata rows with topics or text that indicate they are different categories for appraisal,
      return as a df and log results"""
