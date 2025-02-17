@@ -55,6 +55,56 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
+def delete_appraisal_letters(input_dir):
+    """Deletes letters received from constituents and individual casework letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
+
+    # Reads the appraisal delete log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'appraisal_delete_log.csv'))
+    except FileNotFoundError:
+        print(f"No appraisal delete log in {os.path.dirname(input_dir)}")
+        return
+
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, True)
+
+    # Deletes letters received based on in_document_name.
+    # If there is a document name, it is formatted ..\documents\BlobExport\objects\filename.txt
+    in_doc_df = df.dropna(subset=['in_document_name']).copy()
+    in_doc_list = in_doc_df['in_document_name'].tolist()
+    for name in in_doc_list:
+        file_path = name.replace('..', input_dir)
+        file_path = file_path.replace('\\BlobExport', '')
+        try:
+            file_deletion_log(log_path, file_path)
+            os.remove(file_path)
+        except FileNotFoundError:
+            file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+
+    # Deletes individual letters (not form letters) sent based on out_document_name.
+    out_doc_df = df.dropna(subset=['out_document_name']).copy()
+    out_doc_list = out_doc_df['out_document_name'].tolist()
+    for name in out_doc_list:
+        # Paths for formletters include the folder "formletter" or "form".
+        if 'form' not in name:
+            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
+            if name.startswith('..'):
+                file_path = name.replace('..', input_dir)
+                file_path = file_path.replace('\\BlobExport', '')
+            else:
+                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
+                file_path = input_dir + file_path
+            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
+            if os.path.isfile(file_path):
+                file_deletion_log(log_path, file_path)
+                os.remove(file_path)
+            elif not os.path.exists(file_path):
+                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+
+
 def file_deletion_log(log_path, file_path, header=False, note=None):
     """Make or update the file deletion log, so data is saved as soon as a file is deleted
     Modelled after https://github.com/uga-libraries/accessioning-scripts/blob/main/technical-appraisal-logs.py"""
@@ -84,21 +134,6 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, size_kb, date_c, date_d, md5, 'casework'])
-
-
-def read_metadata(path):
-    """Read the metadata file into a dataframe"""
-    try:
-        df = pd.read_csv(path, delimiter='\t', dtype=str, on_bad_lines='warn')
-    except UnicodeDecodeError:
-        print("\nUnicodeDecodeError when trying to read the metadata file.")
-        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
-        df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
-
-    # Removes blank rows, which are present in some of the data exports.
-    df.dropna(how='all', inplace=True)
-
-    return df
 
 
 def find_appraisal_rows(df, output_dir):
@@ -150,6 +185,21 @@ def find_casework_rows(df):
     return df_casework
 
 
+def read_metadata(path):
+    """Read the metadata file into a dataframe"""
+    try:
+        df = pd.read_csv(path, delimiter='\t', dtype=str, on_bad_lines='warn')
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df = pd.read_csv(path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn')
+
+    # Removes blank rows, which are present in some of the data exports.
+    df.dropna(how='all', inplace=True)
+
+    return df
+
+
 def remove_appraisal_rows(df, df_appraisal):
     """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
@@ -158,56 +208,6 @@ def remove_appraisal_rows(df, df_appraisal):
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
     return df_update
-
-
-def delete_appraisal_letters(input_dir):
-    """Deletes letters received from constituents and individual casework letters sent back by the office
-    because they are one of the types of letters not retained for appraisal reasons"""
-
-    # Reads the appraisal delete log into a dataframe, which is in the parent folder of input_dir if it is present.
-    # If it is not, there are no files to delete.
-    try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'appraisal_delete_log.csv'))
-    except FileNotFoundError:
-        print(f"No appraisal delete log in {os.path.dirname(input_dir)}")
-        return
-
-    # Creates a file deletion log, with a header row.
-    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    file_deletion_log(log_path, None, True)
-
-    # Deletes letters received based on in_document_name.
-    # If there is a document name, it is formatted ..\documents\BlobExport\objects\filename.txt
-    in_doc_df = df.dropna(subset=['in_document_name']).copy()
-    in_doc_list = in_doc_df['in_document_name'].tolist()
-    for name in in_doc_list:
-        file_path = name.replace('..', input_dir)
-        file_path = file_path.replace('\\BlobExport', '')
-        try:
-            file_deletion_log(log_path, file_path)
-            os.remove(file_path)
-        except FileNotFoundError:
-            file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
-
-    # Deletes individual letters (not form letters) sent based on out_document_name.
-    out_doc_df = df.dropna(subset=['out_document_name']).copy()
-    out_doc_list = out_doc_df['out_document_name'].tolist()
-    for name in out_doc_list:
-        # Paths for formletters include the folder "formletter" or "form".
-        if 'form' not in name:
-            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
-            if name.startswith('..'):
-                file_path = name.replace('..', input_dir)
-                file_path = file_path.replace('\\BlobExport', '')
-            else:
-                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
-                file_path = input_dir + file_path
-            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
-            if os.path.isfile(file_path):
-                file_deletion_log(log_path, file_path)
-                os.remove(file_path)
-            elif not os.path.exists(file_path):
-                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):
@@ -268,8 +268,8 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Finds rows in the metadata that are for casework and saves to a CSV.
-    appraisal_df = find_casework_rows(md_df, output_directory)
+    # Finds rows in the metadata that are for appraisal and saves to a CSV.
+    appraisal_df = find_appraisal_rows(md_df, output_directory)
 
     # For preservation, deletes files for appraisal decisions.
     # It uses the log from find_appraisal_rows() to know what to delete.
