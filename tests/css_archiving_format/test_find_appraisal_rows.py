@@ -20,49 +20,75 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(log_path):
             os.remove(log_path)
 
-    def test_casework(self):
-        """Test for when there is casework"""
+    def test_two(self):
+        """Test for when there are two categories for appraisal (academy applications and casework)"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Casework Issues', ''],
-                              ['30601', 'Health^Casework', 'Note'],
-                              ['30602', 'Health', 'General interest'],
-                              ['30603', 'Social Security', 'Open Case']],
-                             columns=['zip', 'in_topic', 'in_text'])
-        casework_df = find_appraisal_rows(md_df, 'test_data')
+        md_df = pd.DataFrame([['30600', 'Academy Applicant', 'Nomination', '', ''],
+                              ['30601', 'Casework', '', '', ''],
+                              ['30602', 'General', 'Note', 'General', 'Note'],
+                              ['30603', 'Social Security', 'Casework candidate', '', '']],
+                             columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
+        appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
-        # Tests the values in the returned dataframe are correct.
-        result = df_to_list(casework_df)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'Casework Issues', ''],
-                    ['30601', 'Health^Casework', 'Note'],
-                    ['30603', 'Social Security', 'Open Case']]
-        self.assertEqual(result, expected, "Problem with test for casework, df")
+        # Tests the values of the returned dataframe are correct.
+        result = df_to_list(appraisal_df)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
+                    ['30600', 'Academy Applicant', 'Nomination', '', ''],
+                    ['30601', 'Casework', '', '', ''],
+                    ['30603', 'Social Security', 'Casework candidate', '', '']]
+        self.assertEqual(result, expected, "Problem with test for two categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'Casework Issues', 'nan'],
-                    ['30601', 'Health^Casework', 'Note'],
-                    ['30603', 'Social Security', 'Open Case']]
-        self.assertEqual(result, expected, "Problem with test for casework, appraisal delete log")
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
+                    ['30600', 'Academy Applicant', 'Nomination', 'nan', 'nan'],
+                    ['30601', 'Casework', 'nan', 'nan', 'nan'],
+                    ['30603', 'Social Security', 'Casework candidate', 'nan', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for two categories, appraisal delete log")
 
-    def test_no_appraisal(self):
-        """Test for when there are no indicators for appraisal"""
+    def test_one(self):
+        """Test for when there is one category for appraisal (casework)"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Keep', ''],
-                              ['30601', 'Healthcare', 'Legislation']],
-                             columns=['zip', 'in_topic', 'in_text'])
-        casework_df = find_appraisal_rows(md_df, 'test_data')
+        md_df = pd.DataFrame([['30600', 'Casework Issues', '', 'Casework', ''],
+                              ['30601', 'Health^Casework', 'Note', '', ''],
+                              ['30602', 'Health', 'General interest', '', 'Note'],
+                              ['30603', 'Social Security', 'Open Case', '', '']],
+                             columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
+        appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the returned dataframe are correct.
-        result = df_to_list(casework_df)
-        expected = [['zip', 'in_topic', 'in_text']]
+        result = df_to_list(appraisal_df)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
+                    ['30600', 'Casework Issues', '', 'Casework', ''],
+                    ['30601', 'Health^Casework', 'Note', '', ''],
+                    ['30603', 'Social Security', 'Open Case', '', '']]
+        self.assertEqual(result, expected, "Problem with test for one category, df")
+
+        # Tests the values in the appraisal delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
+                    ['30600', 'Casework Issues', 'nan', 'Casework', 'nan'],
+                    ['30601', 'Health^Casework', 'Note', 'nan', 'nan'],
+                    ['30603', 'Social Security', 'Open Case', 'nan', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for one category, appraisal delete log")
+
+    def test_none(self):
+        """Test for when there are no indicators for appraisal"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'Arts', 'In support', '', ''],
+                              ['30601', 'Healthcare', '', '', '']],
+                             columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
+        appraisal_df = find_appraisal_rows(md_df, 'test_data')
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(appraisal_df)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text']]
         self.assertEqual(result, expected, "Problem with test for no appraisal, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text']]
-        self.assertEqual(result, expected, "Problem with test for no casework, appraisal delete log")
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text']]
+        self.assertEqual(result, expected, "Problem with test for no appraisal, appraisal delete log")
 
 
 if __name__ == '__main__':
