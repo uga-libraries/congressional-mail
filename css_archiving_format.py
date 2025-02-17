@@ -61,7 +61,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
 
     # Creates a file deletion log, with a header row.
     log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    file_deletion_log(log_path, None, True)
+    file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, delete any letter in the in_document_name and out_document_name columns.
     # The letter path has to be reformatted to match the actual export.
@@ -76,7 +76,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
             except FileNotFoundError:
-                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+                file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
         if row.out_document_name != '' and 'form' not in row.out_document_name:
@@ -93,7 +93,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
             elif not os.path.exists(file_path):
-                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+                file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def file_deletion_log(log_path, file_path, note):
