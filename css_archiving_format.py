@@ -73,7 +73,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
             file_path = name.replace('..', input_dir)
             file_path = file_path.replace('\\BlobExport', '')
             try:
-                file_deletion_log(log_path, file_path)
+                file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
             except FileNotFoundError:
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
@@ -90,7 +90,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_path = input_dir + file_path
             # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
             if os.path.isfile(file_path):
-                file_deletion_log(log_path, file_path)
+                file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
             elif not os.path.exists(file_path):
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
