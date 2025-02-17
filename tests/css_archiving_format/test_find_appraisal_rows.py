@@ -32,18 +32,18 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values of the returned dataframe are correct.
         result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', 'Academy Applicant', 'Nomination', '', ''],
-                    ['30601', 'Casework', '', '', ''],
-                    ['30603', 'Social Security', 'Casework candidate', '', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', 'Academy Applicant', 'Nomination', '', '', 'Academy_Application'],
+                    ['30601', 'Casework', '', '', '', 'Casework'],
+                    ['30603', 'Social Security', 'Casework candidate', '', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for two categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', 'Academy Applicant', 'Nomination', 'nan', 'nan'],
-                    ['30601', 'Casework', 'nan', 'nan', 'nan'],
-                    ['30603', 'Social Security', 'Casework candidate', 'nan', 'nan']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', 'Academy Applicant', 'Nomination', 'nan', 'nan', 'Academy_Application'],
+                    ['30601', 'Casework', 'nan', 'nan', 'nan', 'Casework'],
+                    ['30603', 'Social Security', 'Casework candidate', 'nan', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for two categories, appraisal delete log")
 
     def test_one(self):
@@ -58,18 +58,18 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', 'Casework Issues', '', 'Casework', ''],
-                    ['30601', 'Health^Casework', 'Note', '', ''],
-                    ['30603', 'Social Security', 'Open Case', '', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', 'Casework Issues', '', 'Casework', '', 'Casework'],
+                    ['30601', 'Health^Casework', 'Note', '', '', 'Casework'],
+                    ['30603', 'Social Security', 'Open Case', '', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for one category, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', 'Casework Issues', 'nan', 'Casework', 'nan'],
-                    ['30601', 'Health^Casework', 'Note', 'nan', 'nan'],
-                    ['30603', 'Social Security', 'Open Case', 'nan', 'nan']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', 'Casework Issues', 'nan', 'Casework', 'nan', 'Casework'],
+                    ['30601', 'Health^Casework', 'Note', 'nan', 'nan', 'Casework'],
+                    ['30603', 'Social Security', 'Open Case', 'nan', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for one category, appraisal delete log")
 
     def test_none(self):
@@ -82,12 +82,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no appraisal, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no appraisal, appraisal delete log")
 
 
