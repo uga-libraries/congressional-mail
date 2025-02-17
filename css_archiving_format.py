@@ -96,19 +96,19 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
-def file_deletion_log(log_path, file_path, header=False, note=None):
+def file_deletion_log(log_path, file_path, note):
     """Make or update the file deletion log, so data is saved as soon as a file is deleted
-    Modelled after https://github.com/uga-libraries/accessioning-scripts/blob/main/technical-appraisal-logs.py"""
+    Data included follows https://github.com/uga-libraries/accessioning-scripts/blob/main/technical-appraisal-logs.py"""
 
     # Makes a new log with a header row.
     # If a file already exists with this name, it will be overwritten.
-    if header is True:
+    if note == 'header':
         with open(log_path, 'w', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
 
     # Adds a row for a file that could not be deleted to an existing log.
-    elif note:
+    elif note == 'Cannot delete: FileNotFoundError':
         # Adds the file to the log.
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
@@ -124,7 +124,7 @@ def file_deletion_log(log_path, file_path, header=False, note=None):
         date_d = date.today().strftime('%Y-%m-%d')
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
-            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, 'casework'])
+            log_writer.writerow([file_path, size_kb, date_c, date_d, md5, note])
 
 
 def find_academy_rows(df):
