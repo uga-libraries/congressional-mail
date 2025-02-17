@@ -138,11 +138,11 @@ def find_casework_rows(df, output_dir):
     return df_casework
 
 
-def remove_casework_rows(df, df_case):
-    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
+def remove_appraisal_rows(df, df_appraisal):
+    """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
-    # Makes an updated dataframe with just rows in df that are not in df_case.
-    df_merge = df.merge(df_case, how='left', indicator=True)
+    # Makes an updated dataframe with just rows in df that are not in df_appraisal.
+    df_merge = df.merge(df_appraisal, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
     return df_update
@@ -256,17 +256,17 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_path)
 
     # Finds rows in the metadata that are for casework and saves to a CSV.
-    casework_df = find_casework_rows(md_df, output_directory)
+    appraisal_df = find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
     if script_mode == 'preservation':
         remove_casework_letters(input_directory)
 
-    # For access, removes rows for casework and columns with PII from the metadata
+    # For access, removes rows for appraisal and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
     if script_mode == 'access':
-        md_df = remove_casework_rows(md_df, casework_df)
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
