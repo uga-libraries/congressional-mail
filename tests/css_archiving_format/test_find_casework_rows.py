@@ -22,10 +22,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'Casework Issues', ''],
-                    ['30602', 'Prison Case', ''],
-                    ['30601', 'Health', 'This is casework']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30600', 'Casework Issues', '', 'Casework'],
+                    ['30602', 'Prison Case', '', 'Casework'],
+                    ['30601', 'Health', 'This is casework', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for all casework")
 
     def test_case_phase(self):
@@ -42,12 +42,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', '', 'I added to case'],
-                    ['30601', '', 'Already opened a case'],
-                    ['30602', 'Closed Case', ''],
-                    ['30603', 'Open Case', ''],
-                    ['30604', '', 'Mary started case yesterday']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30600', '', 'I added to case', 'Casework'],
+                    ['30601', '', 'Already opened a case', 'Casework'],
+                    ['30602', 'Closed Case', '', 'Casework'],
+                    ['30603', 'Open Case', '', 'Casework'],
+                    ['30604', '', 'Mary started case yesterday', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for case phrase")
 
     def test_casework_keyword(self):
@@ -65,11 +65,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30601', '', 'Outgoing Info: casework, letter is x'],
-                    ['30604', '', 'Send down for casework'],
-                    ['30605', '', 'This is not casework'],
-                    ['casework', '', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30601', '', 'Outgoing Info: casework, letter is x', 'Casework'],
+                    ['30604', '', 'Send down for casework', 'Casework'],
+                    ['30605', '', 'This is not casework', 'Casework'],
+                    ['casework', '', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for casework keyword")
 
     def test_in_topic_exact(self):
@@ -84,10 +84,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30600', 'Casework', ''],
-                    ['30602', 'Casework Issues', ''],
-                    ['30604', 'Prison Case', 'note']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30600', 'Casework', '', 'Casework'],
+                    ['30602', 'Casework Issues', '', 'Casework'],
+                    ['30604', 'Prison Case', 'note', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for in_topic, exact match")
 
     def test_in_topic_partial(self):
@@ -103,11 +103,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text'],
-                    ['30601', 'Healthcare^Casework', ''],
-                    ['30602', 'Casework Issues^Social Security', 'note'],
-                    ['30603', 'Prison Case^No Reply', ''],
-                    ['30604', 'Casework^Casework Issues', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30601', 'Healthcare^Casework', '', 'Casework'],
+                    ['30602', 'Casework Issues^Social Security', 'note', 'Casework'],
+                    ['30603', 'Prison Case^No Reply', '', 'Casework'],
+                    ['30604', 'Casework^Casework Issues', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for in topic, partial match")
 
     def test_no_casework(self):
@@ -120,7 +120,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text']]
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no casework")
 
 

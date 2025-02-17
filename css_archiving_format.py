@@ -160,7 +160,7 @@ def find_academy_rows(df):
     df_out_text = df[out_text]
 
     # Makes a single dataframe with all rows that indicate academy applications
-    # and add a column for appraisal category.
+    # and adds a column for the appraisal category (needed for the file deletion log).
     df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
     return df_academy
@@ -211,8 +211,10 @@ def find_casework_rows(df):
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
 
-    # Makes a single dataframe with all rows that indicate casework.
+    # Makes a single dataframe with all rows that indicate casework
+    # and adds a column for the appraisal category (needed for the file deletion log).
     df_casework = pd.concat([df_topic, df_cw, df_phrase], axis=0, ignore_index=True)
+    df_casework['Appraisal_Category'] = "Casework"
     return df_casework
 
 
