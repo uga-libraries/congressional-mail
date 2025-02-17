@@ -209,6 +209,41 @@ def find_casework_rows(df):
     return df_casework
 
 
+def find_job_rows(df):
+    """Find metadata rows with topics or text that indicate they are job applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column in_topic includes Intern or Resumes.
+    in_topic = df['in_topic'].str.contains('|'.join(['Intern', 'Resumes']), na=False)
+    df_in_topic = df[in_topic]
+    df = df[~in_topic]
+
+    # Column out_topic includes Intern or Resumes.
+    out_topic = df['out_topic'].str.contains('|'.join(['Intern', 'Resumes']), na=False)
+    df_out_topic = df[out_topic]
+    df = df[~out_topic]
+
+    # Column in_text includes "job request" (case-insensitive).
+    in_text = df['in_text'].str.contains('job request', case=False, na=False)
+    df_in_text = df[in_text]
+    df = df[~in_text]
+
+    # Column out_text includes "job request" (case-insensitive).
+    out_text = df['out_text'].str.contains('job request', case=False, na=False)
+    df_out_text = df[out_text]
+    df = df[~out_text]
+
+    # Column out_document_name includes "job interview" or "resume.txt" (case-insensitive).
+    out_doc = df['out_document_name'].str.contains('|'.join(['job interview', 'resume.txt']), case=False, na=False)
+    df_out_doc = df[out_doc]
+
+    # Makes a single dataframe with all rows that indicate job applications
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_out_doc], axis=0, ignore_index=True)
+    df_job['Appraisal_Category'] = 'Job_Application'
+    return df_job
+
+
 def read_metadata(path):
     """Read the metadata file into a dataframe"""
     try:
