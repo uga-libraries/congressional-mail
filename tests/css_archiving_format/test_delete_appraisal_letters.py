@@ -1,11 +1,13 @@
 """
-Tests for the function remove_casework_letters(), which removes letters received or sent that pertain to casework.
+Tests for the function delete_appraisal_letters(),
+which deletes letters received from constituents and individual casework letters sent back by the office
+because they are one of the types of letters not retained for appraisal reasons
 """
 from datetime import date
 import os
 import shutil
 import unittest
-from css_archiving_format import remove_casework_letters
+from css_archiving_format import delete_appraisal_letters
 from test_script import csv_to_list, files_in_dir
 
 
@@ -15,9 +17,9 @@ class MyTestCase(unittest.TestCase):
         """Delete the folders and files made by tests, if present."""
 
         # Delete the copy of test data.
-        test_dirs = [os.path.join('test_data', 'remove_casework_letters', 'in_document_name'),
-                     os.path.join('test_data', 'remove_casework_letters', 'out_document_name_blobexport'),
-                     os.path.join('test_data', 'remove_casework_letters', 'out_document_name_dos')]
+        test_dirs = [os.path.join('test_data', 'delete_appraisal_letters', 'in_document_name'),
+                     os.path.join('test_data', 'delete_appraisal_letters', 'out_document_name_blobexport'),
+                     os.path.join('test_data', 'delete_appraisal_letters', 'out_document_name_dos')]
         for test_dir in test_dirs:
             if os.path.exists(os.path.join(test_dir, 'Name_Constituent_Mail_Export')):
                 shutil.rmtree(os.path.join(test_dir, 'Name_Constituent_Mail_Export'))
@@ -25,7 +27,7 @@ class MyTestCase(unittest.TestCase):
         # Delete the file deletion log.
         # Most tests have deletion logs than copies of test data, so test_dirs list is updated.
         log = f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"
-        test_dirs.extend([os.path.join('test_data', 'remove_casework_letters', 'filenotfounderror')])
+        test_dirs.extend([os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')])
         for test_dir in test_dirs:
             if os.path.exists(os.path.join(test_dir, log)):
                 os.remove(os.path.join(test_dir, log))
@@ -33,13 +35,13 @@ class MyTestCase(unittest.TestCase):
     def test_in_document_name(self):
         """Test for deleting files in the in_document_name column"""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'in_document_name')
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'in_document_name')
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
         # Runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        remove_casework_letters(input_dir)
+        delete_appraisal_letters(input_dir)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -60,13 +62,13 @@ class MyTestCase(unittest.TestCase):
     def test_out_document_name_blobexport(self):
         """Test for deleting files in the out_document_name column, for the path pattern including 'BlobExport'"""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'out_document_name_blobexport')
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'out_document_name_blobexport')
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
         # Runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        remove_casework_letters(input_dir)
+        delete_appraisal_letters(input_dir)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -87,13 +89,13 @@ class MyTestCase(unittest.TestCase):
     def test_out_document_name_dos(self):
         """Test for deleting files in the out_document_name column, for the path pattern including 'dos'"""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'out_document_name_dos')
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'out_document_name_dos')
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
         # Runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        remove_casework_letters(input_dir)
+        delete_appraisal_letters(input_dir)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -114,9 +116,9 @@ class MyTestCase(unittest.TestCase):
     def test_filenotfounderror(self):
         """Test for when files in the metadata are not present and cannot be deleted"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'filenotfounderror')
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        remove_casework_letters(input_dir)
+        delete_appraisal_letters(input_dir)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')

@@ -148,15 +148,16 @@ def remove_appraisal_rows(df, df_appraisal):
     return df_update
 
 
-def remove_casework_letters(input_dir):
-    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+def delete_appraisal_letters(input_dir):
+    """Deletes letters received from constituents and individual casework letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
 
-    # Reads the case delete log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # Reads the appraisal delete log into a dataframe, which is in the parent folder of input_dir if it is present.
     # If it is not, there are no files to delete.
     try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'appraisal_delete_log.csv'))
     except FileNotFoundError:
-        print(f"No case delete log in {os.path.dirname(input_dir)}")
+        print(f"No appraisal delete log in {os.path.dirname(input_dir)}")
         return
 
     # Creates a file deletion log, with a header row.
@@ -258,10 +259,10 @@ if __name__ == '__main__':
     # Finds rows in the metadata that are for casework and saves to a CSV.
     appraisal_df = find_casework_rows(md_df, output_directory)
 
-    # For preservation, deletes the casework files, which is an appraisal decision.
-    # It uses the log from find_casework_rows() to know what to delete.
+    # For preservation, deletes files for appraisal decisions.
+    # It uses the log from find_appraisal_rows() to know what to delete.
     if script_mode == 'preservation':
-        remove_casework_letters(input_directory)
+        delete_appraisal_letters(input_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
