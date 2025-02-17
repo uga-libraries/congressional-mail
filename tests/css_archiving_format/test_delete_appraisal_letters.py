@@ -1,10 +1,12 @@
 """
 Tests for the function delete_appraisal_letters(),
 which deletes letters received from constituents and individual casework letters sent back by the office
-because they are one of the types of letters not retained for appraisal reasons
+because they are one of the types of letters not retained for appraisal reasons.
+To simplify input, the test uses dataframes with only a few of the columns present in a real export.
 """
 from datetime import date
 import os
+import pandas as pd
 import shutil
 import unittest
 from css_archiving_format import delete_appraisal_letters
@@ -39,9 +41,14 @@ class MyTestCase(unittest.TestCase):
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
-        # Runs the function being tested.
+        # Makes variables needed as function input and runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        delete_appraisal_letters(input_dir)
+        appraisal_df = pd.DataFrame([['Anderson', r'..\documents\BlobExport\objects\111111.txt',
+                                      r'..\documents\BlobExport\formletters\form_a.txt', 'Academy_Application'],
+                                     ['Blue', r'..\documents\BlobExport\objects\222222.txt', '', 'Academy_Application'],
+                                     ['Cooper', '', r'..\documents\BlobExport\formletters\test.txt', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -66,9 +73,13 @@ class MyTestCase(unittest.TestCase):
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
-        # Runs the function being tested.
+        # Makes variables needed as function input and runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        delete_appraisal_letters(input_dir)
+        appraisal_df = pd.DataFrame([['Anderson', '', r'..\documents\BlobExport\formletters\form_a.txt', 'Casework'],
+                                     ['Dudley', '', r'..\documents\BlobExport\indivletters\400.txt', 'Casework'],
+                                     ['Evans', '', r'..\documents\BlobExport\indivletters\500.txt', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -93,9 +104,14 @@ class MyTestCase(unittest.TestCase):
         shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
                         os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
 
-        # Runs the function being tested.
+        # Makes variables needed as function input and runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        delete_appraisal_letters(input_dir)
+        appraisal_df = pd.DataFrame([['Anderson', '', r'\\office-dc\dos\public\form\form_a.txt', 'Casework'],
+                                     ['Blue', '', '', 'Casework'],
+                                     ['Dudley', '', r'\\office-dc\dos\public\letter\111111.txt', 'Academy_Application'],
+                                     ['Evans', '', r'\\office-atl\dos\public\letter\333333.txt', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -115,10 +131,14 @@ class MyTestCase(unittest.TestCase):
 
     def test_filenotfounderror(self):
         """Test for when files in the metadata are not present and cannot be deleted"""
-        # Runs the function being tested.
+        # Makes variables needed as function input and runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        delete_appraisal_letters(input_dir)
+        appraisal_df = pd.DataFrame([['Anderson', r'..\documents\BlobExport\objects\111111.txt',
+                                      r'..\documents\BlobExport\formletters\test.txt', 'Academy_Application'],
+                                     ['Evans', '', r'..\documents\BlobExport\indivletters\500.txt', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
