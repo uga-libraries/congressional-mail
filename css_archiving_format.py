@@ -56,7 +56,7 @@ def check_arguments(arg_list):
 
 
 def delete_appraisal_letters(input_dir):
-    """Deletes letters received from constituents and individual casework letters sent back by the office
+    """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
 
     # Reads the appraisal delete log into a dataframe, which is in the parent folder of input_dir if it is present.
@@ -159,8 +159,10 @@ def find_academy_rows(df):
     out_text = df['out_text'].str.contains('academy nomination', case=False, na=False)
     df_out_text = df[out_text]
 
-    # Makes a single dataframe with all rows that indicate academy applications.
+    # Makes a single dataframe with all rows that indicate academy applications
+    # and add a column for appraisal category.
     df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_academy['Appraisal_Category'] = 'Academy_Application'
     return df_academy
 
 

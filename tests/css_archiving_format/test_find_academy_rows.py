@@ -25,13 +25,17 @@ class MyTestCase(unittest.TestCase):
         
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Academy Applicant', 'For academy nomination', 'Military Service Academy',
-                     'ACADEMY NOMINATION'],
-                    ['30601', 'Military Service Academy^Admin', '', 'Military Service Academy', ''],
-                    ['30602', 'Academy Applicant', '', 'Academy Applicant^Gen', 'Academy Nomination Letter'],
-                    ['30604', '', 'academy nomination', 'Academy Applicant', 'academy nomination'],
-                    ['30603', '', 'academy nomination', '', 'For academy nomination support']]
+                     'ACADEMY NOMINATION', 'Academy_Application'],
+                    ['30601', 'Military Service Academy^Admin', '', 'Military Service Academy', '',
+                     'Academy_Application'],
+                    ['30602', 'Academy Applicant', '', 'Academy Applicant^Gen', 'Academy Nomination Letter',
+                     'Academy_Application'],
+                    ['30604', '', 'academy nomination', 'Academy Applicant', 'academy nomination',
+                     'Academy_Application'],
+                    ['30603', '', 'academy nomination', '', 'For academy nomination support',
+                     'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for all patterns")
 
     def test_in_text(self):
@@ -46,9 +50,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', 'Military', 'For Academy Nomination Letter', 'Military', ''],
-                    ['30602', 'Admin', 'academy nomination', '', 'note']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', 'Military', 'For Academy Nomination Letter', 'Military', '', 'Academy_Application'],
+                    ['30602', 'Admin', 'academy nomination', '', 'note', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for in_text")
 
     def test_in_topic(self):
@@ -64,10 +68,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30601', 'Military Service Academy', '', 'Admin', ''],
-                    ['30602', 'Military^Academy Applicant', '', '', ''],
-                    ['30604', 'Military Service Academy^ADMIN', '', '', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30601', 'Military Service Academy', '', 'Admin', '', 'Academy_Application'],
+                    ['30602', 'Military^Academy Applicant', '', '', '', 'Academy_Application'],
+                    ['30604', 'Military Service Academy^ADMIN', '', '', '', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for in_topic")
 
     def test_none(self):
@@ -80,7 +84,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for none (no patterns matched)")
 
     def test_out_text(self):
@@ -96,10 +100,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30600', '', '', '', 'for academy nomination'],
-                    ['30601', '', 'note', '', 'Academy Nomination acceptance'],
-                    ['30602', 'Military', '', '', 'ACADEMY NOMINATION']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', '', '', '', 'for academy nomination', 'Academy_Application'],
+                    ['30601', '', 'note', '', 'Academy Nomination acceptance', 'Academy_Application'],
+                    ['30602', 'Military', '', '', 'ACADEMY NOMINATION', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for out_text")
 
     def test_out_topic(self):
@@ -115,10 +119,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'],
-                    ['30601', 'General', '', 'General^Military Service Academy', ''],
-                    ['30603', '', '', 'Academy Applicant^Military', ''],
-                    ['30604', '', '', 'Academy Applicant', '']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30601', 'General', '', 'General^Military Service Academy', '', 'Academy_Application'],
+                    ['30603', '', '', 'Academy Applicant^Military', '', 'Academy_Application'],
+                    ['30604', '', '', 'Academy Applicant', '', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for out_topic")
 
 
