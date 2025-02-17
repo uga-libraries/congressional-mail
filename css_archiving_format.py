@@ -79,23 +79,21 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
-        if row.out_document_name != '':
+        if row.out_document_name != '' and 'form' not in row.out_document_name:
             name = row.out_document_name
-            # Paths for formletters include the folder "formletter" or "form".
-            if 'form' not in name:
-                # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
-                if name.startswith('..'):
-                    file_path = name.replace('..', input_dir)
-                    file_path = file_path.replace('\\BlobExport', '')
-                else:
-                    file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
-                    file_path = input_dir + file_path
-                # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
-                if os.path.isfile(file_path):
-                    file_deletion_log(log_path, file_path)
-                    os.remove(file_path)
-                elif not os.path.exists(file_path):
-                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
+            if name.startswith('..'):
+                file_path = name.replace('..', input_dir)
+                file_path = file_path.replace('\\BlobExport', '')
+            else:
+                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
+                file_path = input_dir + file_path
+            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
+            if os.path.isfile(file_path):
+                file_deletion_log(log_path, file_path)
+                os.remove(file_path)
+            elif not os.path.exists(file_path):
+                file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def file_deletion_log(log_path, file_path, header=False, note=None):
