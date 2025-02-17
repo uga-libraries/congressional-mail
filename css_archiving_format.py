@@ -101,9 +101,30 @@ def read_metadata(path):
     return df
 
 
-def find_casework_rows(df, output_dir):
-    """Find metadata rows with topics or text that indicate they are casework,
+def find_appraisal_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are different categories for appraisal,
      return as a df and log results"""
+
+    # Call the functions for each appraisal category.
+    df_casework = find_casework_rows(df)
+
+    # TODO: haven't decided what needs to be in the remaining rows log or how to calculate it.
+    # # Makes a log with any remaining rows with "case" in any column.
+    # # This may show us another pattern that indicates casework or may be another use of the word case.
+    # case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    # if len(df.loc[case.any(axis=1)].index) > 0:
+    #     df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate appraisal
+    # and also saves to a log for review for any that are not correct identifications.
+    df_appraisal = pd.concat([df_casework], axis=0, ignore_index=True)
+    df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+    return df_appraisal
+
+
+def find_casework_rows(df):
+    """Find metadata rows with topics or text that indicate they are casework and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicates casework.
     topics_list = ['Casework', 'Casework Issues', 'Prison Case']
@@ -123,18 +144,9 @@ def find_casework_rows(df, output_dir):
     case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
-    df = df.loc[~case_phrase.any(axis=1)]
 
-    # Makes a log with any remaining rows with "case" in any column.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
-    # Makes a single dataframe with all rows that indicate casework
-    # and also saves to a log for review for any that are not really casework.
+    # Makes a single dataframe with all rows that indicate casework.
     df_casework = pd.concat([df_topic, df_cw, df_phrase], axis=0, ignore_index=True)
-    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
     return df_casework
 
 
