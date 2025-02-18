@@ -18,15 +18,20 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'Health', 'This is casework'],
                               ['30602', 'Prison Case', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
                     ['30600', 'Casework Issues', '', 'Casework'],
                     ['30602', 'Prison Case', '', 'Casework'],
                     ['30601', 'Health', 'This is casework', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for all casework")
+        self.assertEqual(result, expected, "Problem with test for all casework, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for all casework, df_casework_check")
 
     def test_case_phase(self):
         """Test for when a column contains a phrase that indicates casework"""
@@ -38,9 +43,9 @@ class MyTestCase(unittest.TestCase):
                               ['30604', '', 'Mary started case yesterday'],
                               ['30605', 'Roads', 'Not a case']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
                     ['30600', '', 'I added to case', 'Casework'],
@@ -48,7 +53,13 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'Closed Case', '', 'Casework'],
                     ['30603', 'Open Case', '', 'Casework'],
                     ['30604', '', 'Mary started case yesterday', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for case phrase")
+        self.assertEqual(result, expected, "Problem with test for case phrase, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30605', 'Roads', 'Not a case', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for case phrase, df_casework_check")
 
     def test_casework_keyword(self):
         """Test for when a column contains the word casework"""
@@ -61,16 +72,23 @@ class MyTestCase(unittest.TestCase):
                               ['30605', '', 'This is not casework'],
                               ['casework', '', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
                     ['30601', '', 'Outgoing Info: casework, letter is x', 'Casework'],
                     ['30604', '', 'Send down for casework', 'Casework'],
                     ['30605', '', 'This is not casework', 'Casework'],
                     ['casework', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for casework keyword")
+        self.assertEqual(result, expected, "Problem with test for casework keyword, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30600', '', 'Just in case', 'Casework'],
+                    ['30603', '', 'Answer topic x, forwarded original on to case work', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for case keyword, df_casework_check")
 
     def test_in_topic_exact(self):
         """Test for when the column in_topic exactly matches a topic that indicates casework"""
@@ -80,15 +98,20 @@ class MyTestCase(unittest.TestCase):
                               ['30602', 'Casework Issues', ''],
                               ['30604', 'Prison Case', 'note']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
                     ['30600', 'Casework', '', 'Casework'],
                     ['30602', 'Casework Issues', '', 'Casework'],
                     ['30604', 'Prison Case', 'note', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, exact match")
+        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, df_casework_check")
 
     def test_in_topic_partial(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
@@ -99,16 +122,22 @@ class MyTestCase(unittest.TestCase):
                               ['30603', 'Prison Case^No Reply', ''],
                               ['30604', 'Casework^Casework Issues', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
                     ['30601', 'Healthcare^Casework', '', 'Casework'],
                     ['30602', 'Casework Issues^Social Security', 'note', 'Casework'],
                     ['30603', 'Prison Case^No Reply', '', 'Casework'],
                     ['30604', 'Casework^Casework Issues', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for in topic, partial match")
+        self.assertEqual(result, expected, "Problem with test for in_topic, partial match, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category'],
+                    ['30600', 'Keep', 'CASE OF THE CENTURY', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, partial match, df_casework_check")
 
     def test_no_casework(self):
         """Test for when there are no indicators of casework"""
@@ -116,12 +145,17 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Keep', ''],
                               ['30601', 'Healthcare', '']],
                              columns=['zip', 'in_topic', 'in_text'])
-        df_casework = find_casework_rows(md_df)
+        df_casework, df_casework_check = find_casework_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for no casework")
+        self.assertEqual(result, expected, "Problem with test for no casework, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_topic', 'in_text', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for no casework, df_casework_check")
 
 
 if __name__ == '__main__':

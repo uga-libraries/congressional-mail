@@ -212,12 +212,21 @@ def find_casework_rows(df):
     case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
+    df = df.loc[~case_phrase.any(axis=1)]
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
     df_casework = pd.concat([df_topic, df_cw, df_phrase], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
-    return df_casework
+
+    # Makes another dataframe with any remaining rows with "case" in any column
+    # and adds a column for the potential appraisal category to aid in review.
+    # This may show us another pattern that indicates casework or may be another use of the word case.
+    check = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
+    df_casework_check = df.loc[check.any(axis=1)].copy()
+    df_casework_check['Appraisal_Category'] = 'Casework'
+
+    return df_casework, df_casework_check
 
 
 def find_job_rows(df):
