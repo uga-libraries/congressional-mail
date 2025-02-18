@@ -165,6 +165,7 @@ def find_appraisal_rows(df, output_dir):
     df_academy = find_academy_rows(df)
     df_casework = find_casework_rows(df)
     df_job = find_job_rows(df)
+    df_recommendation = find_recommendation_rows(df)
 
     # TODO: haven't decided what needs to be in the remaining rows log or how to calculate it.
     # # Makes a log with any remaining rows with "case" in any column.
@@ -175,7 +176,7 @@ def find_appraisal_rows(df, output_dir):
 
     # Makes a single dataframe with all rows that indicate appraisal
     # and also saves to a log for review for any that are not correct identifications.
-    df_appraisal = pd.concat([df_academy, df_casework, df_job], axis=0, ignore_index=True)
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
     return df_appraisal
 
