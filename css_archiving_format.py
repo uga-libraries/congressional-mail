@@ -149,12 +149,21 @@ def find_academy_rows(df):
     # Column out_text includes "academy nomination" (case-insensitive).
     out_text = df['out_text'].str.contains('academy nomination', case=False, na=False)
     df_out_text = df[out_text]
+    df = df[~out_text]
 
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category (needed for the file deletion log).
     df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
-    return df_academy
+
+    # Makes another dataframe with any remaining rows with "academy" in any column
+    # and adds a column for the potential appraisal category to aid in review.
+    # This may show us another pattern that indicates academy applications or may be another use of the word academy.
+    check = np.column_stack([df[col].str.contains('academy', case=False, na=False) for col in df])
+    df_academy_check = df.loc[check.any(axis=1)].copy()
+    df_academy_check['Appraisal_Category'] = 'Academy_Application'
+
+    return df_academy, df_academy_check
 
 
 def find_appraisal_rows(df, output_dir):
