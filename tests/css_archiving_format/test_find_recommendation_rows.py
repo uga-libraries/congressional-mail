@@ -20,9 +20,9 @@ class MyTestCase(unittest.TestCase):
                               ['30603', 'Recommendations', 'rec for green', 'Recommendations', 'wrote recommendation'],
                               ['30604', '', '', 'Admin^Recommendations', 'wrote recommendation']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Recommendations^General', '', 'Recommendations', '', 'Recommendation'],
@@ -31,28 +31,39 @@ class MyTestCase(unittest.TestCase):
                      'Recommendation'],
                     ['30604', '', '', 'Admin^Recommendations', 'wrote recommendation', 'Recommendation'],
                     ['30601', '', 'rec for john doe', '', 'policy for recommendations sent', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for all patterns")
+        self.assertEqual(result, expected, "Problem with test for all patterns, df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for all patterns, df_recommendations_check")
 
     def test_in_text(self):
         """Test for when column in_text contains a phrase indicating recommendations (case-insensitive)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Admin', 'Senator wrote recommendation', '', ''],
                               ['30601', 'Admin', 'policy for recommendations sent', 'Admin', ''],
-                              ['30602', 'Arts', '', '', ''],
+                              ['30602', 'Arts', 'Program recommendation', '', ''],
                               ['30603', 'General', 'Letter of Recommendation', '', ''],
                               ['30604', '', 'Requested rec for JD', '', ''],
                               ['30605', 'Water', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Admin', 'Senator wrote recommendation', '', '', 'Recommendation'],
                     ['30601', 'Admin', 'policy for recommendations sent', 'Admin', '', 'Recommendation'],
                     ['30603', 'General', 'Letter of Recommendation', '', '', 'Recommendation'],
                     ['30604', '', 'Requested rec for JD', '', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for in_text")
+        self.assertEqual(result, expected, "Problem with test for in_text, df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30602', 'Arts', 'Program recommendation', '', '', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for in_text, df_recommendations_check")
 
     def test_in_topic(self):
         """Test for when column in_topic contains Recommendations"""
@@ -60,18 +71,24 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Recommendations', 'note', '', ''],
                               ['30601', 'Admin^Recommendations', '', '', ''],
                               ['30602', 'Recommendations^Admin', '', '', ''],
-                              ['30603', 'Water', '', 'Water', 'Reply note'],
+                              ['30603', 'Policy Recommendation', '', 'Water', 'Reply note'],
                               ['30604', '', '', 'Gen', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Recommendations', 'note', '', '', 'Recommendation'],
                     ['30601', 'Admin^Recommendations', '', '', '', 'Recommendation'],
                     ['30602', 'Recommendations^Admin', '', '', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for in_topic")
+        self.assertEqual(result, expected, "Problem with test for in_topic, df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30603', 'Policy Recommendation', '', 'Water', 'Reply note', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, df_recommendations_check")
 
     def test_none(self):
         """Test for when no patterns indicating recommendations are present"""
@@ -79,12 +96,17 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Farm', '', 'Animals', ''],
                               ['30601', 'Water', 'note', 'Rights', 'note']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no patterns matched)")
+        self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_recommendations_check")
 
     def test_out_text(self):
         """Test for when column out_text contains a phrase indicating recommendations (case-insensitive)"""
@@ -92,39 +114,53 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Admin', 'note', '', 'Doe letter of recommendation'],
                               ['30601', 'Admin', 'note', '', 'Policy for recommendations sent'],
                               ['30602', 'Admin', 'note', '', 'REC FOR JD'],
-                              ['30603', 'Admin', '', '', 'note'],
-                              ['30604', 'Admin', '', '', 'support'],
+                              ['30603', 'Admin', '', '', 'not a recommendation'],
+                              ['30604', 'Admin', '', '', 'recommendation to support'],
                               ['30605', 'Admin', '', '', 'Wrote Recommendation']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Admin', 'note', '', 'Doe letter of recommendation', 'Recommendation'],
                     ['30601', 'Admin', 'note', '', 'Policy for recommendations sent', 'Recommendation'],
                     ['30602', 'Admin', 'note', '', 'REC FOR JD', 'Recommendation'],
                     ['30605', 'Admin', '', '', 'Wrote Recommendation', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for out_text")
+        self.assertEqual(result, expected, "Problem with test for out_text, df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30603', 'Admin', '', '', 'not a recommendation', 'Recommendation'],
+                    ['30604', 'Admin', '', '', 'recommendation to support', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for out_text, df_recommendations_check")
 
     def test_out_topic(self):
         """Test for when column out_topic contains Recommendations"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', '', '', 'Water', ''],
+        md_df = pd.DataFrame([['30600', '', '', 'Water', 'Policy Recommendation'],
                               ['30601', 'General', '', 'General^Recommendations', ''],
-                              ['30602', 'Water', '', '', ''],
+                              ['30602', 'Water', '', '', 'Recommendation'],
                               ['30603', '', 'note', 'Recommendations', ''],
                               ['30604', 'Admin', '', 'Recommendations^Admin', 'note']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
-        df_recommendations = find_recommendation_rows(md_df)
+        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
-        # Tests the values in the returned dataframe are correct.
+        # Tests the values in df_recommendations are correct.
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30601', 'General', '', 'General^Recommendations', '', 'Recommendation'],
                     ['30603', '', 'note', 'Recommendations', '', 'Recommendation'],
                     ['30604', 'Admin', '', 'Recommendations^Admin', 'note', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for out_topic")
+        self.assertEqual(result, expected, "Problem with test for out_topic, df_recommendations")
+
+        # Tests the values in df_recommendations_check are correct.
+        result = df_to_list(df_recommendations_check)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
+                    ['30600', '', '', 'Water', 'Policy Recommendation', 'Recommendation'],
+                    ['30602', 'Water', '', '', 'Recommendation', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for out_topic, df_recommendations_check")
 
 
 if __name__ == '__main__':

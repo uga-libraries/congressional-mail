@@ -296,12 +296,21 @@ def find_recommendation_rows(df):
     # Column out_text includes a phrase (case_insensitive) that indicates a recommendation.
     out_text = df['out_text'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_out_text = df[out_text]
+    df = df[~out_text]
 
     # Makes a single dataframe with all rows that indicate recommendations
     # and adds a column for the appraisal category (needed for the file deletion log).
     df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
     df_recommendation['Appraisal_Category'] = 'Recommendation'
-    return df_recommendation
+
+    # Makes another dataframe with any remaining rows with "recommendation" in any column
+    # and adds a column for the potential appraisal category to aid in review.
+    # This may show us another pattern that indicates recommendations or may be another use of the word recommendation.
+    check = np.column_stack([df[col].str.contains('recommendation', case=False, na=False) for col in df])
+    df_recommendation_check = df.loc[check.any(axis=1)].copy()
+    df_recommendation_check['Appraisal_Category'] = 'Recommendation'
+
+    return df_recommendation, df_recommendation_check
 
 
 def read_metadata(path):
