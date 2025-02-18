@@ -245,6 +245,37 @@ def find_job_rows(df):
     return df_job
 
 
+def find_recommendation_rows(df):
+    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column in_topic includes Recommendations.
+    in_topic = df['in_topic'].str.contains('Recommendations', na=False)
+    df_in_topic = df[in_topic]
+    df = df[~in_topic]
+
+    # Column out_topic includes Recommendations.
+    out_topic = df['out_topic'].str.contains('Recommendations', na=False)
+    df_out_topic = df[out_topic]
+    df = df[~out_topic]
+
+    # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
+    phrase_list = ['Letter of recommendation', 'policy for recommendations', 'rec for', 'wrote recommendation']
+    in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_in_text = df[in_text]
+    df = df[~in_text]
+
+    # Column out_text includes a phrase (case_insensitive) that indicates a recommendation.
+    out_text = df['out_text'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_out_text = df[out_text]
+
+    # Makes a single dataframe with all rows that indicate recommendations
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_recommendation['Appraisal_Category'] = 'Recommendation'
+    return df_recommendation
+
+
 def read_metadata(path):
     """Read the metadata file into a dataframe"""
     try:
