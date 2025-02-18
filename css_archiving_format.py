@@ -171,17 +171,16 @@ def find_appraisal_rows(df, output_dir):
      return as a df and log results"""
 
     # Call the functions for each appraisal category.
-    df_academy = find_academy_rows(df)
-    df_casework = find_casework_rows(df)
-    df_job = find_job_rows(df)
-    df_recommendation = find_recommendation_rows(df)
+    df_academy, df_academy_check = find_academy_rows(df)
+    df_casework, df_casework_check = find_casework_rows(df)
+    df_job, df_job_check = find_job_rows(df)
+    df_recommendation, df_recommendation_check = find_recommendation_rows(df)
 
-    # TODO: haven't decided what needs to be in the remaining rows log or how to calculate it.
-    # # Makes a log with any remaining rows with "case" in any column.
-    # # This may show us another pattern that indicates casework or may be another use of the word case.
-    # case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    # if len(df.loc[case.any(axis=1)].index) > 0:
-    #     df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+    # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
+    # but have a simple keyword (e.g., case) that could be a new indicators for appraisal.
+    df_check = pd.concat([df_academy_check, df_casework_check, df_job_check, df_recommendation_check],
+                         axis=0, ignore_index=True)
+    df_check.to_csv(os.path.join(output_dir, 'appraisal_check_log.csv'), index=False)
 
     # Makes a single dataframe with all rows that indicate appraisal
     # and also saves to a log for review for any that are not correct identifications.

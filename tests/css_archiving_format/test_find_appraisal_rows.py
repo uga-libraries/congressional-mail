@@ -16,9 +16,11 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Delete the log, if made by the test"""
-        log_path = os.path.join('test_data', 'appraisal_delete_log.csv')
-        if os.path.exists(log_path):
-            os.remove(log_path)
+        log_paths = [os.path.join('test_data', 'appraisal_check_log.csv'),
+                     os.path.join('test_data', 'appraisal_delete_log.csv')]
+        for log_path in log_paths:
+            if os.path.exists(log_path):
+                os.remove(log_path)
 
     def test_four(self):
         """Test for when there are all four categories for appraisal
@@ -29,7 +31,11 @@ class MyTestCase(unittest.TestCase):
                               ['30602', 'Casework', '', '', '', ''],
                               ['30603', 'Admin', '', 'Recommendations', 'wrote recommendation', ''],
                               ['30604', 'Social Security', 'Casework candidate', '', '', ''],
-                              ['30605', 'Intern', '', 'job request', '', r'..\doc\resume.txt']],
+                              ['30605', 'Intern', '', 'job request', '', r'..\doc\resume.txt'],
+                              ['30606', 'Congratulations', '', '', '', 'Good job'],
+                              ['30607', 'Legislation', '', '', '', 'Recommendation noted'],
+                              ['30608', 'Arts', 'International Academy', '', '', ''],
+                              ['30609', 'Legal', 'Case against Napster', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -41,7 +47,7 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'Social Security', 'Casework candidate', '', '', '', 'Casework'],
                     ['30605', 'Intern', '', 'job request', '', r'..\doc\resume.txt', 'Job_Application'],
                     ['30603', 'Admin', '', 'Recommendations', 'wrote recommendation', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for three categories, df")
+        self.assertEqual(result, expected, "Problem with test for four categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -51,7 +57,16 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'Social Security', 'Casework candidate', 'nan', 'nan', 'nan', 'Casework'],
                     ['30605', 'Intern', 'nan', 'job request', 'nan', r'..\doc\resume.txt', 'Job_Application'],
                     ['30603', 'Admin', 'nan', 'Recommendations', 'wrote recommendation', 'nan', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for three categories, appraisal delete log")
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal delete log")
+
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30608', 'Arts', 'International Academy', 'nan', 'nan', 'nan', 'Academy_Application'],
+                    ['30609', 'Legal', 'Case against Napster', 'nan', 'nan', 'nan', 'Casework'],
+                    ['30606', 'Congratulations', 'nan', 'nan', 'nan', 'Good job', 'Job_Application'],
+                    ['30607', 'Legislation', 'nan', 'nan', 'nan', 'Recommendation noted', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
 
     def test_three(self):
         """Test for when there are three categories for appraisal (academy applications, casework, job application)"""
@@ -60,7 +75,8 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'Casework', '', '', '', ''],
                               ['30602', 'General', 'Note', 'General', 'Note', ''],
                               ['30603', 'Social Security', 'Casework candidate', '', '', ''],
-                              ['30604', 'Intern', '', 'job request', '', r'..\doc\resume.txt']],
+                              ['30604', 'Intern', '', 'job request', '', r'..\doc\resume.txt'],
+                              ['30605', 'Judicial', 'Napster case', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -82,13 +98,21 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'Intern', 'nan', 'job request', 'nan', r'..\doc\resume.txt', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for three categories, appraisal delete log")
 
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30605', 'Judicial', 'Napster case', 'nan', 'nan', 'nan', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+
     def test_two(self):
         """Test for when there are two categories for appraisal (academy applications and casework)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Academy Applicant', 'Nomination', '', '', ''],
                               ['30601', 'Casework', '', '', '', ''],
                               ['30602', 'General', 'Note', 'General', 'Note', ''],
-                              ['30603', 'Social Security', 'Casework candidate', '', '', '']],
+                              ['30603', 'Social Security', 'Casework candidate', '', '', ''],
+                              ['30604', 'Culture', 'Academy Awards', '', '', ''],
+                              ['30605', 'Farming', '', '', '', r'..\doc\case\file.doc']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -108,13 +132,21 @@ class MyTestCase(unittest.TestCase):
                     ['30603', 'Social Security', 'Casework candidate', 'nan', 'nan', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for two categories, appraisal delete log")
 
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30604', 'Culture', 'Academy Awards', 'nan', 'nan', 'nan', 'Academy_Application'],
+                    ['30605', 'Farming', 'nan', 'nan', 'nan', r'..\doc\case\file.doc', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+
     def test_one(self):
         """Test for when there is one category for appraisal (casework)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Casework Issues', '', 'Casework', '', ''],
                               ['30601', 'Health^Casework', 'Note', '', '', ''],
                               ['30602', 'Health', 'General interest', '', 'Note', ''],
-                              ['30603', 'Social Security', 'Open Case', '', '', '']],
+                              ['30603', 'Social Security', 'Open Case', '', '', ''],
+                              ['30604', 'Admin', '', '', 'For Casey', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -134,6 +166,12 @@ class MyTestCase(unittest.TestCase):
                     ['30603', 'Social Security', 'Open Case', 'nan', 'nan', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for one category, appraisal delete log")
 
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30604', 'Admin', 'nan', 'nan', 'For Casey', 'nan', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+
     def test_none(self):
         """Test for when there are no indicators for appraisal"""
         # Makes a dataframe to use as test input and runs the function.
@@ -151,6 +189,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no appraisal, appraisal delete log")
+
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
 
 
 if __name__ == '__main__':
