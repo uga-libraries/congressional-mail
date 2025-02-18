@@ -256,12 +256,21 @@ def find_job_rows(df):
     # Column out_document_name includes "job interview" or "resume.txt" (case-insensitive).
     out_doc = df['out_document_name'].str.contains('|'.join(['job interview', 'resume.txt']), case=False, na=False)
     df_out_doc = df[out_doc]
+    df = df[~out_doc]
 
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
     df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_out_doc], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
-    return df_job
+
+    # Makes another dataframe with any remaining rows with "job" in any column
+    # and adds a column for the potential appraisal category to aid in review.
+    # This may show us another pattern that indicates job applications or may be another use of the word job.
+    check = np.column_stack([df[col].str.contains('job', case=False, na=False) for col in df])
+    df_job_check = df.loc[check.any(axis=1)].copy()
+    df_job_check['Appraisal_Category'] = 'Job_Application'
+
+    return df_job, df_job_check
 
 
 def find_recommendation_rows(df):
