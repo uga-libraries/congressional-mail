@@ -334,6 +334,11 @@ def read_metadata(path):
 def remove_appraisal_rows(df, df_appraisal):
     """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
+    # Makes sure all columns in both dataframes are strings,
+    # since earlier steps can alter the type and the types must be the same for two rows to match.
+    df = df.astype(str)
+    df_appraisal.astype(str)
+
     # Makes an updated dataframe with just rows in df that are not in df_appraisal.
     df_merge = df.merge(df_appraisal, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
