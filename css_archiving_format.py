@@ -65,10 +65,10 @@ def delete_appraisal_letters(input_dir, df_appraisal):
 
     # For every row in df_appraisal, delete any letter in the in_document_name and out_document_name columns.
     # The letter path has to be reformatted to match the actual export.
+    df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
-
         # Deletes letters received from constituents, if the "in" column isn't blank.
-        if row.in_document_name != '':
+        if row.in_document_name != '' and row.in_document_name != 'nan':
             name = row.in_document_name
             file_path = name.replace('..', input_dir)
             file_path = file_path.replace('\\BlobExport', '')
@@ -79,7 +79,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                 file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
-        if row.out_document_name != '' and 'form' not in row.out_document_name:
+        if row.out_document_name != '' and row.out_document_name != 'nan' and 'form' not in row.out_document_name:
             name = row.out_document_name
             # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
             if name.startswith('..'):
