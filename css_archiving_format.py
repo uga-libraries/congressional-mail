@@ -187,6 +187,7 @@ def find_appraisal_rows(df, output_dir):
     # and also saves to a log for review for any that are not correct identifications.
     # Rows that fit more than one appraisal category are combined.
     df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
     return df_appraisal
