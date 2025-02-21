@@ -44,9 +44,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
                     ['30600', 'Academy Applicant', 'Nomination', '', '', '', 'Academy_Application'],
                     ['30602', 'Casework', '', '', '', '', 'Casework'],
+                    ['30603', 'Admin', '', 'Recommendations', 'wrote recommendation', '', 'Recommendation'],
                     ['30604', 'Social Security', 'Casework candidate', '', '', '', 'Casework'],
-                    ['30605', 'Intern', '', 'job request', '', r'..\doc\resume.txt', 'Job_Application'],
-                    ['30603', 'Admin', '', 'Recommendations', 'wrote recommendation', '', 'Recommendation']]
+                    ['30605', 'Intern', '', 'job request', '', r'..\doc\resume.txt', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for four categories, df")
 
         # Tests the values in the appraisal delete log are correct.
@@ -54,9 +54,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
                     ['30600', 'Academy Applicant', 'Nomination', 'nan', 'nan', 'nan', 'Academy_Application'],
                     ['30602', 'Casework', 'nan', 'nan', 'nan', 'nan', 'Casework'],
+                    ['30603', 'Admin', 'nan', 'Recommendations', 'wrote recommendation', 'nan', 'Recommendation'],
                     ['30604', 'Social Security', 'Casework candidate', 'nan', 'nan', 'nan', 'Casework'],
-                    ['30605', 'Intern', 'nan', 'job request', 'nan', r'..\doc\resume.txt', 'Job_Application'],
-                    ['30603', 'Admin', 'nan', 'Recommendations', 'wrote recommendation', 'nan', 'Recommendation']]
+                    ['30605', 'Intern', 'nan', 'job request', 'nan', r'..\doc\resume.txt', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for four categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
@@ -194,6 +194,34 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+
+    def test_multiple(self):
+        """Test for when there are rows that match multiple categories for appraisal"""
+        md_df = pd.DataFrame([['30600', 'Casework^Academy Applicant', '', '', '', ''],
+                              ['30601', 'Academy Applicant', 'Maybe casework', '', 'rec for doe', '']],
+                             columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
+        appraisal_df = find_appraisal_rows(md_df, 'test_data')
+
+        # Tests the values of the returned dataframe are correct.
+        result = df_to_list(appraisal_df)
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30600', 'Casework^Academy Applicant', '', '', '', '', 'Academy_Application|Casework'],
+                    ['30601', 'Academy Applicant', 'Maybe casework', '', 'rec for doe', '',
+                     'Academy_Application|Casework|Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for multiple categories, df")
+
+        # Tests the values in the appraisal delete log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    ['30600', 'Casework^Academy Applicant', 'nan', 'nan', 'nan', 'nan', 'Academy_Application|Casework'],
+                    ['30601', 'Academy Applicant', 'Maybe casework', 'nan', 'rec for doe', 'nan',
+                     'Academy_Application|Casework|Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for four categories, appraisal delete log")
+
+        # Tests the values in the appraisal check log are correct.
+        result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal check log")
 
 
 if __name__ == '__main__':
