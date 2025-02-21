@@ -19,10 +19,10 @@ class MyTestCase(unittest.TestCase):
                               ['Dudley', '', '45678', 'Issue', ''],
                               ['Evans', '', '56789', 'Casework', r'..\objects\333333.txt']],
                              columns=['last', 'title', 'zip', 'in_type', 'in_document_name'])
-        appraisal_df = pd.DataFrame([['Anderson', '', '12345', 'Casework', r'..\objects\111111.txt'],
-                                    ['Clive', '', '34567', 'Casework', ''],
-                                    ['Evans', '', '56789', 'Casework', r'..\objects\333333.txt']],
-                                    columns=['last', 'title', 'zip', 'in_type', 'in_document_name'])
+        appraisal_df = pd.DataFrame([['Anderson', '', '12345', 'Casework', r'..\objects\111111.txt', 'Casework'],
+                                    ['Clive', '', '34567', 'Casework', '', 'Casework'],
+                                    ['Evans', '', '56789', 'Casework', r'..\objects\333333.txt', 'Casework']],
+                                    columns=['last', 'title', 'zip', 'in_type', 'in_document_name', 'Appraisal_Category'])
         md_df = remove_appraisal_rows(md_df, appraisal_df)
 
         # Tests the values in the returned dataframe are correct.
