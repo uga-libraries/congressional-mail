@@ -55,6 +55,69 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
+def check_metadata_usability(df, output_dir):
+    """Test the usability of the metadata"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+
+    # Calculates the number of cells in each column with predictable formatting that don't match the expected format.
+    # Blank cells are not included.
+    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
+    state_match = df[df['state'].str.contains(r'^[A-Z]{2}$', regex=True, na=False)].shape[0]
+    state_mismatch = total_rows - state_match - df['state'].isna().sum()
+    zip_match = df[df['zip'].str.contains(r'^\d{5}(-\d{4})?$', regex=True, na=False)].shape[0]
+    zip_mismatch = total_rows - zip_match - df['zip'].isna().sum()
+    in_date_match = df[df['in_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
+    in_date_mismatch = total_rows - in_date_match - df['in_date'].isna().sum()
+    in_doc_blobexport_match = df[df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
+                                                                     regex=True, na=False)].shape[0]
+    in_doc_dos_match = df[df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
+                                                              regex=True, na=False)].shape[0]
+    in_doc_mismatch = total_rows - in_doc_blobexport_match - in_doc_dos_match - df['in_document_name'].isna().sum()
+    out_date_match = df[df['out_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
+    out_date_mismatch = total_rows - out_date_match - df['out_date'].isna().sum()
+    out_doc_blobexport_match = df[df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
+                                                                       regex=True, na=False)].shape[0]
+    out_doc_dos_match = df[df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
+                                                                regex=True, na=False)].shape[0]
+    out_doc_mismatch = total_rows - out_doc_blobexport_match - out_doc_dos_match - df['out_document_name'].isna().sum()
+    formatting = pd.Series(data=['uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
+                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', in_date_mismatch,
+                                 'uncheckable', 'uncheckable', in_doc_mismatch, 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
+                                 out_doc_mismatch, 'uncheckable'], index=expected)
+
+    # Saves reports of the results.
+    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+
+
 def delete_appraisal_letters(input_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
@@ -386,69 +449,6 @@ def split_congress_year(df, output_dir):
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
-
-
-def check_metadata_usability(df, output_dir):
-    """Test the usability of the metadata"""
-
-    # Tests if all expected columns are present and if there are any unexpected columns.
-    column_names = df.columns.tolist()
-    expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
-    columns_dict = dict.fromkeys(expected)
-    match = list(set(expected).intersection(column_names))
-    for column in match:
-        columns_dict[column] = True
-    missing = list(set(expected) - set(column_names))
-    for column in missing:
-        columns_dict[column] = False
-    extra = list(set(column_names) - set(expected))
-    for column in extra:
-        columns_dict[column] = 'Error: unexpected column'
-    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
-
-    # Calculates the number of blank cells in each column.
-    blank_count = df.isna().sum()
-
-    # Calculates the percentage of blank cells in each column.
-    total_rows = len(df.index)
-    blank_percent = round((blank_count / total_rows) * 100, 2)
-
-    # Calculates the number of cells in each column with predictable formatting that don't match the expected format.
-    # Blank cells are not included.
-    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
-    state_match = df[df['state'].str.contains(r'^[A-Z]{2}$', regex=True, na=False)].shape[0]
-    state_mismatch = total_rows - state_match - df['state'].isna().sum()
-    zip_match = df[df['zip'].str.contains(r'^\d{5}(-\d{4})?$', regex=True, na=False)].shape[0]
-    zip_mismatch = total_rows - zip_match - df['zip'].isna().sum()
-    in_date_match = df[df['in_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
-    in_date_mismatch = total_rows - in_date_match - df['in_date'].isna().sum()
-    in_doc_blobexport_match = df[df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
-                                                                     regex=True, na=False)].shape[0]
-    in_doc_dos_match = df[df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
-                                                              regex=True, na=False)].shape[0]
-    in_doc_mismatch = total_rows - in_doc_blobexport_match - in_doc_dos_match - df['in_document_name'].isna().sum()
-    out_date_match = df[df['out_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
-    out_date_mismatch = total_rows - out_date_match - df['out_date'].isna().sum()
-    out_doc_blobexport_match = df[df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
-                                                                       regex=True, na=False)].shape[0]
-    out_doc_dos_match = df[df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
-                                                                regex=True, na=False)].shape[0]
-    out_doc_mismatch = total_rows - out_doc_blobexport_match - out_doc_dos_match - df['out_document_name'].isna().sum()
-    formatting = pd.Series(data=['uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 
-                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 
-                                 'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
-                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', in_date_mismatch,
-                                 'uncheckable', 'uncheckable', in_doc_mismatch, 'uncheckable', 'uncheckable',
-                                 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
-                                 out_doc_mismatch, 'uncheckable'], index=expected)
-
-    # Saves reports of the results.
-    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
-    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
-    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
 if __name__ == '__main__':
