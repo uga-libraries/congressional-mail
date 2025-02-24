@@ -183,7 +183,64 @@ class MyTestCase(unittest.TestCase):
                     ['out_document_name', 'True', 0, 0],
                     ['out_fillin', 'True', 0, 0],
                     ['extra', 'Error: unexpected column', 0, 0]]
-        self.assertEqual(result, expected, "Problem with test for columns - missing, columns report")
+        self.assertEqual(result, expected, "Problem with test for columns - extra, columns report")
+
+    def test_columns_format(self):
+        """Test for when some cells in the six tested columns do not match the expected formats"""
+        # Makes a dataframe to use as test input and runs the function.
+        rows_list = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'ga', '30601', 16, 17, 18, 19,
+                      '19991215', 21, 22, r'..\documents\BlobExport\folder\file.txt', 24, 25, 26, 27, '1999-12-17',
+                      29, 30, r'..\documents\BlobExport\folder\file.txt', 32],
+                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, np.nan, np.nan, 16, 17, 18, 19,
+                      np.nan, 21, 22, np.nan, 24, 25, 26, 27, '1999', 29, 30, np.nan, 32],
+                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'GA', 'zipcode', 16, 17, 18, 19,
+                      '20000101', 21, 22, r'\new\file.txt', 24, 25, 26, 27, 'July 31, 2001', 29, 30,
+                      r'..\documents\BlobExport\folder\file.txt', 32],
+                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'Georgia', '30601-0000', 16, 17, 18, 19,
+                      np.nan, 21, 22, r'\\smith-dc\dos\public\folder\file.txt', 24, 25, 26, 27, 'undated', 29, 30,
+                      r'\\new\file.txt', 32],
+                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'NDA', '3060', 16, 17, 18, 19,
+                     '2000 Jan 3', 21, 22, 'file.txt', 24, 25, 26, 27, '19990101.12.12', 29, 30,
+                      r'\\smith-atl\dos\public\folder\file.txt', 32]]
+        md_df = make_df(rows_list)
+        usability_check(md_df, 'test_data')
+
+        # Tests the values in the columns report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
+                    ['prefix', True, 0, 0.0, 'uncheckable'],
+                    ['first', True, 0, 0.0, 'uncheckable'],
+                    ['middle', True, 0, 0.0, 'uncheckable'],
+                    ['last', True, 0, 0.0, 'uncheckable'],
+                    ['suffix', True, 0, 0.0, 'uncheckable'],
+                    ['appellation', True, 0, 0.0, 'uncheckable'],
+                    ['title', True, 0, 0.0, 'uncheckable'],
+                    ['org', True, 0, 0.0, 'uncheckable'],
+                    ['addr1', True, 0, 0.0, 'uncheckable'],
+                    ['addr2', True, 0, 0.0, 'uncheckable'],
+                    ['addr3', True, 0, 0.0, 'uncheckable'],
+                    ['addr4', True, 0, 0.0, 'uncheckable'],
+                    ['city', True, 0, 0.0, 'uncheckable'],
+                    ['state', True, 1, 20.0, '3'],
+                    ['zip', True, 1, 20.0, '2'],
+                    ['country', True, 0, 0.0, 'uncheckable'],
+                    ['in_id', True, 0, 0.0, 'uncheckable'],
+                    ['in_type', True, 0, 0.0, 'uncheckable'],
+                    ['in_method', True, 0, 0.0, 'uncheckable'],
+                    ['in_date', True, 2, 40.0, '1'],
+                    ['in_topic', True, 0, 0.0, 'uncheckable'],
+                    ['in_text', True, 0, 0.0, 'uncheckable'],
+                    ['in_document_name', True, 1, 20.0, '2'],
+                    ['in_fillin', True, 0, 0.0, 'uncheckable'],
+                    ['out_id', True, 0, 0.0, 'uncheckable'],
+                    ['out_type', True, 0, 0.0, 'uncheckable'],
+                    ['out_method', True, 0, 0.0, 'uncheckable'],
+                    ['out_date', True, 0, 0.0, '5'],
+                    ['out_topic', True, 0, 0.0, 'uncheckable'],
+                    ['out_text', True, 0, 0.0, 'uncheckable'],
+                    ['out_document_name', True, 1, 20.0, '1'],
+                    ['out_fillin', True, 0, 0.0, 'uncheckable']]
+        self.assertEqual(result, expected, "Problem with test for columns - formatting, columns report")
 
     def test_columns_missing(self):
         """Test for when some columns are missing"""
