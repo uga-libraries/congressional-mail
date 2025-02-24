@@ -55,6 +55,48 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
+def check_letter_matching(df, output_dir, input_dir):
+    """Compare the files in the metadata to the files in the export"""
+    files = 0
+    matches = 0
+    log_path = os.path.join(output_dir, 'usability_report_matching.csv')
+    with open(log_path, 'a', newline='') as log_csv:
+        log_writer = csv.writer(log_csv)
+        log_writer.writerow(['Found', 'Path'])
+
+        # Letters received by the office.
+        in_doc_df = df.dropna(subset=['in_document_name']).copy()
+        in_doc_list = in_doc_df['in_document_name'].tolist()
+        for name in in_doc_list:
+            files += 1
+            file_path = name.replace('..', input_dir)
+            if os.path.exists(file_path):
+                log_writer.writerow([True, file_path])
+                matches += 1
+            else:
+                log_writer.writerow([False, file_path])
+
+        # Letters sent by the office.
+        out_doc_df = df.dropna(subset=['out_document_name']).copy()
+        out_doc_list = out_doc_df['out_document_name'].tolist()
+        for name in out_doc_list:
+            files += 1
+            if name.startswith('..'):
+                file_path = name.replace('..', input_dir)
+            else:
+                file_path = re.sub('\\\\\\\\[a-z]+-[a-z]+', '', name)
+                file_path = input_dir + file_path
+            if os.path.exists(file_path):
+                log_writer.writerow([True, file_path])
+                matches += 1
+            else:
+                log_writer.writerow([False, file_path])
+
+    # Print summary
+    match_percent = round(matches / files * 100, 2)
+    print(f"Out of {files} files in the metadata, {match_percent}% ({matches}) were in the export")
+
+
 def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
 
