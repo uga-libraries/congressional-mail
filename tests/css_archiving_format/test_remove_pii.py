@@ -14,10 +14,9 @@ class MyTestCase(unittest.TestCase):
         """Test for when all PII columns are present."""
         # Makes a dataframe to use as test input.
         md_df = pd.DataFrame([['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-                               '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']],
+                               '11', '12', '13', '14', '15', '16', '17']],
                              columns=['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org',
-                                      'addr1', 'addr2', 'addr3', 'addr4', 'city', 'state', 'zip', 'in_id', 'in_text',
-                                      'in_fillin', 'out_id', 'out_text', 'out_fillin'])
+                                      'addr1', 'addr2', 'addr3', 'addr4', 'city', 'state', 'zip', 'in_id', 'out_id'])
         md_df = remove_pii(md_df)
 
         # Tests the columns of the returned dataframe are correct.
@@ -25,7 +24,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for all present, columns")
 
         # Tests the values in the returned dataframe are correct.
-        expected = [['13', '14', '15', '16', '19']]
+        expected = [['13', '14', '15', '16', '17']]
         self.assertEqual(md_df.values.tolist(), expected, "Problem with test for all present, values")
 
     def test_some_present(self):
