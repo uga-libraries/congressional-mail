@@ -391,7 +391,23 @@ def split_congress_year(df, output_dir):
 def usability_check(df, output_dir):
     """Test the usability of the metadata"""
 
-    # Verifies all expected columns are present.
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
 
     # Calculates the number of blank cells in each column.
 
@@ -400,6 +416,9 @@ def usability_check(df, output_dir):
     # Determines how many letters in the metadata and export match.
 
     # Saves reports of the results.
+    columns_df = pd.concat([columns_present], axis=1)
+    columns_df.columns = ['Present']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_columns.csv'), index=True, index_label='Column_Name')
 
 
 if __name__ == '__main__':
