@@ -1,3 +1,0 @@
-prefix,first,middle,last,suffix,appellation,title,org,addr1,addr2,addr3,addr4,city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_text,in_document_name,in_fillin,out_id,out_type,out_method,out_date,out_topic,out_text,out_document_name,out_fillin
-Ms.,Anna,A.,Anderson,,,,,123 A St,,,,A city,AL,12345,,a100,Casework,Email,20210101,Casework,,..\documents\BlobExport\objects\111111.txt,,100,Casework,Email,20210111,formA,,..\documents\BlobExport\formletters\test.txt,
-Ms.,Emma,E.,Evans,,,,,567 E St,,,,E city,ME,56789,,e100,Casework,Email,20210101,Casework,,,,500,Casework,Email,20210111,formE,,..\documents\BlobExport\indivletters\500.txt,
