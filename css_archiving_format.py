@@ -388,6 +388,20 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
+def usability_check(df, output_dir):
+    """Test the usability of the metadata"""
+
+    # Verifies all expected columns are present.
+
+    # Calculates the number of blank cells in each column.
+
+    # Verifies the data in each columns if formatted as expected.
+
+    # Determines how many letters in the metadata and export match.
+
+    # Saves reports of the results.
+
+
 if __name__ == '__main__':
 
     # Validates the script argument values and calculates the path to the metadata file.
@@ -403,6 +417,9 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
+
+    # Generates a report about the usability of the metadata.
+    usability_check(md_df, output_directory)
 
     # Finds rows in the metadata that are for appraisal and saves to a CSV.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
