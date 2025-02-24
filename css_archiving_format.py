@@ -388,7 +388,7 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
-def usability_check(df, output_dir):
+def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
 
     # Tests if all expected columns are present and if there are any unexpected columns.
@@ -445,12 +445,10 @@ def usability_check(df, output_dir):
                                  'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
                                  out_doc_mismatch, 'uncheckable'], index=expected)
 
-    # Determines how many letters in the metadata and export match.
-
     # Saves reports of the results.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
     columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
-    columns_df.to_csv(os.path.join(output_dir, 'usability_report_columns.csv'), index=True, index_label='Column_Name')
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
 if __name__ == '__main__':
@@ -470,7 +468,7 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_path)
 
     # Generates a report about the usability of the metadata.
-    usability_check(md_df, output_directory)
+    check_metadata_usability(md_df, output_directory)
 
     # Finds rows in the metadata that are for appraisal and saves to a CSV.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
