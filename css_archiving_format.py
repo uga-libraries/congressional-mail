@@ -410,14 +410,19 @@ def usability_check(df, output_dir):
     columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
 
     # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total = len(df.index)
+    blank_percent = round((blank_count / total) * 100, 2)
 
     # Verifies the data in each columns if formatted as expected.
 
     # Determines how many letters in the metadata and export match.
 
     # Saves reports of the results.
-    columns_df = pd.concat([columns_present], axis=1)
-    columns_df.columns = ['Present']
+    columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_columns.csv'), index=True, index_label='Column_Name')
 
 
