@@ -57,44 +57,46 @@ def check_arguments(arg_list):
 
 def check_letter_matching(df, output_dir, input_dir):
     """Compare the files in the metadata to the files in the export"""
-    files = 0
-    matches = 0
-    log_path = os.path.join(output_dir, 'usability_report_matching.csv')
-    with open(log_path, 'a', newline='') as log_csv:
-        log_writer = csv.writer(log_csv)
-        log_writer.writerow(['Found', 'Path'])
 
-        # Letters received by the office.
-        in_doc_df = df.dropna(subset=['in_document_name']).copy()
-        in_doc_list = in_doc_df['in_document_name'].tolist()
-        for name in in_doc_list:
-            files += 1
-            file_path = name.replace('..', input_dir)
-            if os.path.exists(file_path):
-                log_writer.writerow([True, file_path])
-                matches += 1
-            else:
-                log_writer.writerow([False, file_path])
+    # Makes a list of paths for the letters in the input directory.
+    input_dir_paths = []
+    for root, dirs, files in os.walk(input_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+            input_dir_paths.append(file_path)
 
-        # Letters sent by the office.
-        out_doc_df = df.dropna(subset=['out_document_name']).copy()
-        out_doc_list = out_doc_df['out_document_name'].tolist()
-        for name in out_doc_list:
-            files += 1
-            if name.startswith('..'):
-                file_path = name.replace('..', input_dir)
-            else:
-                file_path = re.sub('\\\\\\\\[a-z]+-[a-z]+', '', name)
-                file_path = input_dir + file_path
-            if os.path.exists(file_path):
-                log_writer.writerow([True, file_path])
-                matches += 1
-            else:
-                log_writer.writerow([False, file_path])
+    # Makes a list of paths for letters from constituents in the metadata,
+    # updating the path to match how the directory is structured in the export.
+    in_doc_df = df.dropna(subset=['in_document_name']).copy()
+    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].apply(update_path)
+    in_doc_list = in_doc_df['in_document_name'].tolist()
 
-    # Print summary
-    match_percent = round(matches / files * 100, 2)
-    print(f"Out of {files} files in the metadata, {match_percent}% ({matches}) were in the export")
+    # Makes a list of paths for letters to constituents in the metadata,
+    # updating the path to match how the directory is structured in the export.
+    out_doc_df = df.dropna(subset=['out_document_name']).copy()
+    out_doc_df['in_document_name'] = out_doc_df['out_document_name'].apply(update_path)
+    out_doc_list = out_doc_df['out_document_name'].tolist()
+
+    # Number of metadata rows without a file.
+    blank_in_doc = df['in_document_name'].isna().sum()
+    blank_out_doc = df['out_document_name'].isna().sum()
+    blank_total = blank_in_doc + blank_out_doc
+
+    # Compares the combined list of paths for letters to and from constituents
+    # to the list of paths for letters in the input directory.
+    metadata_paths = in_doc_list + out_doc_list
+    metadata_only = list(set(metadata_paths) - set(input_dir_paths))
+    directory_only = list(set(input_dir_paths) - set(metadata_paths))
+    match = list(set(metadata_paths) & set(input_dir_paths))
+
+    # Saves a summary of the results.
+    with open(os.path.join(output_dir, 'usability_report_matching.csv'), newline='') as report:
+        report_writer = csv.writer(report)
+        report_writer.writerow(['Category', 'Count'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only)])
+        report_writer.writerow(['Directory_Only', len(directory_only)])
+        report_writer.writerow(['Match', len(match)])
+        report_writer.writerow(['Metadata_Blank', blank_total])
 
 
 def check_metadata_usability(df, output_dir):
@@ -175,8 +177,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
         # Deletes letters received from constituents, if the "in" column isn't blank.
         if row.in_document_name != '' and row.in_document_name != 'nan':
             name = row.in_document_name
-            file_path = name.replace('..', input_dir)
-            file_path = file_path.replace('\\BlobExport', '')
+            file_path = update_path(name, input_dir)
             try:
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
@@ -186,13 +187,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
         if row.out_document_name != '' and row.out_document_name != 'nan' and 'form' not in row.out_document_name:
             name = row.out_document_name
-            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
-            if name.startswith('..'):
-                file_path = name.replace('..', input_dir)
-                file_path = file_path.replace('\\BlobExport', '')
-            else:
-                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
-                file_path = input_dir + file_path
+            file_path = update_path(name, input_dir)
             # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
             if os.path.isfile(file_path):
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
@@ -491,6 +486,22 @@ def split_congress_year(df, output_dir):
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
+
+
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen two ways that paths are formatted in the metadata:
+    # ..\documents\BlobExport\folder\..\file.ext, where the export is \documents\folder\..\file.ext AND
+    #  \\name-office\dos\public\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    if md_path.startswith('..'):
+        updated_path = md_path.replace('..', input_dir)
+        updated_path = updated_path.replace('\\BlobExport', '')
+    else:
+        updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
+        updated_path = input_dir + updated_path
+
+    return updated_path
 
 
 if __name__ == '__main__':
