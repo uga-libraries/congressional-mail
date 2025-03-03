@@ -74,7 +74,7 @@ def check_letter_matching(df, output_dir, input_dir):
     # Makes a list of paths for letters to constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
     out_doc_df = df.dropna(subset=['out_document_name']).copy()
-    out_doc_df['in_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
+    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
     out_doc_list = out_doc_df['out_document_name'].tolist()
 
     # Number of metadata rows without a file.
@@ -88,10 +88,6 @@ def check_letter_matching(df, output_dir, input_dir):
     metadata_only = list(set(metadata_paths) - set(input_dir_paths))
     directory_only = list(set(input_dir_paths) - set(metadata_paths))
     match = list(set(metadata_paths) & set(input_dir_paths))
-
-    print('metadata only', metadata_only)
-    print('directory only', directory_only)
-    print('match', match)
 
     # Saves a summary of the results.
     with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
