@@ -520,15 +520,14 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Generates a report about the usability of the metadata.
-    check_metadata_usability(md_df, output_directory)
-
     # Finds rows in the metadata that are for appraisal and saves to a CSV.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
 
-    # For preservation, deletes files for appraisal decisions.
+    # For preservation, generates reports about the usability of the export and deletes files for appraisal decisions.
     # It uses the log from find_appraisal_rows() to know what to delete.
     if script_mode == 'preservation':
+        check_metadata_usability(md_df, output_directory)
+        check_letter_matching(md_df, output_directory, input_directory)
         delete_appraisal_letters(input_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata
