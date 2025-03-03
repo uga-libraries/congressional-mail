@@ -98,6 +98,15 @@ def check_letter_matching(df, output_dir, input_dir):
         report_writer.writerow(['Match', len(match)])
         report_writer.writerow(['Metadata_Blank', blank_total])
 
+    # Saves the paths that did not match to a log.
+    with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:
+        log_writer = csv.writer(report)
+        log_writer.writerow(['Category', 'Path'])
+        for path in metadata_only:
+            log_writer.writerow(['Metadata Only', path])
+        for path in directory_only:
+            log_writer.writerow(['Directory Only', path])
+
 
 def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
