@@ -497,6 +497,13 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
+def topics_report(df, output_dir):
+    """Make a report with the frequency of each topic"""
+
+    # Replace blanks with BLANK so that it is counted as a topic.
+    df['in_topic'] = df['in_topic'].fillna('BLANK')
+
+
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
 
