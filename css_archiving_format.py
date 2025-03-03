@@ -94,7 +94,7 @@ def check_letter_matching(df, output_dir, input_dir):
     print('match', match)
 
     # Saves a summary of the results.
-    with open(os.path.join(output_dir, 'usability_report_matching.csv'), newline='') as report:
+    with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
         report_writer = csv.writer(report)
         report_writer.writerow(['Category', 'Count'])
         report_writer.writerow(['Metadata_Only', len(metadata_only)])
