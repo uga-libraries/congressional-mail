@@ -2,6 +2,7 @@
 Tests for the function topics_report(), which makes a report of the number of times each topic is used.
 To simplify testing, md_df has only a few of the columns that are in a normal export.
 """
+import numpy as np
 import os
 import pandas as pd
 import unittest
@@ -20,12 +21,26 @@ class MyTestCase(unittest.TestCase):
     def test_function(self):
         """Test to develop the function. Not sure if I have variations or not."""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([[]], columns=['zip', 'in_topic', 'out_topic'])
+        md_df = pd.DataFrame([['30601', np.nan, np.nan],
+                              ['30602', 'Water', np.nan],
+                              ['30603', 'Water', np.nan],
+                              ['30604', 'Chess', np.nan],
+                              ['30604', 'Baseball', np.nan],
+                              ['30605', np.nan, np.nan],
+                              ['30606', 'Water', np.nan],
+                              ['30607', 'Puppies', np.nan],
+                              ['30608', 'Puppies', np.nan]],
+                             columns=['zip', 'in_topic', 'out_topic'])
         topics_report(md_df, 'test_data')
 
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
-        expected = [[]]
+        expected = [['in_topic', 'count'],
+                    ['Water', '3'],
+                    ['BLANK', '2'],
+                    ['Puppies', '2'],
+                    ['Chess', '1'],
+                    ['Baseball', '1']]
         self.assertEqual(result, expected, "Problem with test for function")
 
 

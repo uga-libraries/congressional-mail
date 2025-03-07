@@ -503,6 +503,12 @@ def topics_report(df, output_dir):
     # Replace blanks with BLANK so that it is counted as a topic.
     df['in_topic'] = df['in_topic'].fillna('BLANK')
 
+    # Get a count for each topic.
+    in_topic_counts = df['in_topic'].value_counts()
+
+    # Save to a CSV.
+    in_topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'))
+
 
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
