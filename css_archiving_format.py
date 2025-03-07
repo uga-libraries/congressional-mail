@@ -108,6 +108,28 @@ def check_letter_matching(df, output_dir, input_dir):
             log_writer.writerow(['Directory Only', path])
 
 
+def check_metadata_formatting(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv"""
+
+    # Dictionary of expected formatting patterns.
+    patterns = {'in_date': r'^\d{8}$',
+                'out_date': r'^\d{8}$',
+                'state': r'^[A-Z]{2}$',
+                'zip': r'^\d{5}(-\d{4})?$'}
+
+    # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
+    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    df_no_match = df[~match & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
 def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
 
@@ -136,30 +158,18 @@ def check_metadata_usability(df, output_dir):
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
 
-    # Calculates the number of cells in each column with predictable formatting, not including blanks,
-    # that don't match the expected format and saves those rows to a csv.
+    # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
     # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
-
-    match = df['state'].str.contains(r'^[A-Z]{2}$', regex=True, na=False)
-    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_state.csv'), index=False)
-    state_mismatch = total_rows - len(df[match].index) - df['state'].isna().sum()
-
-    match = df['zip'].str.contains(r'^\d{5}(-\d{4})?$', regex=True, na=False)
-    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_zip.csv'), index=False)
-    zip_mismatch = total_rows - len(df[match].index) - df['zip'].isna().sum()
-
-    match = df['in_date'].str.contains(r'^\d{8}$', regex=True, na=False)
-    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_in_date.csv'), index=False)
-    in_date_mismatch = total_rows - len(df[match].index) - df['in_date'].isna().sum()
+    state_mismatch = check_metadata_formatting('state', df, output_dir)
+    zip_mismatch = check_metadata_formatting('zip', df, output_dir)
+    in_date_mismatch = check_metadata_formatting('in_date', df, output_dir)
 
     match_blob = df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
     match_dos = df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
     df[~match_blob | ~match_dos].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_in_document_name.csv'), index=False)
     in_doc_mismatch = total_rows - len(df[match_blob].index) - len(df[match_dos].index) - df['in_document_name'].isna().sum()
 
-    match = df['out_date'].str.contains(r'^\d{8}$', regex=True, na=False)
-    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_out_date.csv'), index=False)
-    out_date_mismatch = total_rows - len(df[match].index) - df['out_date'].isna().sum()
+    out_date_mismatch = check_metadata_formatting('out_date', df, output_dir)
 
     match_blob = df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
     match_dos = df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
