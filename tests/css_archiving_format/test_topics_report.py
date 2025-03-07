@@ -22,25 +22,27 @@ class MyTestCase(unittest.TestCase):
         """Test to develop the function. Not sure if I have variations or not."""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30601', np.nan, np.nan],
-                              ['30602', 'Water', np.nan],
-                              ['30603', 'Water', np.nan],
-                              ['30604', 'Chess', np.nan],
-                              ['30604', 'Baseball', np.nan],
-                              ['30605', np.nan, np.nan],
-                              ['30606', 'Water', np.nan],
-                              ['30607', 'Puppies', np.nan],
-                              ['30608', 'Puppies', np.nan]],
+                              ['30602', 'Water', 'Water'],
+                              ['30603', 'Water', 'Water'],
+                              ['30604', 'Chess', 'Sports'],
+                              ['30604', 'Baseball', 'Sports'],
+                              ['30605', np.nan, 'Sports'],
+                              ['30606', 'Water', 'Sports'],
+                              ['30607', 'Puppies', 'Pets'],
+                              ['30608', 'Puppies', 'Pets']],
                              columns=['zip', 'in_topic', 'out_topic'])
         topics_report(md_df, 'test_data')
 
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
-        expected = [['in_topic', 'count'],
-                    ['Water', '3'],
-                    ['BLANK', '2'],
-                    ['Puppies', '2'],
-                    ['Chess', '1'],
-                    ['Baseball', '1']]
+        expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count'],
+                    ['BLANK', '2', '1'],
+                    ['Baseball', '1', '0'],
+                    ['Chess', '1', '0'],
+                    ['Pets', '0', '2'],
+                    ['Puppies', '2', '0'],
+                    ['Sports', '0', '4'],
+                    ['Water', '3', '2']]
         self.assertEqual(result, expected, "Problem with test for function")
 
 

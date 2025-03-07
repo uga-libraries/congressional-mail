@@ -502,12 +502,22 @@ def topics_report(df, output_dir):
 
     # Replace blanks with BLANK so that it is counted as a topic.
     df['in_topic'] = df['in_topic'].fillna('BLANK')
+    df['out_topic'] = df['out_topic'].fillna('BLANK')
 
-    # Get a count for each topic.
-    in_topic_counts = df['in_topic'].value_counts()
+    # Get a count for each topic in each topic column.
+    in_topic_counts = df['in_topic'].value_counts().reset_index()
+    in_topic_counts.columns = ['Topic', 'In_Topic_Count']
+    out_topic_counts = df['out_topic'].value_counts().reset_index()
+    out_topic_counts.columns = ['Topic', 'Out_Topic_Count']
+
+    # Combines the counts into a single dataframe, with 0 instead of NaN.
+    df_counts = in_topic_counts.merge(out_topic_counts, how='outer', on='Topic')
+    df_counts = df_counts.fillna(0)
+    df_counts['In_Topic_Count'] = df_counts['In_Topic_Count'].astype(int)
+    df_counts['Out_Topic_Count'] = df_counts['Out_Topic_Count'].astype(int)
 
     # Save to a CSV.
-    in_topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'))
+    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
 def update_path(md_path, input_dir):
