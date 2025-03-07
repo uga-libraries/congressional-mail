@@ -136,27 +136,36 @@ def check_metadata_usability(df, output_dir):
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
 
-    # Calculates the number of cells in each column with predictable formatting that don't match the expected format.
-    # Blank cells are not included.
+    # Calculates the number of cells in each column with predictable formatting, not including blanks,
+    # that don't match the expected format and saves those rows to a csv.
     # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
-    state_match = df[df['state'].str.contains(r'^[A-Z]{2}$', regex=True, na=False)].shape[0]
-    state_mismatch = total_rows - state_match - df['state'].isna().sum()
-    zip_match = df[df['zip'].str.contains(r'^\d{5}(-\d{4})?$', regex=True, na=False)].shape[0]
-    zip_mismatch = total_rows - zip_match - df['zip'].isna().sum()
-    in_date_match = df[df['in_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
-    in_date_mismatch = total_rows - in_date_match - df['in_date'].isna().sum()
-    in_doc_blobexport_match = df[df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
-                                                                     regex=True, na=False)].shape[0]
-    in_doc_dos_match = df[df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
-                                                              regex=True, na=False)].shape[0]
-    in_doc_mismatch = total_rows - in_doc_blobexport_match - in_doc_dos_match - df['in_document_name'].isna().sum()
-    out_date_match = df[df['out_date'].str.contains(r'^\d{8}$', regex=True, na=False)].shape[0]
-    out_date_mismatch = total_rows - out_date_match - df['out_date'].isna().sum()
-    out_doc_blobexport_match = df[df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\',
-                                                                       regex=True, na=False)].shape[0]
-    out_doc_dos_match = df[df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public',
-                                                                regex=True, na=False)].shape[0]
-    out_doc_mismatch = total_rows - out_doc_blobexport_match - out_doc_dos_match - df['out_document_name'].isna().sum()
+
+    match = df['state'].str.contains(r'^[A-Z]{2}$', regex=True, na=False)
+    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_state.csv'), index=False)
+    state_mismatch = total_rows - len(df[match].index) - df['state'].isna().sum()
+
+    match = df['zip'].str.contains(r'^\d{5}(-\d{4})?$', regex=True, na=False)
+    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_zip.csv'), index=False)
+    zip_mismatch = total_rows - len(df[match].index) - df['zip'].isna().sum()
+
+    match = df['in_date'].str.contains(r'^\d{8}$', regex=True, na=False)
+    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_in_date.csv'), index=False)
+    in_date_mismatch = total_rows - len(df[match].index) - df['in_date'].isna().sum()
+
+    match_blob = df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+    match_dos = df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+    df[~match_blob | ~match_dos].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_in_document_name.csv'), index=False)
+    in_doc_mismatch = total_rows - len(df[match_blob].index) - len(df[match_dos].index) - df['in_document_name'].isna().sum()
+
+    match = df['out_date'].str.contains(r'^\d{8}$', regex=True, na=False)
+    df[~match].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_out_date.csv'), index=False)
+    out_date_mismatch = total_rows - len(df[match].index) - df['out_date'].isna().sum()
+
+    match_blob = df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+    match_dos = df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+    df[~match_blob | ~match_dos].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_out_document_name.csv'), index=False)
+    out_doc_mismatch = total_rows - len(df[match_blob].index) - len(df[match_dos].index) - df['out_document_name'].isna().sum()
+
     formatting = pd.Series(data=['uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
@@ -165,7 +174,7 @@ def check_metadata_usability(df, output_dir):
                                  'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
                                  out_doc_mismatch, 'uncheckable'], index=expected)
 
-    # Saves reports of the results.
+    # Saves a summary report of the results.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
     columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
