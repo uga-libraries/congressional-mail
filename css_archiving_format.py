@@ -563,6 +563,7 @@ if __name__ == '__main__':
     if script_mode == 'preservation':
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
+        topics_report(md_df, output_directory)
         delete_appraisal_letters(input_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata
