@@ -516,6 +516,9 @@ def topics_report(df, output_dir):
     df_counts['In_Topic_Count'] = df_counts['In_Topic_Count'].astype(int)
     df_counts['Out_Topic_Count'] = df_counts['Out_Topic_Count'].astype(int)
 
+    # Adds a totals column to the dataframe.
+    df_counts['Total'] = df_counts['In_Topic_Count'] + df_counts['Out_Topic_Count']
+
     # Save to a CSV.
     df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 

@@ -35,14 +35,14 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
-        expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count'],
-                    ['BLANK', '2', '1'],
-                    ['Baseball', '1', '0'],
-                    ['Chess', '1', '0'],
-                    ['Pets', '0', '2'],
-                    ['Puppies', '2', '0'],
-                    ['Sports', '0', '4'],
-                    ['Water', '3', '2']]
+        expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
+                    ['BLANK', '2', '1', '3'],
+                    ['Baseball', '1', '0', '1'],
+                    ['Chess', '1', '0', '1'],
+                    ['Pets', '0', '2', '2'],
+                    ['Puppies', '2', '0', '2'],
+                    ['Sports', '0', '4', '4'],
+                    ['Water', '3', '2', '5']]
         self.assertEqual(result, expected, "Problem with test for function")
 
 
