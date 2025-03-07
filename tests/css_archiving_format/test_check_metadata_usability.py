@@ -45,8 +45,8 @@ class MyTestCase(unittest.TestCase):
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
-        # Tests the values in the columns report are correct.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['prefix', True, 0, 0.0, 'uncheckable'],
                     ['first', True, 0, 0.0, 'uncheckable'],
@@ -80,7 +80,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 0, 0.0, 'uncheckable'],
                     ['out_document_name', True, 0, 0, '0'],
                     ['out_fillin', True, 0, 0.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns - correct")
+        self.assertEqual(result, expected, "Problem with test for correct")
 
     def test_columns_blanks(self):
         """Test for when some columns have blank cells"""
@@ -100,8 +100,8 @@ class MyTestCase(unittest.TestCase):
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
-        # Tests the values in the columns report are correct.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['prefix', True, 0, 0.0, 'uncheckable'],
                     ['first', True, 0, 0.0, 'uncheckable'],
@@ -135,7 +135,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 3, 75.0, 'uncheckable'],
                     ['out_document_name', True, 3, 75.0, '0'],
                     ['out_fillin', True, 4, 100.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns - blanks")
+        self.assertEqual(result, expected, "Problem with test for blanks")
 
     def test_columns_extra(self):
         """Test for when some columns are not expected"""
@@ -147,8 +147,8 @@ class MyTestCase(unittest.TestCase):
         md_df['extra'] = '33'
         check_metadata_usability(md_df, 'test_data')
 
-        # Tests the values in the columns report are correct.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['prefix', 'True', 0, 0.0, 'uncheckable'],
                     ['first', 'True', 0, 0.0, 'uncheckable'],
@@ -183,7 +183,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_document_name', 'True', 0, 0.0, '0'],
                     ['out_fillin', 'True', 0, 0.0, 'uncheckable'],
                     ['extra', 'Error: unexpected column', 0, 0.0, 'blank']]
-        self.assertEqual(result, expected, "Problem with test for columns - extra")
+        self.assertEqual(result, expected, "Problem with test for extra")
 
     def test_columns_format(self):
         """Test for when some cells in the six tested columns do not match the expected formats"""
@@ -205,8 +205,8 @@ class MyTestCase(unittest.TestCase):
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
-        # Tests the values in the columns report are correct.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['prefix', True, 0, 0.0, 'uncheckable'],
                     ['first', True, 0, 0.0, 'uncheckable'],
@@ -240,7 +240,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 0, 0.0, 'uncheckable'],
                     ['out_document_name', True, 1, 20.0, '1'],
                     ['out_fillin', True, 0, 0.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns - formatting")
+        self.assertEqual(result, expected, "Problem with test for formatting")
 
     def test_columns_missing(self):
         """Test for when some columns are missing"""
@@ -253,8 +253,8 @@ class MyTestCase(unittest.TestCase):
                    axis=1, inplace=True)
         check_metadata_usability(md_df, 'test_data')
 
-        # Tests the values in the columns report are correct.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_columns.csv'))
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['prefix', False, 'blank', 'blank', 'uncheckable'],
                     ['first', False, 'blank', 'blank', 'uncheckable'],
@@ -288,7 +288,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', False, 'blank', 'blank', 'uncheckable'],
                     ['out_document_name', True, 0.0, 0.0, '0'],
                     ['out_fillin', False, 'blank', 'blank', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns - missing")
+        self.assertEqual(result, expected, "Problem with test for missing")
 
 
 if __name__ == '__main__':
