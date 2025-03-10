@@ -123,6 +123,20 @@ class MyTestCase(unittest.TestCase):
         result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for access, undated.csv")
 
+        # Tests the preservation script mode outputs were not made.
+        output_directory = os.path.join('test_data', 'script')
+        result = [os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
+                  os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv'))]
+        expected = [False, False, False, False, False, False, False, False, False]
+        self.assertEqual(result, expected, "Problem with test for access, preservation script mode outputs")
+
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
@@ -199,6 +213,9 @@ class MyTestCase(unittest.TestCase):
                     [r'..\documents\indivletters\000005.txt'.replace('..', input_directory),
                      '1.2', today, today, 'EFBB58E35027F2382E2C58F22B895B7C', 'Recommendation']]
         self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
+
+        # Tests the contents of the
+        csv_path = os.path.join(output_directory, 'usability_report_matching.csv')
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
