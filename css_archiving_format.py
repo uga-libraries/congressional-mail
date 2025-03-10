@@ -181,19 +181,12 @@ def check_metadata_usability(df, output_dir):
     state_mismatch = check_metadata_formatting('state', df, output_dir)
     zip_mismatch = check_metadata_formatting('zip', df, output_dir)
     in_date_mismatch = check_metadata_formatting('in_date', df, output_dir)
-
-    match_blob = df['in_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
-    match_dos = df['in_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    df[~match_blob | ~match_dos].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_in_document_name.csv'), index=False)
-    in_doc_mismatch = total_rows - len(df[match_blob].index) - len(df[match_dos].index) - df['in_document_name'].isna().sum()
-
+    in_doc_mismatch = check_metadata_formatting_multi('in_document_name', df, output_dir)
     out_date_mismatch = check_metadata_formatting('out_date', df, output_dir)
+    out_doc_mismatch = check_metadata_formatting_multi('out_document_name', df, output_dir)
 
-    match_blob = df['out_document_name'].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
-    match_dos = df['out_document_name'].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    df[~match_blob | ~match_dos].to_csv(os.path.join(output_dir, 'metadata_formatting_errors_out_document_name.csv'), index=False)
-    out_doc_mismatch = total_rows - len(df[match_blob].index) - len(df[match_dos].index) - df['out_document_name'].isna().sum()
-
+    # Combines the number of mismatches for the checked columns into a series, for adding to the report.
+    # Other columns have "uncheckable", even if the column is missing from the export.
     formatting = pd.Series(data=['uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
@@ -202,7 +195,7 @@ def check_metadata_usability(df, output_dir):
                                  'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
                                  out_doc_mismatch, 'uncheckable'], index=expected)
 
-    # Saves a summary report of the results.
+    # Combines the data about each column into a dataframe and saves as a CSV.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
     columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
