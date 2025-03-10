@@ -130,6 +130,24 @@ def check_metadata_formatting(column, df, output_dir):
     return no_match_count
 
 
+def check_metadata_formatting_multi(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv
+    when there is more than one possible format pattern for the column"""
+
+    # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
+    match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+    match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+    df_no_match = df[~(match_blob | match_dos) & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
 def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
 
