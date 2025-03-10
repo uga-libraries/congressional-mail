@@ -88,13 +88,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
                      'out_topic', 'out_document_name'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
                      'A', r'..\documents\BlobExport\formletters\A'],
                     ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
-                     'B', r'..\documents\BlobExport\formletters\B'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     'B1^B2', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '2024-03-13',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
@@ -105,7 +105,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_document_name'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2021-2022.csv")
@@ -118,8 +118,8 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
-                     'B', r'..\documents\BlobExport\formletters\B'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     'B1^B2', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '2024-03-13',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2023-2024.csv")
@@ -162,7 +162,7 @@ class MyTestCase(unittest.TestCase):
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
-                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'G1', 'nan',
+                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'E', 'nan',
                      r'..\documents\BlobExport\objects\777777.txt', 'nan', 'r700', 'General', 'Email', '20210111',
                      'nan', 'nan', r'..\documents\BlobExport\indivletters\000007.txt', 'Court case', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for preservation, appraisal check log")
@@ -175,12 +175,12 @@ class MyTestCase(unittest.TestCase):
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
-                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1',
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
                      'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General',
-                     'Email', '2024-03-13', 'C', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan',
+                     'Email', '2024-03-13', 'B1^B2', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan',
                      'Casework'],
                     ['Ms.', 'Ann', 'A.', 'Anderson', 'nan', 'MD', 'nan', 'nan', '123 A St', 'nan', 'nan', 'nan',
-                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1', 'academy nomination',
+                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc', 'academy nomination',
                      r'..\documents\BlobExport\objects\111111.txt', 'nan', 'r100', 'General', 'Email', '20210111',
                      'nan', 'nan', r'..\documents\BlobExport\indivletters\000001.txt', 'nan', 'Academy_Application'],
                     ['Ms.', 'Diane', 'D.', 'Dudly', 'nan', 'nan', 'nan', 'nan', '456 D St', 'nan', 'nan', 'nan',
@@ -195,7 +195,7 @@ class MyTestCase(unittest.TestCase):
                     ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
                      'F city', 'fl', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
                      'Social Security^Casework', 'nan', 'nan', 'nan', 'r600',
-                     'General', 'Email', '20210111', 'F', 'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan',
+                     'General', 'Email', '20210111', 'E', 'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan',
                      'Casework']]
         self.assertEqual(result, expected, "Problem with test for preservation, appraisal delete log")
 
@@ -233,7 +233,7 @@ class MyTestCase(unittest.TestCase):
                      'Recommendations', 'nan', r'..\documents\BlobExport\formletters\D.txt', 'nan'],
                     ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
                      'F city', 'fl', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
-                     'Social Security^Casework', 'nan', 'nan', 'nan', 'r600', 'General', 'Email', '20210111', 'F',
+                     'Social Security^Casework', 'nan', 'nan', 'nan', 'r600', 'General', 'Email', '20210111', 'E',
                      'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan']]
         self.assertEqual(result, expected, "Problem with test for preservation, metadata_formatting_errors_state.csv")
 
@@ -245,9 +245,9 @@ class MyTestCase(unittest.TestCase):
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
-                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'C1',
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
                      'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General',
-                     'Email', '2024-03-13', 'C', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan']]
+                     'Email', '2024-03-13', 'B1^B2', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan']]
         self.assertEqual(result, expected, "Problem with test for preservation, metadata_formatting_errors_out_date.csv")
 
         # Tests the other metadata formatting reports were not made.
@@ -259,11 +259,18 @@ class MyTestCase(unittest.TestCase):
         expected = [False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for preservation, other metadata formatting reports")
 
-        # # Tests the contents of topics_report.csv.
-        # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
-        # result = csv_to_list(csv_path)
-        # expected = [['Topic', 'In_Topic_Count', 'Out_topic_Count', 'Total']]
-        # self.assertEqual(result, expected, "Problem with test for preservation, topics_report.csv")
+        # Tests the contents of topics_report.csv.
+        csv_path = os.path.join('test_data', 'script', 'topics_report.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
+                    ['B1^B2', '1', '2', '3'],
+                    ['BLANK', '0', '2', '2'],
+                    ['Casework', '1', '0', '1'],
+                    ['E', '1', '2', '3'],
+                    ['Misc', '2', '0', '2'],
+                    ['Recommendations', '1', '1', '2'],
+                    ['Social Security^Casework', '1', '0', '1']]
+        self.assertEqual(result, expected, "Problem with test for preservation, topics_report.csv")
         #
         # # Tests the contents of usability_report_matching.csv.
         # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
