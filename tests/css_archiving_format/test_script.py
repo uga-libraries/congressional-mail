@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['Ms.', 'Diane', 'D.', 'Dudly', 'nan', 'nan', 'nan', 'nan', '456 D St', 'nan', 'nan', 'nan',
-                     'D city', 'DEL', '45678', 'nan', 'd100', 'General', 'Email', '20210101', 'Resumes',
+                     'D city', 'DE', '45678', 'nan', 'd100', 'General', 'Email', '20210101', 'Resumes',
                      'nan', r'..\documents\BlobExport\objects\444444.txt', 'nan', 'r400', 'General', 'Email',
                      '20210111', 'D', 'academy nomination', r'..\documents\BlobExport\indivletters\000004.txt', 'nan',
                      'Academy_Application|Job_Application'],
@@ -91,14 +91,14 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
                      'out_topic', 'out_document_name'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc',
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
                      'A', r'..\documents\BlobExport\formletters\A'],
                     ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
-                     'B1^B2', r'..\documents\BlobExport\formletters\B'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
-                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '2024-03-13',
+                     'B', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '20240313',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
@@ -108,7 +108,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_document_name'],
-                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc',
+                    ['A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2021-2022.csv")
@@ -121,9 +121,9 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['B city', 'WY', '23456', 'nan', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
-                     'B1^B2', r'..\documents\BlobExport\formletters\B'],
-                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
-                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '2024-03-13',
+                     'B', r'..\documents\BlobExport\formletters\B'],
+                    ['C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', '20240313',
                      'A', r'..\documents\BlobExport\formletters\A']]
         self.assertEqual(result, expected, "Problem with test for access, 2023-2024.csv")
 
@@ -143,7 +143,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
                   os.path.exists(os.path.join(output_directory, 'topics_report.csv'))]
-        expected = [False, False, False, False, False, False, False, False, False]
+        expected = [False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for access, preservation script mode outputs")
 
     def test_correct_preservation(self):
@@ -296,43 +296,43 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\B.txt']]
         self.assertEqual(result, expected, "Problem with test for preservation, usability_report_matching_details.csv")
 
-        # # Tests the contents of usability_report_metadata.csv.
-        # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
-        # result = csv_to_list(csv_path)
-        # expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
-        #             ['prefix', True, 0, 0.0, 'uncheckable'],
-        #             ['first', True, 0, 0.0, 'uncheckable'],
-        #             ['middle', True, 0, 0.0, 'uncheckable'],
-        #             ['last', True, 0, 0.0, 'uncheckable'],
-        #             ['uffix', True, 6, 85.71, 'uncheckable'],
-        #             ['appellation', True, 6, 85.71, 'uncheckable'],
-        #             ['title', True, 6, 85.71, 'uncheckable'],
-        #             ['org', True, 6, 85.71, 'uncheckable'],
-        #             ['addr1', True, 0, 0.0, 'uncheckable'],
-        #             ['addr2', True, 5, 71.43, 'uncheckable'],
-        #             ['addr3', True, 6, 85.71, 'uncheckable'],
-        #             ['addr4', True, 6, 85.71, 'uncheckable'],
-        #             ['city', True, 0, 0.0, 'uncheckable'],
-        #             ['state', True, 0, 0.0, 0],
-        #             ['zip', True, 0, 0.0, 0],
-        #             ['country', True, 7, 100.0, 'uncheckable'],
-        #             ['in_id', True, 0, 0.0, 'uncheckable'],
-        #             ['in_type', True, 0, 0.0, 'uncheckable'],
-        #             ['in_method', True, 0, 0.0, 'uncheckable'],
-        #             ['in_date', True, 0, 0.0, 0],
-        #             ['in_topic', True, 0, 0.0, 'uncheckable'],
-        #             ['in_text', True, 4, 57.14, 'uncheckable'],
-        #             ['in_document_name', True, 1, 14.29, 0],
-        #             ['in_fillin', True, 7, 100.0, 'uncheckable'],
-        #             ['out_id', True, 0, 0.0, 'uncheckable'],
-        #             ['out_type', True, 0, 0.0, 'uncheckable'],
-        #             ['out_method', True, 0, 0.0, 'uncheckable'],
-        #             ['out_date', True, 0, 0.0, 0],
-        #             ['out_topic', True, 2, 28.57, 'uncheckable'],
-        #             ['out_text', True, 7, 100.0, 'uncheckable'],
-        #             ['out_document_name', True, 0, 0.0, 0],
-        #             ['out_fillin', True, 6, 85.71, 'uncheckable']]
-        # self.assertEqual(result, expected, "Problem with test for preservation, usability_report_metadata.csv")
+        # Tests the contents of usability_report_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
+                    ['prefix', 'True', '0', '0.0', 'uncheckable'],
+                    ['first', 'True', '0', '0.0', 'uncheckable'],
+                    ['middle', 'True', '0', '0.0', 'uncheckable'],
+                    ['last', 'True', '0', '0.0', 'uncheckable'],
+                    ['suffix', 'True', '6', '85.71', 'uncheckable'],
+                    ['appellation', 'True', '6', '85.71', 'uncheckable'],
+                    ['title', 'True', '6', '85.71', 'uncheckable'],
+                    ['org', 'True', '6', '85.71', 'uncheckable'],
+                    ['addr1', 'True', '0', '0.0', 'uncheckable'],
+                    ['addr2', 'True', '5', '71.43', 'uncheckable'],
+                    ['addr3', 'True', '6', '85.71', 'uncheckable'],
+                    ['addr4', 'True', '6', '85.71', 'uncheckable'],
+                    ['city', 'True', '0', '0.0', 'uncheckable'],
+                    ['state', 'True', '0', '0.0', '2'],
+                    ['zip', 'True', '0', '0.0', '0'],
+                    ['country', 'True', '7', '100.0', 'uncheckable'],
+                    ['in_id', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_method', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_date', 'True', '0', '0.0', '0'],
+                    ['in_topic', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_text', 'True', '4', '57.14', 'uncheckable'],
+                    ['in_document_name', 'True', '1', '14.29', '0'],
+                    ['in_fillin', 'True', '7', '100.0', 'uncheckable'],
+                    ['out_id', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_method', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_date', 'True', '0', '0.0', '1'],
+                    ['out_topic', 'True', '2', '28.57', 'uncheckable'],
+                    ['out_text', 'True', '7', '100.0', 'uncheckable'],
+                    ['out_document_name', 'True', '0', '0.0', '0'],
+                    ['out_fillin', 'True', '6', '85.71', 'uncheckable']]
+        self.assertEqual(result, expected, "Problem with test for preservation, usability_report_metadata.csv")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
