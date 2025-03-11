@@ -55,6 +55,153 @@ def check_arguments(arg_list):
     return input_dir, md_path, mode, errors
 
 
+def check_letter_matching(df, output_dir, input_dir):
+    """Compare the files in the metadata to the files in the export"""
+
+    # Makes a list of paths for the letters in the documents folder within the input directory.
+    # This way, the metadata DAT file is not counted as missing.
+    input_dir_paths = []
+    for root, dirs, files in os.walk(os.path.join(input_dir, 'documents')):
+        for file in files:
+            file_path = os.path.join(root, file)
+            input_dir_paths.append(file_path)
+
+    # Makes a list of paths for letters from constituents in the metadata,
+    # updating the path to match how the directory is structured in the export.
+    in_doc_df = df.dropna(subset=['in_document_name']).copy()
+    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].apply(update_path, input_dir=input_dir)
+    in_doc_list = in_doc_df['in_document_name'].tolist()
+
+    # Makes a list of paths for letters to constituents in the metadata,
+    # updating the path to match how the directory is structured in the export.
+    out_doc_df = df.dropna(subset=['out_document_name']).copy()
+    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
+    out_doc_list = out_doc_df['out_document_name'].tolist()
+
+    # Number of metadata rows without a file.
+    blank_in_doc = df['in_document_name'].isna().sum()
+    blank_out_doc = df['out_document_name'].isna().sum()
+    blank_total = blank_in_doc + blank_out_doc
+
+    # Compares the combined list of paths for letters to and from constituents
+    # to the list of paths for letters in the input directory.
+    metadata_paths = in_doc_list + out_doc_list
+    metadata_only = list(set(metadata_paths) - set(input_dir_paths))
+    directory_only = list(set(input_dir_paths) - set(metadata_paths))
+    match = list(set(metadata_paths) & set(input_dir_paths))
+
+    # Saves a summary of the results.
+    with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
+        report_writer = csv.writer(report)
+        report_writer.writerow(['Category', 'Count'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only)])
+        report_writer.writerow(['Directory_Only', len(directory_only)])
+        report_writer.writerow(['Match', len(match)])
+        report_writer.writerow(['Metadata_Blank', blank_total])
+
+    # Saves the paths that did not match to a log.
+    with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:
+        log_writer = csv.writer(report)
+        log_writer.writerow(['Category', 'Path'])
+        for path in metadata_only:
+            log_writer.writerow(['Metadata Only', path])
+        for path in directory_only:
+            log_writer.writerow(['Directory Only', path])
+
+
+def check_metadata_formatting(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv"""
+
+    # Dictionary of expected formatting patterns.
+    patterns = {'in_date': r'^\d{8}$',
+                'out_date': r'^\d{8}$',
+                'state': r'^[A-Z]{2}$',
+                'zip': r'^\d{5}(-\d{4})?$'}
+
+    # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
+    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    df_no_match = df[~match & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
+def check_metadata_formatting_multi(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv
+    when there is more than one possible format pattern for the column"""
+
+    # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
+    match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+    match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+    df_no_match = df[~(match_blob | match_dos) & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
+def check_metadata_usability(df, output_dir):
+    """Test the usability of the metadata"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+
+    # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
+    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
+    state_mismatch = check_metadata_formatting('state', df, output_dir)
+    zip_mismatch = check_metadata_formatting('zip', df, output_dir)
+    in_date_mismatch = check_metadata_formatting('in_date', df, output_dir)
+    in_doc_mismatch = check_metadata_formatting_multi('in_document_name', df, output_dir)
+    out_date_mismatch = check_metadata_formatting('out_date', df, output_dir)
+    out_doc_mismatch = check_metadata_formatting_multi('out_document_name', df, output_dir)
+
+    # Combines the number of mismatches for the checked columns into a series, for adding to the report.
+    # Other columns have "uncheckable", even if the column is missing from the export.
+    formatting = pd.Series(data=['uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
+                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', in_date_mismatch,
+                                 'uncheckable', 'uncheckable', in_doc_mismatch, 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
+                                 out_doc_mismatch, 'uncheckable'], index=expected)
+
+    # Combines the data about each column into a dataframe and saves as a CSV.
+    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+
+
 def delete_appraisal_letters(input_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
@@ -70,8 +217,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
         # Deletes letters received from constituents, if the "in" column isn't blank.
         if row.in_document_name != '' and row.in_document_name != 'nan':
             name = row.in_document_name
-            file_path = name.replace('..', input_dir)
-            file_path = file_path.replace('\\BlobExport', '')
+            file_path = update_path(name, input_dir)
             try:
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
                 os.remove(file_path)
@@ -81,13 +227,7 @@ def delete_appraisal_letters(input_dir, df_appraisal):
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
         if row.out_document_name != '' and row.out_document_name != 'nan' and 'form' not in row.out_document_name:
             name = row.out_document_name
-            # Make an absolute path from name, which starts ..\documents or \\name-office\dos\public.
-            if name.startswith('..'):
-                file_path = name.replace('..', input_dir)
-                file_path = file_path.replace('\\BlobExport', '')
-            else:
-                file_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', name)
-                file_path = input_dir + file_path
+            file_path = update_path(name, input_dir)
             # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
             if os.path.isfile(file_path):
                 file_deletion_log(log_path, file_path, row.Appraisal_Category)
@@ -388,6 +528,48 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
 
 
+def topics_report(df, output_dir):
+    """Make a report with the frequency of each topic"""
+
+    # Replace blanks with BLANK so that it is counted as a topic.
+    df['in_topic'] = df['in_topic'].fillna('BLANK')
+    df['out_topic'] = df['out_topic'].fillna('BLANK')
+
+    # Get a count for each topic in each topic column.
+    in_topic_counts = df['in_topic'].value_counts().reset_index()
+    in_topic_counts.columns = ['Topic', 'In_Topic_Count']
+    out_topic_counts = df['out_topic'].value_counts().reset_index()
+    out_topic_counts.columns = ['Topic', 'Out_Topic_Count']
+
+    # Combines the counts into a single dataframe, with 0 instead of NaN.
+    df_counts = in_topic_counts.merge(out_topic_counts, how='outer', on='Topic')
+    df_counts = df_counts.fillna(0)
+    df_counts['In_Topic_Count'] = df_counts['In_Topic_Count'].astype(int)
+    df_counts['Out_Topic_Count'] = df_counts['Out_Topic_Count'].astype(int)
+
+    # Adds a totals column to the dataframe.
+    df_counts['Total'] = df_counts['In_Topic_Count'] + df_counts['Out_Topic_Count']
+
+    # Save to a CSV.
+    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen two ways that paths are formatted in the metadata:
+    # ..\documents\BlobExport\folder\..\file.ext, where the export is \documents\folder\..\file.ext AND
+    #  \\name-office\dos\public\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    if md_path.startswith('..'):
+        updated_path = md_path.replace('..', input_dir)
+        updated_path = updated_path.replace('\\BlobExport', '')
+    else:
+        updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
+        updated_path = input_dir + updated_path
+
+    return updated_path
+
+
 if __name__ == '__main__':
 
     # Validates the script argument values and calculates the path to the metadata file.
@@ -407,9 +589,12 @@ if __name__ == '__main__':
     # Finds rows in the metadata that are for appraisal and saves to a CSV.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
 
-    # For preservation, deletes files for appraisal decisions.
+    # For preservation, generates reports about the usability of the export and deletes files for appraisal decisions.
     # It uses the log from find_appraisal_rows() to know what to delete.
     if script_mode == 'preservation':
+        check_metadata_usability(md_df, output_directory)
+        check_letter_matching(md_df, output_directory, input_directory)
+        topics_report(md_df, output_directory)
         delete_appraisal_letters(input_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata
