@@ -58,9 +58,10 @@ def check_arguments(arg_list):
 def check_letter_matching(df, output_dir, input_dir):
     """Compare the files in the metadata to the files in the export"""
 
-    # Makes a list of paths for the letters in the input directory.
+    # Makes a list of paths for the letters in the documents folder within the input directory.
+    # This way, the metadata DAT file is not counted as missing.
     input_dir_paths = []
-    for root, dirs, files in os.walk(input_dir):
+    for root, dirs, files in os.walk(os.path.join(input_dir, 'documents')):
         for file in files:
             file_path = os.path.join(root, file)
             input_dir_paths.append(file_path)
