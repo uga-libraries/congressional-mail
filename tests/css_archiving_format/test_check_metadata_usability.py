@@ -31,10 +31,15 @@ def make_df(rows_list):
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Deletes the report, if made by the test"""
-        report_path = os.path.join('test_data', 'usability_report_metadata.csv')
-        if os.path.exists(report_path):
-            os.remove(report_path)
+        """Deletes the reports, if made by the test"""
+        reports = ['metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_document_name.csv',
+                   'metadata_formatting_errors_out_date.csv', 'metadata_formatting_errors_out_document_name.csv',
+                   'metadata_formatting_errors_state.csv', 'metadata_formatting_errors_zip.csv',
+                   'usability_report_metadata.csv']
+        for report in reports:
+            report_path = os.path.join('test_data', report)
+            if os.path.exists(report_path):
+                os.remove(report_path)
 
     def test_columns_correct(self):
         """Test for when every aspect of column testing is fully correct"""
