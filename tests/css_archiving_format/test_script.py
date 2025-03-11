@@ -9,10 +9,13 @@ import subprocess
 import unittest
 
 
-def csv_to_list(csv_path):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
+def csv_to_list(csv_path, sort=False):
+    """Convert the contents of a CSV to a list which contains one list per row for easier comparison
+    with the option to sort for the match details report with inconsistent row order"""
     df = pd.read_csv(csv_path, dtype=str)
     df = df.fillna('nan')
+    if sort:
+        df = df.sort_values(by=['Category', 'Path'])
     csv_list = [df.columns.tolist()] + df.values.tolist()
     return csv_list
 
@@ -271,30 +274,28 @@ class MyTestCase(unittest.TestCase):
                     ['Recommendations', '1', '1', '2'],
                     ['Social Security^Casework', '1', '0', '1']]
         self.assertEqual(result, expected, "Problem with test for preservation, topics_report.csv")
-        #
-        # # Tests the contents of usability_report_matching.csv.
-        # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
-        # result = csv_to_list(csv_path)
-        # expected = [['Category', 'Count'],
-        #             ['Metadata_Only', 3],
-        #             ['Directory_Only', 4],
-        #             ['Match', '10'],
-        #             ['Metadata_Blank', 1]]
-        # self.assertEqual(result, expected, "Problem with test for preservation, usability_report_matching.csv")
-        #
-        # # Tests the contents of usability_report_matching_details.csv.
-        # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
-        # result = csv_to_list(csv_path)
-        # expected = [['Category', 'Path'],
-        #             ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\B.txt'],
-        #             ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\444444.txt'],
-        #             ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\555555.txt'],
-        #             ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\archiving_correspondence.dat'],
-        #             ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\formletters\B.txt'],
-        #             ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\666666.txt'],
-        #             ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\formletters\C.txt]]']]
-        # self.assertEqual(result, expected, "Problem with test for preservation, usability_report_matching_details.csv")
-        #
+
+        # Tests the contents of usability_report_matching.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Category', 'Count'],
+                    ['Metadata_Only', '3'],
+                    ['Directory_Only', '2'],
+                    ['Match', '10'],
+                    ['Metadata_Blank', '1']]
+        self.assertEqual(result, expected, "Problem with test for preservation, usability_report_matching.csv")
+
+        # Tests the contents of usability_report_matching_details.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
+        result = csv_to_list(csv_path, sort=True)
+        expected = [['Category', 'Path'],
+                    ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\formletters\B.txt'],
+                    ['Directory Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\666666.txt'],
+                    ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\444444.txt'],
+                    ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\555555.txt'],
+                    ['Metadata Only', r'test_data\script\Preservation_Constituent_Mail_Export\documents\objects\B.txt']]
+        self.assertEqual(result, expected, "Problem with test for preservation, usability_report_matching_details.csv")
+
         # # Tests the contents of usability_report_metadata.csv.
         # csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
         # result = csv_to_list(csv_path)
@@ -335,7 +336,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
-        expected = ['archiving_correspondence.dat', 'B.txt', 'C.txt', 'D.txt', 'F.txt', '000007.txt',
+        expected = ['archiving_correspondence.dat', 'B.txt', 'D.txt', 'F.txt', '000007.txt',
                     '222222.txt', '666666.txt', '777777.txt']
         self.assertEqual(result, expected, "Problem with test for preservation, input_directory contents")
 
