@@ -253,9 +253,8 @@ def file_deletion_log(log_path, file_path, note):
             log_writer = csv.writer(log)
             log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
 
-    # Adds a row for a file that could not be deleted to an existing log.
-    elif note == 'Cannot delete: FileNotFoundError':
-        # Adds the file to the log.
+    # Adds a row for a file with errors (cannot calculate file path or file is not found) to an existing log.
+    elif note.startswith('Cannot'):
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, None, None, None, None, note])
