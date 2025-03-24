@@ -37,9 +37,9 @@ def check_arguments(arg_list):
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            if os.path.exists(os.path.join(input_dir, 'archiving_correspondence.dat')):
+            if 'archiving_correspondence.dat' in os.listdir(input_dir):
                 md_path = os.path.join(input_dir, 'archiving_correspondence.dat')
-            elif os.path.exists(os.path.join(input_dir, 'archiving_correspondence.dat')):
+            elif 'archiving_CORRESPONDENCE.dat' in os.listdir(input_dir):
                 md_path = os.path.join(input_dir, 'archiving_CORRESPONDENCE.dat')
             else:
                 errors.append(f"No archiving_correspondence.dat file in the input_directory")
