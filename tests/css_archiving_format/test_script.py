@@ -155,6 +155,192 @@ class MyTestCase(unittest.TestCase):
         expected = [False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for access, other script mode outputs")
 
+    def test_correct_accession(self):
+        """Test for when the script runs correctly and is in accession mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'Accession_Constituent_Mail_Export_copy'),
+                        os.path.join('test_data', 'script', 'Accession_Constituent_Mail_Export'))
+
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
+        input_directory = os.path.join('test_data', 'script', 'Accession_Constituent_Mail_Export')
+        printed = subprocess.run(f"python {script_path} {input_directory} accession",
+                                 shell=True, capture_output=True, text=True)
+
+        # Tests the printed statement.
+        result = printed.stdout
+        expected = ("\nThe script is running in accession mode.\n"
+                    "It will produce usability and appraisal reports and not change the export.\n")
+        self.assertEqual(result, expected, "Problem with test for accession, printed statement")
+
+        # Tests the contents of the appraisal check log.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['Ms.', 'Gretel', 'G.', 'Green', 'nan', 'nan', 'nan', 'nan', '789 G St', 'nan', 'nan', 'nan',
+                     'G city', 'GA', '78901', 'nan', 'g100', 'General', 'Email', '20210101', 'E', 'nan',
+                     r'..\documents\BlobExport\objects\777777.txt', 'nan', 'r700', 'General', 'Email', '20210111',
+                     'nan', 'nan', r'..\documents\BlobExport\indivletters\000007.txt', 'Court case', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for accession, appraisal check log")
+
+        # Tests the contents of the appraisal delete log.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
+                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General',
+                     'Email', '2024-03-13', 'B1^B2', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan',
+                     'Casework'],
+                    ['Ms.', 'Ann', 'A.', 'Anderson', 'nan', 'MD', 'nan', 'nan', '123 A St', 'nan', 'nan', 'nan',
+                     'A city', 'AL', '12345', 'nan', 'a100', 'General', 'Email', '20210101', 'Misc',
+                     'academy nomination',
+                     r'..\documents\BlobExport\objects\111111.txt', 'nan', 'r100', 'General', 'Email', '20210111',
+                     'nan', 'nan', r'..\documents\BlobExport\indivletters\000001.txt', 'nan', 'Academy_Application'],
+                    ['Ms.', 'Diane', 'D.', 'Dudly', 'nan', 'nan', 'nan', 'nan', '456 D St', 'nan', 'nan', 'nan',
+                     'D city', 'DEL', '45678', 'nan', 'd100', 'General', 'Email', '20210101', 'Casework', 'nan',
+                     r'..\documents\BlobExport\objects\444444.txt', 'nan', 'r400', 'General', 'Email', '20210111',
+                     'Recommendations', 'nan', r'..\documents\BlobExport\formletters\D.txt', 'nan',
+                     'Casework|Recommendation'],
+                    ['Ms.', 'Emma', 'E.', 'Evans', 'nan', 'nan', 'nan', 'nan', '567 E St', 'nan', 'nan', 'nan',
+                     'E city', 'ME', '56789', 'nan', 'e100', 'General', 'Email', '20210101', 'Recommendations', 'nan',
+                     r'..\documents\BlobExport\objects\555555.txt', 'nan', 'r500', 'General', 'Email', '20210111',
+                     'E', 'nan', r'..\documents\BlobExport\indivletters\000005.txt', 'nan', 'Recommendation'],
+                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
+                     'F city', 'fl', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
+                     'Social Security^Casework', 'nan', 'nan', 'nan', 'r600',
+                     'General', 'Email', '20210111', 'E', 'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan',
+                     'Casework']]
+        self.assertEqual(result, expected, "Problem with test for accession, appraisal delete log")
+
+        # Tests the contents of metadata_formatting_errors_state.csv.
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
+                    ['Ms.', 'Diane', 'D.', 'Dudly', 'nan', 'nan', 'nan', 'nan', '456 D St', 'nan', 'nan', 'nan',
+                     'D city', 'DEL', '45678', 'nan', 'd100', 'General', 'Email', '20210101', 'Casework', 'nan',
+                     r'..\documents\BlobExport\objects\444444.txt', 'nan', 'r400', 'General', 'Email', '20210111',
+                     'Recommendations', 'nan', r'..\documents\BlobExport\formletters\D.txt', 'nan'],
+                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'nan', 'nan', 'nan', 'nan', '678 F St', 'nan', 'nan', 'nan',
+                     'F city', 'fl', '67890', 'nan', 'f100', 'General', 'Email', '20210101',
+                     'Social Security^Casework', 'nan', 'nan', 'nan', 'r600', 'General', 'Email', '20210111', 'E',
+                     'nan', r'..\documents\BlobExport\formletters\F.txt', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_state.csv")
+
+        # Tests the contents of metadata_formatting_errors_out_date.csv.
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_out_date.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
+                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'nan', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
+                     '345 C St', 'C city', 'CO', '34567', 'nan', 'c300', 'General', 'Letter', '20240303', 'Misc',
+                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'nan', 'r300', 'General',
+                     'Email', '2024-03-13', 'B1^B2', 'nan', r'..\documents\BlobExport\indivletters\000003.txt', 'nan']]
+        self.assertEqual(result, expected,
+                         "Problem with test for accession, metadata_formatting_errors_out_date.csv")
+
+        # Tests the other metadata formatting reports were not made.
+        output_directory = os.path.join('test_data', 'script')
+        result = [os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv'))]
+        expected = [False, False, False, False]
+        self.assertEqual(result, expected, "Problem with test for accession, other metadata formatting reports")
+
+        # Tests the contents of topics_report.csv.
+        csv_path = os.path.join('test_data', 'script', 'topics_report.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
+                    ['B1^B2', '1', '2', '3'],
+                    ['BLANK', '0', '2', '2'],
+                    ['Casework', '1', '0', '1'],
+                    ['E', '1', '2', '3'],
+                    ['Misc', '2', '0', '2'],
+                    ['Recommendations', '1', '1', '2'],
+                    ['Social Security^Casework', '1', '0', '1']]
+        self.assertEqual(result, expected, "Problem with test for accession, topics_report.csv")
+
+        # Tests the contents of usability_report_matching.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Category', 'Count'],
+                    ['Metadata_Only', '3'],
+                    ['Directory_Only', '2'],
+                    ['Match', '10'],
+                    ['Metadata_Blank', '1']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
+
+        # Tests the contents of usability_report_matching_details.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
+        result = csv_to_list(csv_path, sort=True)
+        expected = [['Category', 'Path'],
+                    ['Directory Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\formletters\B.txt'],
+                    ['Directory Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\666666.txt'],
+                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\444444.txt'],
+                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\555555.txt'],
+                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\B.txt']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
+
+        # Tests the contents of usability_report_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
+                    ['prefix', 'True', '0', '0.0', 'uncheckable'],
+                    ['first', 'True', '0', '0.0', 'uncheckable'],
+                    ['middle', 'True', '0', '0.0', 'uncheckable'],
+                    ['last', 'True', '0', '0.0', 'uncheckable'],
+                    ['suffix', 'True', '6', '85.71', 'uncheckable'],
+                    ['appellation', 'True', '6', '85.71', 'uncheckable'],
+                    ['title', 'True', '6', '85.71', 'uncheckable'],
+                    ['org', 'True', '6', '85.71', 'uncheckable'],
+                    ['addr1', 'True', '0', '0.0', 'uncheckable'],
+                    ['addr2', 'True', '5', '71.43', 'uncheckable'],
+                    ['addr3', 'True', '6', '85.71', 'uncheckable'],
+                    ['addr4', 'True', '6', '85.71', 'uncheckable'],
+                    ['city', 'True', '0', '0.0', 'uncheckable'],
+                    ['state', 'True', '0', '0.0', '2'],
+                    ['zip', 'True', '0', '0.0', '0'],
+                    ['country', 'True', '7', '100.0', 'uncheckable'],
+                    ['in_id', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_method', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_date', 'True', '0', '0.0', '0'],
+                    ['in_topic', 'True', '0', '0.0', 'uncheckable'],
+                    ['in_text', 'True', '4', '57.14', 'uncheckable'],
+                    ['in_document_name', 'True', '1', '14.29', '0'],
+                    ['in_fillin', 'True', '7', '100.0', 'uncheckable'],
+                    ['out_id', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_method', 'True', '0', '0.0', 'uncheckable'],
+                    ['out_date', 'True', '0', '0.0', '1'],
+                    ['out_topic', 'True', '2', '28.57', 'uncheckable'],
+                    ['out_text', 'True', '7', '100.0', 'uncheckable'],
+                    ['out_document_name', 'True', '0', '0.0', '0'],
+                    ['out_fillin', 'True', '6', '85.71', 'uncheckable']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_metadata.csv")
+
+        # Tests the other script mode outputs were not made.
+        output_directory = os.path.join('test_data', 'script')
+        today = date.today().strftime('%Y-%m-%d')
+        result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
+                  os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
+                  os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
+                  os.path.exists(os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv"))]
+        expected = [False, False, False, False]
+        self.assertEqual(result, expected, "Problem with test for accession, other script mode outputs")
+
     def test_correct_appraisal(self):
         """Test for when the script runs correctly and is in appraisal mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
