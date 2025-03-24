@@ -586,20 +586,32 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Finds rows in the metadata that are for appraisal and saves to a CSV.
+    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
+    # This is used in most of the modes.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
 
-    # For preservation, generates reports about the usability of the export and deletes files for appraisal decisions.
-    # It uses the log from find_appraisal_rows() to know what to delete.
-    if script_mode == 'preservation':
+    # The rest of the script is dependent on the mode.
+
+    # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
+    # The export is not changed in this mode.
+    if script_mode == 'accession':
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
+
+    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    elif script_mode == 'appraisal':
         delete_appraisal_letters(input_directory, appraisal_df)
+
+    # TODO For preservation, prepares the export for the general_aip.py script.
+    # Run in appraisal mode first to remove letters.
+    elif script_mode == 'preservation':
+        print("Preservation mode TBD")
 
     # For access, removes rows for appraisal and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
-    if script_mode == 'access':
+    # Run in appraisal mode first to remove letters.
+    elif script_mode == 'access':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
