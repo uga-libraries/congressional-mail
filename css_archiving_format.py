@@ -569,9 +569,11 @@ def update_path(md_path, input_dir):
     if md_path.startswith('..'):
         updated_path = md_path.replace('..', input_dir)
         updated_path = updated_path.replace('\\BlobExport', '')
-    else:
+    elif '\\dos\\public\\' in md_path:
         updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
         updated_path = input_dir + updated_path
+    else:
+        updated_path = 'error_new'
 
     return updated_path
 
