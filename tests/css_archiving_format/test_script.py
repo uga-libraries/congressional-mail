@@ -56,7 +56,14 @@ class MyTestCase(unittest.TestCase):
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
         input_directory = os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export')
-        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
+        printed = subprocess.run(f"python {script_path} {input_directory} access",
+                                 shell=True, capture_output=True, text=True)
+
+        # Tests the printed statement.
+        result = printed.stdout
+        expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted letters and columns with "
+                    "PII, and make copies of the metadata split by congress year\n")
+        self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal check log.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
@@ -131,7 +138,7 @@ class MyTestCase(unittest.TestCase):
         result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for access, undated.csv")
 
-        # Tests the preservation script mode outputs were not made.
+        # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
         result = [os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
@@ -144,7 +151,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
                   os.path.exists(os.path.join(output_directory, 'topics_report.csv'))]
         expected = [False, False, False, False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for access, preservation script mode outputs")
+        self.assertEqual(result, expected, "Problem with test for access, other script mode outputs")
 
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
