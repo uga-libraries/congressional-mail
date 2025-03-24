@@ -595,23 +595,31 @@ if __name__ == '__main__':
     # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
     # The export is not changed in this mode.
     if script_mode == 'accession':
+        print("\nThe script is running in accession mode.")
+        print("It will produce usability and appraisal reports and not change the export.")
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
     # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
     elif script_mode == 'appraisal':
+        print("\nThe script is running in appraisal mode.")
+        print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, appraisal_df)
 
     # TODO For preservation, prepares the export for the general_aip.py script.
     # Run in appraisal mode first to remove letters.
     elif script_mode == 'preservation':
-        print("Preservation mode TBD")
+        print("\nThe script is running in preservation mode.")
+        print("The steps are TBD.")
 
     # For access, removes rows for appraisal and columns with PII from the metadata
     # and makes a copy of the data split by congress year.
     # Run in appraisal mode first to remove letters.
     elif script_mode == 'access':
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted letters and columns with PII,"
+              " and make copies of the metadata split by congress year")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
