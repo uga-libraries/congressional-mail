@@ -8,14 +8,7 @@ import os
 import pandas as pd
 import unittest
 from css_archiving_format import check_metadata_usability
-
-
-def csv_to_list(csv_path):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
-    df = pd.read_csv(csv_path)
-    df = df.fillna('blank')
-    csv_list = [df.columns.tolist()] + df.values.tolist()
-    return csv_list
+from test_script import csv_to_list
 
 
 def make_df(rows_list):
@@ -187,7 +180,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', 'True', 0, 0.0, 'uncheckable'],
                     ['out_document_name', 'True', 0, 0.0, '0'],
                     ['out_fillin', 'True', 0, 0.0, 'uncheckable'],
-                    ['extra', 'Error: unexpected column', 0, 0.0, 'blank']]
+                    ['extra', 'Error: unexpected column', 0, 0.0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for extra")
 
     def test_columns_format(self):
@@ -261,8 +254,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the metadata usability report are correct.
         result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
-                    ['prefix', False, 'blank', 'blank', 'uncheckable'],
-                    ['first', False, 'blank', 'blank', 'uncheckable'],
+                    ['prefix', False, 'BLANK', 'BLANK', 'uncheckable'],
+                    ['first', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['middle', True, 0.0, 0.0, 'uncheckable'],
                     ['last', True, 0.0, 0.0, 'uncheckable'],
                     ['suffix', True, 0.0, 0.0, 'uncheckable'],
@@ -270,8 +263,8 @@ class MyTestCase(unittest.TestCase):
                     ['title', True, 0.0, 0.0, 'uncheckable'],
                     ['org', True, 0.0, 0.0, 'uncheckable'],
                     ['addr1', True, 0.0, 0.0, 'uncheckable'],
-                    ['addr2', False, 'blank', 'blank', 'uncheckable'],
-                    ['addr3', False, 'blank', 'blank', 'uncheckable'],
+                    ['addr2', False, 'BLANK', 'BLANK', 'uncheckable'],
+                    ['addr3', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['addr4', True, 0.0, 0.0, 'uncheckable'],
                     ['city', True, 0.0, 0.0, 'uncheckable'],
                     ['state', True, 0.0, 0.0, '0'],
@@ -279,9 +272,9 @@ class MyTestCase(unittest.TestCase):
                     ['country', True, 0.0, 0.0, 'uncheckable'],
                     ['in_id', True, 0.0, 0.0, 'uncheckable'],
                     ['in_type', True, 0.0, 0.0, 'uncheckable'],
-                    ['in_method', False, 'blank', 'blank', 'uncheckable'],
+                    ['in_method', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['in_date', True, 0.0, 0.0, '0'],
-                    ['in_topic', False, 'blank', 'blank', 'uncheckable'],
+                    ['in_topic', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['in_text', True, 0.0, 0.0, 'uncheckable'],
                     ['in_document_name', True, 0.0, 0.0, '0'],
                     ['in_fillin', True, 0.0, 0.0, 'uncheckable'],
@@ -290,9 +283,9 @@ class MyTestCase(unittest.TestCase):
                     ['out_method', True, 0.0, 0.0, 'uncheckable'],
                     ['out_date', True, 0.0, 0.0, '0'],
                     ['out_topic', True, 0.0, 0.0, 'uncheckable'],
-                    ['out_text', False, 'blank', 'blank', 'uncheckable'],
+                    ['out_text', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['out_document_name', True, 0.0, 0.0, '0'],
-                    ['out_fillin', False, 'blank', 'blank', 'uncheckable']]
+                    ['out_fillin', False, 'BLANK', 'BLANK', 'uncheckable']]
         self.assertEqual(result, expected, "Problem with test for missing")
 
 

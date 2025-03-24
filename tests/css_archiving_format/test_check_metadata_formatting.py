@@ -10,7 +10,7 @@ import os
 import pandas as pd
 import unittest
 from css_archiving_format import check_metadata_formatting
-from test_check_metadata_usability import csv_to_list
+from test_script import csv_to_list
 
 
 class MyTestCase(unittest.TestCase):
