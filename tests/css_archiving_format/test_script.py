@@ -11,9 +11,9 @@ import unittest
 
 def csv_to_list(csv_path, sort=False):
     """Convert the contents of a CSV to a list which contains one list per row for easier comparison
-    with the option to sort for the match details report with inconsistent row order"""
-    df = pd.read_csv(csv_path, dtype=str)
-    df = df.fillna('nan')
+    with the option to sort for the report with inconsistent row order"""
+    df = pd.read_csv(csv_path)
+    df = df.fillna('BLANK')
     if sort:
         df = df.sort_values(by=['Category', 'Path'])
     csv_list = [df.columns.tolist()] + df.values.tolist()
