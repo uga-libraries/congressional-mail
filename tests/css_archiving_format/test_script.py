@@ -144,16 +144,16 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join('test_data', 'script')
         today = date.today().strftime('%Y-%m-%d')
         result = [os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
+                  os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
-                  os.path.exists(os.path.join(output_directory, 'topics_report.csv'))]
+                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
         expected = [False, False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for access, other script mode outputs")
 
@@ -436,19 +436,19 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
-        result = [os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
-                  os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
+        result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
                   os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
+                  os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
+                  os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
-                  os.path.exists(os.path.join(output_directory, 'topics_report.csv'))]
+                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for appraisal, other script mode outputs")
 
@@ -476,12 +476,12 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
                   os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
                   os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
+                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
                   os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
