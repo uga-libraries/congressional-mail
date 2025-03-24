@@ -142,7 +142,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
-        result = [os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
+        today = date.today().strftime('%Y-%m-%d')
+        result = [os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
+                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
                   os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
@@ -152,7 +154,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
                   os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
                   os.path.exists(os.path.join(output_directory, 'topics_report.csv'))]
-        expected = [False, False, False, False, False, False, False, False, False, False]
+        expected = [False, False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for access, other script mode outputs")
 
     def test_correct_accession(self):
@@ -337,7 +339,7 @@ class MyTestCase(unittest.TestCase):
         result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
                   os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
                   os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
-                  os.path.exists(os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv"))]
+                  os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv'))]
         expected = [False, False, False, False]
         self.assertEqual(result, expected, "Problem with test for accession, other script mode outputs")
 
