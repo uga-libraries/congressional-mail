@@ -7,16 +7,7 @@ import os
 import pandas as pd
 import unittest
 from css_archiving_format import check_letter_matching
-
-
-def csv_to_list(csv_path, sort=False):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison,
-    with the detailed report sorted by both columns because the input has inconsistent order"""
-    df = pd.read_csv(csv_path)
-    if sort:
-        df = df.sort_values(by=['Category', 'Path'])
-    csv_list = [df.columns.tolist()] + df.values.tolist()
-    return csv_list
+from test_script import csv_to_list
 
 
 class MyTestCase(unittest.TestCase):
