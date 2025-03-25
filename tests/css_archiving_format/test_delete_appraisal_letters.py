@@ -29,7 +29,8 @@ class MyTestCase(unittest.TestCase):
         # Delete the file deletion log.
         # Most tests have deletion logs than copies of test data, so test_dirs list is updated.
         log = f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"
-        test_dirs.extend([os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')])
+        test_dirs.extend([os.path.join('test_data', 'delete_appraisal_letters', 'error_new'),
+                          os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')])
         for test_dir in test_dirs:
             if os.path.exists(os.path.join(test_dir, log)):
                 os.remove(os.path.join(test_dir, log))
@@ -129,6 +130,28 @@ class MyTestCase(unittest.TestCase):
         expected = ['form_a.txt', 'test.txt', '222222.txt']
         self.assertEqual(result, expected, "Problem with test for out_document_name dos, directory contents")
 
+    def test_error_new(self):
+        """Test for when paths in the metadata do not match expected patterns"""
+        # Makes variables needed as function input and runs the function being tested.
+        # Makes variables needed as function input and runs the function being tested.
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'error_new')
+        input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
+        appraisal_df = pd.DataFrame([['Anderson', r'objects\111111.txt', r'form\test.txt', 'Academy_Application'],
+                                     ['Evans', '', r'indivletters\500.txt', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'objects\111111.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'Cannot determine file path: new path pattern in metadata'],
+                    [r'indivletters\500.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'Cannot determine file path: new path pattern in metadata']]
+        self.assertEqual(result, expected, "Problem with test for error_new, file deletion log")
+
     def test_filenotfounderror(self):
         """Test for when files in the metadata are not present and cannot be deleted"""
         # Makes variables needed as function input and runs the function being tested.
@@ -149,7 +172,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [r'..\documents\indivletters\500.txt'.replace('..', input_dir),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for file deletion log")
+        self.assertEqual(result, expected, "Problem with test for filenotfounderror, file deletion log")
 
 
 if __name__ == '__main__':
