@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        expected_errors = []
+        expected_errors = ["Missing one of the required arguments, input_directory or script_mode"]
         self.assertEqual(input_directory, input_dir, "Problem with error - missing one, input_directory")
         self.assertEqual(metadata_path, os.path.join(input_dir, 'archiving_correspondence.dat'),
                          "Problem with error - missing one, metadata_path")

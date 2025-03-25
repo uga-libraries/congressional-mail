@@ -46,6 +46,10 @@ def check_arguments(arg_list):
         else:
             errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
 
+    # Only one required argument is present.
+    if len(arg_list) == 2:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
+
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
