@@ -41,6 +41,25 @@ class MyTestCase(unittest.TestCase):
                     [file_path_2, 1.2, '2025-02-24', today, '9452DF84756C849AE0ED9FE2A14948F5', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for delete two")
 
+    def test_error_new(self):
+        """Test for adding a row for a file with a new path format in the metadata."""
+        # Makes variables needed as function input.
+        log_path = os.path.join(os.getcwd(), 'test_data', 'file_deletion_log', 'file_deletion_log_2025-02-15.csv')
+        file_path = os.path.join('new', 'pattern', 'to-delete.txt')
+
+        # Makes the log with a header.
+        file_deletion_log(log_path, None, 'header')
+
+        # Adds the row for testing.
+        file_deletion_log(log_path, file_path, 'Cannot determine file path: new path pattern in metadata')
+
+        # Tests the contents of the file deletion log.
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [file_path, 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'Cannot determine file path: new path pattern in metadata']]
+        self.assertEqual(result, expected, "Problem with test for error_new")
+
     def test_filenotfounderror(self):
         """Test for adding a row for a file that cannot be deleted."""
         # Makes variables needed as function input.
