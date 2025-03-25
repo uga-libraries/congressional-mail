@@ -224,22 +224,28 @@ def delete_appraisal_letters(input_dir, df_appraisal):
         if row.in_document_name != '' and row.in_document_name != 'nan':
             name = row.in_document_name
             file_path = update_path(name, input_dir)
-            try:
-                file_deletion_log(log_path, file_path, row.Appraisal_Category)
-                os.remove(file_path)
-            except FileNotFoundError:
-                file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+            if file_path == 'error_new':
+                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+            else:
+                try:
+                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    os.remove(file_path)
+                except FileNotFoundError:
+                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
         if row.out_document_name != '' and row.out_document_name != 'nan' and 'form' not in row.out_document_name:
             name = row.out_document_name
             file_path = update_path(name, input_dir)
+            if file_path == 'error_new':
+                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
             # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
-            if os.path.isfile(file_path):
-                file_deletion_log(log_path, file_path, row.Appraisal_Category)
-                os.remove(file_path)
-            elif not os.path.exists(file_path):
-                file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+            else:
+                if os.path.isfile(file_path):
+                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    os.remove(file_path)
+                elif not os.path.exists(file_path):
+                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def file_deletion_log(log_path, file_path, note):
@@ -253,9 +259,8 @@ def file_deletion_log(log_path, file_path, note):
             log_writer = csv.writer(log)
             log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
 
-    # Adds a row for a file that could not be deleted to an existing log.
-    elif note == 'Cannot delete: FileNotFoundError':
-        # Adds the file to the log.
+    # Adds a row for a file with errors (cannot calculate file path or file is not found) to an existing log.
+    elif note.startswith('Cannot'):
         with open(log_path, 'a', newline='') as log:
             log_writer = csv.writer(log)
             log_writer.writerow([file_path, None, None, None, None, note])
@@ -569,9 +574,11 @@ def update_path(md_path, input_dir):
     if md_path.startswith('..'):
         updated_path = md_path.replace('..', input_dir)
         updated_path = updated_path.replace('\\BlobExport', '')
-    else:
+    elif '\\dos\\public\\' in md_path:
         updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
         updated_path = input_dir + updated_path
+    else:
+        updated_path = 'error_new'
 
     return updated_path
 
