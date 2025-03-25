@@ -19,6 +19,12 @@ class MyTestCase(unittest.TestCase):
         expected = r'input_dir\documents\letter\111111.txt'
         self.assertEqual(file_path, expected, "Problem with test for Dos")
 
+    def test_new(self):
+        """Test for a new pattern"""
+        file_path = update_path(r'\folder\folder\letter\111111.txt', 'input_dir')
+        expected = 'error_new'
+        self.assertEqual(file_path, expected, "Problem with test for new")
+
 
 if __name__ == '__main__':
     unittest.main()
