@@ -122,35 +122,34 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(script_mode, 'access', "Problem with error - path dat, script_mode")
         self.assertEqual(errors_list, expected_errors, "Problem with error - path dat, errors_list")
 
-    def test_error_x(self):
-        """Test for when ."""
+    def test_error_path_invalid(self):
+        """Test for when input_directory is a path that does not exist."""
         # Runs the function being tested.
-        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        input_dir = os.path.join('test_data', 'check_arguments', 'error')
         sys_argv = ['css_archiving_format.py', input_dir, 'access']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        expected_errors = []
-        self.assertEqual(input_directory, input_dir, "Problem with error - x, input_directory")
-        self.assertEqual(metadata_path, os.path.join(input_dir, 'archiving_correspondence.dat'),
-                         "Problem with error - x, metadata_path")
-        self.assertEqual(script_mode, 'access', "Problem with error - x, script_mode")
-        self.assertEqual(errors_list, expected_errors, "Problem with error-x, errors_list")
+        expected_errors = [f"Provided input_directory '{input_dir}' does not exist"]
+        self.assertEqual(input_directory, None, "Problem with error - path invalid, input_directory")
+        self.assertEqual(metadata_path, None, "Problem with error - path invalid, metadata_path")
+        self.assertEqual(script_mode, 'access', "Problem with error - path invalid, script_mode")
+        self.assertEqual(errors_list, expected_errors, "Problem with error - path invalid, errors_list")
 
-    def test_error_x(self):
-        """Test for when ."""
+    def test_error_too_many_arg(self):
+        """Test for when more than the required two arguments are provided."""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['css_archiving_format.py', input_dir, 'access']
+        sys_argv = ['css_archiving_format.py', input_dir, 'access', 'extra', 'extra2']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        expected_errors = []
-        self.assertEqual(input_directory, input_dir, "Problem with error - x, input_directory")
+        expected_errors = ["Provided more than the required arguments, input_directory and script_mode"]
+        self.assertEqual(input_directory, input_dir, "Problem with error - too many arg, input_directory")
         self.assertEqual(metadata_path, os.path.join(input_dir, 'archiving_correspondence.dat'),
-                         "Problem with error - x, metadata_path")
-        self.assertEqual(script_mode, 'access', "Problem with error - x, script_mode")
-        self.assertEqual(errors_list, expected_errors, "Problem with error-x, errors_list")
+                         "Problem with error - too many arg, metadata_path")
+        self.assertEqual(script_mode, 'access', "Problem with error - too many arg, script_mode")
+        self.assertEqual(errors_list, expected_errors, "Problem with error - too many arg, errors_list")
 
 
 if __name__ == '__main__':
