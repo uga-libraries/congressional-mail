@@ -108,20 +108,19 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(script_mode, None, "Problem with error - mode, script_mode")
         self.assertEqual(errors_list, expected_errors, "Problem with error - mode, errors_list")
 
-    def test_error_x(self):
-        """Test for when ."""
+    def test_error_path_dat(self):
+        """Test for when input_directory contains no archiving correspondence dat file."""
         # Runs the function being tested.
-        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        input_dir = os.path.join('test_data', 'check_arguments', 'no_dat')
         sys_argv = ['css_archiving_format.py', input_dir, 'access']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        expected_errors = []
-        self.assertEqual(input_directory, input_dir, "Problem with error - x, input_directory")
-        self.assertEqual(metadata_path, os.path.join(input_dir, 'archiving_correspondence.dat'),
-                         "Problem with error - x, metadata_path")
-        self.assertEqual(script_mode, 'access', "Problem with error - x, script_mode")
-        self.assertEqual(errors_list, expected_errors, "Problem with error-x, errors_list")
+        expected_errors = ["No archiving_correspondence.dat file in the input_directory"]
+        self.assertEqual(input_directory, input_dir, "Problem with error - path dat, input_directory")
+        self.assertEqual(metadata_path, None, "Problem with error - path dat, metadata_path")
+        self.assertEqual(script_mode, 'access', "Problem with error - path dat, script_mode")
+        self.assertEqual(errors_list, expected_errors, "Problem with error - path dat, errors_list")
 
     def test_error_x(self):
         """Test for when ."""
