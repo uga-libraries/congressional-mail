@@ -151,6 +151,22 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(script_mode, 'access', "Problem with error - too many arg, script_mode")
         self.assertEqual(errors_list, expected_errors, "Problem with error - too many arg, errors_list")
 
+    def test_errors(self):
+        """Test for multiple errors."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'missing')
+        sys_argv = ['css_archiving_format.py', input_dir, 'error', 'bonus']
+        input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        expected_errors = [f"Provided input_directory '{input_dir}' does not exist",
+                           "Provided mode 'error' is not one of the expected modes",
+                           "Provided more than the required arguments, input_directory and script_mode"]
+        self.assertEqual(input_directory, None, "Problem with errors, input_directory")
+        self.assertEqual(metadata_path, None, "Problem with errors, metadata_path")
+        self.assertEqual(script_mode, None, "Problem with errors, script_mode")
+        self.assertEqual(errors_list, expected_errors, "Problem with errors, errors_list")
+
 
 if __name__ == '__main__':
     unittest.main()
