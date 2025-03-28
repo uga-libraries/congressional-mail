@@ -16,7 +16,7 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Recommendations^General', '', 'Recommendations', ''],
                               ['30601', '', 'rec for john doe', '', 'policy for recommendations sent'],
-                              ['30602', 'Recommendations', 'rec for smith', '', ''],
+                              ['30602', 'Recommendations', 'letter of recommendation for smith', '', ''],
                               ['30603', 'Recommendations', 'rec for green', 'Recommendations', 'wrote recommendation'],
                               ['30604', '', '', 'Admin^Recommendations', 'wrote recommendation']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text'])
@@ -26,7 +26,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'Appraisal_Category'],
                     ['30600', 'Recommendations^General', '', 'Recommendations', '', 'Recommendation'],
-                    ['30602', 'Recommendations', 'rec for smith', '', '', 'Recommendation'],
+                    ['30602', 'Recommendations', 'letter of recommendation for smith', '', '', 'Recommendation'],
                     ['30603', 'Recommendations', 'rec for green', 'Recommendations', 'wrote recommendation',
                      'Recommendation'],
                     ['30604', '', '', 'Admin^Recommendations', 'wrote recommendation', 'Recommendation'],
