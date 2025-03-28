@@ -120,13 +120,35 @@ class MyTestCase(unittest.TestCase):
                      'Cannot determine file path: new path pattern in metadata']]
         self.assertEqual(result, expected, "Problem with test for error_new, file deletion log")
 
-    def test_filenotfounderror(self):
-        """Test for when files in the metadata are not present and cannot be deleted"""
+    def test_filenotfounderror_in(self):
+        """Test for when files in in_document_name are not present and cannot be deleted"""
         # Makes variables needed as function input and runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
         appraisal_df = pd.DataFrame([['Anderson', r'..\documents\BlobExport\objects\111111.txt',
                                       r'..\documents\BlobExport\formletters\test.txt', 'Academy_Application'],
+                                     ['Evans', r'..\documents\BlobExport\indivletters\500.txt', '', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\objects\111111.txt'.replace('..', input_dir),
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\indivletters\500.txt'.replace('..', input_dir),
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
+        self.assertEqual(result, expected, "Problem with test for filenotfounderror - in, file deletion log")
+
+    def test_filenotfounderror_out(self):
+        """Test for when files in out_document_name are not present and cannot be deleted"""
+        # Makes variables needed as function input and runs the function being tested.
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'filenotfounderror')
+        input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
+        appraisal_df = pd.DataFrame([['Anderson', '', r'..\documents\BlobExport\objects\111111.txt',
+                                      'Academy_Application'],
                                      ['Evans', '', r'..\documents\BlobExport\indivletters\500.txt', 'Casework']],
                                     columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
         delete_appraisal_letters(input_dir, appraisal_df)
@@ -140,7 +162,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [r'..\documents\indivletters\500.txt'.replace('..', input_dir),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror, file deletion log")
+        self.assertEqual(result, expected, "Problem with test for filenotfounderror - out, file deletion log")
 
 
 if __name__ == '__main__':
