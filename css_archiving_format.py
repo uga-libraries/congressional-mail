@@ -286,13 +286,14 @@ def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column in_topic includes Academy Applicant or Military Service Academy.
-    in_topic = df['in_topic'].str.contains('|'.join(['Academy Applicant', 'Military Service Academy']), na=False)
+    # Column in_topic includes one or more of the topics that indicate academy applications.
+    topics_list = ['Academy Applicant', 'Military Service Academy']
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
-    # Column out_topic includes Academy Applicant or Military Service Academy.
-    out_topic = df['out_topic'].str.contains('|'.join(['Academy Applicant', 'Military Service Academy']), na=False)
+    # Column out_topic includes one or more of the topics that indicate academy applications.
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -352,21 +353,25 @@ def find_casework_rows(df):
     """Find metadata rows with topics or text that indicate they are casework and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column in_topic includes one or more of the topics that indicates casework.
+    # Column in_topic includes one or more of the topics that indicate casework.
     topics_list = ['Casework', 'Casework Issues', 'Prison Case']
-    casework_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
-    df_topic = df[casework_topic]
-    df = df[~casework_topic]
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    df_in_topic = df[in_topic]
+    df = df[~in_topic]
 
-    # Column includes the text "casework".
+    # Column out_topic includes one or more of the topics that indicate casework.
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    df_out_topic = df[out_topic]
+    df = df[~out_topic]
+
+    # Any column includes the text "casework".
     # This includes a few rows with phrases like "this is not casework",
     # which is necessary to protect privacy and keep time required reasonable.
     casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
     df_cw = df.loc[casework.any(axis=1)]
     df = df.loc[~casework.any(axis=1)]
 
-    # Column has a phrase with "case" that indicates casework.
-    # Specific phrases are used to avoid unnecessarily removing other topics like legal cases.
+    # Any column includes a phrase that indicates casework.
     case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
@@ -374,7 +379,7 @@ def find_casework_rows(df):
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_topic, df_cw, df_phrase], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_in_topic, df_out_topic, df_cw, df_phrase], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with any remaining rows with "case" in any column
@@ -391,13 +396,14 @@ def find_job_rows(df):
     """Find metadata rows with topics or text that indicate they are job applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column in_topic includes Intern or Resumes.
-    in_topic = df['in_topic'].str.contains('|'.join(['Intern', 'Resumes']), na=False)
+    # Column in_topic includes one or more of the topics that indicate job applications.
+    topics_list = ['Intern', 'Resumes']
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
-    # Column out_topic includes Intern or Resumes.
-    out_topic = df['out_topic'].str.contains('|'.join(['Intern', 'Resumes']), na=False)
+    # Column out_topic includes one or more of the topics that indicate job applications.
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -411,8 +417,9 @@ def find_job_rows(df):
     df_out_text = df[out_text]
     df = df[~out_text]
 
-    # Column out_document_name includes "job interview" or "resume.txt" (case-insensitive).
-    out_doc = df['out_document_name'].str.contains('|'.join(['job interview', 'resume.txt']), case=False, na=False)
+    # Column out_document_name includes text that indicates job applications (case-insensitive).
+    names_list = ['job interview', 'resume.txt']
+    out_doc = df['out_document_name'].str.contains('|'.join(names_list), case=False, na=False)
     df_out_doc = df[out_doc]
     df = df[~out_doc]
 

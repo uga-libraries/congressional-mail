@@ -198,7 +198,8 @@ class MyTestCase(unittest.TestCase):
     def test_multiple(self):
         """Test for when there are rows that match multiple categories for appraisal"""
         md_df = pd.DataFrame([['30600', 'Casework^Academy Applicant', '', '', '', ''],
-                              ['30601', 'Academy Applicant', 'Maybe casework', '', 'rec for doe', '']],
+                              ['30601', 'Academy Applicant', 'Maybe casework', '', 'rec for doe', ''],
+                              ['30602', 'Legal Case', '', 'Congrats', 'Good job', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -220,7 +221,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category']]
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
+                    [30602, 'Legal Case', 'BLANK', 'Congrats', 'Good job', 'BLANK', 'Casework'],
+                    [30602, 'Legal Case', 'BLANK', 'Congrats', 'Good job', 'BLANK', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal check log")
 
 
