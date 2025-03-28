@@ -12,20 +12,26 @@ from test_read_metadata import df_to_list
 class MyTestCase(unittest.TestCase):
 
     def test_all_casework(self):
-        """Test for when every row is casework"""
+        """Test for every type of pattern indicating casework"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Casework Issues', '', ''],
-                              ['30601', 'Health', 'This is casework', 'Medical'],
-                              ['30602', 'Prison Case', '', '']],
+        md_df = pd.DataFrame([['30600', 'Casework Issues', 'note', 'Issues'],
+                              ['30601', 'SSA', 'Jan added to case', 'SSA'],
+                              ['30602', 'Health', 'This is casework', 'Casework^Medical'],
+                              ['30603', 'Health', 'open case', ''],
+                              ['30604', '', 'Started case Wed', 'Admin'],
+                              ['30605', 'Prison Case', '', 'Casework']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic'])
         df_casework, df_casework_check = find_casework_rows(md_df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category'],
-                    ['30600', 'Casework Issues', '', '', 'Casework'],
-                    ['30602', 'Prison Case', '', '', 'Casework'],
-                    ['30601', 'Health', 'This is casework', 'Medical', 'Casework']]
+                    ['30600', 'Casework Issues', 'note', 'Issues', 'Casework'],
+                    ['30605', 'Prison Case', '', 'Casework', 'Casework'],
+                    ['30602', 'Health', 'This is casework', 'Casework^Medical', 'Casework'],
+                    ['30601', 'SSA', 'Jan added to case', 'SSA', 'Casework'],
+                    ['30603', 'Health', 'open case', '', 'Casework'],
+                    ['30604', '', 'Started case Wed', 'Admin', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for all casework, df_casework")
 
         # Tests the values in df_casework_check are correct.
