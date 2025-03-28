@@ -107,9 +107,7 @@ class MyTestCase(unittest.TestCase):
 
         # Makes variables needed as function input and runs the function being tested.
         input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
-        appraisal_df = pd.DataFrame([['Anderson', '', r'\\office-dc\dos\public\form\form_a.txt', 'Casework'],
-                                     ['Blue', '', '', 'Casework'],
-                                     ['Dudley', '', r'\\office-dc\dos\public\letter\111111.txt', 'Academy_Application'],
+        appraisal_df = pd.DataFrame([['Dudley', '', r'\\office-dc\dos\public\letter\111111.txt', 'Academy_Application'],
                                      ['Evans', '', r'\\office-atl\dos\public\letter\333333.txt', 'Casework']],
                                     columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
         delete_appraisal_letters(input_dir, appraisal_df)
@@ -129,6 +127,40 @@ class MyTestCase(unittest.TestCase):
         result = files_in_dir(input_dir)
         expected = ['form_a.txt', 'test.txt', '222222.txt']
         self.assertEqual(result, expected, "Problem with test for out_document_name, directory contents")
+
+    def test_out_skip(self):
+        """Test for deleting files in the out_document_name column, where some rows should be skipped"""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'out_document_name')
+        shutil.copytree(os.path.join(output_dir, 'Name_Constituent_Mail_Export_copy'),
+                        os.path.join(output_dir, 'Name_Constituent_Mail_Export'))
+
+        # Makes variables needed as function input and runs the function being tested.
+        input_dir = os.path.join(output_dir, 'Name_Constituent_Mail_Export')
+        appraisal_df = pd.DataFrame([['Anderson', '', r'\\office-dc\dos\public\form\form_a.txt', 'Casework'],
+                                     ['Blue', '', r'\\office-dc\dos\public\letter', 'Casework'],
+                                     ['Coop', '', '', 'Casework'],
+                                     ['Dudley', '', r'\\office-dc\dos\public\letter\111111.txt', 'Academy_Application'],
+                                     ['Evans', '', r'\\office-atl\dos\public\letter\333333.txt', 'Casework'],
+                                     ['Fay', '', 'nan', 'Casework']],
+                                    columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_dir, appraisal_df)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\letter\111111.txt'.replace('..', input_dir),
+                     0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
+                    [r'..\documents\letter\333333.txt'.replace('..', input_dir),
+                     0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework'], ]
+        self.assertEqual(result, expected, "Problem with test for out_skip, file deletion log")
+
+        # Tests the contents of the input_dir, that all files that should be deleted are gone.
+        result = files_in_dir(input_dir)
+        expected = ['form_a.txt', 'test.txt', '222222.txt']
+        self.assertEqual(result, expected, "Problem with test for out_skip, directory contents")
 
     def test_error_new(self):
         """Test for when paths in the metadata do not match expected patterns"""
