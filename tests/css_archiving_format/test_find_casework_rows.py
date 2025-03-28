@@ -62,13 +62,18 @@ class MyTestCase(unittest.TestCase):
                     ['30603', '', 'Answer topic x, forwarded original on to case work', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for casework, df_casework_check")
 
-    def test_in_topic_exact(self):
-        """Test for when the column in_topic exactly matches a topic that indicates casework"""
+    def test_in_topic(self):
+        """Test for when the column in_topic contains a topic that indicates casework"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Casework', '', 'Admin'],
                               ['30601', 'Keep', 'note', ''],
                               ['30602', 'Casework Issues', '', 'Admin'],
-                              ['30604', 'Prison Case', 'note', 'Justice']],
+                              ['30603', 'Prison Case', 'note', 'Justice'],
+                              ['30604', 'Healthcare^Casework', '', 'Health'],
+                              ['30605', 'Casework Issues^Social Security', 'note', 'SSA'],
+                              ['30606', 'Prison Case^No Reply', '', 'Justice'],
+                              ['30607', 'Keep', 'CASE OF THE CENTURY', 'Legal'],
+                              ['30608', 'Casework^Casework Issues', '', 'Admin']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic'])
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -77,13 +82,18 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category'],
                     ['30600', 'Casework', '', 'Admin', 'Casework'],
                     ['30602', 'Casework Issues', '', 'Admin', 'Casework'],
-                    ['30604', 'Prison Case', 'note', 'Justice', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, df_casework")
+                    ['30603', 'Prison Case', 'note', 'Justice', 'Casework'],
+                    ['30604', 'Healthcare^Casework', '', 'Health', 'Casework'],
+                    ['30605', 'Casework Issues^Social Security', 'note', 'SSA', 'Casework'],
+                    ['30606', 'Prison Case^No Reply', '', 'Justice', 'Casework'],
+                    ['30608', 'Casework^Casework Issues', '', 'Admin', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
-        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, exact match, df_casework_check")
+        expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category'],
+                    ['30607', 'Keep', 'CASE OF THE CENTURY', 'Legal', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for in_topic, df_casework_check")
 
     def test_in_topic_partial(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
