@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
     def test_all(self):
         """Test for when all patterns indicating job applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Resume', 'job request', '', 'Resume', 'job request', r'..\doc\resume.txt'],
+        md_df = pd.DataFrame([['30600', 'Resume', 'job request', r'..\doc\resume.txt', 'Resume', 'job request', ''],
                               ['30601', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc'],
                               ['30602', 'Intern', '', '', 'Resume', '', ''],
                               ['30603', 'Resume', 'job request', '', '', '', ''],
@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'Intern', '', '', 'Resume', '', '', 'Job_Application'],
                     ['30601', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc',
                      'Job_Application'],
-                    ['30600', 'Resume', 'job request', '', 'Resume', 'job request', r'..\doc\resume.txt',
+                    ['30600', 'Resume', 'job request', r'..\doc\resume.txt', 'Resume', 'job request', '',
                      'Job_Application'],
                     ['30603', 'Resume', 'job request', '', '', '', '', 'Job_Application'],
                     ['30604', '', 'Job Request', '', '', 'job request', '', 'Job_Application'],
@@ -43,6 +43,37 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'out_topic', 'out_text', 'out_document_name',
                      'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for all patterns, df_job_check")
+
+    def test_in_document_name(self):
+        """Test for when column in_document_name contains a word or phrase indicating job applications
+        (case-insensitive)"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'Admin', '', r'..\doc\Doe Job Interview.txt', '', '', ''],
+                              ['30601', 'Arts', '', r'..\doc\job_file.txt', '', '', ''],
+                              ['30602', 'Admin', '', r'..\doc\resume.txt', 'Admin', 'Files', ''],
+                              ['30603', '', '', '', '', 'Note', ''],
+                              ['30604', '', '', r'..\doc\jobs\file.doc', '', 'Note', ''],
+                              ['30605', '', '', r'..\doc\jobs\Resume_Regret.doc', '', 'Note', '']],
+                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'out_topic', 'out_text',
+                                      'out_document_name'])
+        df_job, df_job_check = find_job_rows(md_df)
+
+        # Tests the values in df_job are correct.
+        result = df_to_list(df_job)
+        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'out_topic', 'out_text', 'out_document_name',
+                     'Appraisal_Category'],
+                    ['30600', 'Admin', '', r'..\doc\Doe Job Interview.txt', '', '', '', 'Job_Application'],
+                    ['30602', 'Admin', '', r'..\doc\resume.txt', 'Admin', 'Files', '', 'Job_Application'],
+                    ['30605', '', '', r'..\doc\jobs\Resume_Regret.doc', '', 'Note', '', 'Job_Application']]
+        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job")
+
+        # Tests the values in df_job_check are correct.
+        result = df_to_list(df_job_check)
+        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'out_topic', 'out_text', 'out_document_name',
+                     'Appraisal_Category'],
+                    ['30601', 'Arts', '', r'..\doc\job_file.txt', '', '', '', 'Job_Application'],
+                    ['30604', '', '', r'..\doc\jobs\file.doc', '', 'Note', '', 'Job_Application']]
+        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job_check")
 
     def test_in_text(self):
         """Test for when column in_text contains a word or phrase indicating job applications (case-insensitive)"""
