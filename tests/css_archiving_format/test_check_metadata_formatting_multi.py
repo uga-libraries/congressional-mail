@@ -70,6 +70,25 @@ class MyTestCase(unittest.TestCase):
                     [30606, 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
         self.assertEqual(result, expected, "Problem with test for dos, report")
 
+    def test_e(self):
+        """Test for the e\\: pattern, including correct cells, formatting errors, and blanks"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30601', 'e:\\emailobj\\200101\\416120451.txt'],
+                           ['30602', 'root\\e:\\emailobj\\200202\\416120451.txt'],
+                           ['30603', 'e:\\emailobj\\200303\\416120451.txt'],
+                           ['30604', np.nan]],
+                          columns=['zip', 'out_document_name'])
+        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(out_document_name_mismatch, 1, "Problem with test for e, count")
+
+        # Tests the values in the report are correct.
+        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        expected = [['zip', 'out_document_name'],
+                    [30602, 'root\\e:\\emailobj\\200202\\416120451.txt']]
+        self.assertEqual(result, expected, "Problem with test for e, report")
+
     def test_no_errors(self):
         """Test for both patterns when there are no errors or blanks"""
         # Makes a dataframe to use as test input and runs the function.

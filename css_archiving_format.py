@@ -148,7 +148,8 @@ def check_metadata_formatting_multi(column, df, output_dir):
     # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
     match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
     match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    df_no_match = df[~(match_blob | match_dos) & df[column].notna()]
+    match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    df_no_match = df[~(match_blob | match_dos | match_e) & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match.
     no_match_count = len(df_no_match.index)
