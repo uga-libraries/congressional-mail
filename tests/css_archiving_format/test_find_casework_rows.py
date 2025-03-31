@@ -122,11 +122,16 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', 'I added to case', ''],
                               ['30601', '', 'Already opened a case', ''],
-                              ['30602', 'Closed Case', '', ''],
-                              ['30603', 'Open Case', '', ''],
-                              ['30604', '', 'For casework', ''],
-                              ['30605', '', 'Mary started case yesterday', 'Admin'],
-                              ['30606', 'Roads', 'Not a case', '']],
+                              ['30602', '', 'CASE CLOSED', ''],
+                              ['30603', '', 'Case for doe', ''],
+                              ['30604', '', 'A case has been opened', ''],
+                              ['30605', '', 'Maybe case issue', ''],
+                              ['30606', '', 'case work', ''],
+                              ['30607', '', 'For casework', ''],
+                              ['30608', 'Closed Case', '', ''],
+                              ['30609', 'Open Case', '', ''],
+                              ['30610', '', 'Mary started case yesterday', 'Admin'],
+                              ['30611', 'Roads', 'Not a case', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic'])
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -135,16 +140,21 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category'],
                     ['30600', '', 'I added to case', '', 'Casework'],
                     ['30601', '', 'Already opened a case', '', 'Casework'],
-                    ['30602', 'Closed Case', '', '', 'Casework'],
-                    ['30603', 'Open Case', '', '', 'Casework'],
-                    ['30604', '', 'For casework', '', 'Casework'],
-                    ['30605', '', 'Mary started case yesterday', 'Admin', 'Casework']]
+                    ['30602', '', 'CASE CLOSED', '', 'Casework'],
+                    ['30603', '', 'Case for doe', '', 'Casework'],
+                    ['30604', '', 'A case has been opened', '', 'Casework'],
+                    ['30605', '', 'Maybe case issue', '', 'Casework'],
+                    ['30606', '', 'case work', '', 'Casework'],
+                    ['30607', '', 'For casework', '', 'Casework'],
+                    ['30608', 'Closed Case', '', '', 'Casework'],
+                    ['30609', 'Open Case', '', '', 'Casework'],
+                    ['30610', '', 'Mary started case yesterday', 'Admin', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for phrase, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'Appraisal_Category'],
-                    ['30606', 'Roads', 'Not a case', '', 'Casework']]
+                    ['30611', 'Roads', 'Not a case', '', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for phrase, df_casework_check")
 
 
