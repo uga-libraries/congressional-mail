@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
         """Test for the zip column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
         df = pd.DataFrame([['GA', '30601'], ['MS', '306024444'], ['GA', '30603-0001'], ['TX', 'no zip'],
-                           ['GA', np.nan], ['DC', 'no zip'], ['GA', np.nan], ['MO', '3060']],
+                           ['GA', np.nan], ['DC', 'no zip'], ['GA', np.nan], ['MO', '3060'], ['GA', '30603-XXXX']],
                           columns=['state', 'zip'])
         state_mismatch = check_metadata_formatting('zip', df, 'test_data')
 
