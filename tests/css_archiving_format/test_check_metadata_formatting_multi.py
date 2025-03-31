@@ -61,14 +61,14 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 2, "Problem with test for blob, count")
+        self.assertEqual(out_document_name_mismatch, 2, "Problem with test for dos, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
                     [30602, 'root\\\\smith-atlanta\\dos\\public\\foldera\\filea.txt'],
                     [30606, 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
-        self.assertEqual(result, expected, "Problem with test for blob, report")
+        self.assertEqual(result, expected, "Problem with test for dos, report")
 
     def test_no_errors(self):
         """Test for both patterns when there are no errors or blanks"""
