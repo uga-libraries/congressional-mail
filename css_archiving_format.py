@@ -409,24 +409,30 @@ def find_job_rows(df):
     df = df[~out_topic]
 
     # Column in_text includes "job request" (case-insensitive).
-    in_text = df['in_text'].str.contains('job request', case=False, na=False)
+    word_list = ['job request', 'resume']
+    in_text = df['in_text'].str.contains('|'.join(word_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
 
     # Column out_text includes "job request" (case-insensitive).
-    out_text = df['out_text'].str.contains('job request', case=False, na=False)
+    out_text = df['out_text'].str.contains('|'.join(word_list), case=False, na=False)
     df_out_text = df[out_text]
     df = df[~out_text]
 
+    # Column in_document_name includes text that indicates job applications (case-insensitive).
+    names_list = ['job interview', 'resume']
+    in_doc = df['in_document_name'].str.contains('|'.join(names_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
     # Column out_document_name includes text that indicates job applications (case-insensitive).
-    names_list = ['job interview', 'resume.txt']
     out_doc = df['out_document_name'].str.contains('|'.join(names_list), case=False, na=False)
     df_out_doc = df[out_doc]
     df = df[~out_doc]
 
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_out_doc], axis=0, ignore_index=True)
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with any remaining rows with "job" in any column
