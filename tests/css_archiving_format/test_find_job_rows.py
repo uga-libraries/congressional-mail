@@ -146,7 +146,9 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'Admin', '', 'Admin', 'District Job Request', ''],
                               ['30602', '', '', 'Economy', '', 'Jobs report'],
                               ['30603', '', '', '', 'job request', ''],
-                              ['30604', 'Admin', '', '', 'job request - accept', '']],
+                              ['30604', 'Admin', '', '', 'job request - accept', ''],
+                              ['30605', 'Admin', '', '', 'Doe resume', ''],
+                              ['30606', 'Admin', '', '', 'RESUME', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -155,7 +157,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
                     ['30601', 'Admin', '', 'Admin', 'District Job Request', '', 'Job_Application'],
                     ['30603', '', '', '', 'job request', '', 'Job_Application'],
-                    ['30604', 'Admin', '', '', 'job request - accept', '', 'Job_Application']]
+                    ['30604', 'Admin', '', '', 'job request - accept', '', 'Job_Application'],
+                    ['30605', 'Admin', '', '', 'Doe resume', '', 'Job_Application'],
+                    ['30606', 'Admin', '', '', 'RESUME', '', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for out_text, df_job")
 
         # Tests the values in df_job_check are correct.
