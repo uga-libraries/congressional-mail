@@ -19,6 +19,28 @@ import sys
 import time
 
 
+def appraisal_check_df(df, keyword, category):
+    """Returns a df with all rows that contain the specified keyword in any of six columns,
+    including a category label"""
+
+    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    in_doc = df['in_document_name'].str.contains(keyword, case=False, na=False)
+    in_fillin = df['in_fillin'].str.contains(keyword, case=False, na=False)
+    in_text = df['in_text'].str.contains(keyword, case=False, na=False)
+    out_doc = df['out_document_name'].str.contains(keyword, case=False, na=False)
+    out_fillin = df['out_fillin'].str.contains(keyword, case=False, na=False)
+    out_text = df['out_text'].str.contains(keyword, case=False, na=False)
+
+    # Makes a dataframe with all rows containing the keyword in at least one of the six columns.
+    # TBD remove duplicates
+    df_check = df[in_doc | in_fillin | in_text | out_doc | out_fillin | out_text].copy()
+
+    # Adds a column with the category.
+    df_check['Appraisal_Category'] = category
+
+    return df_check
+
+
 def check_arguments(arg_list):
     """Verify the required script arguments are present and valid and get the path to the metadata file"""
 
