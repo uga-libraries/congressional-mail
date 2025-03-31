@@ -420,7 +420,7 @@ def find_job_rows(df):
     df = df[~out_text]
 
     # Column out_document_name includes text that indicates job applications (case-insensitive).
-    names_list = ['job interview', 'resume.txt']
+    names_list = ['job interview', 'resume']
     out_doc = df['out_document_name'].str.contains('|'.join(names_list), case=False, na=False)
     df_out_doc = df[out_doc]
     df = df[~out_doc]
