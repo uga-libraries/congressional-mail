@@ -365,6 +365,12 @@ def find_casework_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
+    # Column out_text is equal to a keyword that indicates casework.
+    keyword_list = ['case', 'case!']
+    out_text = df['out_text'].str.lower().isin(keyword_list)
+    df_out_text = df[out_text]
+    df = df[~out_text]
+
     # Any column includes a phrase that indicates casework.
     case_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened', 'case issue',
                  'case work', 'casew', 'closed case', 'open case', 'started case']
@@ -374,7 +380,7 @@ def find_casework_rows(df):
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_in_topic, df_out_topic, df_phrase], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_in_topic, df_out_topic, df_out_text, df_phrase], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with any remaining rows with "case" in any column
