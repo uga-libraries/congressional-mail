@@ -70,5 +70,6 @@ class MyTestCase(unittest.TestCase):
                      'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no column")
 
+
 if __name__ == '__main__':
     unittest.main()
