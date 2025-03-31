@@ -125,8 +125,8 @@ def check_metadata_formatting(column, df, output_dir):
     # Dictionary of expected formatting patterns.
     patterns = {'in_date': r'^\d{8}$',
                 'out_date': r'^\d{8}$',
-                'state': r'^[A-Z]{2}$',
-                'zip': r'^\d{5}(-\d{4})?$'}
+                'state': r'^[A-Z]\.?[A-Z]\.?$',
+                'zip': r'^\d{5}(-\d{4})?(-X{4})?$'}
 
     # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
     match = df[column].str.contains(patterns[column], regex=True, na=False)
@@ -148,7 +148,8 @@ def check_metadata_formatting_multi(column, df, output_dir):
     # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
     match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
     match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    df_no_match = df[~(match_blob | match_dos) & df[column].notna()]
+    match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    df_no_match = df[~(match_blob | match_dos | match_e) & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match.
     no_match_count = len(df_no_match.index)
