@@ -580,15 +580,18 @@ def topics_report(df, output_dir):
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
 
-    # So far, we have seen two ways that paths are formatted in the metadata:
-    # ..\documents\BlobExport\folder\..\file.ext, where the export is \documents\folder\..\file.ext AND
+    # So far, we have seen three ways that paths are formatted in the metadata:
+    # ..\documents\BlobExport\folder\..\file.ext, where the export is \documents\folder\..\file.ext
     #  \\name-office\dos\public\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    # e:\emailobj\folder\file.ext, where export pattern is unknown (none in export)
     if md_path.startswith('..'):
         updated_path = md_path.replace('..', input_dir)
         updated_path = updated_path.replace('\\BlobExport', '')
     elif '\\dos\\public\\' in md_path:
         updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
         updated_path = input_dir + updated_path
+    elif md_path.startswith('e:\\emailobj\\'):
+        updated_path = md_path.replace('e:', input_dir)
     else:
         updated_path = 'error_new'
 
