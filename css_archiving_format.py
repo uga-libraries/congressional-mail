@@ -365,22 +365,15 @@ def find_casework_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
-    # Any column includes the text "casework".
-    # This includes a few rows with phrases like "this is not casework",
-    # which is necessary to protect privacy and keep time required reasonable.
-    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    df_cw = df.loc[casework.any(axis=1)]
-    df = df.loc[~casework.any(axis=1)]
-
     # Any column includes a phrase that indicates casework.
-    case_list = ['added to case', 'already open', 'closed case', 'open case', 'started case']
+    case_list = ['added to case', 'already open', 'closed case', 'casework', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
     df = df.loc[~case_phrase.any(axis=1)]
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_in_topic, df_out_topic, df_cw, df_phrase], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_in_topic, df_out_topic, df_phrase], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with any remaining rows with "case" in any column
