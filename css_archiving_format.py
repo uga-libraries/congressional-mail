@@ -367,7 +367,7 @@ def find_casework_rows(df):
 
     # Any column includes a phrase that indicates casework.
     case_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened', 'case issue',
-                 'case work', 'casework', 'closed case', 'open case', 'started case']
+                 'case work', 'casew', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
     df = df.loc[~case_phrase.any(axis=1)]

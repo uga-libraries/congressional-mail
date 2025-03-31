@@ -128,6 +128,7 @@ class MyTestCase(unittest.TestCase):
                               ['30605', '', 'Maybe case issue', ''],
                               ['30606', '', 'case work', ''],
                               ['30607', '', 'For casework', ''],
+                              ['30607', '', 'For casewrk', ''],
                               ['30608', 'Closed Case', '', ''],
                               ['30609', 'Open Case', '', ''],
                               ['30610', '', 'Mary started case yesterday', 'Admin'],
@@ -146,6 +147,7 @@ class MyTestCase(unittest.TestCase):
                     ['30605', '', 'Maybe case issue', '', 'Casework'],
                     ['30606', '', 'case work', '', 'Casework'],
                     ['30607', '', 'For casework', '', 'Casework'],
+                    ['30607', '', 'For casewrk', '', 'Casework'],
                     ['30608', 'Closed Case', '', '', 'Casework'],
                     ['30609', 'Open Case', '', '', 'Casework'],
                     ['30610', '', 'Mary started case yesterday', 'Admin', 'Casework']]
