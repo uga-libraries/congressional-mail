@@ -125,7 +125,7 @@ def check_metadata_formatting(column, df, output_dir):
     # Dictionary of expected formatting patterns.
     patterns = {'in_date': r'^\d{8}$',
                 'out_date': r'^\d{8}$',
-                'state': r'^[A-Z]{2}$',
+                'state': r'^[A-Z]\.?[A-Z]\.?$',
                 'zip': r'^\d{5}(-\d{4})?$'}
 
     # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.

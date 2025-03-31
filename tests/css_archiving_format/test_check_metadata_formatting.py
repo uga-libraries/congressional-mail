@@ -61,7 +61,7 @@ class MyTestCase(unittest.TestCase):
         """Test for the state column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
         df = pd.DataFrame([['GA', '30601'], [np.nan, '30602'], ['ga', '30603'],
-                           ['GEORGIA', '30604'], ['AL', '30605'], ['NDK', '30606']],
+                           ['GEORGIA', '30604'], ['AL', '30605'], ['NDK', '30606'], ['D.C.', '30607']],
                           columns=['state', 'zip'])
         state_mismatch = check_metadata_formatting('state', df, 'test_data')
 
