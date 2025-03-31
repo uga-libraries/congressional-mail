@@ -409,7 +409,8 @@ def find_job_rows(df):
     df = df[~out_topic]
 
     # Column in_text includes "job request" (case-insensitive).
-    in_text = df['in_text'].str.contains('job request', case=False, na=False)
+    word_list = ['job request', 'resume']
+    in_text = df['in_text'].str.contains('|'.join(word_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
 

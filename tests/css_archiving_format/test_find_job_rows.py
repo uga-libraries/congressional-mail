@@ -40,13 +40,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for all patterns, df_job_check")
 
     def test_in_text(self):
-        """Test for when column in_text contains "job request" (case-insensitive)"""
+        """Test for when column in_text contains a word or phrase indicating job applications (case-insensitive)"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Gen', ' new job request', 'Gen', 'info sent', ''],
                               ['30601', 'Admin', 'job requested', 'Admin', '', r'..\doc\response.doc'],
                               ['30602', '', 'Job Request', '', '', ''],
                               ['30603', 'Arts', 'Freelance job', '', '', ''],
-                              ['30604', '', 'note', '', '', '']],
+                              ['30604', '', 'note', '', '', ''],
+                              ['30605', '', 'resume', '', '', ''],
+                              ['30606', '', 'Forwarded Resume', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name'])
         df_job, df_job_check = find_job_rows(md_df)
         
@@ -55,7 +57,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'out_topic', 'out_text', 'out_document_name', 'Appraisal_Category'],
                     ['30600', 'Gen', ' new job request', 'Gen', 'info sent', '', 'Job_Application'],
                     ['30601', 'Admin', 'job requested', 'Admin', '', r'..\doc\response.doc', 'Job_Application'],
-                    ['30602', '', 'Job Request', '', '', '', 'Job_Application']]
+                    ['30602', '', 'Job Request', '', '', '', 'Job_Application'],
+                    ['30605', '', 'resume', '', '', '', 'Job_Application'],
+                    ['30606', '', 'Forwarded Resume', '', '', '', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for in_text, df_job")
 
         # Tests the values in df_job_check are correct.
