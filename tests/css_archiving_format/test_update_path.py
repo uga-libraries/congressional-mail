@@ -19,6 +19,12 @@ class MyTestCase(unittest.TestCase):
         expected = r'input_dir\documents\letter\111111.txt'
         self.assertEqual(file_path, expected, "Problem with test for Dos")
 
+    def test_emailobj(self):
+        """Test for the pattern e:\\emailobj\\folder\\file.ext"""
+        file_path = update_path(r'e:\emailobj\202112\12345678.txt', 'input_dir')
+        expected = r'input_dir\emailobj\202112\12345678.txt'
+        self.assertEqual(file_path, expected, "Problem with test for emailobj")
+
     def test_new(self):
         """Test for a new pattern"""
         file_path = update_path(r'\folder\folder\letter\111111.txt', 'input_dir')
