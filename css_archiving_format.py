@@ -32,7 +32,6 @@ def appraisal_check_df(df, keyword, category):
     out_text = df['out_text'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the six columns.
-    # TBD remove duplicates
     df_check = df[in_doc | in_fillin | in_text | out_doc | out_fillin | out_text].copy()
 
     # Adds a column with the category.
