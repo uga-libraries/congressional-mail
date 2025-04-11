@@ -4,7 +4,7 @@ To simplify input, the test uses dataframes with only a few of the columns prese
 """
 import pandas as pd
 import unittest
-from css_data_interchange_format import remove_casework_rows
+from css_data_interchange_format import remove_appraisal_rows
 from test_find_casework_rows import df_to_list
 
 
@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
         casework_df = pd.DataFrame([['30144-2248', '19990501', 'imail', 'Casework - HMO'],
                                     ['', '20000315', 'imail', 'Casework']],
                                    columns=['zip_code', 'date_in', 'response_type', 'group_name'])
-        md_df = remove_casework_rows(md_df, casework_df)
+        md_df = remove_appraisal_rows(md_df, casework_df)
 
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(md_df)

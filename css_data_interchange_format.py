@@ -270,7 +270,7 @@ def read_metadata(paths):
     return df
 
 
-def remove_casework_rows(df, df_case):
+def remove_appraisal_rows(df, df_case):
     """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
 
     # Makes an updated dataframe with just rows in df that are not in df_case.
@@ -395,7 +395,7 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters and columns with PII from the merged metadata tables,"
               " and make copies of the metadata split by congress year")
-        md_df = remove_casework_rows(md_df, appraisal_df)
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
