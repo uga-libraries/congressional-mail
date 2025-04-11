@@ -392,6 +392,9 @@ if __name__ == '__main__':
     # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
     # and makes a copy of the data split by congress year.
     elif script_mode == 'access':
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted letters and columns with PII from the merged metadata tables,"
+              " and make copies of the metadata split by congress year")
         md_df = remove_casework_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
