@@ -76,6 +76,31 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def find_academy_rows(df):
+    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column group_name includes "academy".
+    group = df['group_name'].str.contains('academy', case=False, na=False)
+    df_group = df[group]
+    df = df[~group]
+
+    # Column communication_document_name includes "academy".
+    doc_name = df['communication_document_name'].str.contains('academy', case=False, na=False)
+    df_doc_name = df[doc_name]
+    df = df[~doc_name]
+
+    # Makes a single dataframe with all rows that indicate academy applications
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_academy = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_academy['Appraisal_Category'] = 'Academy_Application'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate academy applications.
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
+
+    return df_academy, df_academy_check
+
+
 def find_casework_rows(df, output_dir):
     """Find metadata rows with topics or text that indicate they are casework,
      return as a df and log results"""
