@@ -360,9 +360,11 @@ def split_congress_year(df, output_dir):
 
     # Splits the data by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
+    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
+    os.mkdir(cy_dir)
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
 if __name__ == '__main__':
