@@ -106,7 +106,7 @@ def find_casework_rows(df):
      Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column group_name starts with "case", if any.
-    group = df['group_name'].str.startswith('case', case=False, na=False)
+    group = df['group_name'].str.lower().str.startswith('case', na=False)
     df_group = df[group]
     df = df[~group]
 
