@@ -129,6 +129,33 @@ def find_casework_rows(df, output_dir):
     return df_casework
 
 
+def find_job_rows(df):
+    """Find metadata rows with topics or text that indicate they are job applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column group_name includes one or more of the groups that indicate job applications.
+    group_list = ['jobapp', 'job request', 'resume']
+    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
+    df_group = df[group]
+    df = df[~group]
+
+    # Column communication_document_name includes one or more keywords that indicate job applications.
+    keywords_list = ['job.doc', 'jobapp', 'job applicant', 'reply to resume', 'thank you for resume']
+    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_doc_name = df[doc_name]
+    df = df[~doc_name]
+
+    # Makes a single dataframe with all rows that indicate job applications
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_job = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_job['Appraisal_Category'] = 'Job_Application'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate job applications.
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
+
+    return df_job, df_job_check
+
+
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
