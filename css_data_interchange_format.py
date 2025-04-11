@@ -101,32 +101,24 @@ def find_academy_rows(df):
     return df_academy, df_academy_check
 
 
-def find_casework_rows(df, output_dir):
-    """Find metadata rows with topics or text that indicate they are casework,
-     return as a df and log results"""
+def find_casework_rows(df):
+    """Find metadata rows with topics or text that indicate they are casework and return as a df
+     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column group_name starts with "CASE", if any.
-    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
-    group = df['group_name'].str.startswith('CASE', na=False)
+    # Column group_name starts with "case", if any.
+    group = df['group_name'].str.startswith('case', case=False, na=False)
     df_group = df[group]
     df = df[~group]
 
-    # Any column includes the text "casework".
-    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    df_cw = df.loc[casework.any(axis=1)]
-    df = df.loc[~casework.any(axis=1)]
-
-    # Makes a log with any remaining rows with "case" in any column.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
     # Makes a single dataframe with all rows that indicate casework
-    # and also saves to a log for review for any that are not really casework.
-    df_casework = pd.concat([df_group, df_cw], axis=0, ignore_index=True)
-    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
-    return df_casework
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_casework = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_casework['Appraisal_Category'] = 'Casework'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate casework.
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+
+    return df_casework, df_casework_check
 
 
 def find_job_rows(df):
