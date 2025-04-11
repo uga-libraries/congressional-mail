@@ -270,11 +270,11 @@ def read_metadata(paths):
     return df
 
 
-def remove_appraisal_rows(df, df_case):
-    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
+def remove_appraisal_rows(df, df_appraisal):
+    """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
     # Makes an updated dataframe with just rows in df that are not in df_case.
-    df_merge = df.merge(df_case, how='left', indicator=True)
+    df_merge = df.merge(df_appraisal, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
 
     return df_update
