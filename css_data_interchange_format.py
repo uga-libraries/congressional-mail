@@ -401,6 +401,6 @@ if __name__ == '__main__':
         print("It will remove rows for deleted letters and columns with PII from the merged metadata tables,"
               " and make copies of the metadata split by congress year")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
-        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
