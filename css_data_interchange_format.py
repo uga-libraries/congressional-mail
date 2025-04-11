@@ -383,10 +383,11 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
-    # For preservation, deletes the casework files, which is an appraisal decision.
-    # It uses the log from find_casework_rows() to know what to delete.
+    # TODO For preservation, prepares the export for the general_aip.py script.
+    # Run in appraisal mode first to remove letters.
     if script_mode == 'preservation':
-        remove_casework_letters(input_directory)
+        print("\nThe script is running in preservation mode.")
+        print("The steps are TBD.")
 
     # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
     # and makes a copy of the data split by congress year.
