@@ -3,7 +3,6 @@ Draft script to prepare preservation and access copies from an export in the CSS
 Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
 from datetime import date
-import numpy as np
 import os
 import pandas as pd
 import sys
@@ -99,6 +98,34 @@ def find_academy_rows(df):
     df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
+
+
+def find_appraisal_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are different categories for appraisal,
+     return as a df and log results"""
+
+    # Call the functions for each appraisal category.
+    df_academy, df_academy_check = find_academy_rows(df)
+    df_casework, df_casework_check = find_casework_rows(df)
+    df_job, df_job_check = find_job_rows(df)
+    df_recommendation, df_recommendation_check = find_recommendation_rows(df)
+
+    # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
+    # but have a simple keyword (e.g., case) that could be a new indicators for appraisal.
+    # Rows that fit more than one appraisal category are repeated.
+    df_check = pd.concat([df_academy_check, df_casework_check, df_job_check, df_recommendation_check],
+                         axis=0, ignore_index=True)
+    df_check.to_csv(os.path.join(output_dir, 'appraisal_check_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate appraisal
+    # and also saves to a log for review for any that are not correct identifications.
+    # Rows that fit more than one appraisal category are combined.
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = df_appraisal.astype(str)
+    df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])[
+        'Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
+    df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+    return df_appraisal
 
 
 def find_casework_rows(df):
@@ -344,8 +371,9 @@ if __name__ == '__main__':
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(metadata_paths_dict)
 
-    # Finds rows in the metadata that are for casework and saves to a CSV.
-    casework_df = find_casework_rows(md_df, output_directory)
+    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
+    # This is used in most of the modes.
+    appraisal_df = find_appraisal_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
@@ -355,7 +383,7 @@ if __name__ == '__main__':
     # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
     # and makes a copy of the data split by congress year.
     if script_mode == 'access':
-        md_df = remove_casework_rows(md_df, casework_df)
+        md_df = remove_casework_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
