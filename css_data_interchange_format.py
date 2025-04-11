@@ -46,33 +46,33 @@ def check_arguments(arg_list):
     # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
         errors.append("Missing required arguments, input_directory and script_mode")
-        return input_dir, md_paths, mode, errors
 
     # At least the first argument is present.
-    # Verifies it is a valid path, and if so gets the paths to the expected metadata files.
+    # Verifies it is a valid path, and if so that it contains the expected metadata files.
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            # TODO: finalize the tables to include
             expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
                     # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
                     md_paths[file[4:6]] = os.path.join(input_dir, file)
                 else:
-                    errors.append(f'Metadata file {file} is not in the input_directory')
+                    errors.append(f'No {file} file in the input_directory')
         else:
             errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
+
+    # Only one required argument is present.
+    if len(arg_list) == 2:
+        errors.append("Missing one of the required arguments, input_directory or script_mode")
 
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
-        if arg_list[2] in ('access', 'preservation'):
+        if arg_list[2] in ('accession', 'appraisal', 'preservation', 'access'):
             mode = arg_list[2]
         else:
-            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
-    else:
-        errors.append("Missing one of the required arguments, input_directory or script_mode")
+            errors.append(f"Provided mode '{arg_list[2]}' is not one of the expected modes")
 
     # More than the expected two required arguments are present.
     if len(arg_list) > 3:
@@ -380,6 +380,8 @@ if __name__ == '__main__':
     # Makes a dataframe and a csv of metadata rows that indicate appraisal.
     # This is used in most of the modes.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
+
+    # The rest of the script is dependent on the mode.
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
