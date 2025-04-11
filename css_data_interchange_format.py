@@ -3,11 +3,28 @@ Draft script to prepare preservation and access copies from an export in the CSS
 Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
 from datetime import date
-import numpy as np
 import os
 import pandas as pd
 import sys
 from css_archiving_format import file_deletion_log
+
+
+def appraisal_check_df(df, keyword, category):
+    """Returns a df with all rows that contain the specified keyword in any of three columns
+    likely to indicate appraisal is needed, including a category label"""
+
+    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    group_name = df['group_name'].str.contains(keyword, case=False, na=False)
+    doc_name = df['communication_document_name'].str.contains(keyword, case=False, na=False)
+    file_name = df['file_name'].str.contains(keyword, case=False, na=False)
+
+    # Makes a dataframe with all rows containing the keyword in at least one of the columns.
+    df_check = df[group_name | doc_name | file_name].copy()
+
+    # Adds a column with the category.
+    df_check['Appraisal_Category'] = category
+
+    return df_check
 
 
 def check_arguments(arg_list):
@@ -58,32 +75,129 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
-def find_casework_rows(df, output_dir):
-    """Find metadata rows with topics or text that indicate they are casework,
-     return as a df and log results"""
+def find_academy_rows(df):
+    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column group_name starts with "CASE", if any.
-    # There are other groups which included "case" that are retained, referring to legal cases of national interest.
-    group = df['group_name'].str.startswith('CASE', na=False)
+    # Column group_name includes "academy".
+    group = df['group_name'].str.contains('academy', case=False, na=False)
     df_group = df[group]
     df = df[~group]
 
-    # Any column includes the text "casework".
-    casework = np.column_stack([df[col].str.contains('casework', case=False, na=False) for col in df])
-    df_cw = df.loc[casework.any(axis=1)]
-    df = df.loc[~casework.any(axis=1)]
+    # Column communication_document_name includes "academy".
+    doc_name = df['communication_document_name'].str.contains('academy', case=False, na=False)
+    df_doc_name = df[doc_name]
+    df = df[~doc_name]
 
-    # Makes a log with any remaining rows with "case" in any column.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
+    # Makes a single dataframe with all rows that indicate academy applications
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_academy = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_academy['Appraisal_Category'] = 'Academy_Application'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate academy applications.
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
+
+    return df_academy, df_academy_check
+
+
+def find_appraisal_rows(df, output_dir):
+    """Find metadata rows with topics or text that indicate they are different categories for appraisal,
+     return as a df and log results"""
+
+    # Call the functions for each appraisal category.
+    df_academy, df_academy_check = find_academy_rows(df)
+    df_casework, df_casework_check = find_casework_rows(df)
+    df_job, df_job_check = find_job_rows(df)
+    df_recommendation, df_recommendation_check = find_recommendation_rows(df)
+
+    # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
+    # but have a simple keyword (e.g., case) that could be a new indicators for appraisal.
+    # Rows that fit more than one appraisal category are repeated.
+    df_check = pd.concat([df_academy_check, df_casework_check, df_job_check, df_recommendation_check],
+                         axis=0, ignore_index=True)
+    df_check.to_csv(os.path.join(output_dir, 'appraisal_check_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate appraisal
+    # and also saves to a log for review for any that are not correct identifications.
+    # Rows that fit more than one appraisal category are combined.
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = df_appraisal.astype(str)
+    df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])[
+        'Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
+    df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+    return df_appraisal
+
+
+def find_casework_rows(df):
+    """Find metadata rows with topics or text that indicate they are casework and return as a df
+     Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column group_name starts with "case", if any.
+    group = df['group_name'].str.lower().str.startswith('case', na=False)
+    df_group = df[group]
+    df = df[~group]
+
+    # Column communication_document_name includes one or more keywords that indicate casework.
+    keywords_list = ['casework', 'initialssacase', 'open sixth district cases']
+    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_doc_name = df[doc_name]
+    df = df[~doc_name]
 
     # Makes a single dataframe with all rows that indicate casework
-    # and also saves to a log for review for any that are not really casework.
-    df_casework = pd.concat([df_group, df_cw], axis=0, ignore_index=True)
-    df_casework.to_csv(os.path.join(output_dir, 'case_delete_log.csv'), index=False)
-    return df_casework
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_casework = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_casework['Appraisal_Category'] = 'Casework'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate casework.
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+
+    return df_casework, df_casework_check
+
+
+def find_job_rows(df):
+    """Find metadata rows with topics or text that indicate they are job applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column group_name includes one or more of the groups that indicate job applications.
+    group_list = ['jobapp', 'job request', 'resume']
+    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
+    df_group = df[group]
+    df = df[~group]
+
+    # Column communication_document_name includes one or more keywords that indicate job applications.
+    keywords_list = ['job.doc', 'jobapp', 'job applicant', 'reply to resume', 'thank you for resume']
+    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_doc_name = df[doc_name]
+    df = df[~doc_name]
+
+    # Makes a single dataframe with all rows that indicate job applications
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_job = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_job['Appraisal_Category'] = 'Job_Application'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate job applications.
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
+
+    return df_job, df_job_check
+
+
+def find_recommendation_rows(df):
+    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column communication_document_name includes one or more keywords that indicate recommendations.
+    keywords_list = ['intern rec', 'page rec']
+    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_rec = df[doc_name].copy()
+    df = df[~doc_name]
+
+    # Adds a column for the appraisal category (needed for the file deletion log).
+    df_rec['Appraisal_Category'] = 'Recommendation'
+
+    # Makes another dataframe with rows to check for new patterns that could indicate recommendations.
+    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+
+    return df_rec, df_rec_check
 
 
 def read_metadata(paths):
@@ -257,8 +371,9 @@ if __name__ == '__main__':
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     md_df = read_metadata(metadata_paths_dict)
 
-    # Finds rows in the metadata that are for casework and saves to a CSV.
-    casework_df = find_casework_rows(md_df, output_directory)
+    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
+    # This is used in most of the modes.
+    appraisal_df = find_appraisal_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
@@ -268,7 +383,7 @@ if __name__ == '__main__':
     # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
     # and makes a copy of the data split by congress year.
     if script_mode == 'access':
-        md_df = remove_casework_rows(md_df, casework_df)
+        md_df = remove_casework_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
