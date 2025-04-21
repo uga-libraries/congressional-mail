@@ -81,6 +81,43 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def check_metadata_usability(df, output_dir):
+    """Test the usability of the metadata"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status', 'date_in',
+                'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name', 'document_type',
+                'communication_document_name', 'communication_document_id', 'file_location', 'file_name']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+
+    # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
+    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
+    # TODO
+
+    # Combines the data about each column into a dataframe and saves as a CSV.
+    columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+
+
 def delete_appraisal_letters(input_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
