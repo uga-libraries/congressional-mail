@@ -270,12 +270,17 @@ def read_metadata(paths):
     return df
 
 
-def remove_casework_rows(df, df_case):
-    """Remove metadata rows with topics or text that indicate they are casework and return the updated df"""
+def remove_appraisal_rows(df, df_appraisal):
+    """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
-    # Makes an updated dataframe with just rows in df that are not in df_case.
-    df_merge = df.merge(df_case, how='left', indicator=True)
-    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
+    # Makes sure all columns in both dataframes are strings,
+    # since earlier steps can alter the type and the types must be the same for two rows to match.
+    df = df.astype(str)
+    df_appraisal.astype(str)
+
+    # Makes an updated dataframe with just rows in df that are not in df_appraisal.
+    df_merge = df.merge(df_appraisal, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
 
     return df_update
 
@@ -335,11 +340,14 @@ def remove_pii(df):
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
+    # Makes a folder for all the CSVs.
+    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
+    os.mkdir(cy_dir)
+
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
-    # TODO: decide on file name and where it saves.
     df_undated = df[pd.to_numeric(df['date_in'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
+        df_undated.to_csv(os.path.join(cy_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['date_in'], errors='coerce').notnull()].copy()
@@ -354,11 +362,11 @@ def split_congress_year(df, output_dir):
     df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
     df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
 
-    # Splits the data by Congress Year received and saves each to a separate CSV.
+    # Splits the data with date information by Congress Year received and saves each to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
 if __name__ == '__main__':
@@ -391,8 +399,11 @@ if __name__ == '__main__':
 
     # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
     # and makes a copy of the data split by congress year.
-    if script_mode == 'access':
-        md_df = remove_casework_rows(md_df, appraisal_df)
-        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+    elif script_mode == 'access':
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted letters and columns with PII from the merged metadata tables,"
+              " and make copies of the metadata split by congress year")
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
 
