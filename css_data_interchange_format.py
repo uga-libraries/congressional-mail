@@ -86,13 +86,9 @@ def delete_appraisal_letters(input_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
 
-    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
-    # If it is not, there are no files to delete.
-    try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
-    except FileNotFoundError:
-        print(f"No case delete log in {os.path.dirname(input_dir)}")
-        return
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, 'header')
 
     # Deletes letters received and sent based on communication_document_name.
     doc_df = df.dropna(subset=['communication_document_name']).copy()
