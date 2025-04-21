@@ -270,7 +270,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the print statement.
         result = output.stdout
-        expected = ('\nThe script is running in preservation mode.\nThe steps are TBD.\n')
+        expected = '\nThe script is running in preservation mode.\nThe steps are TBD.\n'
         self.assertEqual(result, expected, "Problem with test for preservation, printed statement")
 
 
