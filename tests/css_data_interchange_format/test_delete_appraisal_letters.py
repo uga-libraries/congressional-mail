@@ -3,6 +3,7 @@ Tests for the function delete_appraisal_letters(), which deletes letters for app
 To simplify input, the test uses dataframes with only a few of the columns present in a real export.
 """
 from datetime import date
+import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -92,8 +93,8 @@ class MyTestCase(unittest.TestCase):
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
         # Makes variables needed as function input and runs the function being tested.
         input_directory = os.path.join(output_dir, 'export')
-        appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],
-                                     ['20241202', '', 'Casework']],
+        appraisal_df = pd.DataFrame([['20241201', np.nan, 'Casework'],
+                                     ['20241202', np.nan, 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
         delete_appraisal_letters(input_directory, appraisal_df)
 
@@ -108,6 +109,29 @@ class MyTestCase(unittest.TestCase):
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
         self.assertEqual(result, expected, "Problem with test for no deletion - blank, directory contents")
+
+    def test_no_deletion_empty_string(self):
+        """Test for when there is a metadata deletion log but no rows have an associated file"""
+        # Runs the function being tested.
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
+        # Makes variables needed as function input and runs the function being tested.
+        input_directory = os.path.join(output_dir, 'export')
+        appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],
+                                     ['20241202', '', 'Casework']],
+                                    columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_directory, appraisal_df)
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
+        self.assertEqual(result, expected, "Problem with test for no deletion - empty string, file deletion log")
+
+        # Tests that no files have been deleted.
+        result = files_in_dir(input_directory)
+        expected = ['ABC-1.txt']
+        self.assertEqual(result, expected, "Problem with test for no deletion - empty string, directory contents")
 
     def test_no_deletion_form(self):
         """Test for when there is a metadata deletion log but the associated files are form letters"""
