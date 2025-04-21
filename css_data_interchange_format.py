@@ -82,6 +82,40 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def delete_appraisal_letters(input_dir, df_appraisal):
+    """Deletes letters received from constituents and individual letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
+
+    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
+    # If it is not, there are no files to delete.
+    try:
+        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
+    except FileNotFoundError:
+        print(f"No case delete log in {os.path.dirname(input_dir)}")
+        return
+
+    # Deletes letters received and sent based on communication_document_name.
+    doc_df = df.dropna(subset=['communication_document_name']).copy()
+    doc_list = doc_df['communication_document_name'].tolist()
+    if len(doc_list) > 0:
+
+        # Creates a file deletion log, with a header row.
+        log_path = os.path.join(os.path.dirname(input_dir),
+                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+        file_deletion_log(log_path, None, True)
+
+        # If there is a document name, it is formatted ..\documents\FOLDER\filename.ext
+        # Does not delete form letters, which are in FOLDER formletters
+        for name in doc_list:
+            if 'formletters' not in name:
+                file_path = name.replace('..', input_dir)
+                try:
+                    file_deletion_log(log_path, file_path)
+                    os.remove(file_path)
+                except FileNotFoundError:
+                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
+
+
 def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
@@ -284,40 +318,6 @@ def remove_appraisal_rows(df, df_appraisal):
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
 
     return df_update
-
-
-def delete_appraisal_letters(input_dir, df_appraisal):
-    """Deletes letters received from constituents and individual letters sent back by the office
-    because they are one of the types of letters not retained for appraisal reasons"""
-
-    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
-    # If it is not, there are no files to delete.
-    try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
-    except FileNotFoundError:
-        print(f"No case delete log in {os.path.dirname(input_dir)}")
-        return
-
-    # Deletes letters received and sent based on communication_document_name.
-    doc_df = df.dropna(subset=['communication_document_name']).copy()
-    doc_list = doc_df['communication_document_name'].tolist()
-    if len(doc_list) > 0:
-
-        # Creates a file deletion log, with a header row.
-        log_path = os.path.join(os.path.dirname(input_dir),
-                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-        file_deletion_log(log_path, None, True)
-
-        # If there is a document name, it is formatted ..\documents\FOLDER\filename.ext
-        # Does not delete form letters, which are in FOLDER formletters
-        for name in doc_list:
-            if 'formletters' not in name:
-                file_path = name.replace('..', input_dir)
-                try:
-                    file_deletion_log(log_path, file_path)
-                    os.remove(file_path)
-                except FileNotFoundError:
-                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
 
 
 def remove_pii(df):
