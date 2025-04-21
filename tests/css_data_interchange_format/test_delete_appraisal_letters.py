@@ -1,11 +1,11 @@
 """
-Tests for the function remove_casework_letters(), which removes letters that pertain to casework.
+Tests for the function delete_appraisal_letters(), which deletes letters for appraisal reasons.
 """
 from datetime import date
 import os
 import shutil
 import unittest
-from css_data_interchange_format import remove_casework_letters
+from css_data_interchange_format import delete_appraisal_letters
 from test_script import csv_to_list, files_in_dir
 
 
@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Deletes test outputs, if created"""
-        test_dir = os.path.join('test_data', 'remove_casework_letters')
+        test_dir = os.path.join('test_data', 'remove_appraisal_letters')
 
         if os.path.exists(os.path.join(test_dir, 'deletion', 'export')):
             shutil.rmtree(os.path.join(test_dir, 'deletion', 'export'))
@@ -29,13 +29,13 @@ class MyTestCase(unittest.TestCase):
     def test_deletion(self):
         """Test for when the files in the metadata deletion log are present in the export and deleted"""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'deletion')
+        output_dir = os.path.join('test_data', 'remove_appraisal_letters', 'deletion')
         shutil.copytree(os.path.join(output_dir, 'export_copy'),
                         os.path.join(output_dir, 'export'))
 
         # Runs the function being tested.
         input_directory = os.path.join(output_dir, 'export')
-        remove_casework_letters(input_directory)
+        remove_appraisal_letters(input_directory)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -56,9 +56,9 @@ class MyTestCase(unittest.TestCase):
     def test_file_not_found(self):
         """Test for when the files in the metadata deletion log are not present in the export"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'file_not_found')
+        output_dir = os.path.join('test_data', 'remove_appraisal_letters', 'file_not_found')
         input_directory = os.path.join(output_dir, 'export')
-        remove_casework_letters(input_directory)
+        remove_appraisal_letters(input_directory)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -79,9 +79,9 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_blank(self):
         """Test for when there is a metadata deletion log but no rows have an associated file"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'no_deletion_blank')
+        output_dir = os.path.join('test_data', 'remove_appraisal_letters', 'no_deletion_blank')
         input_directory = os.path.join(output_dir, 'export')
-        remove_casework_letters(input_directory)
+        remove_appraisal_letters(input_directory)
 
         # Tests the file deletion log was not made.
         result = os.path.exists(os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"))
@@ -95,9 +95,9 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_form(self):
         """Test for when there is a metadata deletion log but the associated files are form letters"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'no_deletion_form')
+        output_dir = os.path.join('test_data', 'remove_appraisal_letters', 'no_deletion_form')
         input_directory = os.path.join(output_dir, 'export')
-        remove_casework_letters(input_directory)
+        remove_appraisal_letters(input_directory)
 
         # Tests the contents of the file deletion log.
         # Code needs to be updated to not save (or delete after saving) if the report is empty (header only).
@@ -115,9 +115,9 @@ class MyTestCase(unittest.TestCase):
     def test_no_log(self):
         """Test for when there is no metadata deletion log"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'remove_casework_letters', 'no_log')
+        output_dir = os.path.join('test_data', 'remove_appraisal_letters', 'no_log')
         input_directory = os.path.join(output_dir, 'export')
-        remove_casework_letters(input_directory)
+        remove_appraisal_letters(input_directory)
 
         # Tests the file deletion log was not made.
         result = os.path.exists(os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"))

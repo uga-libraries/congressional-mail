@@ -286,8 +286,9 @@ def remove_appraisal_rows(df, df_appraisal):
     return df_update
 
 
-def remove_casework_letters(input_dir):
-    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
+def delete_appraisal_letters(input_dir, df_appraisal):
+    """Deletes letters received from constituents and individual letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
 
     # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
     # If it is not, there are no files to delete.
@@ -410,6 +411,7 @@ if __name__ == '__main__':
     if script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
+        delete_appraisal_letters(input_directory, appraisal_df)
 
     # TODO For preservation, prepares the export for the general_aip.py script.
     elif script_mode == 'preservation':
