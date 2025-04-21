@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(path)
 
     def test_deletion(self):
-        """Test for when the files in the metadata deletion log are present in the export and deleted"""
+        """Test for when the file paths in the metadata match files in the export and the files are deleted"""
         # Makes a copy of the test data in the repo, since the script alters the data.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'deletion')
         shutil.copytree(os.path.join(output_dir, 'export_copy'),
@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for deletion, directory contents")
 
     def test_file_not_found(self):
-        """Test for when the files in the metadata deletion log are not present in the export"""
+        """Test for when the file paths in the metadata do not match files in the export"""
         # Makes variables needed as function input and runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'file_not_found')
         input_directory = os.path.join(output_dir, 'export')
@@ -90,7 +90,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for file not found, directory contents")
 
     def test_new_pattern(self):
-        """Test for when there is a metadata deletion log but the path in the metadata is a new pattern"""
+        """Test for when the file paths in the metadata match files in the export but are a new pattern"""
         # Runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'new_pattern')
         # Makes variables needed as function input and runs the function being tested.
@@ -118,7 +118,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for no deletion - form, directory contents")
 
     def test_no_deletion_blank(self):
-        """Test for when there is a metadata deletion log but no rows have an associated file"""
+        """Test for when the file paths in the metadata are blank"""
         # Runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
         # Makes variables needed as function input and runs the function being tested.
@@ -141,7 +141,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for no deletion - blank, directory contents")
 
     def test_no_deletion_empty_string(self):
-        """Test for when there is a metadata deletion log but no rows have an associated file"""
+        """Test for when the file paths in the metadata are empty strings"""
         # Runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty_string')
         # Makes variables needed as function input and runs the function being tested.
@@ -164,7 +164,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for no deletion - empty string, directory contents")
 
     def test_no_deletion_form(self):
-        """Test for when there is a metadata deletion log but the associated files are form letters"""
+        """Test for when the file paths in the metadata match files in the export but are form letters (not deleted)"""
         # Runs the function being tested.
         output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_form')
         # Makes variables needed as function input and runs the function being tested.
