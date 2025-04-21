@@ -11,6 +11,7 @@ access: remove metadata rows for appraisal and columns for PII and make copy of 
 from datetime import date
 import os
 import pandas as pd
+import re
 import sys
 from css_archiving_format import file_deletion_log
 
@@ -367,6 +368,20 @@ def split_congress_year(df, output_dir):
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
         cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
+
+
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen one way that paths are formatted in the metadata,
+    # but expect more in the future given other export formats and so have maintained this as a separate function:
+    # ..\documents\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    if md_path.startswith('..\\documents'):
+        updated_path = md_path.replace('..', input_dir)
+    else:
+        updated_path = 'error_new'
+
+    return updated_path
 
 
 if __name__ == '__main__':
