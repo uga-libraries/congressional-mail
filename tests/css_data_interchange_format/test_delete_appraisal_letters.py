@@ -25,7 +25,9 @@ class MyTestCase(unittest.TestCase):
         today = date.today().strftime('%Y-%m-%d')
         paths = [os.path.join(test_dir, 'deletion', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'file_not_found', f'file_deletion_log_{today}.csv'),
+                 os.path.join(test_dir, 'new_pattern', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'no_deletion_blank', f'file_deletion_log_{today}.csv'),
+                 os.path.join(test_dir, 'no_deletion_empty_string', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'no_deletion_form', f'file_deletion_log_{today}.csv')]
         for path in paths:
             if os.path.exists(path):
@@ -87,6 +89,34 @@ class MyTestCase(unittest.TestCase):
         expected = ['100001.txt', 'ABC-1.txt']
         self.assertEqual(result, expected, "Problem with test for file not found, directory contents")
 
+    def test_new_pattern(self):
+        """Test for when there is a metadata deletion log but the path in the metadata is a new pattern"""
+        # Runs the function being tested.
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'new_pattern')
+        # Makes variables needed as function input and runs the function being tested.
+        input_directory = os.path.join(output_dir, 'export')
+        appraisal_df = pd.DataFrame([['20241201', '..\\letters\\100001.txt', 'Casework'],
+                                     ['20241202', '..\\letters\\200002.txt', 'Casework']],
+                                    columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
+        delete_appraisal_letters(input_directory, appraisal_df)
+
+        # Tests the contents of the file deletion log.
+        # Code needs to be updated to not save (or delete after saving) if the report is empty (header only).
+        today = date.today().strftime('%Y-%m-%d')
+        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        result = csv_to_list(log_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    ['..\\letters\\100001.txt', 'nan', 'nan', 'nan', 'nan',
+                     'Cannot determine file path: new path pattern in metadata'],
+                    ['..\\letters\\200002.txt', 'nan', 'nan', 'nan', 'nan',
+                     'Cannot determine file path: new path pattern in metadata']]
+        self.assertEqual(result, expected, "Problem with test for no deletion - form, file deletion log")
+
+        # Tests that no files have been deleted.
+        result = files_in_dir(input_directory)
+        expected = ['100001.txt', '200002.txt']
+        self.assertEqual(result, expected, "Problem with test for no deletion - form, directory contents")
+
     def test_no_deletion_blank(self):
         """Test for when there is a metadata deletion log but no rows have an associated file"""
         # Runs the function being tested.
@@ -113,7 +143,7 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_empty_string(self):
         """Test for when there is a metadata deletion log but no rows have an associated file"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
+        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty_string')
         # Makes variables needed as function input and runs the function being tested.
         input_directory = os.path.join(output_dir, 'export')
         appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],
