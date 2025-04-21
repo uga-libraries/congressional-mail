@@ -3,6 +3,8 @@ Tests for the function split_congress_year(), which makes one CSV for letters re
 To simplify input, tests use dataframes with only some of the columns present in a real export
 """
 import os
+import shutil
+
 import pandas as pd
 import unittest
 from css_data_interchange_format import split_congress_year
@@ -18,6 +20,9 @@ class MyTestCase(unittest.TestCase):
             file_path = os.path.join('test_data', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
+
+        output_path = os.path.join('test_data', 'archiving_correspondence_by_congress_year')
+        shutil.rmtree(output_path)
 
     def test_all(self):
         """Test for a combination of all date variations: even, odd, and blank"""
@@ -61,7 +66,7 @@ class MyTestCase(unittest.TestCase):
         split_congress_year(md_df, 'test_data')
 
         # Tests that undated.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', 'undated.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30102-1056', 'nan', 'nan'],
                     ['GA', '30062-2748', 'nan', 'INSUTAX1']]
