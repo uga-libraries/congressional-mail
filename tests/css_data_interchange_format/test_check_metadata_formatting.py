@@ -69,10 +69,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
                      [np.nan, np.nan, 'January 2005', np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('date_in', df, 'test_data')
+        date_in_mismatch = check_metadata_formatting('date_in', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 3, "Problem with test for date_in, count")
+        self.assertEqual(date_in_mismatch, 3, "Problem with test for date_in, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_date_in.csv'))
@@ -93,10 +93,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, np.nan, np.nan, '2025-12-01', np.nan, np.nan, np.nan],
                      [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('date_out', df, 'test_data')
+        date_out_mismatch = check_metadata_formatting('date_out', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 2, "Problem with test for date_out, count")
+        self.assertEqual(date_out_mismatch, 2, "Problem with test for date_out, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_date_out.csv'))
@@ -113,10 +113,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
                      [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 0, "Problem with test for no_errors, count")
+        self.assertEqual(zip_mismatch, 0, "Problem with test for no_errors, count")
 
         # Tests the report was not created.
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
@@ -132,10 +132,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, np.nan, np.nan, np.nan, '20230104', np.nan, np.nan],
                      [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('reminder_date', df, 'test_data')
+        reminder_mismatch = check_metadata_formatting('reminder_date', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 1, "Problem with test for reminder_date, count")
+        self.assertEqual(reminder_mismatch, 1, "Problem with test for reminder_date, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_reminder_date.csv'))
@@ -154,10 +154,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
                      ['X', np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('state_code', df, 'test_data')
+        state_mismatch = check_metadata_formatting('state_code', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 3, "Problem with test for state_code, count")
+        self.assertEqual(state_mismatch, 3, "Problem with test for state_code, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_state_code.csv'))
@@ -178,10 +178,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, np.nan, np.nan, np.nan, np.nan, '20210103', np.nan],
                      [np.nan, np.nan, np.nan, np.nan, np.nan, 'no date', np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('update_date', df, 'test_data')
+        update_mismatch = check_metadata_formatting('update_date', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 2, "Problem with test for update_date, count")
+        self.assertEqual(update_mismatch, 2, "Problem with test for update_date, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv'))
@@ -201,10 +201,10 @@ class MyTestCase(unittest.TestCase):
                      [np.nan, '3060', np.nan, np.nan, np.nan, np.nan, np.nan],
                      [np.nan, 'XXXXX', np.nan, np.nan, np.nan, np.nan, np.nan]]
         df = make_df(rows_list)
-        cdm_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(cdm_mismatch, 3, "Problem with test for zip_code, count")
+        self.assertEqual(zip_mismatch, 3, "Problem with test for zip_code, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
