@@ -81,6 +81,31 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def check_metadata_formatting(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv"""
+
+# Dictionary of expected formatting patterns.
+    patterns = {'communication_document_name': r'^..\\documents\\',
+                'date_in': r'^\d{8}$',
+                'date_out': r'^\d{8}$',
+                'reminder_date': r'^\d{8}$',
+                'state_code': r'^[A-Z][A-Z]$',
+                'update_date': r'^\d{8}$',
+                'zip_code': r'^\d{5}(-\d{4})?$'}
+
+    # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
+    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    df_no_match = df[~match & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
 def check_metadata_usability(df, output_dir):
     """Test the usability of the metadata"""
 
