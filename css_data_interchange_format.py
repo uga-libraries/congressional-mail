@@ -90,27 +90,23 @@ def delete_appraisal_letters(input_dir, df_appraisal):
     log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
-    # Deletes letters received and sent based on communication_document_name.
-    doc_df = df.dropna(subset=['communication_document_name']).copy()
-    doc_list = doc_df['communication_document_name'].tolist()
-    if len(doc_list) > 0:
-
-        # Creates a file deletion log, with a header row.
-        log_path = os.path.join(os.path.dirname(input_dir),
-                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-        file_deletion_log(log_path, None, True)
-
-        # If there is a document name, it is formatted ..\documents\FOLDER\filename.ext
-        # Does not delete form letters, which are in FOLDER formletters
-        for name in doc_list:
-            if 'formletters' not in name:
-                file_path = name.replace('..', input_dir)
+    # For every row in df_appraisal, delete any letter in the communication_document_name column except form letters.
+    # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
+    # Blanks are skipped.
+    df_appraisal = df_appraisal.astype(str)
+    for row in df_appraisal.itertuples():
+        name = row.communication_document_name
+        if name != '' and name != 'nan' and 'formletters' not in name:
+            file_path = update_path(name, input_dir)
+            if file_path == 'error_new':
+                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+            else:
                 try:
-                    file_deletion_log(log_path, file_path)
+                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
                     os.remove(file_path)
                 except FileNotFoundError:
-                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
-
+                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+    
 
 def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
