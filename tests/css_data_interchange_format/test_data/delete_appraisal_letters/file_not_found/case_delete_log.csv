@@ -1,3 +1,0 @@
-city,state_code,zip_code,country,communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,document_type,communication_document_name,communication_document_id,file_location,file_name
-Athens,GA,30600,USA,usmail,,C,20241201,20241202,,20241202,usmail,CASE1,INCOMING,..\documents\objects\800000.txt,,,
-Athens,GA,30601,USA,usmail,,C,20241201,20241202,,20241202,usmail,CASE2,INCOMING,..\documents\objects\900000.txt,,,
