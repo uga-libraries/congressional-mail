@@ -14,13 +14,7 @@ from test_script import csv_to_list
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Delete the function output, if it was created"""
-        filenames = ['1997-1998.csv', '2009-2010.csv', '2011-2012.csv', 'undated.csv']
-        for filename in filenames:
-            file_path = os.path.join('test_data', filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-
+        """Delete the function output"""
         output_path = os.path.join('test_data', 'archiving_correspondence_by_congress_year')
         shutil.rmtree(output_path)
 
@@ -37,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         split_congress_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '1997-1998.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['MI', '49068-1164', '19980412', 'INSUTAX2'],
                     ['VA', '22031-4339', '19970412', 'TOUR'],
@@ -45,13 +39,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for all year variations, 1997-1998")
 
         # Tests that 2011-2012.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '2011-2012.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '2011-2012.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30152-3929', '20121130', 'SSCUTS1']]
         self.assertEqual(result, expected, "Problem with test for all year variations, 2011-2012")
 
         # Tests that undated.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', 'undated.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', 'undated.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30102-1056', 'nan', 'nan'],
                     ['GA', '30062-2748', 'nan', 'INSUTAX1']]
@@ -82,20 +76,20 @@ class MyTestCase(unittest.TestCase):
         split_congress_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '1997-1998.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['MI', '49068-1164', '19980412', 'INSUTAX2']]
         self.assertEqual(result, expected, "Problem with test for even years, 1997-1998")
 
         # Tests that 2011-2012.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '2011-2012.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '2011-2012.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30152-3929', '20121130', 'SSCUTS1'],
                     ['FL', '32448-5365', '20121231', 'SSCUTS1']]
         self.assertEqual(result, expected, "Problem with test for even years, 2011-2012")
 
         # Tests that undated.csv was not made.
-        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        result = os.path.exists(os.path.join('test_data', 'archiving_correspondence_by_congress_year', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for even years, undated")
 
     def test_odd_years(self):
@@ -108,20 +102,20 @@ class MyTestCase(unittest.TestCase):
         split_congress_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '1997-1998.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['VA', '22031-4339', '19970412', 'TOUR'],
                     ['GA', '30082-1838', '19970412', 'SSCUTS2']]
         self.assertEqual(result, expected, "Problem with test for odd years, 1997-1998")
 
         # Tests that 2009-2010.csv has the correct values.
-        result = csv_to_list(os.path.join('test_data', '2009-2010.csv'))
+        result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '2009-2010.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
                     ['GA', '30328-4628', '20091015', 'TOUR']]
         self.assertEqual(result, expected, "Problem with test for odd years, 2009-2010")
 
         # Tests that undated.csv was not made.
-        result = os.path.exists(os.path.join('test_data', 'undated.csv'))
+        result = os.path.exists(os.path.join('test_data', 'archiving_correspondence_by_congress_year', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for odd years, undated")
 
 
