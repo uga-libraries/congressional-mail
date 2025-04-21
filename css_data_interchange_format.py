@@ -135,11 +135,24 @@ def check_metadata_usability(df, output_dir):
 
     # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
     # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
-    # TODO
+    cdm_mismatch = check_metadata_formatting('communication_document_name', df, 'test_data')
+    date_in_mismatch = check_metadata_formatting('date_in', df, 'test_data')
+    date_out_mismatch = check_metadata_formatting('date_out', df, 'test_data')
+    reminder_mismatch = check_metadata_formatting('reminder_date', df, 'test_data')
+    state_mismatch = check_metadata_formatting('state_code', df, 'test_data')
+    update_mismatch = check_metadata_formatting('update_date', df, 'test_data')
+    zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+
+    # Combines the number of mismatches for the checked columns into a series, for adding to the report.
+    # Other columns have "uncheckable", even if the column is missing from the export.
+    formatting = pd.Series(data=['uncheckable', state_mismatch, zip_mismatch, 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', date_in_mismatch, date_out_mismatch, reminder_mismatch,
+                                 update_mismatch, 'uncheckable', 'uncheckable', 'uncheckable', cdm_mismatch,
+                                 'uncheckable', 'uncheckable', 'uncheckable'], index=expected)
 
     # Combines the data about each column into a dataframe and saves as a CSV.
-    columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
-    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
+    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
