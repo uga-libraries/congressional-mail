@@ -81,6 +81,32 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def delete_appraisal_letters(input_dir, df_appraisal):
+    """Deletes letters received from constituents and individual letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
+
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, 'header')
+
+    # For every row in df_appraisal, delete any letter in the communication_document_name column except form letters.
+    # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
+    # Blanks are skipped.
+    df_appraisal = df_appraisal.astype(str)
+    for row in df_appraisal.itertuples():
+        name = row.communication_document_name
+        if name != '' and name != 'nan' and 'formletters' not in name:
+            file_path = update_path(name, input_dir)
+            if file_path == 'error_new':
+                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+            else:
+                try:
+                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    os.remove(file_path)
+                except FileNotFoundError:
+                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+    
+
 def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
@@ -285,39 +311,6 @@ def remove_appraisal_rows(df, df_appraisal):
     return df_update
 
 
-def remove_casework_letters(input_dir):
-    """Remove casework letters received from constituents and individual casework letters sent back by the office"""
-
-    # Reads the deletion log into a dataframe, which is in the parent folder of input_dir if it is present.
-    # If it is not, there are no files to delete.
-    try:
-        df = pd.read_csv(os.path.join(os.path.dirname(input_dir), 'case_delete_log.csv'))
-    except FileNotFoundError:
-        print(f"No case delete log in {os.path.dirname(input_dir)}")
-        return
-
-    # Deletes letters received and sent based on communication_document_name.
-    doc_df = df.dropna(subset=['communication_document_name']).copy()
-    doc_list = doc_df['communication_document_name'].tolist()
-    if len(doc_list) > 0:
-
-        # Creates a file deletion log, with a header row.
-        log_path = os.path.join(os.path.dirname(input_dir),
-                                f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-        file_deletion_log(log_path, None, True)
-
-        # If there is a document name, it is formatted ..\documents\FOLDER\filename.ext
-        # Does not delete form letters, which are in FOLDER formletters
-        for name in doc_list:
-            if 'formletters' not in name:
-                file_path = name.replace('..', input_dir)
-                try:
-                    file_deletion_log(log_path, file_path)
-                    os.remove(file_path)
-                except FileNotFoundError:
-                    file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
-
-
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
@@ -369,6 +362,20 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen one way that paths are formatted in the metadata,
+    # but expect more in the future given other export formats and so have maintained this as a separate function:
+    # ..\documents\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    if md_path.startswith('..\\documents'):
+        updated_path = md_path.replace('..', input_dir)
+    else:
+        updated_path = 'error_new'
+
+    return updated_path
+
+
 if __name__ == '__main__':
 
     # Validates the script argument values and calculates the paths to the metadata files.
@@ -391,9 +398,14 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
+    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    if script_mode == 'appraisal':
+        print("\nThe script is running in appraisal mode.")
+        print("It will delete letters due to appraisal but not change the metadata file.")
+        delete_appraisal_letters(input_directory, appraisal_df)
+
     # TODO For preservation, prepares the export for the general_aip.py script.
-    # Run in appraisal mode first to remove letters.
-    if script_mode == 'preservation':
+    elif script_mode == 'preservation':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 

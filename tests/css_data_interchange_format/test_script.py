@@ -45,7 +45,7 @@ class MyTestCase(unittest.TestCase):
             shutil.rmtree(file_path)
 
         # Copy of test data.
-        test_folders = ['access_test', 'preservation_test']
+        test_folders = ['access_test', 'appraisal_test']
         for test_folder in test_folders:
             test_path = os.path.join('test_data', 'script', test_folder)
             if os.path.exists(test_path):
@@ -171,6 +171,80 @@ class MyTestCase(unittest.TestCase):
                      'Airline Passenger BOR Act2 1999', ' ', 'nan']]
         self.assertEqual(result, expected, "Problem with test for access, undated.csv")
 
+    def test_appraisal(self):
+        """Test for when the script runs correctly in appraisal mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'appraisal_test_copy'),
+                        os.path.join('test_data', 'script', 'appraisal_test'))
+
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
+        input_directory = os.path.join('test_data', 'script', 'appraisal_test')
+        output = subprocess.run(f"python {script_path} {input_directory} appraisal",
+                                shell=True, capture_output=True, text=True)
+
+        # Tests the print statement.
+        result = output.stdout
+        expected = ('\nThe script is running in appraisal mode.\n'
+                    'It will delete letters due to appraisal but not change the metadata file.\n')
+        self.assertEqual(result, expected, "Problem with test for appraisal, printed statement")
+
+        # Tests the contents of the appraisal check log.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name', 'Appraisal_Category'],
+                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
+                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
+                     'legal_case.html', ' ', 'nan', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for appraisal check log")
+
+        # Tests the contents of the appraisal delete log.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name', 'Appraisal_Category'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
+                     'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc',
+                     ' ', 'nan', 'Casework'],
+                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
+                     'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc', '00002.doc', ' ', 'nan',
+                     'Casework'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
+                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '2103422.html', ' ', 'nan', 'Casework'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework'],
+                    ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
+                     '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
+                     'nan', ' ', 'nan', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for appraisal, appraisal delete log")
+
+        # Tests the contents of the file deletion log.
+        today = date.today().strftime('%Y-%m-%d')
+        csv_path = os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv")
+        result = csv_to_list(csv_path)
+        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
+                    [r'..\documents\indivletters\00001.doc'.replace('..', input_directory),
+                     '26.6', today, today, '7FF68E7C773483286AE3FEBDF2554EF8', 'Casework'],
+                    [r'..\documents\indivletters\00002.doc'.replace('..', input_directory),
+                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                    [r'..\documents\objects\4007000.eml'.replace('..', input_directory),
+                     '0.0', today, today, '49C13D076A41E65DBE137D695E22A6A7', 'Casework'],
+                    [r'..\documents\indivletters\casework_12345.doc'.replace('..', input_directory),
+                     '26.6', today, today, 'A9C52FA2BA1A0E51AD59DA2E4DA08C9D', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for appraisal, file deletion log")
+
+        # Tests the contents of the input_directory, that all files that should be deleted are gone.
+        result = files_in_dir(input_directory)
+        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', '2103422.html', '30046.doc', 'legal_case.html']
+        self.assertEqual(result, expected, "Problem with test for appraisal, input_directory contents")
+
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
@@ -187,72 +261,17 @@ class MyTestCase(unittest.TestCase):
 
     def test_preservation(self):
         """Test for when the script runs correctly in preservation mode."""
-        # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'preservation_test_copy'),
-                        os.path.join('test_data', 'script', 'preservation_test'))
-
         # Runs the script.
+        # Since just testing printing right now, using a folder for input_directory that is not an export.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
         input_directory = os.path.join('test_data', 'script', 'preservation_test')
-        subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
+        output = subprocess.run(f"python {script_path} {input_directory} preservation",
+                                shell=True, capture_output=True, text=True)
 
-        # Tests the contents of the case delete log.
-        csv_path = os.path.join('test_data', 'script', 'case_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
-                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name'],
-                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
-                     'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc', '00002.doc', ' ', 'nan'],
-                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
-                     'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc',
-                     ' ', 'nan'],
-                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
-                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'nan'],
-                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
-                     '1c8614bf01caf83e00010e44.eml', 'nan'],
-                    ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
-                     '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
-                     'nan', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, case delete log")
-
-        # Tests the contents of the case remains log.
-        csv_path = os.path.join('test_data', 'script', 'case_remains_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
-                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name'],
-                    ['Caseyville', 'GA', '30080-1944', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan',
-                     'usmail', 'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
-                     'Airline Passenger BOR Act2 1999', ' ', 'nan'],
-                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
-                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
-                     'legal_case.html', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for preservation, case remains log")
-
-        # Tests the contents of the file deletion log.
-        today = date.today().strftime('%Y-%m-%d')
-        csv_path = os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv")
-        result = csv_to_list(csv_path)
-        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [r'..\documents\indivletters\00002.doc'.replace('..', input_directory),
-                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
-                    [r'..\documents\indivletters\00001.doc'.replace('..', input_directory),
-                     '26.6', today, today, '7FF68E7C773483286AE3FEBDF2554EF8', 'casework'],
-                    [r'..\documents\objects\4007000.eml'.replace('..', input_directory),
-                     '0.0', today, today, '49C13D076A41E65DBE137D695E22A6A7', 'casework'],
-                    [r'..\documents\indivletters\casework_12345.doc'.replace('..', input_directory),
-                     '26.6', today, today, 'A9C52FA2BA1A0E51AD59DA2E4DA08C9D', 'casework']]
-        self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
-
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(input_directory)
-        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', '2103422.html', '30046.doc', 'legal_case.html']
-        self.assertEqual(result, expected, "Problem with test for preservation, input_directory contents")
+        # Tests the print statement.
+        result = output.stdout
+        expected = '\nThe script is running in preservation mode.\nThe steps are TBD.\n'
+        self.assertEqual(result, expected, "Problem with test for preservation, printed statement")
 
 
 if __name__ == '__main__':
