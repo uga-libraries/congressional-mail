@@ -11,7 +11,6 @@ access: remove metadata rows for appraisal and columns for PII and make copy of 
 from datetime import date
 import os
 import pandas as pd
-import re
 import sys
 from css_archiving_format import file_deletion_log
 
