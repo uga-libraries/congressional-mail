@@ -27,9 +27,10 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Deletes the reports, if made by the test"""
-        reports = ['metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_document_name.csv',
-                   'metadata_formatting_errors_out_date.csv', 'metadata_formatting_errors_out_document_name.csv',
-                   'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_zip_code.csv',
+        reports = ['metadata_formatting_errors_communication_document_name.csv',
+                   'metadata_formatting_errors_date_in.csv', 'metadata_formatting_errors_date_out.csv',
+                   'metadata_formatting_errors_reminder_date.csv', 'metadata_formatting_errors_state_code.csv',
+                   'metadata_formatting_errors_update_date.csv', 'metadata_formatting_errors_zip_code.csv',
                    'usability_report_metadata.csv']
         for report in reports:
             report_path = os.path.join('test_data', report)
