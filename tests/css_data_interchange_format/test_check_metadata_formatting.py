@@ -50,6 +50,39 @@ class MyTestCase(unittest.TestCase):
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
         self.assertEqual(result, False, "Problem with test for column_blank, report")
 
+    def test_column_missing(self):
+        """Test for a column that is missing, which would be the same for any column"""
+        # Makes a dataframe to use as test input and runs the function.
+        rows_list = [[np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
+                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
+                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan]]
+        df = make_df(rows_list)
+        df.drop(columns=['zip_code'], axis=1, inplace=True)
+        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(zip_mismatch, 'column_missing', "Problem with test for column_missing, count")
+
+        # Tests the report was not created.
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
+        self.assertEqual(result, False, "Problem with test for column_missing, report")
+
+    def test_column_no_errors(self):
+        """Test for a column with no formatting errors, which would be the same for any column"""
+        # Makes a dataframe to use as test input and runs the function.
+        rows_list = [[np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
+                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
+                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan]]
+        df = make_df(rows_list)
+        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(zip_mismatch, 0, "Problem with test for column_no_errors, count")
+
+        # Tests the report was not created.
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
+        self.assertEqual(result, False, "Problem with test for column_no_errors, report")
+
     def test_communication_document_name(self):
         """Test for the communication_document_name column"""
         # Makes a dataframe to use as test input and runs the function.
@@ -121,39 +154,6 @@ class MyTestCase(unittest.TestCase):
                     ['nan', 'nan', 'nan', '2025/12/01', 'nan', 'nan', 'nan'],
                     ['nan', 'nan', 'nan', '2025-12-01', 'nan', 'nan', 'nan']]
         self.assertEqual(result, expected, "Problem with test for date_out, report")
-
-    def test_missing(self):
-        """Test for a column that is missing, which would be the same for any column"""
-        # Makes a dataframe to use as test input and runs the function.
-        rows_list = [[np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
-                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
-                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan]]
-        df = make_df(rows_list)
-        df.drop(columns=['zip_code'], axis=1, inplace=True)
-        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
-
-        # Tests the returned row count is correct.
-        self.assertEqual(zip_mismatch, 'column_missing', "Problem with test for missing, count")
-
-        # Tests the report was not created.
-        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
-        self.assertEqual(result, False, "Problem with test for missing, report")
-
-    def test_no_errors(self):
-        """Test for a column with no formatting errors, which would be the same for any column"""
-        # Makes a dataframe to use as test input and runs the function.
-        rows_list = [[np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
-                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan],
-                     [np.nan, '30601', np.nan, np.nan, np.nan, np.nan, np.nan]]
-        df = make_df(rows_list)
-        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
-
-        # Tests the returned row count is correct.
-        self.assertEqual(zip_mismatch, 0, "Problem with test for no_errors, count")
-
-        # Tests the report was not created.
-        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
-        self.assertEqual(result, False, "Problem with test for no_errors, report")
 
     def test_reminder_date(self):
         """Test for the reminder_date column"""
