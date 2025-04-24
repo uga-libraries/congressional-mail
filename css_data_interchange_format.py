@@ -8,6 +8,7 @@ appraisal: delete letters due to appraisal; metadata not changed
 preservation: prepare export for general_aip.py script [TBD]
 access: remove metadata rows for appraisal and columns for PII and make copy of metadata split by congress year
 """
+import csv
 from datetime import date
 import os
 import pandas as pd
@@ -79,6 +80,49 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_paths, mode, errors
+
+
+def check_letter_matching(df, output_dir, input_dir):
+    """Compare the files in the metadata to the files in the export"""
+
+    # Makes a list of paths for the letters in the documents folder within the input directory.
+    # This way, the metadata files are not counted as missing.
+    input_dir_paths = []
+    for root, dirs, files in os.walk(os.path.join(input_dir, 'documents')):
+        for file in files:
+            file_path = os.path.join(root, file)
+            input_dir_paths.append(file_path)
+
+    # Makes a list of paths in the metadata, updating the path to match how the directory is structured in the export.
+    doc_df = df.dropna(subset=['communication_document_name']).copy()
+    doc_df['communication_document_name'] = doc_df['communication_document_name'].apply(update_path, input_dir=input_dir)
+    metadata_paths = doc_df['communication_document_name'].tolist()
+
+    # Number of rows without a file path.
+    blank_count = df['communication_document_name'].isna().sum()
+
+    # Compares the list of paths in the metadata to the directory.
+    metadata_only = list(set(metadata_paths) - set(input_dir_paths))
+    directory_only = list(set(input_dir_paths) - set(metadata_paths))
+    match = list(set(metadata_paths) & set(input_dir_paths))
+
+    # Saves a summary of the results.
+    with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
+        report_writer = csv.writer(report)
+        report_writer.writerow(['Category', 'Count'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only)])
+        report_writer.writerow(['Directory_Only', len(directory_only)])
+        report_writer.writerow(['Match', len(match)])
+        report_writer.writerow(['Metadata_Blank', blank_count])
+
+    # Saves the paths that did not match to a log.
+    with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:
+        log_writer = csv.writer(report)
+        log_writer.writerow(['Category', 'Path'])
+        for path in metadata_only:
+            log_writer.writerow(['Metadata Only', path])
+        for path in directory_only:
+            log_writer.writerow(['Directory Only', path])
 
 
 def check_metadata_formatting(column, df, output_dir):
