@@ -34,6 +34,22 @@ class MyTestCase(unittest.TestCase):
             if os.path.exists(report_path):
                 os.remove(report_path)
 
+    def test_column_blank(self):
+        """Test for a column that is entirely blank, which would be the same for any column"""
+        # Makes a dataframe to use as test input and runs the function.
+        rows_list = [['GA', np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+                     ['GA', np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+                     ['GA', np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+        df = make_df(rows_list)
+        zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(zip_mismatch, 'column_blank', "Problem with test for column_blank, count")
+
+        # Tests the report was not created.
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
+        self.assertEqual(result, False, "Problem with test for column_blank, report")
+
     def test_communication_document_name(self):
         """Test for the communication_document_name column"""
         # Makes a dataframe to use as test input and runs the function.
