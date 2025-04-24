@@ -180,6 +180,41 @@ class MyTestCase(unittest.TestCase):
                     ['zip_code', 'True', '0', '0.0', '0']]
         self.assertEqual(result, expected, "Problem with test for columns extra")
 
+    def test_formatting(self):
+        """Test for when each column with formatting tests has errors"""
+        # Makes a dataframe to use as test input and runs the function.
+        rows_list = [['a', 'Georgia', '1', 'd', 'e', 'f', 'g', '2001', '2001-01-02', 'n.d.', '010104',
+                      'l', 'm', 'n', 'documents\\file1.txt', 'p', 'q', 'r'],
+                     ['a', 'GA', 'unknown', 'd', 'e', 'f', 'g', '2002', '2002-01-02', 'n.d.', '020104',
+                      'l', 'm', 'n', '..\\docs\\file2.txt', 'p', 'q', 'r'],
+                     ['a', 'GA', '33333', 'd', 'e', 'f', 'g', '20030101', '20030102', '20030103', '20030104',
+                      'l', 'm', 'n', 'file3.txt', 'p', 'q', 'r']]
+        md_df = make_df(rows_list)
+        check_metadata_usability(md_df, 'test_data')
+
+        # Tests the values in the metadata usability report are correct.
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
+        expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
+                    ['city', 'True', '0', '0.0', 'uncheckable'],
+                    ['state_code', 'True', '0', '0.0', '1'],
+                    ['zip_code', 'True', '0', '0.0', '2'],
+                    ['country', 'True', '0', '0.0', 'uncheckable'],
+                    ['communication_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['approved_by', 'True', '0', '0.0', 'uncheckable'],
+                    ['status', 'True', '0', '0.0', 'uncheckable'],
+                    ['date_in', 'True', '0', '0.0', '2'],
+                    ['date_out', 'True', '0', '0.0', '2'],
+                    ['reminder_date', 'True', '0', '0.0', '2'],
+                    ['update_date', 'True', '0', '0.0', '2'],
+                    ['response_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['group_name', 'True', '0', '0.0', 'uncheckable'],
+                    ['document_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['communication_document_name', 'True', '0', '0.0', '3'],
+                    ['communication_document_id', 'True', '0', '0.0', 'uncheckable'],
+                    ['file_location', 'True', '0', '0.0', 'uncheckable'],
+                    ['file_name', 'True', '0', '0.0', 'uncheckable']]
+        self.assertEqual(result, expected, "Problem with test for formatting")
+
     def test_columns_missing(self):
         """Test for when every column except dates is missing
         Can't test for all missing at once without mixing it with a test for extra columns"""
