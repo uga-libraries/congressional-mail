@@ -94,7 +94,11 @@ def check_metadata_formatting(column, df, output_dir):
                 'zip_code': r'^\d{5}(-\d{4})?$'}
 
     # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
-    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    # If the column is missing from the dataframe, it returns default text instead of a row count.
+    try:
+        match = df[column].str.contains(patterns[column], regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
     df_no_match = df[~match & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match.

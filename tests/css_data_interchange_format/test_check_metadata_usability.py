@@ -219,7 +219,6 @@ class MyTestCase(unittest.TestCase):
     def test_columns_missing(self):
         """Test for when every column except dates is missing
         Can't test for all missing at once without mixing it with a test for extra columns"""
-        # TODO test fails because some of missing columns are required for formatting
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['20010101', '20010102', '20010103', '20010104']]
         md_df = pd.DataFrame(rows_list, columns=['date_in', 'date_out', 'reminder_date', 'update_date'])
@@ -229,8 +228,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['city', 'False', 'nan', 'nan', 'uncheckable'],
-                    ['state_code', 'False', 'nan', 'nan', 'nan'],
-                    ['zip_code', 'False', 'nan', 'nan', 'nan'],
+                    ['state_code', 'False', 'nan', 'nan', 'column_missing'],
+                    ['zip_code', 'False', 'nan', 'nan', 'column_missing'],
                     ['country', 'False', 'nan', 'nan', 'uncheckable'],
                     ['communication_type', 'False', 'nan', 'nan', 'uncheckable'],
                     ['approved_by', 'False', 'nan', 'nan', 'uncheckable'],
@@ -242,7 +241,7 @@ class MyTestCase(unittest.TestCase):
                     ['response_type', 'False', 'nan', 'nan', 'uncheckable'],
                     ['group_name', 'False', 'nan', 'nan', 'uncheckable'],
                     ['document_type', 'False', 'nan', 'nan', 'uncheckable'],
-                    ['communication_document_name', 'False', 'nan', 'nan'],
+                    ['communication_document_name', 'False', 'nan', 'nan', 'column_missing'],
                     ['communication_document_id', 'False', 'nan', 'nan', 'uncheckable'],
                     ['file_location', 'False', 'nan', 'nan', 'uncheckable'],
                     ['file_name', 'False', 'nan', 'nan', 'uncheckable']]
@@ -252,7 +251,6 @@ class MyTestCase(unittest.TestCase):
         """Test for when the date columns are missing
         Can't test for all missing at once without mixing it with a test for extra columns"""
         # Makes a dataframe to use as test input and runs the function.
-        # TODO test fails because some of missing columns are required for formatting
         rows_list = [['a', 'GA', '11111', 'd', 'e', 'f', 'g', 'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r']]
         columns_list = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                         'response_type', 'group_name', 'document_type', 'communication_document_name',
@@ -270,11 +268,11 @@ class MyTestCase(unittest.TestCase):
                     ['communication_type', 'True', '0.0', '0.0', 'uncheckable'],
                     ['approved_by', 'True', '0.0', '0.0', 'uncheckable'],
                     ['status', 'True', '0.0', '0.0', 'uncheckable'],
-                    ['date_in', 'False', 'nan', 'nan', 'nan'],
-                    ['date_out', 'False', 'nan', 'nan', 'nan'],
-                    ['reminder_date', 'False', 'nan', 'nan', 'nan'],
-                    ['update_date', 'False', 'nan', 'nan', 'nan'],
-                    ['response_type', 'True', '0.0', '0.0', '0'],
+                    ['date_in', 'False', 'nan', 'nan', 'column_missing'],
+                    ['date_out', 'False', 'nan', 'nan', 'column_missing'],
+                    ['reminder_date', 'False', 'nan', 'nan', 'column_missing'],
+                    ['update_date', 'False', 'nan', 'nan', 'column_missing'],
+                    ['response_type', 'True', '0.0', '0.0', 'uncheckable'],
                     ['group_name', 'True', '0.0', '0.0', 'uncheckable'],
                     ['document_type', 'True', '0.0', '0.0', 'uncheckable'],
                     ['communication_document_name', 'True', '0.0', '0.0', '0'],
