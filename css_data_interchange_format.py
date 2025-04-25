@@ -537,8 +537,17 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
+    # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
+    # The export is not changed in this mode.
+    if script_mode == 'accession':
+        print("\nThe script is running in accession mode.")
+        print("It will produce usability and appraisal reports and not change the export.")
+        check_metadata_usability(md_df, output_directory)
+        check_letter_matching(md_df, output_directory, input_directory)
+        topics_report(md_df, output_directory)
+
     # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
-    if script_mode == 'appraisal':
+    elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, appraisal_df)
