@@ -24,15 +24,17 @@ def appraisal_check_df(df, keyword, category):
     likely to indicate appraisal is needed, with a new column for the appraisal category"""
 
     # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    in_topic = df['in_topic'].str.contains(keyword, case=False, na=False)
     in_doc = df['in_document_name'].str.contains(keyword, case=False, na=False)
     in_fillin = df['in_fillin'].str.contains(keyword, case=False, na=False)
     in_text = df['in_text'].str.contains(keyword, case=False, na=False)
+    out_topic = df['out_topic'].str.contains(keyword, case=False, na=False)
     out_doc = df['out_document_name'].str.contains(keyword, case=False, na=False)
     out_fillin = df['out_fillin'].str.contains(keyword, case=False, na=False)
     out_text = df['out_text'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[in_doc | in_fillin | in_text | out_doc | out_fillin | out_text].copy()
+    df_check = df[in_topic | in_doc | in_fillin | in_text | out_topic | out_doc | out_fillin | out_text].copy()
 
     # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category
@@ -337,9 +339,7 @@ def find_academy_rows(df):
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
     # indicate academy applications.
-    check = np.column_stack([df[col].str.contains('academy', case=False, na=False) for col in df])
-    df_academy_check = df.loc[check.any(axis=1)].copy()
-    df_academy_check['Appraisal_Category'] = 'Academy_Application'
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
 
@@ -405,9 +405,7 @@ def find_casework_rows(df):
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
-    check = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    df_casework_check = df.loc[check.any(axis=1)].copy()
-    df_casework_check['Appraisal_Category'] = 'Casework'
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
     return df_casework, df_casework_check
 
@@ -456,9 +454,7 @@ def find_job_rows(df):
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
-    check = np.column_stack([df[col].str.contains('job', case=False, na=False) for col in df])
-    df_job_check = df.loc[check.any(axis=1)].copy()
-    df_job_check['Appraisal_Category'] = 'Job_Application'
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_job, df_job_check
 
@@ -495,9 +491,7 @@ def find_recommendation_rows(df):
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
     # indicate recommendations.
-    check = np.column_stack([df[col].str.contains('recommendation', case=False, na=False) for col in df])
-    df_recommendation_check = df.loc[check.any(axis=1)].copy()
-    df_recommendation_check['Appraisal_Category'] = 'Recommendation'
+    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
