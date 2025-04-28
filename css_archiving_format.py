@@ -311,12 +311,12 @@ def find_academy_rows(df):
 
     # Column in_topic includes one or more of the topics that indicate academy applications.
     topics_list = ['Academy Applicant', 'Military Service Academy']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate academy applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -377,12 +377,12 @@ def find_casework_rows(df):
 
     # Column in_topic includes one or more of the topics that indicate casework.
     topics_list = ['Casework', 'Casework Issues', 'Prison Case']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate casework.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -418,12 +418,12 @@ def find_job_rows(df):
 
     # Column in_topic includes one or more of the topics that indicate job applications.
     topics_list = ['Intern', 'Resumes']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate job applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -451,7 +451,8 @@ def find_job_rows(df):
 
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc], axis=0, ignore_index=True)
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc],
+                       axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
@@ -467,12 +468,12 @@ def find_recommendation_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('Recommendations', na=False)
+    in_topic = df['in_topic'].str.contains('Recommendations', case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('Recommendations', na=False)
+    out_topic = df['out_topic'].str.contains('Recommendations', case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 

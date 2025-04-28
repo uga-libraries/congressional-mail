@@ -46,8 +46,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for all patterns, df_job_check")
 
     def test_in_document_name(self):
-        """Test for when column in_document_name contains a word or phrase indicating job applications
-        (case-insensitive)"""
+        """Test for when column in_document_name contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Admin', '', r'..\doc\Doe Job Interview.txt', '', '', '', '', ''],
                               ['30601', 'Arts', '', r'..\doc\job_file.txt', '', '', '', '', ''],
@@ -77,7 +76,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for out_document_name, df_job_check")
 
     def test_in_text(self):
-        """Test for when column in_text contains a word or phrase indicating job applications (case-insensitive)"""
+        """Test for when column in_text contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Gen', ' new job request', '', '', 'Gen', 'info sent', '', ''],
                               ['30601', 'Admin', 'job requested', '', '', 'Admin', '', r'..\doc\response.doc', ''],
@@ -113,10 +112,10 @@ class MyTestCase(unittest.TestCase):
         """Test for when column in_topic contains one of the topics indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Intern^General', '', '', '', '', '', '', ''],
-                              ['30601', 'Admin^Resumes', '', '', '', '', 'Note', '', ''],
+                              ['30601', 'Admin^RESUMES', '', '', '', '', 'Note', '', ''],
                               ['30602', 'Housing', '', '', '', 'Housing', '', '', ''],
                               ['30603', 'Resumes', '', '', '', 'Economy', '', '', ''],
-                              ['30604', 'Intern', '', '', '', '', '', '', ''],
+                              ['30604', 'intern', '', '', '', '', '', '', ''],
                               ['30605', 'Job Hunting', '', '', '', '', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
@@ -127,9 +126,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', 'Intern^General', '', '', '', '', '', '', '', 'Job_Application'],
-                    ['30601', 'Admin^Resumes', '', '', '', '', 'Note', '', '', 'Job_Application'],
+                    ['30601', 'Admin^RESUMES', '', '', '', '', 'Note', '', '', 'Job_Application'],
                     ['30603', 'Resumes', '', '', '', 'Economy', '', '', '', 'Job_Application'],
-                    ['30604', 'Intern', '', '', '', '', '', '', '', 'Job_Application']]
+                    ['30604', 'intern', '', '', '', '', '', '', '', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for in_topic, df_job")
 
         # Tests the values in df_job_check are correct.
@@ -162,8 +161,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_job_check")
 
     def test_out_document_name(self):
-        """Test for when column out_document_name contains a word or phrase indicating job applications 
-        (case-insensitive)"""
+        """Test for when column out_document_name contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Admin', '', '', '', '', '', r'..\doc\Doe Job Interview.txt', ''],
                               ['30601', 'Arts', '', '', '', '', '', r'..\doc\job_file.txt', ''],
@@ -193,7 +191,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for out_document_name, df_job_check")
 
     def test_out_text(self):
-        """Test for when column out_text contains a word or phrase indicating job applications (case-insensitive)"""
+        """Test for when column out_text contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Farms', '', '', '', 'Agriculture', 'Job numbers', '', ''],
                               ['30601', 'Admin', '', '', '', 'Admin', 'District Job Request', '', ''],
@@ -229,9 +227,9 @@ class MyTestCase(unittest.TestCase):
         """"Test for when column out_topic contains one of the topics indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', '', '', '', 'Economy', 'text', r'..\doc\form\econ.doc', ''],
-                              ['30601', '', '', '', '', 'Gen^Resumes', '', '', ''],
+                              ['30601', '', '', '', '', 'Gen^resumes', '', '', ''],
                               ['30602', '', '', '', '', 'Intern', '', '', ''],
-                              ['30603', '', '', '', '', 'Intern^Admin', 'note', '', ''],
+                              ['30603', '', '', '', '', 'INTERN^Admin', 'note', '', ''],
                               ['30604', '', '', '', '', 'Water', '', '', ''],
                               ['30605', '', '', '', '', 'Resumes', 'note', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
@@ -242,9 +240,9 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30601', '', '', '', '', 'Gen^Resumes', '', '', '', 'Job_Application'],
+                    ['30601', '', '', '', '', 'Gen^resumes', '', '', '', 'Job_Application'],
                     ['30602', '', '', '', '', 'Intern', '', '', '', 'Job_Application'],
-                    ['30603', '', '', '', '', 'Intern^Admin', 'note', '', '', 'Job_Application'],
+                    ['30603', '', '', '', '', 'INTERN^Admin', 'note', '', '', 'Job_Application'],
                     ['30605', '', '', '', '', 'Resumes', 'note', '', '', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for out_topic, df_job")
 

@@ -54,7 +54,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for all patterns, df_recommendations_check")
 
     def test_in_text(self):
-        """Test for when column in_text contains a phrase indicating recommendations (case-insensitive)"""
+        """Test for when column in_text contains a phrase indicating recommendations"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Admin', 'Senator wrote recommendation', '', '', '', '', '', ''],
                               ['30601', 'Admin', 'policy for recommendations sent', '', '', 'Admin', '', '', ''],
@@ -87,8 +87,8 @@ class MyTestCase(unittest.TestCase):
         """Test for when column in_topic contains Recommendations"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Recommendations', 'note', '', '', '', '', '', ''],
-                              ['30601', 'Admin^Recommendations', '', '', '', '', '', '', ''],
-                              ['30602', 'Recommendations^Admin', '', '', '', '', '', '', ''],
+                              ['30601', 'Admin^recommendations', '', '', '', '', '', '', ''],
+                              ['30602', 'RECOMMENDATIONS^Admin', '', '', '', '', '', '', ''],
                               ['30603', 'Policy Recommendation', '', '', '', 'Water', 'Reply note', '', ''],
                               ['30604', '', '', '', '', 'Gen', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
@@ -100,8 +100,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', 'Recommendations', 'note', '', '', '', '', '', '', 'Recommendation'],
-                    ['30601', 'Admin^Recommendations', '', '', '', '', '', '', '', 'Recommendation'],
-                    ['30602', 'Recommendations^Admin', '', '', '', '', '', '', '', 'Recommendation']]
+                    ['30601', 'Admin^recommendations', '', '', '', '', '', '', '', 'Recommendation'],
+                    ['30602', 'RECOMMENDATIONS^Admin', '', '', '', '', '', '', '', 'Recommendation']]
         self.assertEqual(result, expected, "Problem with test for in_topic, df_recommendations")
 
         # Tests the values in df_recommendations_check are correct.
@@ -133,7 +133,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_recommendations_check")
 
     def test_out_text(self):
-        """Test for when column out_text contains a phrase indicating recommendations (case-insensitive)"""
+        """Test for when column out_text contains a phrase indicating recommendations"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Admin', 'note', '', '', '', 'Doe letter of recommendation', '', ''],
                               ['30601', 'Admin', 'note', '', '', '', 'Policy for recommendations sent', '', ''],
@@ -167,9 +167,9 @@ class MyTestCase(unittest.TestCase):
         """Test for when column out_topic contains Recommendations"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', '', '', '', 'Water', 'Policy Recommendation', '', ''],
-                              ['30601', 'General', '', '', '', 'General^Recommendations', '', '', ''],
+                              ['30601', 'General', '', '', '', 'General^recommendations', '', '', ''],
                               ['30602', 'Water', '', '', '', '', 'Recommendation', '', ''],
-                              ['30603', '', 'note', '', '', 'Recommendations', '', '', ''],
+                              ['30603', '', 'note', '', '', 'RECOMMENDATIONS', '', '', ''],
                               ['30604', 'Admin', '', '', '', 'Recommendations^Admin', 'note', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
@@ -179,8 +179,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_recommendations)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30601', 'General', '', '', '', 'General^Recommendations', '', '', '', 'Recommendation'],
-                    ['30603', '', 'note', '', '', 'Recommendations', '', '', '', 'Recommendation'],
+                    ['30601', 'General', '', '', '', 'General^recommendations', '', '', '', 'Recommendation'],
+                    ['30603', '', 'note', '', '', 'RECOMMENDATIONS', '', '', '', 'Recommendation'],
                     ['30604', 'Admin', '', '', '', 'Recommendations^Admin', 'note', '', '', 'Recommendation']]
         self.assertEqual(result, expected, "Problem with test for out_topic, df_recommendations")
 
