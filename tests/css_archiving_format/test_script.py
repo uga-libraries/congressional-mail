@@ -34,8 +34,7 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         """Remove script outputs, if they were made"""
         # Files saved in the parent of input_directory.
-        filenames = ['archiving_correspondence_redacted.csv', '2021-2022.csv', '2023-2024.csv',
-                     'appraisal_check_log.csv', 'appraisal_delete_log.csv',
+        filenames = ['archiving_correspondence_redacted.csv', 'appraisal_check_log.csv', 'appraisal_delete_log.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv",
                      'metadata_formatting_errors_state.csv', 'metadata_formatting_errors_zip.csv',
                      'metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_doc.csv',
@@ -46,6 +45,11 @@ class MyTestCase(unittest.TestCase):
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
+
+        # Folder of metadata split by congress year
+        cy_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
+        if os.path.exists(cy_path):
+            shutil.rmtree(cy_path)
 
         # Copy of input_directory made for some test modes.
         for mode in ('Accession', 'Appraisal', 'Preservation'):
@@ -112,7 +116,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', 'script', '2021-2022.csv')
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -123,7 +127,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, 2021-2022.csv")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', '2023-2024.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'archiving_correspondence_by_congress_year', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -137,7 +141,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, 2023-2024.csv")
 
         # Tests that no undated.csv was made.
-        result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'undated.csv'))
+        result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script',
+                                             'archiving_correspondence_by_congress_year', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for access, undated.csv")
 
         # Tests the other script mode outputs were not made.

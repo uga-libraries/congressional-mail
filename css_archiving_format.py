@@ -24,15 +24,17 @@ def appraisal_check_df(df, keyword, category):
     likely to indicate appraisal is needed, with a new column for the appraisal category"""
 
     # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    in_topic = df['in_topic'].str.contains(keyword, case=False, na=False)
     in_doc = df['in_document_name'].str.contains(keyword, case=False, na=False)
     in_fillin = df['in_fillin'].str.contains(keyword, case=False, na=False)
     in_text = df['in_text'].str.contains(keyword, case=False, na=False)
+    out_topic = df['out_topic'].str.contains(keyword, case=False, na=False)
     out_doc = df['out_document_name'].str.contains(keyword, case=False, na=False)
     out_fillin = df['out_fillin'].str.contains(keyword, case=False, na=False)
     out_text = df['out_text'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[in_doc | in_fillin | in_text | out_doc | out_fillin | out_text].copy()
+    df_check = df[in_topic | in_doc | in_fillin | in_text | out_topic | out_doc | out_fillin | out_text].copy()
 
     # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category
@@ -150,7 +152,13 @@ def check_metadata_formatting(column, df, output_dir):
                 'zip': r'^\d{5}(-\d{4})?(-X{4})?$'}
 
     # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
-    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    # If the column is missing from the dataframe or blank, it returns default text instead of a row count.
+    try:
+        match = df[column].str.contains(patterns[column], regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
+    except AttributeError:
+        return 'column_blank'
     df_no_match = df[~match & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match the expected formatting.
@@ -167,9 +175,15 @@ def check_metadata_formatting_multi(column, df, output_dir):
     and save the rows to a csv"""
 
     # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
-    match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
-    match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    # If the column is missing from the dataframe or blank, it returns default text instead of a row count.
+    try:
+        match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+        match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+        match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
+    except AttributeError:
+        return 'column_blank'
     df_no_match = df[~(match_blob | match_dos | match_e) & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match the expected formatting.
@@ -234,12 +248,12 @@ def check_metadata_usability(df, output_dir):
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
-def delete_appraisal_letters(input_dir, df_appraisal):
+def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
 
     # Creates a file deletion log, with a header row.
-    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, deletes any letter in the in_document_name and out_document_name columns.
@@ -247,8 +261,8 @@ def delete_appraisal_letters(input_dir, df_appraisal):
     # Form letters are retained.
     df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
-        if row.in_document_name != '' and row.in_document_name != 'nan':
-            name = row.in_document_name
+        name = row.in_document_name
+        if name != '' and name != 'nan':
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
                 file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
@@ -260,8 +274,8 @@ def delete_appraisal_letters(input_dir, df_appraisal):
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
         # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
-        if row.out_document_name != '' and row.out_document_name != 'nan' and 'form' not in row.out_document_name:
-            name = row.out_document_name
+        name = row.out_document_name
+        if name != '' and name != 'nan' and 'form' not in name:
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
                 file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
@@ -311,12 +325,12 @@ def find_academy_rows(df):
 
     # Column in_topic includes one or more of the topics that indicate academy applications.
     topics_list = ['Academy Applicant', 'Military Service Academy']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate academy applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -337,9 +351,7 @@ def find_academy_rows(df):
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
     # indicate academy applications.
-    check = np.column_stack([df[col].str.contains('academy', case=False, na=False) for col in df])
-    df_academy_check = df.loc[check.any(axis=1)].copy()
-    df_academy_check['Appraisal_Category'] = 'Academy_Application'
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
 
@@ -376,13 +388,13 @@ def find_casework_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate casework.
-    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    topics_list = ['Casework', 'Prison Case']
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate casework.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -405,9 +417,7 @@ def find_casework_rows(df):
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
-    check = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    df_casework_check = df.loc[check.any(axis=1)].copy()
-    df_casework_check['Appraisal_Category'] = 'Casework'
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
     return df_casework, df_casework_check
 
@@ -417,13 +427,13 @@ def find_job_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate job applications.
-    topics_list = ['Intern', 'Resumes']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), na=False)
+    topics_list = ['Intern', 'Resume']
+    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes one or more of the topics that indicate job applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), na=False)
+    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
@@ -451,13 +461,12 @@ def find_job_rows(df):
 
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc], axis=0, ignore_index=True)
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc],
+                       axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
-    check = np.column_stack([df[col].str.contains('job', case=False, na=False) for col in df])
-    df_job_check = df.loc[check.any(axis=1)].copy()
-    df_job_check['Appraisal_Category'] = 'Job_Application'
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_job, df_job_check
 
@@ -467,17 +476,17 @@ def find_recommendation_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('Recommendations', na=False)
+    in_topic = df['in_topic'].str.contains('Recommendation', case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('Recommendations', na=False)
+    out_topic = df['out_topic'].str.contains('Recommendation', case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
     # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
-    phrase_list = ['Letter of recommendation', 'policy for recommendations', 'rec for', 'wrote recommendation']
+    phrase_list = ['Letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
     in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
@@ -494,9 +503,7 @@ def find_recommendation_rows(df):
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
     # indicate recommendations.
-    check = np.column_stack([df[col].str.contains('recommendation', case=False, na=False) for col in df])
-    df_recommendation_check = df.loc[check.any(axis=1)].copy()
-    df_recommendation_check['Appraisal_Category'] = 'Recommendation'
+    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
@@ -548,10 +555,14 @@ def remove_pii(df):
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
+    # Makes a folder for all the CSVs.
+    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
+    os.mkdir(cy_dir)
+
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
+        df_undated.to_csv(os.path.join(cy_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
@@ -570,7 +581,7 @@ def split_congress_year(df, output_dir):
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
 def topics_report(df, output_dir):
@@ -655,7 +666,7 @@ if __name__ == '__main__':
     elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # TODO For preservation, prepares the export for the general_aip.py script.
     # Run in appraisal mode first to remove letters.

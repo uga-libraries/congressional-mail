@@ -89,6 +89,44 @@ class MyTestCase(unittest.TestCase):
                     [30602, 'root\\e:\\emailobj\\200202\\416120451.txt']]
         self.assertEqual(result, expected, "Problem with test for e, report")
 
+    def test_column_blank(self):
+        """Test for when the column is blank"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30601', np.nan],
+                           ['30602', np.nan],
+                           ['30603', np.nan],
+                           ['30604', np.nan],
+                           ['30605', np.nan]],
+                          columns=['zip', 'out_document_name'])
+        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(out_document_name_mismatch, 'column_blank', "Problem with test for 'column_blank', count")
+
+        # Tests the report was not made
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        expected = False
+        self.assertEqual(result, expected, "Problem with test for 'column_blank', report")
+
+    def test_column_missing(self):
+        """Test for when the column is missing"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30601', '..\\documents\\BlobExport\\folder1\\file1.txt'],
+                           ['30602', '..\\documents\\BlobExport\\folder2\\file2.txt'],
+                           ['30603', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file1.txt'],
+                           ['30604', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file2.txt'],
+                           ['30605', '..\\documents\\BlobExport\\folder2\\file3.txt']],
+                          columns=['zip', 'in_document_name'])
+        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+
+        # Tests the returned row count is correct.
+        self.assertEqual(out_document_name_mismatch, 'column_missing', "Problem with test for column_missing, count")
+
+        # Tests the report was not made
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        expected = False
+        self.assertEqual(result, expected, "Problem with test for column_missing, report")
+
     def test_no_errors(self):
         """Test for both patterns when there are no errors or blanks"""
         # Makes a dataframe to use as test input and runs the function.

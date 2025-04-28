@@ -36,20 +36,20 @@ class MyTestCase(unittest.TestCase):
     def test_deletion(self):
         """Test for when the file paths in the metadata match files in the export and the files are deleted"""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'deletion')
-        shutil.copytree(os.path.join(output_dir, 'export_copy'),
-                        os.path.join(output_dir, 'export'))
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'deletion')
+        shutil.copytree(os.path.join(output_directory, 'export_copy'),
+                        os.path.join(output_directory, 'export'))
 
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_dir, 'export')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '..\\documents\\objects\\100001.txt', 'Casework'],
                                      ['20241202', '..\\documents\\objects\\200002.txt', 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [os.path.join(input_directory, 'documents', 'objects', '100001.txt'),
@@ -66,16 +66,16 @@ class MyTestCase(unittest.TestCase):
     def test_file_not_found(self):
         """Test for when the file paths in the metadata do not match files in the export"""
         # Makes variables needed as function input and runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'file_not_found')
-        input_directory = os.path.join(output_dir, 'export')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'file_not_found')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '..\\documents\\objects\\800000.txt', 'Casework'],
                                      ['20241202', '..\\documents\\objects\\900000.txt', 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [os.path.join(input_directory, 'documents', 'objects', '800000.txt'),
@@ -92,18 +92,18 @@ class MyTestCase(unittest.TestCase):
     def test_new_pattern(self):
         """Test for when the file paths in the metadata match files in the export but are a new pattern"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'new_pattern')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'new_pattern')
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_dir, 'export')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '..\\letters\\100001.txt', 'Casework'],
                                      ['20241202', '..\\letters\\200002.txt', 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         # Code needs to be updated to not save (or delete after saving) if the report is empty (header only).
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     ['..\\letters\\100001.txt', 'nan', 'nan', 'nan', 'nan',
@@ -120,17 +120,17 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_blank(self):
         """Test for when the file paths in the metadata are blank"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_dir, 'export')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', np.nan, 'Casework'],
                                      ['20241202', np.nan, 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(result, expected, "Problem with test for no deletion - blank, file deletion log")
@@ -143,17 +143,17 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty_string')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty_string')
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_dir, 'export')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],
                                      ['20241202', '', 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(result, expected, "Problem with test for no deletion - empty string, file deletion log")
@@ -166,18 +166,18 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_form(self):
         """Test for when the file paths in the metadata match files in the export but are form letters (not deleted)"""
         # Runs the function being tested.
-        output_dir = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_form')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_form')
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_dir, 'export')
+        input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '..\\documents\\formletters\\100001.txt', 'Casework'],
                                      ['20241202', '..\\documents\\formletters\\200002.txt', 'Casework']],
                                     columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
         # Tests the contents of the file deletion log.
         # Code needs to be updated to not save (or delete after saving) if the report is empty (header only).
         today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_dir, f'file_deletion_log_{today}.csv')
+        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(result, expected, "Problem with test for no deletion - form, file deletion log")
