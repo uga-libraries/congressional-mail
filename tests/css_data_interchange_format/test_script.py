@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
         # Metadata file and logs in the input directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv'
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv",
-                     'metadata_formatting_errors_state_code.csv',
+                     'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',
                      'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
                      'usability_report_metadata.csv']
         for filename in filenames:
@@ -209,11 +209,11 @@ class MyTestCase(unittest.TestCase):
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
                      'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc',
                      ' ', 'nan', 'Casework'],
-                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
-                     'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc', '00002.doc', ' ', 'nan',
-                     'Casework'],
+                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan',
+                     '2000-04-27', 'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc',
+                     '00002.doc', ' ', 'nan', 'Casework'],
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
-                     '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
+                     '2000 April 27', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
                      'nan', ' ', 'nan', 'Casework'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
@@ -223,12 +223,21 @@ class MyTestCase(unittest.TestCase):
                      '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for accession, appraisal_delete_log.csv")
 
-        # # Tests the contents of the metadata_1.csv.
-        # csv_path = os.path.join('test_data', 'script', 'name.csv')
-        # result = csv_to_list(csv_path)
-        # expected = []
-        # self.assertEqual(result, expected, "Problem with test for accession, name.csv")
-        #
+        # Tests the contents of the metadata_formatting_errors_update_date.csv.
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_update_date.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan',
+                     '2000-04-27', 'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc',
+                     '00002.doc', ' ', 'nan'],
+                    ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
+                     '2000 April 27', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
+                     'nan', ' ', 'nan']]
+        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_update_date.csv")
+
         # Tests the contents of the metadata_formatting_errors_state_code.csv.
         csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state_code.csv')
         result = csv_to_list(csv_path)
@@ -296,7 +305,7 @@ class MyTestCase(unittest.TestCase):
                     ['date_in', 'True', '2', '22.22', '0'],
                     ['date_out', 'True', '2', '22.22', '0'],
                     ['reminder_date', 'True', '9', '100.0', '0'],
-                    ['update_date', 'True', '2', '22.22', '0'],
+                    ['update_date', 'True', '2', '22.22', '2'],
                     ['response_type', 'True', '0', '0.0', 'uncheckable'],
                     ['group_name', 'True', '4', '44.44', 'uncheckable'],
                     ['document_type', 'True', '0', '0.0', 'uncheckable'],
