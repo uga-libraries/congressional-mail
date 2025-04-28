@@ -33,6 +33,7 @@ class MyTestCase(unittest.TestCase):
         # Metadata file and logs in the input directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv'
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv",
+                     'metadata_formatting_errors_state_code.csv',
                      'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
                      'usability_report_metadata.csv']
         for filename in filenames:
@@ -44,10 +45,6 @@ class MyTestCase(unittest.TestCase):
         file_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
         if os.path.exists(file_path):
             shutil.rmtree(file_path)
-
-        # Metadata file saving to wrong folder - will fix later.
-        if os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_state_code.csv')):
-            os.remove(os.path.join('test_data', 'metadata_formatting_errors_state_code.csv'))
 
         # Copy of test data.
         test_folders = ['access_test', 'appraisal_test']
@@ -233,7 +230,7 @@ class MyTestCase(unittest.TestCase):
         # self.assertEqual(result, expected, "Problem with test for accession, name.csv")
         #
         # Tests the contents of the metadata_formatting_errors_state_code.csv.
-        csv_path = os.path.join('test_data', 'metadata_formatting_errors_state_code.csv')
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state_code.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',

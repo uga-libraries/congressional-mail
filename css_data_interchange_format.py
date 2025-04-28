@@ -185,13 +185,13 @@ def check_metadata_usability(df, output_dir):
 
     # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
     # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
-    cdm_mismatch = check_metadata_formatting('communication_document_name', df, 'test_data')
-    date_in_mismatch = check_metadata_formatting('date_in', df, 'test_data')
-    date_out_mismatch = check_metadata_formatting('date_out', df, 'test_data')
-    reminder_mismatch = check_metadata_formatting('reminder_date', df, 'test_data')
-    state_mismatch = check_metadata_formatting('state_code', df, 'test_data')
-    update_mismatch = check_metadata_formatting('update_date', df, 'test_data')
-    zip_mismatch = check_metadata_formatting('zip_code', df, 'test_data')
+    cdm_mismatch = check_metadata_formatting('communication_document_name', df, output_dir)
+    date_in_mismatch = check_metadata_formatting('date_in', df, output_dir)
+    date_out_mismatch = check_metadata_formatting('date_out', df, output_dir)
+    reminder_mismatch = check_metadata_formatting('reminder_date', df, output_dir)
+    state_mismatch = check_metadata_formatting('state_code', df, output_dir)
+    update_mismatch = check_metadata_formatting('update_date', df, output_dir)
+    zip_mismatch = check_metadata_formatting('zip_code', df, output_dir)
 
     # Combines the number of mismatches for the checked columns into a series, for adding to the report.
     # Other columns have "uncheckable", even if the column is missing from the export.
