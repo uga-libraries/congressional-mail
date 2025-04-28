@@ -543,10 +543,14 @@ def remove_pii(df):
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
+    # Makes a folder for all the CSVs.
+    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
+    os.mkdir(cy_dir)
+
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(output_dir, 'undated.csv'), index=False)
+        df_undated.to_csv(os.path.join(cy_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
@@ -565,7 +569,7 @@ def split_congress_year(df, output_dir):
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(output_dir, f'{congress_year}.csv'), index=False)
+        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
 def topics_report(df, output_dir):
