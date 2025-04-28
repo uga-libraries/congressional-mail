@@ -215,15 +215,15 @@ class MyTestCase(unittest.TestCase):
                     ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
                      'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc', '00002.doc', ' ', 'nan',
                      'Casework'],
-                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
-                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'nan', 'Casework'],
-                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
-                     '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework'],
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
-                     'nan', ' ', 'nan', 'Casework']]
+                     'nan', ' ', 'nan', 'Casework'],
+                    ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
+                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '2103422.html', ' ', 'nan', 'Casework'],
+                    ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for accession, appraisal_delete_log.csv")
 
         # # Tests the contents of the metadata_1.csv.
@@ -243,7 +243,13 @@ class MyTestCase(unittest.TestCase):
                      'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc', ' ', 'nan'],
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990315', '19990402', 'nan', '19990315',
                      'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\busintax.doc', 'busintax.doc', ' ',
-                     'nan']]
+                     'nan'],
+                    ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
+                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '2103422.html', ' ', 'nan'],
+                    ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan']]
         self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
 
         # Tests the contents of the topics_report.csv.
@@ -284,7 +290,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['city', 'True', '0', '0.0', 'uncheckable'],
-                    ['state_code', 'True', '0', '0.0', '2'],
+                    ['state_code', 'True', '0', '0.0', '4'],
                     ['zip_code', 'True', '2', '22.22', '0'],
                     ['country', 'True', '0', '0.0', 'uncheckable'],
                     ['communication_type', 'True', '4', '44.44', 'uncheckable'],
