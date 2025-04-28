@@ -206,12 +206,12 @@ def check_metadata_usability(df, output_dir):
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
-def delete_appraisal_letters(input_dir, df_appraisal):
+def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
 
     # Creates a file deletion log, with a header row.
-    log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, deletes any letter in the communication_document_name column except form letters.
@@ -547,7 +547,7 @@ if __name__ == '__main__':
     elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
-        delete_appraisal_letters(input_directory, appraisal_df)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # TODO For preservation, prepares the export for the general_aip.py script.
     elif script_mode == 'preservation':
