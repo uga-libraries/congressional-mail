@@ -152,7 +152,13 @@ def check_metadata_formatting(column, df, output_dir):
                 'zip': r'^\d{5}(-\d{4})?(-X{4})?$'}
 
     # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
-    match = df[column].str.contains(patterns[column], regex=True, na=False)
+    # If the column is missing from the dataframe or blank, it returns default text instead of a row count.
+    try:
+        match = df[column].str.contains(patterns[column], regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
+    except AttributeError:
+        return 'column_blank'
     df_no_match = df[~match & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match the expected formatting.
@@ -169,9 +175,15 @@ def check_metadata_formatting_multi(column, df, output_dir):
     and save the rows to a csv"""
 
     # Makes a dataframe with all rows that do not match any of the expected formatting, excluding blanks.
-    match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
-    match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
-    match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    # If the column is missing from the dataframe or blank, it returns default text instead of a row count.
+    try:
+        match_blob = df[column].str.contains(r'^..\\documents\\BlobExport\\', regex=True, na=False)
+        match_dos = df[column].str.contains(r'^\\\\[a-z]+-[a-z]+\\dos\\public', regex=True, na=False)
+        match_e = df[column].str.contains(r'^e:\\emailobj', regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
+    except AttributeError:
+        return 'column_blank'
     df_no_match = df[~(match_blob | match_dos | match_e) & df[column].notna()]
 
     # Saves the dataframe to a csv if there were any that did not match the expected formatting.
