@@ -98,7 +98,7 @@ def check_letter_matching(df, output_dir, input_dir):
     metadata_paths = doc_df['communication_document_name'].tolist()
 
     # Number of metadata rows without a file path.
-    blank_count = df['communication_document_name'].isna().sum()
+    blank_total = df['communication_document_name'].isna().sum()
 
     # Compares the list of file paths in the metadata to the export directory.
     metadata_only = list(set(metadata_paths) - set(input_dir_paths))
@@ -112,7 +112,7 @@ def check_letter_matching(df, output_dir, input_dir):
         report_writer.writerow(['Metadata_Only', len(metadata_only)])
         report_writer.writerow(['Directory_Only', len(directory_only)])
         report_writer.writerow(['Match', len(match)])
-        report_writer.writerow(['Metadata_Blank', blank_count])
+        report_writer.writerow(['Metadata_Blank', blank_total])
 
     # Saves the paths that did not match to a log.
     with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:
