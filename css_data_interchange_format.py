@@ -8,6 +8,7 @@ appraisal: delete letters due to appraisal; metadata not changed
 preservation: prepare export for general_aip.py script [TBD]
 access: remove metadata rows for appraisal and columns for PII and make copy of metadata split by congress year
 """
+import csv
 from datetime import date
 import os
 import pandas as pd
@@ -79,6 +80,130 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_paths, mode, errors
+
+
+def check_letter_matching(df, output_dir, input_dir):
+    """Compare the files in the metadata to the files in the export"""
+
+    # Makes a list of paths for the letters in the documents folder within the input directory.
+    # This way, the metadata files are not counted as missing.
+    input_dir_paths = []
+    for root, dirs, files in os.walk(os.path.join(input_dir, 'documents')):
+        for file in files:
+            file_path = os.path.join(root, file)
+            input_dir_paths.append(file_path)
+
+    # Makes a list of paths in the metadata, updating the path to match how the directory is structured in the export.
+    doc_df = df.dropna(subset=['communication_document_name']).copy()
+    doc_df['communication_document_name'] = doc_df['communication_document_name'].apply(update_path, input_dir=input_dir)
+    metadata_paths = doc_df['communication_document_name'].tolist()
+
+    # Number of rows without a file path.
+    blank_count = df['communication_document_name'].isna().sum()
+
+    # Compares the list of paths in the metadata to the directory.
+    metadata_only = list(set(metadata_paths) - set(input_dir_paths))
+    directory_only = list(set(input_dir_paths) - set(metadata_paths))
+    match = list(set(metadata_paths) & set(input_dir_paths))
+
+    # Saves a summary of the results.
+    with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
+        report_writer = csv.writer(report)
+        report_writer.writerow(['Category', 'Count'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only)])
+        report_writer.writerow(['Directory_Only', len(directory_only)])
+        report_writer.writerow(['Match', len(match)])
+        report_writer.writerow(['Metadata_Blank', blank_count])
+
+    # Saves the paths that did not match to a log.
+    with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:
+        log_writer = csv.writer(report)
+        log_writer.writerow(['Category', 'Path'])
+        for path in metadata_only:
+            log_writer.writerow(['Metadata Only', path])
+        for path in directory_only:
+            log_writer.writerow(['Directory Only', path])
+
+
+def check_metadata_formatting(column, df, output_dir):
+    """Count the number of rows that don't meet the expected formatting and save to a csv"""
+
+# Dictionary of expected formatting patterns.
+    patterns = {'communication_document_name': r'^..\\documents\\',
+                'date_in': r'^\d{8}$',
+                'date_out': r'^\d{8}$',
+                'reminder_date': r'^\d{8}$',
+                'state_code': r'^[A-Z][A-Z]$',
+                'update_date': r'^\d{8}$',
+                'zip_code': r'^\d{5}(-\d{4})?$'}
+
+    # Makes a dataframe with all rows that do not match the expected formatting, excluding blanks.
+    # If the column is missing from the dataframe or blank, it returns default text instead of a row count.
+    try:
+        match = df[column].str.contains(patterns[column], regex=True, na=False)
+    except KeyError:
+        return 'column_missing'
+    except AttributeError:
+        return 'column_blank'
+    df_no_match = df[~match & df[column].notna()]
+
+    # Saves the dataframe to a csv if there were any that did not match.
+    no_match_count = len(df_no_match.index)
+    if no_match_count > 0:
+        df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
+
+    # Returns the number of rows that do not match the expected formatting, excluding blanks.
+    return no_match_count
+
+
+def check_metadata_usability(df, output_dir):
+    """Test the usability of the metadata"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status', 'date_in',
+                'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name', 'document_type',
+                'communication_document_name', 'communication_document_id', 'file_location', 'file_name']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+
+    # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
+    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
+    cdm_mismatch = check_metadata_formatting('communication_document_name', df, output_dir)
+    date_in_mismatch = check_metadata_formatting('date_in', df, output_dir)
+    date_out_mismatch = check_metadata_formatting('date_out', df, output_dir)
+    reminder_mismatch = check_metadata_formatting('reminder_date', df, output_dir)
+    state_mismatch = check_metadata_formatting('state_code', df, output_dir)
+    update_mismatch = check_metadata_formatting('update_date', df, output_dir)
+    zip_mismatch = check_metadata_formatting('zip_code', df, output_dir)
+
+    # Combines the number of mismatches for the checked columns into a series, for adding to the report.
+    # Other columns have "uncheckable", even if the column is missing from the export.
+    formatting = pd.Series(data=['uncheckable', state_mismatch, zip_mismatch, 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable', date_in_mismatch, date_out_mismatch, reminder_mismatch,
+                                 update_mismatch, 'uncheckable', 'uncheckable', 'uncheckable', cdm_mismatch,
+                                 'uncheckable', 'uncheckable', 'uncheckable'], index=expected)
+
+    # Combines the data about each column into a dataframe and saves as a CSV.
+    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
 
 def delete_appraisal_letters(input_dir, df_appraisal):
@@ -362,6 +487,20 @@ def split_congress_year(df, output_dir):
         cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
 
 
+def topics_report(df, output_dir):
+    """Makes a report with the frequency of each group name, the only topic information we've seen in exports so far"""
+
+    # Replace blanks with BLANK so that it is counted as a topic.
+    df['group_name'] = df['group_name'].fillna('BLANK')
+
+    # Gets a count for each topic.
+    topic_counts = df['group_name'].value_counts().reset_index()
+    topic_counts.columns = ['Topic', 'Topic_Count']
+
+    # Saves to a CSV.
+    topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
 
@@ -398,8 +537,17 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
+    # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
+    # The export is not changed in this mode.
+    if script_mode == 'accession':
+        print("\nThe script is running in accession mode.")
+        print("It will produce usability and appraisal reports and not change the export.")
+        check_metadata_usability(md_df, output_directory)
+        check_letter_matching(md_df, output_directory, input_directory)
+        topics_report(md_df, output_directory)
+
     # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
-    if script_mode == 'appraisal':
+    elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, appraisal_df)
