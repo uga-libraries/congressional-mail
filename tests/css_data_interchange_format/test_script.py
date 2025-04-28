@@ -67,8 +67,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the print statement.
         result = output.stdout
-        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters and columns with '
-                    'PII from the merged metadata tables, and make copies of the metadata split by congress year\n')
+        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters, '
+                    'save the merged metadata tables without columns with PII,'
+                    ' and make copies of the metadata split by congress year\n')
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
