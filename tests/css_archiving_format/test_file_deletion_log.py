@@ -37,8 +37,8 @@ class MyTestCase(unittest.TestCase):
         today = date.today().strftime('%Y-%m-%d')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [file_path_1, 0.0, '2025-02-24', today, '89D31DC38A6C7D68653F452A2F44AC3D', 'Academy_Application'],
-                    [file_path_2, 1.2, '2025-02-24', today, '9452DF84756C849AE0ED9FE2A14948F5', 'Casework']]
+                    [file_path_1, 0.0, '2025-04-07', today, '89D31DC38A6C7D68653F452A2F44AC3D', 'Academy_Application'],
+                    [file_path_2, 1.2, '2025-04-07', today, '9452DF84756C849AE0ED9FE2A14948F5', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for delete two")
 
     def test_error_new(self):
