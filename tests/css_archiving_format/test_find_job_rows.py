@@ -29,14 +29,14 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30602', 'Intern', '', '', '', 'Resume', '', '', '', 'Job_Application'],
-                    ['30601', '', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc',
-                     '', 'Job_Application'],
                     ['30600', 'Resume', 'job request', r'..\doc\resume.txt', '', 'Resume', 'job request', '',
                      '', 'Job_Application'],
+                    ['30602', 'Intern', '', '', '', 'Resume', '', '', '', 'Job_Application'],
                     ['30603', 'Resume', 'job request', '', '', '', '', '', '', 'Job_Application'],
-                    ['30604', '', 'Job Request', '', '', '', 'job request', '', '', 'Job_Application'],
-                    ['30605', 'Admin', 'job request', '', '', 'Resume', '', r'..\doc\resume.txt', '', 'Job_Application']]
+                    ['30601', '', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc',
+                     '', 'Job_Application'],
+                    ['30605', 'Admin', 'job request', '', '', 'Resume', '', r'..\doc\resume.txt', '', 'Job_Application'],
+                    ['30604', '', 'Job Request', '', '', '', 'job request', '', '', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for all patterns, df_job")
 
         # Tests the values in df_job_check are correct.

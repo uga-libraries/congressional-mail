@@ -101,14 +101,14 @@ class MyTestCase(unittest.TestCase):
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', 'Recommendations', 'note', '', '', '', '', '', '', 'Recommendation'],
                     ['30601', 'Admin^recommendations', '', '', '', '', '', '', '', 'Recommendation'],
-                    ['30602', 'RECOMMENDATIONS^Admin', '', '', '', '', '', '', '', 'Recommendation']]
+                    ['30602', 'RECOMMENDATIONS^Admin', '', '', '', '', '', '', '', 'Recommendation'],
+                    ['30603', 'Policy Recommendation', '', '', '', 'Water', 'Reply note', '', '', 'Recommendation']]
         self.assertEqual(result, expected, "Problem with test for in_topic, df_recommendations")
 
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30603', 'Policy Recommendation', '', '', '', 'Water', 'Reply note', '', '', 'Recommendation']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for in_topic, df_recommendations_check")
 
     def test_none(self):

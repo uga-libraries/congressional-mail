@@ -376,7 +376,7 @@ def find_casework_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate casework.
-    topics_list = ['Casework', 'Casework Issues', 'Prison Case']
+    topics_list = ['Casework', 'Prison Case']
     in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
@@ -415,7 +415,7 @@ def find_job_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate job applications.
-    topics_list = ['Intern', 'Resumes']
+    topics_list = ['Intern', 'Resume']
     in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
@@ -464,17 +464,17 @@ def find_recommendation_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('Recommendations', case=False, na=False)
+    in_topic = df['in_topic'].str.contains('Recommendation', case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('Recommendations', case=False, na=False)
+    out_topic = df['out_topic'].str.contains('Recommendation', case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
     # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
-    phrase_list = ['Letter of recommendation', 'policy for recommendations', 'rec for', 'wrote recommendation']
+    phrase_list = ['Letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
     in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
