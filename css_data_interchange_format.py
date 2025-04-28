@@ -17,8 +17,8 @@ from css_archiving_format import file_deletion_log
 
 
 def appraisal_check_df(df, keyword, category):
-    """Returns a df with all rows that contain the specified keyword in any of three columns
-    likely to indicate appraisal is needed, including a category label"""
+    """Returns a df with all rows that contain the specified keyword in any of the columns
+    likely to indicate appraisal is needed, with a new column for the appraisal category"""
 
     # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
     group_name = df['group_name'].str.contains(keyword, case=False, na=False)
@@ -28,7 +28,7 @@ def appraisal_check_df(df, keyword, category):
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
     df_check = df[group_name | doc_name | file_name].copy()
 
-    # Adds a column with the category.
+    # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category
 
     return df_check
@@ -44,7 +44,6 @@ def check_arguments(arg_list):
     errors = []
 
     # Both arguments are missing (only the script path is present).
-    # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
         errors.append("Missing required arguments, input_directory and script_mode")
 
@@ -98,10 +97,10 @@ def check_letter_matching(df, output_dir, input_dir):
     doc_df['communication_document_name'] = doc_df['communication_document_name'].apply(update_path, input_dir=input_dir)
     metadata_paths = doc_df['communication_document_name'].tolist()
 
-    # Number of rows without a file path.
+    # Number of metadata rows without a file path.
     blank_count = df['communication_document_name'].isna().sum()
 
-    # Compares the list of paths in the metadata to the directory.
+    # Compares the list of file paths in the metadata to the export directory.
     metadata_only = list(set(metadata_paths) - set(input_dir_paths))
     directory_only = list(set(input_dir_paths) - set(metadata_paths))
     match = list(set(metadata_paths) & set(input_dir_paths))
@@ -126,9 +125,10 @@ def check_letter_matching(df, output_dir, input_dir):
 
 
 def check_metadata_formatting(column, df, output_dir):
-    """Count the number of rows that don't meet the expected formatting and save to a csv"""
+    """Return the number of rows that don't meet the expected formatting
+    and save the rows to a csv"""
 
-# Dictionary of expected formatting patterns.
+    # Dictionary of expected formatting patterns for each column.
     patterns = {'communication_document_name': r'^..\\documents\\',
                 'date_in': r'^\d{8}$',
                 'date_out': r'^\d{8}$',
@@ -147,7 +147,7 @@ def check_metadata_formatting(column, df, output_dir):
         return 'column_blank'
     df_no_match = df[~match & df[column].notna()]
 
-    # Saves the dataframe to a csv if there were any that did not match.
+    # Saves the dataframe to a csv if there were any that did not match the expected formatting.
     no_match_count = len(df_no_match.index)
     if no_match_count > 0:
         df_no_match.to_csv(os.path.join(output_dir, f'metadata_formatting_errors_{column}.csv'), index=False)
@@ -157,7 +157,7 @@ def check_metadata_formatting(column, df, output_dir):
 
 
 def check_metadata_usability(df, output_dir):
-    """Test the usability of the metadata"""
+    """Test the usability of the metadata: columns present, number of blanks, and formatting errors"""
 
     # Tests if all expected columns are present and if there are any unexpected columns.
     column_names = df.columns.tolist()
@@ -183,8 +183,8 @@ def check_metadata_usability(df, output_dir):
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
 
-    # Calculates the number of cells in each column with predictable formatting and saves those rows to a csv.
-    # Errors may also indicate that data parsed incorrectly and the rows are not aligned with the correct columns.
+    # Calculates the number of cells with formatting errors in each column with predictable formatting
+    # and also saves those rows to a csv.
     cdm_mismatch = check_metadata_formatting('communication_document_name', df, output_dir)
     date_in_mismatch = check_metadata_formatting('date_in', df, output_dir)
     date_out_mismatch = check_metadata_formatting('date_out', df, output_dir)
@@ -193,7 +193,7 @@ def check_metadata_usability(df, output_dir):
     update_mismatch = check_metadata_formatting('update_date', df, output_dir)
     zip_mismatch = check_metadata_formatting('zip_code', df, output_dir)
 
-    # Combines the number of mismatches for the checked columns into a series, for adding to the report.
+    # Combines the number of formatting errors for the checked columns into a series, for adding to the report.
     # Other columns have "uncheckable", even if the column is missing from the export.
     formatting = pd.Series(data=['uncheckable', state_mismatch, zip_mismatch, 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', date_in_mismatch, date_out_mismatch, reminder_mismatch,
@@ -214,9 +214,9 @@ def delete_appraisal_letters(input_dir, df_appraisal):
     log_path = os.path.join(os.path.dirname(input_dir), f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
-    # For every row in df_appraisal, delete any letter in the communication_document_name column except form letters.
+    # For every row in df_appraisal, deletes any letter in the communication_document_name column except form letters.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
-    # Blanks are skipped.
+    # Form letters are retained.
     df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
         name = row.communication_document_name
@@ -251,7 +251,8 @@ def find_academy_rows(df):
     df_academy = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
-    # Makes another dataframe with rows to check for new patterns that could indicate academy applications.
+    # Makes another dataframe with rows containing "academy" to check for new patterns that could
+    # indicate academy applications.
     df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
@@ -268,7 +269,7 @@ def find_appraisal_rows(df, output_dir):
     df_recommendation, df_recommendation_check = find_recommendation_rows(df)
 
     # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
-    # but have a simple keyword (e.g., case) that could be a new indicators for appraisal.
+    # but have a simple keyword (e.g., case) that could be new indicators for appraisal.
     # Rows that fit more than one appraisal category are repeated.
     df_check = pd.concat([df_academy_check, df_casework_check, df_job_check, df_recommendation_check],
                          axis=0, ignore_index=True)
@@ -279,8 +280,7 @@ def find_appraisal_rows(df, output_dir):
     # Rows that fit more than one appraisal category are combined.
     df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
     df_appraisal = df_appraisal.astype(str)
-    df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])[
-        'Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
+    df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
     return df_appraisal
 
@@ -305,7 +305,7 @@ def find_casework_rows(df):
     df_casework = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = 'Casework'
 
-    # Makes another dataframe with rows to check for new patterns that could indicate casework.
+    # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
     df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
     return df_casework, df_casework_check
@@ -332,7 +332,7 @@ def find_job_rows(df):
     df_job = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
-    # Makes another dataframe with rows to check for new patterns that could indicate job applications.
+    # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
     df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_job, df_job_check
@@ -351,7 +351,8 @@ def find_recommendation_rows(df):
     # Adds a column for the appraisal category (needed for the file deletion log).
     df_rec['Appraisal_Category'] = 'Recommendation'
 
-    # Makes another dataframe with rows to check for new patterns that could indicate recommendations.
+    # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
+    # indicate recommendations.
     df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_rec, df_rec_check
@@ -362,8 +363,6 @@ def read_metadata(paths):
 
     # Read each metadata file in the paths dictionary into a separate dataframe,
     # including supplying the column headings.
-    # TODO: confirm these column names
-    # TODO: be more flexible about expected extra columns at the end of the export
     columns_1b = ['record_type', 'person_id', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
                   'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
                   'city', 'state_code', 'zip_code', 'carrier_route', 'county', 'country', 'district', 'precinct',
@@ -415,7 +414,6 @@ def read_metadata(paths):
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
 
     # Removes blank rows, which are present in some of the data exports.
-    # Blank rows have an empty string in every column.
     df.dropna(how='all', inplace=True)
 
     return df
@@ -439,8 +437,7 @@ def remove_appraisal_rows(df, df_appraisal):
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
-    # List of column names that should be removed. Includes names and address information
-    # and "extra" columns due to extra blank columns at the end of each row in the export.
+    # List of column names to remove because they include constituent names or addresses.
     # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
@@ -471,7 +468,7 @@ def split_congress_year(df, output_dir):
     df = df[pd.to_numeric(df['date_in'], errors='coerce').notnull()].copy()
 
     # Adds a column with the year received, which will be used to calculate the Congress Year.
-    # Column in_date is formatted YYYYMMDD.
+    # Column date_ is formatted YYYYMMDD.
     df.loc[:, 'year'] = df['date_in'].astype(str).str[:4].astype(int)
 
     # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
@@ -480,7 +477,7 @@ def split_congress_year(df, output_dir):
     df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
     df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
 
-    # Splits the data with date information by Congress Year received and saves each to a separate CSV.
+    # Splits the rows with date information by Congress Year received and saves each group to a separate CSV.
     # The year and congress_year columns are first removed, so the CSV only has the original columns.
     for congress_year, cy_df in df.groupby('congress_year'):
         cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
@@ -504,8 +501,7 @@ def topics_report(df, output_dir):
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
 
-    # So far, we have seen one way that paths are formatted in the metadata,
-    # but expect more in the future given other export formats and so have maintained this as a separate function:
+    # So far, we have seen one way that paths are formatted in the metadata:
     # ..\documents\folder\..\file.ext, where the export is \documents\folder\..\file.ext
     if md_path.startswith('..\\documents'):
         updated_path = md_path.replace('..', input_dir)
@@ -529,6 +525,7 @@ if __name__ == '__main__':
     output_directory = os.path.dirname(input_directory)
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
+    # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
     # Makes a dataframe and a csv of metadata rows that indicate appraisal.
@@ -557,11 +554,11 @@ if __name__ == '__main__':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 
-    # For access, makes a copy of the metadata with tables merged and rows for casework and columns for PII removed
+    # For access, makes a copy of the metadata with tables merged and rows for appraisal and columns for PII removed
     # and makes a copy of the data split by congress year.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters and columns with PII from the merged metadata tables,"
+        print("It will remove rows for deleted letters, save the merged metadata tables without columns with PII,"
               " and make copies of the metadata split by congress year")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
