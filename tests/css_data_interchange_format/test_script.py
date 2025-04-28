@@ -216,10 +216,10 @@ class MyTestCase(unittest.TestCase):
                      '2000 April 27', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
                      'nan', ' ', 'nan', 'Casework'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
-                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '20120914', 'imail', 'CASE2', 'OUTGOING', r'..\documents\formletters\2103422.html',
                      '2103422.html', ' ', 'nan', 'Casework'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '19990315', 'imail', 'CASE2', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for accession, appraisal_delete_log.csv")
 
@@ -251,10 +251,10 @@ class MyTestCase(unittest.TestCase):
                      'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\busintax.doc', 'busintax.doc', ' ',
                      'nan'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
-                     '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
+                     '20120914', 'imail', 'CASE2', 'OUTGOING', r'..\documents\formletters\2103422.html',
                      '2103422.html', ' ', 'nan'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '19990315', 'imail', 'CASE2', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan']]
         self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
 
@@ -263,11 +263,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['Topic', 'Topic_Count'],
                     ['BLANK', '4'],
-                    ['CASE2', '1'],
+                    ['CASE2', '3'],
                     ['CASE 1', '1'],
-                    ['INTTAX', '1'],
-                    ['CASE 3', '1'],
-                    ['CASE4', '1']]
+                    ['INTTAX', '1']]
         self.assertEqual(result, expected, "Problem with test for accession, topics_report.csv")
 
         # Tests the contents of the usability_report_matching.csv.
