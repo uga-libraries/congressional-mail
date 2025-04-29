@@ -10,6 +10,7 @@ access: remove metadata rows for appraisal and columns for PII and make copy of 
 """
 import csv
 from datetime import date
+from functools import reduce
 import os
 import pandas as pd
 import sys
@@ -356,6 +357,52 @@ def find_recommendation_rows(df):
     df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_rec, df_rec_check
+
+
+def form_letter_metadata(input_dir, output_dir):
+    """Combine metadata from the tables related to form letters to a single csv"""
+
+    # Read each metadata file into a separate dataframe, including supplying column headings.
+    df_6a = form_letter_metadata_read('6A', input_dir)
+    df_6b = form_letter_metadata_read('6B', input_dir)
+    df_6c = form_letter_metadata_read('6C', input_dir)
+    df_6d = form_letter_metadata_read('6D', input_dir)
+    df_6f = form_letter_metadata_read('6F', input_dir)
+
+    # Merge all dataframes into a single dataframe, always using the column 'document_id'.
+    # Nothing happens if df_6a is empty, as that has most of the information.
+    # TODO: error handling if anything else returns None
+    if df_6a:
+        df = reduce(lambda left, right: pd.merge(left, right, on=['document_id'], how='outer'),
+                    [df_6a, df_6b, df_6c, df_6d, df_6f])
+        df.to_csv(os.path.join(output_dir, 'formletter_metadata.csv'), index=False)
+
+
+def form_letter_metadata_read(table_id, input_dir):
+    """Read a single form letter metadata table into a dataframe or return an error"""
+
+    columns_dict = {'6A': ['record_type', 'document_id', 'version', 'document_grouping_id', 'document_type',
+                           'document_display_name', 'document_description', 'document_name', 'created_by',
+                           'revised_by', 'approved_by', 'creation_date', 'revision_date', 'last_used_date',
+                           'status', 'inactive_flag', 'virtual_directory'],
+                    '6B': ['record_type', 'document_id', 'fill-in_field_name', 'label'],
+                    '6C': ['record_type', 'document_id', 'code', 'code_type'],
+                    '6D': ['record_type', 'document_id', 'document_name', 'user_id', 'attached_date', 'text',
+                           'form_letter_attachment_flag', 'file_name'],
+                    '6F': ['record_type', 'document_id', 'owned_by']}
+
+    table_path = os.path.join(input_dir, f'out_{table_id}.dat')
+    try:
+        df = pd.read_csv(table_path, delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_dict[table_id])
+    except FileNotFoundError:
+        print(f"\n Could not locate file for table {table_id} in {input_dir}")
+        return None
+    except UnicodeDecodeError:
+        print(f"\nUnicodeDecodeError when trying to read the file for table {table_id}.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df = pd.read_csv(table_path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                         names=columns_dict[table_id])
+    return df
 
 
 def read_metadata(paths):
