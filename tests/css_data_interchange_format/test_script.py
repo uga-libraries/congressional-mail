@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         # Metadata file and logs in the input directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv",
+                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv'
                      'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',
                      'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
                      'usability_report_metadata.csv']
@@ -123,6 +123,28 @@ class MyTestCase(unittest.TestCase):
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
                      ' ', 'nan']]
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
+
+        # Tests the contents of form_letter_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'form_letter_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['document_id', 'version', 'document_grouping_id', 'document_type', 'document_display_name',
+                     'document_description', 'document_name_x', 'created_by', 'revised_by', 'approved_by',
+                     'creation_date', 'revision_date', 'last_used_date', 'status', 'inactive_flag',
+                     'virtual_directory', 'fill-in_field_name', 'label', 'code', 'code_type', 'document_name_y',
+                     'user_id', 'attached_date', 'text', 'form_letter_attachment_flag', 'file_name', 'owned_by'],
+                    ['000001', '1', '123456', 'Form', 'Economy', 'nan', r'..\doc\formletter\econ.pdf', '17',
+                     'JSmith', '17', '20101212', '20110101', '20150101', 'Approved', 'nan', 'Form Letters',
+                     'position', 'nan', 'LABOR', 'DOC', r'..\doc\formletter\econ.pdf', '17', '20120101', 'text',
+                     'Y', 'econ.pdf', '17'],
+                    ['000001', '1', '123456', 'Form', 'Economy', 'nan', r'..\doc\formletter\econ.pdf', '17',
+                     'JSmith', '17', '20101212', '20110101', '20150101', 'Approved', 'nan', 'Form Letters',
+                     'position', 'nan', 'TRADE', 'DOC', r'..\doc\formletter\econ.pdf', '17', '20120101', 'text',
+                     'Y', 'econ.pdf', '17'],
+                    ['000002', '1', '123456', 'Form', 'Courts', 'Basic info on justice system',
+                     r'..\doc\formletter\court.pdf', 'JSmith', '17', 'JSmith', '20101212', '20110101', '20150101',
+                     'Inactive', 'Y', 'Form Letters', 'staff_member', 'Full Name:', 'COURT', 'COM',
+                     r'..\doc\formletter\court.pdf', 'JSmith', '20120101', 'text', 'Y', 'court.pdf', 'JSmith']]
+        self.assertEqual(result, expected, "Problem with test for access, form_letter_metadata.csv")
 
         # Tests the contents of 1999-2000.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '1999-2000.csv')
