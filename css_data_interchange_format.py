@@ -423,6 +423,8 @@ def read_metadata(paths):
                   'group_name', 'salutation', 'extra']
     columns_2c = ['record_type', 'person_id', 'communication_id', 'document_type', 'communication_document_name',
                   'communication_document_id', 'file_location', 'file_name']
+    columns_2d = ['record_type', 'person_id', 'communication_id', '2d_sequence_number',
+                  'text', 'date', 'time', 'user_id']
 
     try:
         df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_1b)
@@ -448,17 +450,32 @@ def read_metadata(paths):
         df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                             names=columns_2c)
 
+    try:
+        df_2d = pd.read_csv(paths['2D'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2d)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2D.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2d = pd.read_csv(paths['2D'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2d)
+
     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
     # Otherwise, it would be too much data to merge.
     df_1b = remove_pii(df_1b)
     df_2a = remove_pii(df_2a)
     df_2c = remove_pii(df_2c)
 
+    # Only using 2d for appraisal because of the free text field.
+    # Drop the rest of the columns now and text after appraisal rows are identified.
+    # Some columns overlap with columns kept in other tables, so not using remove_pii().
+    df_2d = df_2d.drop(['record_type', 'person_id', '2d_sequence_number', 'date', 'time', 'user_id'],
+                       axis=1, errors='ignore')
+
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
     # TODO need error handling if the id is blank?
     df = df_1b.merge(df_2a, on='person_id', how='outer')
     df = df.merge(df_2c, on='communication_id', how='outer')
+    df = df.merge(df_2d, on='communication_id', how='outer')
 
     # Remove ID columns only used for merging.
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
@@ -488,7 +505,6 @@ def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
     # List of column names to remove because they include constituent names or addresses.
-    # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
