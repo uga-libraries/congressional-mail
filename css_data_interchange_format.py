@@ -612,5 +612,6 @@ if __name__ == '__main__':
               " and make copies of the metadata split by congress year")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
+        form_letter_metadata(input_directory, output_directory)
         split_congress_year(md_df, output_directory)
 
