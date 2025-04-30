@@ -369,13 +369,11 @@ def form_letter_metadata(input_dir, output_dir):
     df_6d = form_letter_metadata_read('6D', input_dir)
     df_6f = form_letter_metadata_read('6F', input_dir)
 
-    # Merge all dataframes into a single dataframe, always using the column 'document_id'.
-    # Nothing happens if df_6a is empty, as that has most of the information.
-    # TODO: error handling if anything else returns None
-    if df_6a:
-        df = reduce(lambda left, right: pd.merge(left, right, on=['document_id'], how='outer'),
-                    [df_6a, df_6b, df_6c, df_6d, df_6f])
-        df.to_csv(os.path.join(output_dir, 'formletter_metadata.csv'), index=False)
+    # Merge all dataframes into a single dataframe, always using the column 'document_id', and saves to CSV.
+    # TODO: error handling if a df returns None
+    df = reduce(lambda left, right: pd.merge(left, right, on=['document_id'], how='outer'),
+                [df_6a, df_6b, df_6c, df_6d, df_6f])
+    df.to_csv(os.path.join(output_dir, 'form_letter_metadata.csv'), index=False)
 
 
 def form_letter_metadata_read(table_id, input_dir):
@@ -402,6 +400,11 @@ def form_letter_metadata_read(table_id, input_dir):
         print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
         df = pd.read_csv(table_path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                          names=columns_dict[table_id])
+
+    # Remove the record_type column, which every dataframe has, because it isn't helpful
+    # and prevents a more efficient way to merge all 5 at once.
+    df.drop(['record_type'], axis=1, inplace=True)
+
     return df
 
 
