@@ -53,7 +53,7 @@ def check_arguments(arg_list):
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat']
+            expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
                     # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
