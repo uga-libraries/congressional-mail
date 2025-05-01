@@ -11,7 +11,8 @@ class MyTestCase(unittest.TestCase):
         # Makes variable for the function and runs the function.
         paths_dict = {'1B': os.path.join('test_data', 'read', 'out_1B.dat'),
                       '2A': os.path.join('test_data', 'read', 'out_2A.dat'),
-                      '2C': os.path.join('test_data', 'read', 'out_2C.dat')}
+                      '2C': os.path.join('test_data', 'read', 'out_2C.dat'),
+                      '2D': os.path.join('test_data', 'read', 'out_2D.dat')}
         md_df = read_metadata(paths_dict)
 
         # Tests the value of md_df
@@ -20,22 +21,23 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name'],
+                     'file_name', 'text'],
                     ['Kennesaw', 'GA', '30144-2248', 'USA', 'imail', 'nan', 'C', '19990301', '19990305', 'nan',
                      '19990301', 'imail', 'TAX1', 'OUTGOING', r'..\documents\formletters\taxes.doc',
-                     'nan', 'nan', 'taxes.doc'],
+                     'nan', 'nan', 'taxes.doc', 'Support for 1'],
                     ['Kennesaw', 'GA', '30144-2248', 'USA', 'imail', 'nan', 'C', '19990501', '19990507', 'nan',
                      '19990501', 'imail', 'HMO', 'OUTGOING', r'..\documents\formletters\insurance.doc',
-                     'nan', 'nan', 'insurance.doc'],
+                     'nan', 'nan', 'insurance.doc', 'Against 2'],
                     ['Marietta', 'GA', '30062-1613', 'USA', 'usmail', 'nan', 'C', '19990607', '19990617', 'nan',
                      '19990607', 'usmail', 'TAX1', 'OUTGOING', r'..\documents\formletters\taxes.doc',
-                     'nan', 'nan', 'taxes.doc'],
+                     'nan', 'nan', 'taxes.doc', 'Support for 3'],
                     ['nan', 'nan', 'nan', 'nan', 'imail', 'nan', 'C', '20000315', '20000402', 'nan', '20000315',
-                     'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\12345.doc', 'nan', 'nan', '12345.doc'],
+                     'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\12345.doc', 'nan', 'nan', '12345.doc',
+                     'Neutral re 4'],
                     ['Marietta', 'GA', '30062-5584', 'USA', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan',
-                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan'],
+                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan'],
                     ['Macon', 'GA', '31204-3904', 'USA', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan',
-                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan']]
+                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan']]
         self.assertEqual(result, expected, "Problem with test for function read_metadata")
 
 
