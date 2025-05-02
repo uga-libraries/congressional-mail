@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         # Metadata file and logs in the input directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv'
+                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv',
                      'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',
                      'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
                      'usability_report_metadata.csv']
@@ -78,7 +78,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category']]
+                     'file_name', 'text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for access, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
@@ -87,10 +87,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category'],
+                     'file_name', 'text', 'Appraisal_Category'],
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990315', '19990402', 'nan', '19990315',
                      'usmail', 'CASEWORK', 'OUTGOING', r'..\documents\indivletters\2070078.doc', '2070078.doc',
-                     ' ', 'nan', 'Casework']]
+                     ' ', 'nan', 'Neutral', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for access, appraisal_delete_log.csv")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
@@ -216,10 +216,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category'],
+                     'file_name', 'text', 'Appraisal_Category'],
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
-                     'legal_case.html', ' ', 'nan', 'Casework']]
+                     'legal_case.html', ' ', 'nan', 'text8', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for accession, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
@@ -228,22 +228,22 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category'],
+                     'file_name', 'text', 'Appraisal_Category'],
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
                      'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc',
-                     ' ', 'nan', 'Casework'],
+                     ' ', 'nan', 'text3', 'Casework'],
                     ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan',
                      '2000-04-27', 'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc',
-                     '00002.doc', ' ', 'nan', 'Casework'],
+                     '00002.doc', ' ', 'nan', 'text1', 'Casework'],
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '2000 April 27', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
-                     'nan', ' ', 'nan', 'Casework'],
+                     'nan', ' ', 'nan', 'text5', 'Casework'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'CASE2', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'nan', 'Casework'],
+                     '2103422.html', ' ', 'nan', 'text9', 'Casework'],
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
                      '19990315', 'imail', 'CASE2', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
-                     '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework']]
+                     '1c8614bf01caf83e00010e44.eml', 'nan', 'text7', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for accession, appraisal_delete_log.csv")
 
         # Tests the contents of the metadata_formatting_errors_update_date.csv.
@@ -360,10 +360,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category'],
+                     'file_name', 'text', 'Appraisal_Category'],
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
-                     'legal_case.html', ' ', 'nan', 'Casework']]
+                     'legal_case.html', ' ', 'nan', 'text8', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for appraisal check log")
 
         # Tests the contents of the appraisal delete log.
@@ -372,22 +372,22 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'Appraisal_Category'],
+                     'file_name', 'text', 'Appraisal_Category'],
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
                      'usmail', 'CASE 1', 'OUTGOING', r'..\documents\indivletters\00001.doc', '00001.doc',
-                     ' ', 'nan', 'Casework'],
+                     ' ', 'nan', 'text3', 'Casework'],
                     ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
                      'usmail', 'CASE2', 'OUTGOING', r'..\documents\indivletters\00002.doc', '00002.doc', ' ', 'nan',
-                     'Casework'],
+                     'text1', 'Casework'],
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'CASE 3', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'nan', 'Casework'],
+                     '2103422.html', ' ', 'nan', 'text9', 'Casework'],
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
                      '19990315', 'imail', 'CASE4', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
-                     '1c8614bf01caf83e00010e44.eml', 'nan', 'Casework'],
+                     '1c8614bf01caf83e00010e44.eml', 'nan', 'text7', 'Casework'],
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
-                     'nan', ' ', 'nan', 'Casework']]
+                     'nan', ' ', 'nan', 'text5', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for appraisal, appraisal delete log")
 
         # Tests the contents of the file deletion log.
@@ -407,7 +407,8 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
-        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', '2103422.html', '30046.doc', 'legal_case.html']
+        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat',
+                    '2103422.html', '30046.doc', 'legal_case.html']
         self.assertEqual(result, expected, "Problem with test for appraisal, input_directory contents")
 
     def test_error_argument(self):
