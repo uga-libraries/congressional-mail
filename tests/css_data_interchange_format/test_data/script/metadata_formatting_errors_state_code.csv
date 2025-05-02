@@ -1,5 +1,0 @@
-city,state_code,zip_code,country,communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,document_type,communication_document_name,communication_document_id,file_location,file_name
- , ,,POLAND,usmail,,C,19990331,19990402,,19990331,usmail,CASE 1,OUTGOING,..\documents\indivletters\00001.doc,00001.doc, ,
- , ,,POLAND,usmail,,C,19990315,19990402,,19990315,usmail,INTTAX,OUTGOING,..\documents\formletters\busintax.doc,busintax.doc, ,
-Marietta,Georgia,30062-1668,USA,,513,C,20120914,20120914,,20120914,imail,CASE2,OUTGOING,..\documents\formletters\2103422.html,2103422.html, ,
-Marietta,Georgia,30062-1668,USA,,551,C,19990315,19990402,,19990315,imail,CASE2,INCOMING,..\documents\objects\4007000.eml,,1c8614bf01caf83e00010e44.eml,
