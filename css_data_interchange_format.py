@@ -603,6 +603,10 @@ if __name__ == '__main__':
     # This is used in most of the modes.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
 
+    # Removes the column 'text', now that identifying rows for appraisal is complete,
+    # which is the only column currently likely to contain PII that is needed for more comprehensive appraisal.
+    md_df.drop(['text'], axis=1, inplace=True)
+
     # The rest of the script is dependent on the mode.
 
     # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
