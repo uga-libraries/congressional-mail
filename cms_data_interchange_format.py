@@ -74,6 +74,7 @@ def read_metadata(paths):
     df_2a = read_metadata_file('2A', paths['2A'])
     df_2b = read_metadata_file('2B', paths['2B'])
     df_2c = read_metadata_file('2C', paths['2C'])
+    df_2d = read_metadata_file('2D', paths['2D'])
 
     # Removes columns that might identify individual constituents, except columns needed for merging or appraisal.
     # If these were not removed, it would be too much data to merge.
@@ -81,13 +82,17 @@ def read_metadata(paths):
     df_2a = remove_pii(df_2a)
     df_2b = remove_pii(df_2b)
     df_2c = remove_pii(df_2c)
+    df_2d = remove_pii(df_2d)
 
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
+    # Must drop constituent_id_x before the final merge to avoid a pandas MergeError from duplicate column names.
     # TODO need error handling if the id is blank?
     df = df_1b.merge(df_2a, on='constituent_id', how='outer')
     df = df.merge(df_2b, on='correspondence_id', how='outer')
     df = df.merge(df_2c, on='correspondence_id', how='outer')
+    df.drop(['constituent_id_x'], axis=1, inplace=True)
+    df = df.merge(df_2d, on='correspondence_id', how='outer')
 
     # Remove ID columns only used for merging.
     # Columns needed for appraisal are retained until after metadata rows for appraisal are identified.
@@ -139,7 +144,7 @@ def remove_pii(df):
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag', 'title',
               'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'agency_code', 'household_flag',
-              'household_id', 'extra1', 'extra2']
+              'household_id', 'extra1', 'extra2', '2D_sequence_number', 'text_type']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
