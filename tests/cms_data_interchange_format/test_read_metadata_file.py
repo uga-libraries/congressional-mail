@@ -71,6 +71,18 @@ class MyTestCase(unittest.TestCase):
                     ['2C', '3', '3003', '1', 'main', 'rights_pro.docx', 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for 2C")
 
+    def test_2d(self):
+        """Test for the metadata file 2D.out"""
+        df_2d = read_metadata_file('2D', os.path.join('test_data', 'read', '2D.out'))
+
+        result = df_to_list(df_2d)
+        expected = [['record_type', 'constituent_id', 'correspondence_id', '2D_sequence_number', 'text_type',
+                     'correspondence_text'],
+                    ['2D', '1', '1001', '1', 'CM', 'text1'],
+                    ['2D', '2', '2002', '1', 'CM', 'text2'],
+                    ['2D', '2', '3003', '1', 'CM', 'text3']]
+        self.assertEqual(result, expected, "Problem with test for 2D")
+
 
 if __name__ == '__main__':
     unittest.main()

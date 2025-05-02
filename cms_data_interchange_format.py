@@ -114,7 +114,9 @@ def read_metadata_file(file_id, file_path):
                            'household_flag', 'household_id', 'extra1', 'extra2'],
                     '2B': ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'],
                     '2C': ['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
-                           'document_type', 'correspondence_document_name', 'file_location']}
+                           'document_type', 'correspondence_document_name', 'file_location'],
+                    '2D': ['record_type', 'constituent_id', 'correspondence_id', '2D_sequence_number', 'text_type',
+                           'correspondence_text']}
 
     # Read into dataframe, with a warning if characters have to be skipped.
     try:
