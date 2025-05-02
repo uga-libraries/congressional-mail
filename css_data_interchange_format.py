@@ -25,9 +25,10 @@ def appraisal_check_df(df, keyword, category):
     group_name = df['group_name'].str.contains(keyword, case=False, na=False)
     doc_name = df['communication_document_name'].str.contains(keyword, case=False, na=False)
     file_name = df['file_name'].str.contains(keyword, case=False, na=False)
+    text = df['text'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[group_name | doc_name | file_name].copy()
+    df_check = df[group_name | doc_name | file_name | text].copy()
 
     # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category

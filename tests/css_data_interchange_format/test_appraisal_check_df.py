@@ -19,50 +19,52 @@ class MyTestCase(unittest.TestCase):
     def test_multiple_columns(self):
         """Test for when the keyword is in multiple columns per row"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms_case.txt'],
-                           ['20250402', 'Legal Case', r'..\documents\legal_case.txt', 'legal.txt'],
-                           ['20250403', 'Legal', r'..\documents\legal.txt', 'legal.txt'],
-                           ['20250404', 'Case Management', r'..\documents\case.txt', 'case.txt']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name'])
+        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms_case.txt', 'case?'],
+                           ['20250402', 'Legal Case', r'..\documents\legal_case.txt', 'legal.txt', 'just in case'],
+                           ['20250403', 'Legal', r'..\documents\legal.txt', 'legal.txt', 'aid'],
+                           ['20250404', 'Case Management', r'..\documents\case.txt', 'case.txt', 'maybe case']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_check = appraisal_check_df(df, 'case', 'Casework')
 
         # Tests the values in df_check are correct.
         result = df_to_list(df_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'Appraisal_Category'],
-                    ['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms_case.txt', 'Casework'],
-                    ['20250402', 'Legal Case', r'..\documents\legal_case.txt', 'legal.txt', 'Casework'],
-                    ['20250404', 'Case Management', r'..\documents\case.txt', 'case.txt', 'Casework']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms_case.txt', 'case?', 'Casework'],
+                    ['20250402', 'Legal Case', r'..\documents\legal_case.txt', 'legal.txt', 'just in case', 'Casework'],
+                    ['20250404', 'Case Management', r'..\documents\case.txt', 'case.txt', 'maybe case', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for multiple columns")
 
     def test_one_column(self):
         """Test for when the keyword is in one column per row"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms.txt'],
-                           ['20250402', 'Legal', r'..\documents\legal_case.txt', 'legal.txt'],
-                           ['20250403', 'Legal', r'..\documents\legal.txt', 'legal.txt'],
-                           ['20250404', 'Case Management', r'..\documents\mgt.txt', 'mgt.txt']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name'])
+        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms.txt', 'pro'],
+                           ['20250402', 'Legal', r'..\documents\legal_case.txt', 'legal.txt', 'pro'],
+                           ['20250403', 'Legal', r'..\documents\legal.txt', 'legal.txt', 'con'],
+                           ['20250404', 'Case Management', r'..\documents\mgt.txt', 'mgt.txt', 'aid'],
+                           ['20240405', 'Admin', r'..\documents\file.txt', 'file.txt', 'potential case']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_check = appraisal_check_df(df, 'case', 'Casework')
 
         # Tests the values in df_check are correct.
         result = df_to_list(df_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'Appraisal_Category'],
-                    ['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms.txt', 'Casework'],
-                    ['20250402', 'Legal', r'..\documents\legal_case.txt', 'legal.txt', 'Casework'],
-                    ['20250404', 'Case Management', r'..\documents\mgt.txt', 'mgt.txt', 'Casework']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', 'Agriculture', r'..\documents\farms_case.txt', 'farms.txt', 'pro', 'Casework'],
+                    ['20250402', 'Legal', r'..\documents\legal_case.txt', 'legal.txt', 'pro', 'Casework'],
+                    ['20250404', 'Case Management', r'..\documents\mgt.txt', 'mgt.txt', 'aid', 'Casework'],
+                    ['20240405', 'Admin', r'..\documents\file.txt', 'file.txt', 'potential case', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for one column")
 
     def test_no_column(self):
         """Test for when the keyword is in no columns"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms.txt', 'farms.txt'],
-                           ['20250402', 'Legal', r'..\documents\legal.txt', 'legal.txt']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name'])
+        df = pd.DataFrame([['20250401', 'Agriculture', r'..\documents\farms.txt', 'farms.txt', 'Pro'],
+                           ['20250402', 'Legal', r'..\documents\legal.txt', 'legal.txt', 'Con']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_check = appraisal_check_df(df, 'case', 'Casework')
 
         # Tests the values in df_check are correct.
         result = df_to_list(df_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for no column")
 
 
