@@ -20,7 +20,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with correct - access, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - access, metadata_paths_dict")
         self.assertEqual(script_mode, 'access', "Problem with correct - access, script_mode")
@@ -37,7 +38,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with correct - accession, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - accession, metadata_paths_dict")
         self.assertEqual(script_mode, 'accession', "Problem with correct - accession, script_mode")
@@ -54,7 +56,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with correct - appraisal, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - appraisal, metadata_paths_dict")
         self.assertEqual(script_mode, 'appraisal', "Problem with correct - appraisal, script_mode")
@@ -71,7 +74,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with correct - preservation, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - preservation, metadata_paths_dict")
         self.assertEqual(script_mode, 'preservation', "Problem with correct - preservation, script_mode")
@@ -101,7 +105,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with error - script mode, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with error - script mode, metadata_paths_dict")
         self.assertEqual(script_mode, None, "Problem with error - script mode, script_mode")
@@ -134,7 +139,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(script_mode, 'access', "Problem with missing metadata, script_mode")
         self.assertEqual(errors_list, ['No out_1B.dat file in the input_directory',
                                        'No out_2A.dat file in the input_directory',
-                                       'No out_2C.dat file in the input_directory'],
+                                       'No out_2C.dat file in the input_directory',
+                                       'No out_2D.dat file in the input_directory'],
                          "Problem with missing metadata, errors_list")
 
     def test_missing_metadata_some(self):
@@ -145,7 +151,7 @@ class MyTestCase(unittest.TestCase):
         input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        expected_dict = {'2A': os.path.join(input_dir, 'out_2A.dat')}
+        expected_dict = {'2A': os.path.join(input_dir, 'out_2A.dat'), '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with missing metadata - some, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict,
                          "Problem with missing metadata - some, metadata_paths_dict")
@@ -164,7 +170,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the value of each of the four variables returned by the function
         expected_dict = {'1B': os.path.join(input_dir, 'out_1B.dat'),
                          '2A': os.path.join(input_dir, 'out_2A.dat'),
-                         '2C': os.path.join(input_dir, 'out_2C.dat')}
+                         '2C': os.path.join(input_dir, 'out_2C.dat'),
+                         '2D': os.path.join(input_dir, 'out_2D.dat')}
         self.assertEqual(input_directory, input_dir, "Problem with missing one argument, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with missing one argument, metadata_paths_dict")
         self.assertEqual(script_mode, None, "Problem with missing one argument, script_mode")

@@ -25,9 +25,10 @@ def appraisal_check_df(df, keyword, category):
     group_name = df['group_name'].str.contains(keyword, case=False, na=False)
     doc_name = df['communication_document_name'].str.contains(keyword, case=False, na=False)
     file_name = df['file_name'].str.contains(keyword, case=False, na=False)
+    text = df['text'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[group_name | doc_name | file_name].copy()
+    df_check = df[group_name | doc_name | file_name | text].copy()
 
     # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category
@@ -53,7 +54,7 @@ def check_arguments(arg_list):
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat']
+            expected_files = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
                     # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
@@ -283,6 +284,10 @@ def find_appraisal_rows(df, output_dir):
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+
+    # Removes the column 'text', which is the only column currently likely to contain PII
+    # that is needed for more comprehensive appraisal.
+    df_appraisal.drop(['text'], axis=1, inplace=True)
     return df_appraisal
 
 
@@ -423,6 +428,8 @@ def read_metadata(paths):
                   'group_name', 'salutation', 'extra']
     columns_2c = ['record_type', 'person_id', 'communication_id', 'document_type', 'communication_document_name',
                   'communication_document_id', 'file_location', 'file_name']
+    columns_2d = ['record_type', 'person_id', 'communication_id', '2d_sequence_number',
+                  'text', 'date', 'time', 'user_id']
 
     try:
         df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_1b)
@@ -448,17 +455,32 @@ def read_metadata(paths):
         df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
                             names=columns_2c)
 
+    try:
+        df_2d = pd.read_csv(paths['2D'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2d)
+    except UnicodeDecodeError:
+        print("\nUnicodeDecodeError when trying to read the metadata file 2D.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df_2d = pd.read_csv(paths['2D'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                            names=columns_2d)
+
     # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
     # Otherwise, it would be too much data to merge.
     df_1b = remove_pii(df_1b)
     df_2a = remove_pii(df_2a)
     df_2c = remove_pii(df_2c)
 
+    # Only using 2d for appraisal because of the free text field.
+    # Drop the rest of the columns now and text after appraisal rows are identified.
+    # Some columns overlap with columns kept in other tables, so not using remove_pii().
+    df_2d = df_2d.drop(['record_type', 'person_id', '2d_sequence_number', 'date', 'time', 'user_id'],
+                       axis=1, errors='ignore')
+
     # Combine the dataframes using ID columns.
     # If an id is only in one table, the data is still included and has blanks for columns from the other table.
     # TODO need error handling if the id is blank?
     df = df_1b.merge(df_2a, on='person_id', how='outer')
     df = df.merge(df_2c, on='communication_id', how='outer')
+    df = df.merge(df_2d, on='communication_id', how='outer')
 
     # Remove ID columns only used for merging.
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
@@ -488,7 +510,6 @@ def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
     # List of column names to remove because they include constituent names or addresses.
-    # TODO: confirm this list (extra can have hint at subject but is an unexpected column)
     remove = ['record_type', 'address_id', 'address_type', 'primary_flag', 'default_address_flag',
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
@@ -581,6 +602,10 @@ if __name__ == '__main__':
     # Makes a dataframe and a csv of metadata rows that indicate appraisal.
     # This is used in most of the modes.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
+
+    # Removes the column 'text', now that identifying rows for appraisal is complete,
+    # which is the only column currently likely to contain PII that is needed for more comprehensive appraisal.
+    md_df.drop(['text'], axis=1, inplace=True)
 
     # The rest of the script is dependent on the mode.
 

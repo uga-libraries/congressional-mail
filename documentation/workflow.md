@@ -11,7 +11,8 @@ During the initial review, determine if the export meets acceptance guidelines.
    - Primary folder named Last_Constituent_Mail_Export
    - Metadata files within primary folder
    - Exported files in "documents" folder, with unnecessary folders removed (BlobExport, dos, etc)
-3. Update the script if needed, including verifying the columns in the export description match the script.
+3. Update the script if needed, including verifying the tables and columns in the export description match the script.
+   If there are new tables or columns, add to appraisal and PII removal portions of the script, if applicable.
 4. Run the script in "accession" mode.
 5. Review the usability reports and determine if the donation is accepted.
 6. If accepted, move on to appraisal. If not accepted, stop the accession and discuss with the collecting archivist.
