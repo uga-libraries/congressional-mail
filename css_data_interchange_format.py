@@ -284,6 +284,10 @@ def find_appraisal_rows(df, output_dir):
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+
+    # Removes the column 'text', which is the only column currently likely to contain PII
+    # that is needed for more comprehensive appraisal.
+    df_appraisal.drop(['text'], axis=1, inplace=True)
     return df_appraisal
 
 
