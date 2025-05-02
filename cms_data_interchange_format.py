@@ -30,7 +30,7 @@ def check_arguments(arg_list):
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
             # TODO: finalize the tables to include
-            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out']
+            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
                     # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
@@ -174,6 +174,7 @@ if __name__ == '__main__':
     output_directory = os.path.dirname(input_directory)
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
+    # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
     # Makes a log of rows with "case" for detecting casework.
