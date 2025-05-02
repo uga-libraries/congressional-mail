@@ -29,7 +29,6 @@ def check_arguments(arg_list):
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            # TODO: finalize the tables to include
             expected_files = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
@@ -70,55 +69,14 @@ def check_casework(df, output_dir):
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
-    # Read each metadata file in the paths dictionary into a separate dataframe,
-    # including supplying the column headings.
-    # TODO: confirm these column names
-    # TODO: be more flexible about expected extra columns at the end of the export
-    columns_1b = ['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
-                  'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
-                  'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
-                  'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code']
-    columns_2a = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type', 'staff',
-                  'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type', 'address_id',
-                  'household_flag', 'household_id', 'extra1', 'extra2']
-    columns_2b = ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position']
-    columns_2c = ['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number', 'document_type',
-                  'correspondence_document_name', 'file_location']
+    # Reads each metadata file into a separate dataframe.
+    df_1b = read_metadata_file('1B', paths['1B'])
+    df_2a = read_metadata_file('2A', paths['2A'])
+    df_2b = read_metadata_file('2B', paths['2B'])
+    df_2c = read_metadata_file('2C', paths['2C'])
 
-    try:
-        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_1b)
-    except UnicodeDecodeError:
-        print("\nUnicodeDecodeError when trying to read the metadata file 1B.")
-        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
-        df_1b = pd.read_csv(paths['1B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                            names=columns_1b)
-
-    try:
-        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2a)
-    except UnicodeDecodeError:
-        print("\nUnicodeDecodeError when trying to read the metadata file 2A.")
-        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
-        df_2a = pd.read_csv(paths['2A'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                            names=columns_2a)
-
-    try:
-        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2b)
-    except UnicodeDecodeError:
-        print("\nUnicodeDecodeError when trying to read the metadata file 2B.")
-        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
-        df_2b = pd.read_csv(paths['2B'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                            names=columns_2b)
-
-    try:
-        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_2c)
-    except UnicodeDecodeError:
-        print("\nUnicodeDecodeError when trying to read the metadata file 2C.")
-        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
-        df_2c = pd.read_csv(paths['2C'], delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
-                            names=columns_2c)
-
-    # Removes unneeded columns from each dataframe, except for ID columns needed for merging.
-    # Otherwise, it would be too much data to merge.
+    # Removes columns that might identify individual constituents, except columns needed for merging or appraisal.
+    # If these were not removed, it would be too much data to merge.
     df_1b = remove_pii(df_1b)
     df_2a = remove_pii(df_2a)
     df_2b = remove_pii(df_2b)
@@ -132,12 +90,40 @@ def read_metadata(paths):
     df = df.merge(df_2c, on='correspondence_id', how='outer')
 
     # Remove ID columns only used for merging.
-    df = df.drop(['constituent_id_x', 'constituent_id_y', 'constituent_id', 'correspondence_id'],
-                 axis=1, errors='ignore')
+    # Columns needed for appraisal are retained until after metadata rows for appraisal are identified.
+    df.drop(['constituent_id_x', 'constituent_id_y', 'constituent_id', 'correspondence_id'],
+            axis=1, errors='ignore', inplace=True)
 
     # Removes blank rows, which are present in some of the data exports.
     # Blank rows have an empty string in every column.
     df.dropna(how='all', inplace=True)
+
+    return df
+
+
+def read_metadata_file(file_id, file_path):
+    """Read a single metadata file into a dataframe, adding column names"""
+
+    # Dictionary of column names for each file.
+    columns_dict = {'1B': ['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
+                           'default_address_flag', 'title', 'organization_name', 'address_line_1', 'address_line_2',
+                           'address_line_3', 'address_line_4', 'city', 'state', 'zip_code', 'carrier_route',
+                           'county', 'country', 'district', 'precinct', 'no_mail_flag', 'agency_code'],
+                    '2A': ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type', 'staff',
+                           'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type', 'address_id',
+                           'household_flag', 'household_id', 'extra1', 'extra2'],
+                    '2B': ['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'],
+                    '2C': ['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
+                           'document_type', 'correspondence_document_name', 'file_location']}
+
+    # Read into dataframe, with a warning if characters have to be skipped.
+    try:
+        df = pd.read_csv(file_path, delimiter='\t', dtype=str, on_bad_lines='warn', names=columns_dict[file_id])
+    except UnicodeDecodeError:
+        print(f"\nUnicodeDecodeError when trying to read the metadata file {file_id}.")
+        print("The file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df = pd.read_csv(file_path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn',
+                         names=columns_dict[file_id])
 
     return df
 
