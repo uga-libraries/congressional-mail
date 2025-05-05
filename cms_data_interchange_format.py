@@ -9,6 +9,23 @@ import sys
 from css_data_interchange_format import split_congress_year
 
 
+def appraisal_check_df(df, keyword, category):
+    """Returns a df with all rows that contain the specified keyword in any of the columns
+    likely to indicate appraisal is needed, with a new column for the appraisal category"""
+
+    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    doc_name = df['correspondence_document_name'].str.contains(keyword, case=False, na=False)
+    text = df['correspondence_text'].str.contains(keyword, case=False, na=False)
+
+    # Makes a dataframe with all rows containing the keyword in at least one of the columns.
+    df_check = df[doc_name | text].copy()
+
+    # Adds a column with the appraisal category.
+    df_check['Appraisal_Category'] = category
+
+    return df_check
+
+
 def check_arguments(arg_list):
     """Verify the required script arguments are present and valid and get the paths to the metadata files"""
 
