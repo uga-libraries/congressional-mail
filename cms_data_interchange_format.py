@@ -80,7 +80,7 @@ def find_academy_rows(df):
     # Column correspondence_text includes one or more keywords that indicate academy applications.
     keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
+    df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
     # Adds a column for the appraisal category.
@@ -130,7 +130,7 @@ def find_casework_rows(df):
     # Column correspondence_text includes one or more keywords that indicate casework.
     keywords_list = ['case file', 'case has', 'case open', 'casework', 'forwarded to me', 'open case']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
+    df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
     # Adds a column for the appraisal category.
@@ -149,7 +149,7 @@ def find_job_rows(df):
     # Column correspondence_text includes one or more keywords that indicate job applications.
     keywords_list = ['intern assignment', 'intern response', 'internship']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
+    df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
     # Adds a column for the appraisal category.
@@ -169,7 +169,7 @@ def find_recommendation_rows(df):
     keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
                      'recommendation letter']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
+    df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
     # Adds a column for the appraisal category.
