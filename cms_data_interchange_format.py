@@ -94,7 +94,7 @@ def find_academy_rows(df):
     df_academy = pd.concat([df_corr_text, df_code_desc], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
-    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    # Makes a dataframe with rows containing "academy" to check for new patterns indicating academy applications.
     df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
@@ -144,7 +144,7 @@ def find_casework_rows(df):
     # Adds a column for the appraisal category.
     df_corr_text['Appraisal_Category'] = 'Casework'
 
-    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    # Makes a dataframe with rows containing "case" to check for new patterns indicating casework.
     df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
     return df_corr_text, df_casework_check
@@ -163,7 +163,7 @@ def find_job_rows(df):
     # Adds a column for the appraisal category.
     df_corr_text['Appraisal_Category'] = 'Job_Application'
 
-    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    # Makes a dataframe with rows containing "job" to check for new patterns indicating job applications.
     df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_corr_text, df_job_check
@@ -183,7 +183,7 @@ def find_recommendation_rows(df):
     # Adds a column for the appraisal category.
     df_corr_text['Appraisal_Category'] = 'Recommendation'
 
-    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    # Makes a dataframe with rows containing "recommendation" to check for new patterns indicating recommendations.
     df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_corr_text, df_recommendation_check
