@@ -81,16 +81,23 @@ def find_academy_rows(df):
     # Column correspondence_text includes one or more keywords that indicate academy applications.
     keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
+    df_corr_text = df[corr_text]
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Academy_Application'
+    # Column code_description includes "academy nomination".
+    code_desc = df['code_description'].str.contains('academy nomination', case=False, na=False)
+    df_code_desc = df[code_desc]
+    df = df[~code_desc]
+
+    # Makes a single dataframe with all rows that indicate academy applications
+    # and adds a column for the appraisal category.
+    df_academy = pd.concat([df_corr_text, df_code_desc], axis=0, ignore_index=True)
+    df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
     df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
-    return df_corr_text, df_academy_check
+    return df_academy, df_academy_check
 
 
 def find_appraisal_rows(df, output_dir):
