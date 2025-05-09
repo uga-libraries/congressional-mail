@@ -46,10 +46,10 @@ def check_arguments(arg_list):
     if len(arg_list) > 1:
         if os.path.exists(arg_list[1]):
             input_dir = arg_list[1]
-            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out']
+            expected_files = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out', '8A.out']
             for file in expected_files:
                 if os.path.exists(os.path.join(input_dir, file)):
-                    # Key is extracted from the filename, for example out_2A.dat has a key of 2A.
+                    # Key is extracted from the filename, for example 2A.out has a key of 2A.
                     md_paths[file[:2]] = os.path.join(input_dir, file)
                 else:
                     errors.append(f'Metadata file {file} is not in the input_directory')
