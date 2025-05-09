@@ -16,9 +16,10 @@ def appraisal_check_df(df, keyword, category):
     # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
     doc_name = df['correspondence_document_name'].str.contains(keyword, case=False, na=False)
     text = df['correspondence_text'].str.contains(keyword, case=False, na=False)
+    code = df['code_description'].str.contains(keyword, case=False, na=False)
 
     # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[doc_name | text].copy()
+    df_check = df[doc_name | text | code].copy()
 
     # Adds a column with the appraisal category.
     df_check['Appraisal_Category'] = category
