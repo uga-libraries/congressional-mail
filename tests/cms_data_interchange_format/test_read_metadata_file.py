@@ -83,6 +83,17 @@ class MyTestCase(unittest.TestCase):
                     ['2D', '2', '3003', '1', 'CM', 'text3']]
         self.assertEqual(result, expected, "Problem with test for 2D")
 
+    def test_8a(self):
+        """Test for the metadata file 8A.out"""
+        df_8a = read_metadata_file('8A', os.path.join('test_data', 'read', '8A.out'))
+
+        result = df_to_list(df_8a)
+        expected = [['record_type', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['8A', 'COR', '15001', 'Advocacy', 'Y'],
+                    ['8A', 'COR', '15002', 'Congress > CON', 'BLANK'],
+                    ['8A', 'COR', '15003', 'Science, Technology, Communications > SCI Aligned', 'Y']]
+        self.assertEqual(result, expected, "Problem with test for 2D")
+
 
 if __name__ == '__main__':
     unittest.main()
