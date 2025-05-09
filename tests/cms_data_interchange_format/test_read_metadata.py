@@ -15,7 +15,8 @@ class MyTestCase(unittest.TestCase):
                       '2A': os.path.join('test_data', 'read', '2A.out'),
                       '2B': os.path.join('test_data', 'read', '2B.out'),
                       '2C': os.path.join('test_data', 'read', '2C.out'),
-                      '2D': os.path.join('test_data', 'read', '2D.out')}
+                      '2D': os.path.join('test_data', 'read', '2D.out'),
+                      '8A': os.path.join('test_data', 'read', '8A.out')}
         md_df = read_metadata(paths_dict)
 
         # Tests the value of md_df
@@ -23,13 +24,16 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'correspondence_text'],
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20220110', '20220110', 'BLANK',
-                     '20220110', 'LETTER', 'TAXES', 'CON', '1', 'main', 'taxes_con.docx', 'BLANK', 'text1'],
+                     '20220110', 'LETTER', '15001', 'CON', '1', 'main', 'taxes_con.docx', 'BLANK', 'text1',
+                     'COR', '15001', 'Taxes', 'Y'],
                     ['City Two', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK', 'text2'],
+                     '20220220', 'EMAIL', '15002', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK', 'text2',
+                     'COR', '15002', 'Minimum Wage', 'BLANK'],
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK', 'text3']]
+                     '20220330', 'EMAIL', '15003', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK', 'text3',
+                     'COR', '15003', 'Rights > Workers', 'Y']]
         self.assertEqual(result, expected, "Problem with test for function read_metadata")
 
 
