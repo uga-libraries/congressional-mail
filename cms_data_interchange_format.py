@@ -73,6 +73,114 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
+def find_academy_rows(df):
+    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column correspondence_text includes one or more keywords that indicate academy applications.
+    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
+    # Adds a column for the appraisal category.
+    df_corr_text['Appraisal_Category'] = 'Academy_Application'
+
+    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Applications')
+
+    return df_corr_text, df_academy_check
+
+
+def find_appraisal_rows(df, output_dir):
+    """Find metadata rows for all the categories for appraisal, return df and log results"""
+
+    # Calls the functions for each appraisal category.
+    df_academy, df_academy_check = find_academy_rows(df)
+    df_casework, df_casework_check = find_casework_rows(df)
+    df_job, df_job_check = find_job_rows(df)
+    df_recommendation, df_recommendation_check = find_recommendation_rows(df)
+
+    # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
+    # but have a simple keyword (e.g., case) that could be new indicators for appraisal.
+    # Rows that fit more than one appraisal category are repeated.
+    df_check = pd.concat([df_academy_check, df_casework_check, df_job_check, df_recommendation_check],
+                         axis=0, ignore_index=True)
+    df_check.to_csv(os.path.join(output_dir, 'appraisal_check_log.csv'), index=False)
+
+    # Makes a single dataframe with all rows that indicate appraisal
+    # and also saves to a log for review for any that are not correct identifications.
+    # Rows that fit more than one appraisal category are combined.
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = df_appraisal.astype(str)
+    df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])[
+        'Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
+    df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
+
+    # Removes the column 'correspondence_text', which is the only column currently likely to contain PII
+    # that is needed for more comprehensive appraisal.
+    df_appraisal.drop(['correspondence_text'], axis=1, inplace=True)
+    return df_appraisal
+
+
+def find_casework_rows(df):
+    """Find metadata rows with topics or text that indicate they are casework and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column correspondence_text includes one or more keywords that indicate casework.
+    keywords_list = ['case file', 'case has', 'case open', 'casework', 'forwarded to me', 'open case']
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
+    # Adds a column for the appraisal category.
+    df_corr_text['Appraisal_Category'] = 'Casework'
+
+    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+
+    return df_corr_text, df_casework_check
+
+
+def find_job_rows(df):
+    """Find metadata rows with topics or text that indicate they are job applications and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column correspondence_text includes one or more keywords that indicate job applications.
+    keywords_list = ['intern assignment', 'intern response', 'internship']
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
+    # Adds a column for the appraisal category.
+    df_corr_text['Appraisal_Category'] = 'Job_Application'
+
+    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Applications')
+
+    return df_corr_text, df_job_check
+
+
+def find_recommendation_rows(df):
+    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
+    Once a row matches one pattern, it is not considered for other patterns."""
+
+    # Column correspondence_text includes one or more keywords that indicate recommendations.
+    keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
+                     'recommendation letter']
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
+    # Adds a column for the appraisal category.
+    df_corr_text['Appraisal_Category'] = 'Recommendation'
+
+    # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
+    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+
+    return df_corr_text, df_recommendation_check
+
+
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
