@@ -73,16 +73,6 @@ def check_arguments(arg_list):
     return input_dir, md_paths, mode, errors
 
 
-def check_casework(df, output_dir):
-    """Make log of rows with "case" to identify casework in future exports (none in collection currently)"""
-
-    # Rows with "case" in any column are saved to a log for review, if any.
-    # This may show us another pattern that indicates casework or may be another use of the word case.
-    case = np.column_stack([df[col].str.contains('case', case=False, na=False) for col in df])
-    if len(df.loc[case.any(axis=1)].index) > 0:
-        df.loc[case.any(axis=1)].to_csv(os.path.join(output_dir, 'case_remains_log.csv'), index=False)
-
-
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
@@ -186,10 +176,6 @@ if __name__ == '__main__':
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
-
-    # Makes a log of rows with "case" for detecting casework.
-    # We have not observed casework yet in this export type, so cannot predict the patterns needed to identify it.
-    check_casework(md_df, output_directory)
 
     # For access, makes a copy of the metadata with tables merged and PII removed and
     # makes a copy of the data split by congress year.
