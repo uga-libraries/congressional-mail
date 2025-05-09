@@ -54,9 +54,9 @@ class MyTestCase(unittest.TestCase):
 
         result = df_to_list(df_2b)
         expected = [['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'],
-                    ['2B', '1', '1001', 'TAXES', 'CON'],
-                    ['2B', '2', '2002', 'MINWAGE', 'PRO'],
-                    ['2B', '3', '3003', 'RIGHTS', 'PRO']]
+                    ['2B', '1', '1001', '15001', 'CON'],
+                    ['2B', '2', '2002', '15002', 'PRO'],
+                    ['2B', '3', '3003', '15003', 'PRO']]
         self.assertEqual(result, expected, "Problem with test for 2B")
 
     def test_2c(self):
@@ -89,10 +89,10 @@ class MyTestCase(unittest.TestCase):
 
         result = df_to_list(df_8a)
         expected = [['record_type', 'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['8A', 'COR', '15001', 'Advocacy', 'Y'],
-                    ['8A', 'COR', '15002', 'Congress > CON', 'BLANK'],
-                    ['8A', 'COR', '15003', 'Science, Technology, Communications > SCI Aligned', 'Y']]
-        self.assertEqual(result, expected, "Problem with test for 2D")
+                    ['8A', 'COR', '15001', 'Taxes', 'Y'],
+                    ['8A', 'COR', '15002', 'Minimum Wage', 'BLANK'],
+                    ['8A', 'COR', '15003', 'Rights > Workers', 'Y']]
+        self.assertEqual(result, expected, "Problem with test for 8A")
 
 
 if __name__ == '__main__':
