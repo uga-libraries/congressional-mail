@@ -24,105 +24,101 @@ class MyTestCase(unittest.TestCase):
     def test_none(self):
         """Test for when no rows match any appraisal categories"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['20240101', 'A', 'file.doc', 'x'],
-                              ['20240202', 'B', 'file.doc', 'x'],
-                              ['20240303', 'C', 'file.doc', 'x']],
-                             columns=['date_in', 'correspondence_code', 'correspondence_document_name',
-                                      'correspondence_text'])
+        md_df = pd.DataFrame([['file_1.doc', 'x', 'y'],
+                              ['file_2.doc', 'x', 'y'],
+                              ['file_3.doc', 'x', 'y']],
+                             columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in appraisal_df are correct.
         result = df_to_list(appraisal_df)
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'Appraisal_Category']]
+        expected = [['correspondence_document_name', 'code_description', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category']]
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category']]
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
         self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_delete_log.csv")
 
     def test_one(self):
         """Test for when rows match only one appraisal category, if any"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['20240101', 'A', 'file.doc', 'academy issue'],
-                              ['20240202', 'B', 'file.doc', 'sports academy'],
-                              ['20240303', 'C', 'file.doc', 'summer camp'],
-                              ['20240404', 'D', 'file.doc', 'casework - forwarded to me for a response'],
-                              ['20240505', 'E', 'file.doc', 'Internship applicant'],
-                              ['20240606', 'F', 'file.doc', 'create jobs now'],
-                              ['20240707', 'G', 'file.doc', 'good job with this one']],
-                             columns=['date_in', 'correspondence_code', 'correspondence_document_name',
-                                      'correspondence_text'])
+        md_df = pd.DataFrame([['file_1.doc', 'academy issue', 'x'],
+                              ['file_2.doc', 'sports academy', 'x'],
+                              ['file_3.doc', 'summer camp', 'x'],
+                              ['file_4.doc', 'x', 'legal > case'],
+                              ['file_5.doc', 'casework - forwarded to me for a response', 'x'],
+                              ['file_6.doc', 'Internship applicant', 'x'],
+                              ['file_7.doc', 'create jobs now', 'x'],
+                              ['file_8.doc', 'x', 'academy nomination'],
+                              ['file_9.doc', 'good job with this one', 'x']],
+                             columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in appraisal_df are correct.
         result = df_to_list(appraisal_df)
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'Appraisal_Category'],
-                    ['20240101', 'A', 'file.doc', 'Academy_Application'],
-                    ['20240404', 'D', 'file.doc', 'Casework'],
-                    ['20240505', 'E', 'file.doc', 'Job_Application']]
+        expected = [['correspondence_document_name', 'code_description', 'Appraisal_Category'],
+                    ['file_1.doc', 'x', 'Academy_Application'],
+                    ['file_5.doc', 'x', 'Casework'],
+                    ['file_6.doc', 'x', 'Job_Application'],
+                    ['file_8.doc', 'academy nomination', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for one category, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category'],
-                    ['20240202', 'B', 'file.doc', 'sports academy', 'Academy_Application'],
-                    ['20240606', 'F', 'file.doc', 'create jobs now', 'Job_Application'],
-                    ['20240707', 'G', 'file.doc', 'good job with this one', 'Job_Application']]
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
+                    ['file_2.doc', 'sports academy', 'x', 'Academy_Application'],
+                    ['file_4.doc', 'x', 'legal > case', 'Casework'],
+                    ['file_7.doc', 'create jobs now', 'x', 'Job_Application'],
+                    ['file_9.doc', 'good job with this one', 'x', 'Job_Application']]
         self.assertEqual(result, expected, "Problem with test for one category, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category'],
-                    ['20240101', 'A', 'file.doc', 'academy issue', 'Academy_Application'],
-                    ['20240404', 'D', 'file.doc', 'casework - forwarded to me for a response', 'Casework'],
-                    ['20240505', 'E', 'file.doc', 'Internship applicant', 'Job_Application']]
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
+                    ['file_1.doc', 'academy issue', 'x', 'Academy_Application'],
+                    ['file_5.doc', 'casework - forwarded to me for a response', 'x', 'Casework'],
+                    ['file_6.doc', 'Internship applicant', 'x', 'Job_Application'],
+                    ['file_8.doc', 'x', 'academy nomination', 'Academy_Application']]
         self.assertEqual(result, expected, "Problem with test for one category, appraisal_delete_log.csv")
 
     def test_multiple(self):
         """Test for when rows match multiple appraisal categories, if any"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['20240101', 'A', 'file.doc', 'casework - internship'],
-                              ['20240202', 'B', 'file.doc', 'x'],
-                              ['20240303', 'C', 'file.doc', 'internship recommendation letter'],
-                              ['20240404', 'D', 'file.doc', 'Closed case file for internship recommendation letter'],
-                              ['20240505', 'E', 'recommendation.doc', 'case']],
-                             columns=['date_in', 'correspondence_code', 'correspondence_document_name',
-                                      'correspondence_text'])
+        md_df = pd.DataFrame([['file_1.doc', 'casework > internship', 'x'],
+                              ['file_2.doc', 'x', 'y'],
+                              ['file_3.doc', 'internship recommendation letter', 'x'],
+                              ['file_4.doc', 'internship recommendation letter closed case file', 'x'],
+                              ['file_5.doc', 'recommendation.doc', 'case > recommendation']],
+                             columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in appraisal_df are correct.
         result = df_to_list(appraisal_df)
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'Appraisal_Category'],
-                    ['20240101', 'A', 'file.doc', 'Casework|Job_Application'],
-                    ['20240303', 'C', 'file.doc', 'Job_Application|Recommendation'],
-                    ['20240404', 'D', 'file.doc', 'Casework|Job_Application|Recommendation']]
+        expected = [['correspondence_document_name', 'code_description', 'Appraisal_Category'],
+                    ['file_1.doc', 'x', 'Casework|Job_Application'],
+                    ['file_3.doc', 'x', 'Job_Application|Recommendation'],
+                    ['file_4.doc', 'x', 'Casework|Job_Application|Recommendation']]
         self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category'],
-                    ['20240505', 'E', 'recommendation.doc', 'case', 'Casework'],
-                    ['20240505', 'E', 'recommendation.doc', 'case', 'Recommendation']]
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
+                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Casework'],
+                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Recommendation']]
         self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
-        expected = [['date_in', 'correspondence_code', 'correspondence_document_name', 'correspondence_text',
-                     'Appraisal_Category'],
-                    ['20240101', 'A', 'file.doc', 'casework - internship', 'Casework|Job_Application'],
-                    ['20240303', 'C', 'file.doc', 'internship recommendation letter', 'Job_Application|Recommendation'],
-                    ['20240404', 'D', 'file.doc', 'Closed case file for internship recommendation letter',
+        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
+                    ['file_1.doc', 'casework > internship', 'x', 'Casework|Job_Application'],
+                    ['file_3.doc', 'internship recommendation letter', 'x', 'Job_Application|Recommendation'],
+                    ['file_4.doc', 'internship recommendation letter closed case file', 'x',
                      'Casework|Job_Application|Recommendation']]
         self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_delete_log.csv")
 
