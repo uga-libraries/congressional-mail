@@ -87,7 +87,7 @@ def find_academy_rows(df):
     df_corr_text['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
-    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Applications')
+    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
 
     return df_corr_text, df_academy_check
 
@@ -156,7 +156,7 @@ def find_job_rows(df):
     df_corr_text['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns indicating academy applications.
-    df_job_check = appraisal_check_df(df, 'job', 'Job_Applications')
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_corr_text, df_job_check
 
