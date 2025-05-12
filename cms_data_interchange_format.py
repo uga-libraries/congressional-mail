@@ -2,10 +2,12 @@
 Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
 Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
+from datetime import date
 import os
 import pandas as pd
 import sys
 from css_data_interchange_format import remove_appraisal_rows, split_congress_year
+from css_archiving_format import file_deletion_log
 
 
 def appraisal_check_df(df, keyword, category):
@@ -71,6 +73,32 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_paths, mode, errors
+
+
+def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
+    """Deletes letters received from constituents and individual letters sent back by the office
+    because they are one of the types of letters not retained for appraisal reasons"""
+
+    # Creates a file deletion log, with a header row.
+    log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
+    file_deletion_log(log_path, None, 'header')
+
+    # For every row in df_appraisal, deletes any letter in the correspondence_document_name column except form letters.
+    # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
+    # Form letters are retained.
+    df_appraisal = df_appraisal.astype(str)
+    for row in df_appraisal.itertuples():
+        name = row.correspondence_document_name
+        if name != '' and name != 'nan' and not name.startswith('form'):
+            file_path = update_path(name, input_dir)
+            if file_path == 'error_new':
+                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+            else:
+                try:
+                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    os.remove(file_path)
+                except FileNotFoundError:
+                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def find_academy_rows(df):
@@ -278,6 +306,21 @@ def remove_pii(df):
     return df
 
 
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen one way that paths are formatted in the metadata:
+    # folder\..\file.ext, where the export is \documents\folder\..\file.ext and folder is one of nine possibilities
+    folders = ('attachments', 'case-custom', 'case-files', 'documents', 'enewsletters', 'form-attachments', 'forms',
+               'in-email', 'out-custom')
+    if md_path.startswith(folders):
+        updated_path = os.path.join(input_dir, 'documents', md_path)
+    else:
+        updated_path = 'error_new'
+
+    return updated_path
+
+
 if __name__ == '__main__':
 
     # Validates the script argument values and calculates the paths to the metadata files.
@@ -305,8 +348,14 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
+    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    if script_mode == 'appraisal':
+        print("\nThe script is running in appraisal mode.")
+        print("It will delete letters due to appraisal but not change the metadata file.")
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+
     # TODO For preservation, prepares the export for the general_aip.py script.
-    if script_mode == 'preservation':
+    elif script_mode == 'preservation':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 

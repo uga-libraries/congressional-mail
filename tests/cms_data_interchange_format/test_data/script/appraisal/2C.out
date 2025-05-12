@@ -1,0 +1,6 @@
+2C	1	1001	1	main	in-email\case_name.txt
+2C	1	1001	1	main	out-custom\1001.txt
+2C	2	2002	1	main	in-email\2.txt	
+2C	3	3003	1	main	forms\1.txt	
+2C	4	4004	1	main	in-email\3.txt	
+2C	5	5005	1	main	out-custom\1002.txt	
