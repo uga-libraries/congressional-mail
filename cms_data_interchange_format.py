@@ -296,8 +296,15 @@ if __name__ == '__main__':
     # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
+    # The rest of the script is dependent on the mode.
+
+    # TODO For preservation, prepares the export for the general_aip.py script.
+    if script_mode == 'preservation':
+        print("\nThe script is running in preservation mode.")
+        print("The steps are TBD.")
+
     # For access, makes a copy of the metadata with tables merged and PII removed and
     # makes a copy of the data split by congress year.
-    if script_mode == 'access':
+    elif script_mode == 'access':
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
