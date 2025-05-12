@@ -47,8 +47,8 @@ class MyTestCase(unittest.TestCase):
                     ' and make copies of the metadata split by congress year\n')
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
-        # Tests the contents of case_remains_log.csv.
-        csv_path = os.path.join('test_data', 'case_remains_log.csv')
+        # Tests the contents of the appraisal_check_log.csv.
+        csv_path = os.path.join('test_data', 'script' 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -57,10 +57,10 @@ class MyTestCase(unittest.TestCase):
                      '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'BLANK'],
                     ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
                      '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for access, case_remains_log.csv")
+        self.assertEqual(result, expected, "Problem with test for access, appraisal_check_log.csv")
 
-        # Tests the contents of Access_Copy.csv.
-        csv_path = os.path.join('test_data', 'Access_Copy.csv')
+        # Tests the contents of archiving_correspondence_redacted.csv.
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -75,10 +75,10 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
                      '20230330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for correct, Access_Copy.csv")
+        self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', '2021-2022.csv')
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -89,27 +89,27 @@ class MyTestCase(unittest.TestCase):
                      '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK'],
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
                      '20220330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for correct, 2021-2022")
+        self.assertEqual(result, expected, "Problem with test for access, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join('test_data', '2023-2024.csv')
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
                      '20230330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for correct, 2023-2024")
+        self.assertEqual(result, expected, "Problem with test for access, 2023-2024")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for correct, undated")
+        self.assertEqual(result, expected, "Problem with test for access, undated")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
