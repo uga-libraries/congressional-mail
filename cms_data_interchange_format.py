@@ -348,8 +348,14 @@ if __name__ == '__main__':
 
     # The rest of the script is dependent on the mode.
 
+    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    if script_mode == 'appraisal':
+        print("\nThe script is running in appraisal mode.")
+        print("It will delete letters due to appraisal but not change the metadata file.")
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+
     # TODO For preservation, prepares the export for the general_aip.py script.
-    if script_mode == 'preservation':
+    elif script_mode == 'preservation':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 
