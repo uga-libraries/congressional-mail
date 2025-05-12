@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pandas as pd
 import sys
-from css_data_interchange_format import split_congress_year
+from css_data_interchange_format import remove_appraisal_rows, split_congress_year
 
 
 def appraisal_check_df(df, keyword, category):
@@ -309,5 +309,6 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters, save the merged metadata tables without columns with PII,"
               " and make copies of the metadata split by congress year")
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
