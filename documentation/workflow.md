@@ -43,3 +43,7 @@ Then the general_aip.py script can be run to produce the AIPs and they may be in
 This workflow needs to be further developed.
 Run the script in "access" mode to make anonymized versions of the metadata that can be shared with researchers.
 Package these into DIPs with the form letters and documentation (TBD) according to the standard born-digital workflow.
+
+For CMS Data Interchange Format, include Table 8C for the form letter metadata.
+If we every receive 8D, merge fields, potentially merge that with 8C.
+Do not include the other form letter file, 8E, as it links to the individual letter and may be a privacy concern.

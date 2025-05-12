@@ -2,11 +2,10 @@
 Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
 Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
-import numpy as np
 import os
 import pandas as pd
 import sys
-from css_data_interchange_format import split_congress_year
+from css_data_interchange_format import remove_appraisal_rows, split_congress_year
 
 
 def appraisal_check_df(df, keyword, category):
@@ -296,6 +295,14 @@ if __name__ == '__main__':
     # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
+    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
+    # This is used in most of the modes.
+    appraisal_df = find_appraisal_rows(md_df, output_directory)
+
+    # Removes the column 'text', now that identifying rows for appraisal is complete,
+    # which is the only column currently likely to contain PII that is needed for more comprehensive appraisal.
+    md_df.drop(['correspondence_text'], axis=1, inplace=True)
+
     # The rest of the script is dependent on the mode.
 
     # TODO For preservation, prepares the export for the general_aip.py script.
@@ -303,8 +310,12 @@ if __name__ == '__main__':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 
-    # For access, makes a copy of the metadata with tables merged and PII removed and
-    # makes a copy of the data split by congress year.
+    # For access, makes a copy of the metadata with tables merged and rows for appraisal and columns for PII removed
+    # and makes a copy of the data split by congress year.
     elif script_mode == 'access':
-        md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted letters, save the merged metadata tables without columns with PII,"
+              " and make copies of the metadata split by congress year")
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
