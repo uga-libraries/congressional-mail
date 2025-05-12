@@ -60,6 +60,16 @@ class MyTestCase(unittest.TestCase):
                      'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for access, appraisal_check_log.csv")
 
+        # Tests the contents of the appraisal_delete_log.csv.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
+                     'Appraisal_Category']]
+        self.assertEqual(result, expected, "Problem with test for access, appraisal_delete_log.csv")
+
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
