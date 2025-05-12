@@ -29,6 +29,46 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(script_mode, 'access', "Problem with correct - access, script_mode")
         self.assertEqual(errors_list, [], "Problem with correct - access, errors_list")
 
+    def test_correct_accession(self):
+        """Test for when both required arguments are present, input_directory path exists and
+        all metadata files are present, and mode is accession."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['cms_data_interchange_format.py', input_dir, 'accession']
+        input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        expected_dict = {'1B': os.path.join(input_dir, '1B.out'),
+                         '2A': os.path.join(input_dir, '2A.out'),
+                         '2B': os.path.join(input_dir, '2B.out'),
+                         '2C': os.path.join(input_dir, '2C.out'),
+                         '2D': os.path.join(input_dir, '2D.out'),
+                         '8A': os.path.join(input_dir, '8A.out')}
+        self.assertEqual(input_directory, input_dir, "Problem with correct - accession, input_directory")
+        self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - accession, metadata_paths_dict")
+        self.assertEqual(script_mode, 'accession', "Problem with correct - accession, script_mode")
+        self.assertEqual(errors_list, [], "Problem with correct - accession, errors_list")
+
+    def test_correct_appraisal(self):
+        """Test for when both required arguments are present, input_directory path exists and
+        all metadata files are present, and mode is appraisal."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['cms_data_interchange_format.py', input_dir, 'appraisal']
+        input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        expected_dict = {'1B': os.path.join(input_dir, '1B.out'),
+                         '2A': os.path.join(input_dir, '2A.out'),
+                         '2B': os.path.join(input_dir, '2B.out'),
+                         '2C': os.path.join(input_dir, '2C.out'),
+                         '2D': os.path.join(input_dir, '2D.out'),
+                         '8A': os.path.join(input_dir, '8A.out')}
+        self.assertEqual(input_directory, input_dir, "Problem with correct - appraisal, input_directory")
+        self.assertEqual(metadata_paths_dict, expected_dict, "Problem with correct - appraisal, metadata_paths_dict")
+        self.assertEqual(script_mode, 'appraisal', "Problem with correct - appraisal, script_mode")
+        self.assertEqual(errors_list, [], "Problem with correct - appraisal, errors_list")
+
     def test_correct_preservation(self):
         """Test for when both required arguments are present, input_directory path exists and 
         all metadata files are present, and mode is access."""
@@ -80,7 +120,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(input_directory, input_dir, "Problem with error - script mode, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with error - script mode, metadata_paths_dict")
         self.assertEqual(script_mode, None, "Problem with error - script mode, script_mode")
-        self.assertEqual(errors_list, ["Provided mode 'mode_error' is not 'access' or 'preservation'"],
+        self.assertEqual(errors_list, ["Provided mode 'mode_error' is not one of the expected modes"],
                          "Problem with error - script mode, errors_list")
 
     def test_missing_both_arg(self):
@@ -107,12 +147,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(input_directory, input_dir, "Problem with missing metadata, input_directory")
         self.assertEqual(metadata_paths_dict, {}, "Problem with missing metadata, metadata_paths_dict")
         self.assertEqual(script_mode, 'access', "Problem with missing metadata, script_mode")
-        self.assertEqual(errors_list, ['Metadata file 1B.out is not in the input_directory',
-                                       'Metadata file 2A.out is not in the input_directory',
-                                       'Metadata file 2B.out is not in the input_directory',
-                                       'Metadata file 2C.out is not in the input_directory',
-                                       'Metadata file 2D.out is not in the input_directory',
-                                       'Metadata file 8A.out is not in the input_directory'],
+        self.assertEqual(errors_list, ['No 1B.out file in the input_directory',
+                                       'No 2A.out file in the input_directory',
+                                       'No 2B.out file in the input_directory',
+                                       'No 2C.out file in the input_directory',
+                                       'No 2D.out file in the input_directory',
+                                       'No 8A.out file in the input_directory'],
                          "Problem with missing metadata, errors_list")
 
     def test_missing_metadata_some(self):
@@ -129,9 +169,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(input_directory, input_dir, "Problem with missing metadata - some, input_directory")
         self.assertEqual(metadata_paths_dict, expected_dict, "Problem with missing metadata - some, metadata_paths_dict")
         self.assertEqual(script_mode, 'access', "Problem with missing metadata - some, script_mode")
-        self.assertEqual(errors_list, ['Metadata file 1B.out is not in the input_directory',
-                                       'Metadata file 2B.out is not in the input_directory',
-                                       'Metadata file 8A.out is not in the input_directory'],
+        self.assertEqual(errors_list, ['No 1B.out file in the input_directory',
+                                       'No 2B.out file in the input_directory',
+                                       'No 8A.out file in the input_directory'],
                          "Problem with missing metadata - some, errors_list")
 
     def test_missing_one_arg(self):
@@ -166,7 +206,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(metadata_paths_dict, {}, "Problem with too many arguments, metadata_paths_dict")
         self.assertEqual(script_mode, None, "Problem with too many arguments, script_mode")
         self.assertEqual(errors_list, [f"Provided input_directory '{input_dir}' does not exist",
-                                       "Provided mode 'mode_error' is not 'access' or 'preservation'",
+                                       "Provided mode 'mode_error' is not one of the expected modes",
                                        "Provided more than the required arguments, input_directory and script_mode"],
                          "Problem with too many arguments, errors_list")
 
