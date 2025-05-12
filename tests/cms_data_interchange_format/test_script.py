@@ -37,7 +37,15 @@ class MyTestCase(unittest.TestCase):
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
         input_directory = os.path.join('test_data', 'script', 'access')
-        subprocess.run(f"python {script_path} {input_directory} access", shell=True)
+        output = subprocess.run(f"python {script_path} {input_directory} access",
+                                shell=True, capture_output=True, text=True)
+
+        # Tests the print statement.
+        result = output.stdout
+        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters, '
+                    'save the merged metadata tables without columns with PII,'
+                    ' and make copies of the metadata split by congress year\n')
+        self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of case_remains_log.csv.
         csv_path = os.path.join('test_data', 'case_remains_log.csv')
