@@ -48,15 +48,16 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
-        csv_path = os.path.join('test_data', 'script' 'appraisal_check_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
+                     'Appraisal_Category'],
                     ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'BLANK'],
-                    ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK']]
+                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'legal_con.docx', 'BLANK', 'note text 1',
+                     'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
         self.assertEqual(result, expected, "Problem with test for access, appraisal_check_log.csv")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
@@ -64,17 +65,23 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'BLANK'],
+                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'legal_con.docx', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y'],
                     ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK'],
+                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y'],
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK'],
+                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK'],
+                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
+                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
@@ -82,13 +89,17 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', 'LEGAL CASE', 'CON', '1', 'main', 'legal_con.docx', 'BLANK'],
+                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'legal_con.docx', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y'],
                     ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', 'MINWAGE', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK'],
+                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'min_wage_pro.docx', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y'],
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
+                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(result, expected, "Problem with test for access, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
@@ -96,9 +107,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
+                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(result, expected, "Problem with test for access, 2023-2024")
 
         # Tests the contents of undated.csv.
@@ -106,9 +119,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location'],
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', 'RIGHTS', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK']]
+                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(result, expected, "Problem with test for access, undated")
 
     def test_error_argument(self):
