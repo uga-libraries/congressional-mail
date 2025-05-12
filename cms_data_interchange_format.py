@@ -278,6 +278,21 @@ def remove_pii(df):
     return df
 
 
+def update_path(md_path, input_dir):
+    """Update a path found in the metadata to match the actual directory structure of the exports"""
+
+    # So far, we have seen one way that paths are formatted in the metadata:
+    # folder\..\file.ext, where the export is \documents\folder\..\file.ext and folder is one of nine possibilities
+    folders = ('attachments', 'case-custom', 'case-files', 'documents', 'enewsletters', 'form-attachments', 'forms',
+               'in-email', 'out-custom')
+    if md_path.startswith(folders):
+        updated_path = os.path.join(input_dir, 'documents', md_path)
+    else:
+        updated_path = 'error_new'
+
+    return updated_path
+
+
 if __name__ == '__main__':
 
     # Validates the script argument values and calculates the paths to the metadata files.
