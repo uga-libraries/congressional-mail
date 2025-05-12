@@ -19,9 +19,9 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        filenames = ['Access_Copy.csv', '2021-2022.csv', '2023-2024.csv', 'undated.csv', 'case_remains_log.csv']
+        filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv']
         for filename in filenames:
-            file_path = os.path.join('test_data', filename)
+            file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
