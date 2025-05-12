@@ -303,8 +303,11 @@ if __name__ == '__main__':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 
-    # For access, makes a copy of the metadata with tables merged and PII removed and
-    # makes a copy of the data split by congress year.
+    # For access, makes a copy of the metadata with tables merged and rows for appraisal and columns for PII removed
+    # and makes a copy of the data split by congress year.
     elif script_mode == 'access':
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted letters, save the merged metadata tables without columns with PII,"
+              " and make copies of the metadata split by congress year")
         md_df.to_csv(os.path.join(output_directory, 'Access_Copy.csv'), index=False)
         split_congress_year(md_df, output_directory)
