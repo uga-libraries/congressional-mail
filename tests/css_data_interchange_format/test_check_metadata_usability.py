@@ -73,8 +73,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, expected, "Problem with test for all correct")
 
     def test_blank(self):
-        """Test for when every row in is blank"""
-        # TODO test fails because not string, which breaks function
+        """Test for when every row is blank"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
                       np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],

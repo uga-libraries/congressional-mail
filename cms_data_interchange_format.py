@@ -107,6 +107,58 @@ def check_metadata_formatting(column, df, output_dir):
     return no_match_count
 
 
+def check_metadata_usability(df, output_dir):
+    """Test the usability of the metadata: columns present, number of blanks, and formatting errors"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                'code_type', 'code', 'code_description', 'inactive_flag']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number of blank cells in each column.
+    blank_count = df.isna().sum()
+
+    # Calculates the percentage of blank cells in each column.
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+
+    # Calculates the number of cells with formatting errors in each column with predictable formatting
+    # and also saves those rows to a csv.
+    cdn_mismatch = check_metadata_formatting('correspondence_document_name', df, output_dir)
+    date_in_mismatch = check_metadata_formatting('date_in', df, output_dir)
+    date_out_mismatch = check_metadata_formatting('date_out', df, output_dir)
+    state_mismatch = check_metadata_formatting('state', df, output_dir)
+    tickler_mismatch = check_metadata_formatting('tickler_date', df, output_dir)
+    update_mismatch = check_metadata_formatting('update_date', df, output_dir)
+    zip_mismatch = check_metadata_formatting('zip_code', df, output_dir)
+
+    # Combines the number of formatting errors for the checked columns into a series, for adding to the report.
+    # Other columns have "uncheckable", even if the column is missing from the export.
+    formatting = pd.Series(data=['uncheckable', state_mismatch, zip_mismatch, 'uncheckable', 'uncheckable',
+                                 'uncheckable', date_in_mismatch, date_out_mismatch, tickler_mismatch,
+                                 update_mismatch, 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', cdn_mismatch, 'uncheckable', 'uncheckable', 'uncheckable',
+                                 'uncheckable', 'uncheckable'], index=expected)
+
+    # Combines the data about each column into a dataframe and saves as a CSV.
+    columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors']
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+
+
 def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     """Deletes letters received from constituents and individual letters sent back by the office
     because they are one of the types of letters not retained for appraisal reasons"""
