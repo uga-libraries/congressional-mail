@@ -299,6 +299,10 @@ if __name__ == '__main__':
     # This is used in most of the modes.
     appraisal_df = find_appraisal_rows(md_df, output_directory)
 
+    # Removes the column 'text', now that identifying rows for appraisal is complete,
+    # which is the only column currently likely to contain PII that is needed for more comprehensive appraisal.
+    md_df.drop(['correspondence_text'], axis=1, inplace=True)
+
     # The rest of the script is dependent on the mode.
 
     # TODO For preservation, prepares the export for the general_aip.py script.
