@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        # Metadata file and logs in the input directory.
+        # Metadata file and logs in the output directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv',
                      'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',

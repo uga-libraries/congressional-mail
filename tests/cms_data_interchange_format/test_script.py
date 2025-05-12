@@ -3,6 +3,7 @@ Tests for the script cms_data_interchange_format.py
 """
 import os
 import pandas as pd
+import shutil
 import subprocess
 import unittest
 
@@ -19,17 +20,23 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
+        # Metadata file and logs in the output directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
+        # Metadata split by congress year, in own directory.
+        file_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
+        if os.path.exists(file_path):
+            shutil.rmtree(file_path)
+
     def test_access(self):
         """Test for when the script runs correctly in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script')
+        input_directory = os.path.join('test_data', 'script', 'access')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
         # Tests the contents of case_remains_log.csv.
