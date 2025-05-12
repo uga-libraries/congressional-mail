@@ -16,6 +16,15 @@ def csv_to_list(csv_path):
     return csv_list
 
 
+def files_in_dir(dir_path):
+    """Make a list of every file in a directory, for testing the result of the function"""
+    file_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            file_list.append(file)
+    return file_list
+
+
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
