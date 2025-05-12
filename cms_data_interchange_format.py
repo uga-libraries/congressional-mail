@@ -296,6 +296,10 @@ if __name__ == '__main__':
     # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
+    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
+    # This is used in most of the modes.
+    appraisal_df = find_appraisal_rows(md_df, output_directory)
+
     # The rest of the script is dependent on the mode.
 
     # TODO For preservation, prepares the export for the general_aip.py script.
