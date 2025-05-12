@@ -2,7 +2,6 @@
 Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
 Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
 """
-import numpy as np
 import os
 import pandas as pd
 import sys
