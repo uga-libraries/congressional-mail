@@ -9,11 +9,14 @@ import subprocess
 import unittest
 
 
-def csv_to_list(csv_path):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
+def csv_to_list(csv_path, sort=False):
+    """Convert the contents of a CSV to a list which contains one list per row for easier comparison
+    With the option to sort for ones with inconsistent order in the output"""
     df = pd.read_csv(csv_path, dtype=str)
     df = df.fillna('BLANK')
     csv_list = [df.columns.tolist()] + df.values.tolist()
+    if sort:
+        csv_list.sort()
     return csv_list
 
 
@@ -32,7 +35,10 @@ class MyTestCase(unittest.TestCase):
         """Remove script outputs, if they were made"""
         # Metadata file and logs in the output directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"]
+                     'metadata_formatting_errors_date_out.csv', 'metadata_formatting_errors_state.csv',
+                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'topics_report.csv',
+                     'usability_report_matching.csv', 'usability_report_matching_details.csv',
+                     'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -151,6 +157,140 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(result, expected, "Problem with test for access, undated")
+
+    def test_accession(self):
+        """Test for when the script runs correctly in accession mode"""
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
+        input_directory = os.path.join('test_data', 'script', 'accession')
+        output = subprocess.run(f"python {script_path} {input_directory} accession",
+                                shell=True, capture_output=True, text=True)
+
+        # Tests the print statement.
+        result = output.stdout
+        expected = ('\nThe script is running in accession mode.\n'
+                    'It will produce usability and appraisal reports and not change the export.\n')
+        self.assertEqual(result, expected, "Problem with test for accession, printed statement")
+
+        # Tests the contents of the appraisal check log.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
+                     'Appraisal_Category'],
+                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
+                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
+                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
+                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
+                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
+                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
+                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
+                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', 'out-custom\\100X.txt', 'BLANK',
+                     'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation']]
+        self.assertEqual(result, expected, "Problem with test for appraisal, appraisal_check_log.csv")
+
+        # Tests the contents of the appraisal_delete_log.csv.
+        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
+                     'Appraisal_Category'],
+                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
+                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
+                     'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y', 'Recommendation'],
+                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'EMAIL', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
+                     'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
+                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK',
+                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
+                     'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
+        self.assertEqual(result, expected, "Problem with test for appraisal, appraisal_delete_log.csv")
+
+        # Tests the contents of the metadata_formatting_errors_date_out.csv.
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_date_out.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
+                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR', '22222',
+                     'MINWAGE', 'Y'],
+                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK',
+                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'COR', '33333',
+                     'RIGHTS', 'Y']]
+        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_date_out.csv")
+
+        # Tests the contents of the metadata_formatting_errors_state.csv.
+        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
+                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR', '22222',
+                     'MINWAGE', 'Y']]
+        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_state.csv")
+
+        # Tests the contents of the topics_report.csv.
+        csv_path = os.path.join('test_data', 'script', 'topics_report.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Topic', 'Topic_Count'],
+                    ['RIGHTS', '3'],
+                    ['LEGAL CASE', '2'],
+                    ['MINWAGE', '1']]
+        self.assertEqual(result, expected, "Problem with test for accession, topics_report.csv")
+
+        # Tests the contents of the usability_report_matching.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Category', 'Count'],
+                    ['Metadata_Only', '2'],
+                    ['Directory_Only', '1'],
+                    ['Match', '4'],
+                    ['Metadata_Blank', '0']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
+
+        # Tests the contents of the usability_report_matching_details.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
+        result = csv_to_list(csv_path, sort=True)
+        expected = [['Category', 'Path'],
+                    ['Directory Only', f'{input_directory}\\documents\\out-custom\\1002.txt'],
+                    ['Metadata Only', f'{input_directory}\\documents\\in-email\\3.txt'],
+                    ['Metadata Only', f'{input_directory}\\documents\\out-custom\\100X.txt']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
+
+        # Tests the contents of the usability_report_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'usability_report_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
+                    ['city', 'True', '0', '0.0', 'uncheckable'],
+                    ['state', 'True', '0', '0.0', '1'],
+                    ['zip_code', 'True', '0', '0.0', '0'],
+                    ['country', 'True', '0', '0.0', 'uncheckable'],
+                    ['correspondence_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['staff', 'True', '0', '0.0', 'uncheckable'],
+                    ['date_in', 'True', '1', '16.67', '0'],
+                    ['date_out', 'True', '1', '16.67', '2'],
+                    ['tickler_date', 'True', '6', '100.0', '0'],
+                    ['update_date', 'True', '1', '16.67', '0'],
+                    ['response_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['correspondence_code', 'True', '0', '0.0', 'uncheckable'],
+                    ['position', 'True', '0', '0.0', 'uncheckable'],
+                    ['2C_sequence_number', 'True', '0', '0.0', 'uncheckable'],
+                    ['document_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['correspondence_document_name', 'True', '0', '0.0', '0'],
+                    ['file_location', 'True', '6', '100.0', 'uncheckable'],
+                    ['code_type', 'True', '0', '0.0', 'uncheckable'],
+                    ['code', 'True', '0', '0.0', 'uncheckable'],
+                    ['code_description', 'True', '0', '0.0', 'uncheckable'],
+                    ['inactive_flag', 'True', '0', '0.0', 'uncheckable']]
+        self.assertEqual(result, expected, "Problem with test for accession, usability_report_metadata.csv")
 
     def test_appraisal(self):
         """Test for when the script runs correctly in appraisal mode."""
