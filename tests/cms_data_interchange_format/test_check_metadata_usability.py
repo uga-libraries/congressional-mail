@@ -200,10 +200,7 @@ class MyTestCase(unittest.TestCase):
         check_metadata_usability(md_df, 'test_data')
 
         # Tests the values in the metadata usability report are correct.
-        # Added sorting since this is the only test I observed with inconsistent column order,
-        # but will watch for it elsewhere and add to csv_to_list() if needed.
-        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'))
-        result.sort()
+        result = csv_to_list(os.path.join('test_data', 'usability_report_metadata.csv'), sort=True)
         expected = [['2C_sequence_number', 'True', '0', '0.0', 'uncheckable'],
                     ['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['city', 'True', '0', '0.0', 'uncheckable'],
