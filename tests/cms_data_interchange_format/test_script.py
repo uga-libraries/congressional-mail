@@ -9,11 +9,14 @@ import subprocess
 import unittest
 
 
-def csv_to_list(csv_path):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
+def csv_to_list(csv_path, sort=False):
+    """Convert the contents of a CSV to a list which contains one list per row for easier comparison
+    With the option to sort for ones with inconsistent order in the output"""
     df = pd.read_csv(csv_path, dtype=str)
     df = df.fillna('BLANK')
     csv_list = [df.columns.tolist()] + df.values.tolist()
+    if sort:
+        csv_list.sort()
     return csv_list
 
 
