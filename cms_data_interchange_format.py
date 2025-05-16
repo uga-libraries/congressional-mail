@@ -1,6 +1,12 @@
 """
-Draft script to prepare preservation and access copies from an export in the CMS Data Interchange Format.
-Required arguments: input_directory (path to the folder with the cms export) and script_mode (access or preservation).
+Script to automate workflows for an export in the CMS Data Interchange Format.
+Required arguments: input_directory (path to the folder with the export) and script_mode.
+
+Script modes
+accession: produce usability and appraisal reports; export not changed
+appraisal: delete letters due to appraisal; metadata not changed
+preservation: prepare export for general_aip.py script [TBD]
+access: remove metadata rows for appraisal and columns for PII and make copy of metadata split by congress year
 """
 import csv
 from datetime import date
