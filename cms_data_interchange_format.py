@@ -434,6 +434,20 @@ def remove_pii(df):
     return df
 
 
+def topics_report(df, output_dir):
+    """Makes a report with the frequency of each code description, the topic column for this export"""
+
+    # Replace blanks with BLANK so that it is counted as a topic.
+    df['code_description'] = df['code_description'].fillna('BLANK')
+
+    # Gets a count for each topic.
+    topic_counts = df['code_description'].value_counts().reset_index()
+    topic_counts.columns = ['Topic', 'Topic_Count']
+
+    # Saves to a CSV.
+    topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+
 def update_path(md_path, input_dir):
     """Update a path found in the metadata to match the actual directory structure of the exports"""
 
