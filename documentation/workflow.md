@@ -8,7 +8,7 @@ so we can address any problems with the export with the donor.
 During the initial review, determine if the export meets acceptance guidelines.
 1. Check the export for expected files.
 2. Make a copy of the export and reorganize to a consistent directory structure for the scripts.
-   - Primary folder named Last_Constituent_Mail_Export
+   - Primary folder named Lastname_Constituent_Mail_Export
    - Metadata files within primary folder
    - Exported files in "documents" folder, with unnecessary folders removed (BlobExport, dos, etc)
 3. Update the script if needed, including verifying the tables and columns in the export description match the script.
