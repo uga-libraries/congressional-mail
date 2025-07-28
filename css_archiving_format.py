@@ -552,6 +552,17 @@ def remove_pii(df):
     return df
 
 
+def sort_correspondence(df, output_dir):
+    """Sort copy of correspondence into folders by topic"""
+
+    # Makes a dataframe with any row that has values in in_topic and in_document_name,
+    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^).
+    sort_df = df[(df['in_topic'] != 'BLANK') & (df['in_document_name'].notna()) & (df['in_document_name'] != '')]
+    sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
+    sort_df = sort_df.explode('in_topic')
+    print(sort_df)
+
+
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
