@@ -562,7 +562,14 @@ def sort_correspondence(df, output_dir):
     sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
     sort_df = sort_df.explode('in_topic')
     sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
-    print(sort_df)
+
+    # For each topic in in_topic, make a folder in the output directory with that topic
+    # and copy all documents with that topic into the folder,
+    # updating the path in the metadata to match the directory.
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    topic_list = sort_df['in_topic'].unique()
+    for topic in topic_list:
+        os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', topic))
 
 
 def split_congress_year(df, output_dir):
