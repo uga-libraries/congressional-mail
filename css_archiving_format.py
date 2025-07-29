@@ -556,10 +556,12 @@ def sort_correspondence(df, output_dir):
     """Sort copy of correspondence into folders by topic"""
 
     # Makes a dataframe with any row that has values in in_topic and in_document_name,
-    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^).
+    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^)
+    # and any duplicate combinations of in_topic and in_document_name removed.
     sort_df = df[(df['in_topic'] != 'BLANK') & (df['in_document_name'].notna()) & (df['in_document_name'] != '')]
     sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
     sort_df = sort_df.explode('in_topic')
+    sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
     print(sort_df)
 
 
