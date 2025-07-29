@@ -15,6 +15,7 @@ import numpy as np
 import os
 import pandas as pd
 import re
+import shutil
 import sys
 import time
 
@@ -552,7 +553,7 @@ def remove_pii(df):
     return df
 
 
-def sort_correspondence(df, output_dir):
+def sort_correspondence(df, input_dir, output_dir):
     """Sort copy of correspondence into folders by topic"""
 
     # Makes a dataframe with any row that has values in in_topic and in_document_name,
@@ -570,6 +571,11 @@ def sort_correspondence(df, output_dir):
     topic_list = sort_df['in_topic'].unique()
     for topic in topic_list:
         os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', topic))
+        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
+        for doc in doc_list:
+            doc_path = update_path(doc, input_dir)
+            doc_new_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, doc.split('\\')[-1])
+            shutil.copy2(doc_path, doc_new_path)
 
 
 def split_congress_year(df, output_dir):
