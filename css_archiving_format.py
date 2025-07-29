@@ -569,9 +569,12 @@ def sort_correspondence(df, input_dir, output_dir):
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
     topic_list = sort_df['in_topic'].unique()
     for topic in topic_list:
+        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
+        # Characters that Windows does not permit in a folder name are replaced with an underscore.
+        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
+            topic = topic.replace(character, '_')
         topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
         os.mkdir(topic_path)
-        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
         for doc in doc_list:
             doc_path = update_path(doc, input_dir)
             doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
