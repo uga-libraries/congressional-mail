@@ -17,12 +17,20 @@ def make_df(row_list):
 
 
 def make_dir_list(dir_path):
-    """Make a list of the contents of the folder created by the function to compare to expected results"""
+    """Make a list of the files in the folder created by the function to compare to expected results"""
     contents_list = []
     for root, dirs, files in os.walk(dir_path):
         for file in files:
             contents_list.append(os.path.join(root, file))
     return contents_list
+
+
+def make_log_list():
+    """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
+    log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+    log_df = pd.read_csv(log_path)
+    log_list = [log_df.columns.tolist()] + log_df.values.tolist()
+    return log_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -34,9 +42,15 @@ class MyTestCase(unittest.TestCase):
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence')
 
     def tearDown(self):
-        """Delete the Correspondence_by_Topic folder and its contents"""
+        """Delete the script outputs, if made"""
+        # Correspondence_by_Topic folder.
         if os.path.exists(self.by_topic):
             shutil.rmtree(self.by_topic)
+
+        # Log for FileNotFoundError.
+        log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+        if os.path.exists(log_path):
+            os.remove(log_path)
 
     def test_duplicate_file(self):
         """Test for when a file is in the metadata with the same topic more than once"""
@@ -73,11 +87,47 @@ class MyTestCase(unittest.TestCase):
 
     def test_filenotfounderror(self):
         """Test for when a file is in the metadata but not the directory"""
-        self.assertEqual(True, True, "Problem with test for filenotfounderror")
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
+                      ['30601', 'Agriculture^Labor', r'..\documents\BlobExport\file_missing.txt'],
+                      ['30602', 'Labor', r'..\documents\BlobExport\file2.txt'],
+                      ['30603', 'Labor', r'..\documents\BlobExport\folder_missing\file3.txt']])
+        sort_correspondence(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'Labor', 'file2.txt')]
+        self.assertEqual(result, expected, "Problem with test for filenotfounderror, topic folders")
+
+        # Verifies the expected log was created and has the expected contents.
+        result = make_log_list()
+        expected = [['Agriculture', r'..\documents\BlobExport\file_missing.txt'],
+                    ['Labor', r'..\documents\BlobExport\file_missing.txt'],
+                    ['Labor', r'..\documents\BlobExport\folder_missing\file3.txt']]
+        self.assertEqual(result, expected, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
         """Test for when no files for a topic are in the directory and the topic folder is empty"""
-        self.assertEqual(True, True, "Problem with test for folder empty")
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\missing\file1.txt'],
+                      ['30601', 'Agriculture^Labor', r'..\documents\BlobExport\missing\file2.txt'],
+                      ['30602', 'Labor', r'..\documents\BlobExport\missing\file3.txt']])
+        sort_correspondence(df, self.input_dir, self.output_dir)
+
+        # Verifies the topic folders are not in Correspondence_by_Topic:
+        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
+                  os.path.exists(os.path.join(self.by_topic, 'Labor'))]
+        expected = [False, False]
+        self.assertEqual(result, expected, "Problem with test for folder empty, topic folders")
+
+        # Verifies the expected log was created and has the expected contents.
+        result = make_log_list()
+        expected = [['Agriculture', r'..\documents\BlobExport\missing\file1.txt'],
+                    ['Agriculture', r'..\documents\BlobExport\missing\file2.txt'],
+                    ['Labor', r'..\documents\BlobExport\missing\file2.txt'],
+                    ['Labor', r'..\documents\BlobExport\missing\file3.txt']]
+        self.assertEqual(result, expected, "Problem with test for folder empty, log")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""

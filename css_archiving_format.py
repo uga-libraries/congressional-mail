@@ -564,9 +564,8 @@ def sort_correspondence(df, input_dir, output_dir):
     sort_df = sort_df.explode('in_topic')
     sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
 
-    # For each topic in in_topic, make a folder in the output directory with that topic,
-    # copy all documents with that topic into the folder (update metadata path to match directory),
-    # and delete the topic folder if it is still empty after checking for all the documents.
+    # For each topic in in_topic, makes a folder in the output directory with that topic
+    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
     topic_list = sort_df['in_topic'].unique()
     for topic in topic_list:
@@ -579,11 +578,13 @@ def sort_correspondence(df, input_dir, output_dir):
             try:
                 shutil.copy2(doc_path, doc_new_path)
             except FileNotFoundError:
+                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
                 with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
                     log_writer = csv.writer(log)
                     log_writer.writerow([topic, doc])
-        # if not os.listdir(topic_path):
-        #     os.rmdir(topic_path)
+        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
+        if not os.listdir(topic_path):
+            os.rmdir(topic_path)
 
 
 def split_congress_year(df, output_dir):
