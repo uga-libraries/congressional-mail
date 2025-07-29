@@ -7,6 +7,7 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
+from test_sort_correpondence import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
@@ -33,42 +34,42 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs, if they were made"""
-        # Files saved in the parent of input_directory.
+        # Files saved in the output_directory.
         filenames = ['archiving_correspondence_redacted.csv', 'appraisal_check_log.csv', 'appraisal_delete_log.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv",
                      'metadata_formatting_errors_state.csv', 'metadata_formatting_errors_zip.csv',
                      'metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_doc.csv',
                      'metadata_formatting_errors_out_date.csv', 'metadata_formatting_errors_out_doc.csv',
-                     'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
-                     'usability_report_metadata.csv']
+                     'topics_report.csv', 'usability_report_matching.csv',
+                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-        # Folder of metadata split by congress year
-        cy_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
-        if os.path.exists(cy_path):
-            shutil.rmtree(cy_path)
-
-        # Copy of input_directory made for some test modes.
-        for mode in ('Accession', 'Appraisal', 'Preservation'):
-            copy_path = os.path.join('test_data', 'script', f'{mode}_Constituent_Mail_Export')
-            if os.path.exists(copy_path):
-                shutil.rmtree(copy_path)
+        # Folders saved in the output_directory, including copies of test data used for different script modes
+        # and folders with script outputs from the access script mode.
+        folders = ['Accession_Constituent_Mail_Export', 'Appraisal_Constituent_Mail_Export',
+                   'archiving_correspondence_by_congress_year', 'Correspondence_by_Topic',
+                   'preservation_constituent_mail_export']
+        for folder in folders:
+            folder_path = os.path.join('test_data', 'script', folder)
+            if os.path.exists(folder_path):
+                shutil.rmtree(folder_path)
 
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'Access_Constituent_Mail_Export')
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'Access_Constituent_Mail_Export')
         printed = subprocess.run(f"python {script_path} {input_directory} access",
                                  shell=True, capture_output=True, text=True)
 
         # Tests the printed statement.
         result = printed.stdout
-        expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted letters and columns with "
-                    "PII, and make copies of the metadata split by congress year\n")
+        expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted letters "
+                    "and columns with PII, make copies of the metadata split by congress year, and make a copy "
+                    "of the constituent letters organized by topic\n")
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal check log.
@@ -144,6 +145,13 @@ class MyTestCase(unittest.TestCase):
         result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script',
                                              'archiving_correspondence_by_congress_year', 'undated.csv'))
         self.assertEqual(result, False, "Problem with test for access, undated.csv")
+
+        # Tests that Correspondence_by_Topic has the expected files.
+        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
+        result = make_dir_list(by_topic)
+        expected = [os.path.join(by_topic, 'A1', '111111.txt'), os.path.join(by_topic, 'A1', '333333.txt'),
+                    os.path.join(by_topic, 'B1', '222222.txt'), os.path.join(by_topic, 'B2', '222222.txt')]
+        self.assertEqual(result, expected, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
