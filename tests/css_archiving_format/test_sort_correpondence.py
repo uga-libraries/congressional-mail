@@ -2,7 +2,6 @@
 Tests for the function sort_correspondence(), which organizes a copy of the letters by topic.
 To simplify input, tests use dataframes with only some of the columns present in a real export.
 """
-import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -55,11 +54,11 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when some rows have no topic and/or no document and should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'BLANK', r'..\documents\BlobExport\file3.txt'],
+        df = make_df([['30600', 'nan', r'..\documents\BlobExport\file3.txt'],
                       ['30601', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
                       ['30602', 'Agriculture^Peanuts', r'..\documents\BlobExport\file2.txt'],
-                      ['30603', 'Agriculture^Peanuts', np.nan],
-                      ['30604', 'BLANK', '']])
+                      ['30603', 'Agriculture^Peanuts', 'nan'],
+                      ['30604', 'nan', 'nan']])
         sort_correspondence(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
