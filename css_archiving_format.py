@@ -564,16 +564,13 @@ def sort_correspondence(df, input_dir, output_dir):
     sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
     sort_df = sort_df.explode('in_topic')
     sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
-    print("\nRows in sort_df", len(sort_df.index))
 
     # For each topic in in_topic, makes a folder in the output directory with that topic
     # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
     topic_list = sort_df['in_topic'].unique()
     for topic in topic_list:
-        print("\nStarting on topic", topic)
         doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
-        print("Doc_list", doc_list)
         # Characters that Windows does not permit in a folder name are replaced with an underscore.
         for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
             topic = topic.replace(character, '_')
