@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         """Variables used by every test"""
         self.by_topic = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'Correspondence_by_Topic')
-        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'css_export')
+        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'cms_export')
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence')
 
     def tearDown(self):
