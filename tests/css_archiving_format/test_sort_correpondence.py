@@ -66,7 +66,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
                     os.path.join(self.by_topic, 'Agriculture', 'file2.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt')]
-        self.assertEqual(result, expected, "Problem with test for duplicate_file")
+        self.assertEqual(result, expected, "Problem with test for blank")
 
     def test_duplicate_file(self):
         """Test for when a file is in the metadata with the same topic more than once"""
