@@ -13,6 +13,7 @@ from datetime import date
 from functools import reduce
 import os
 import pandas as pd
+import shutil
 import sys
 from css_archiving_format import file_deletion_log
 
@@ -544,6 +545,16 @@ def sort_correspondence(df, input_dir, output_dir):
             topic = topic.replace(character, '_')
         topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
         os.mkdir(topic_path)
+        for doc in doc_list:
+            doc_path = update_path(doc, input_dir)
+            doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
+            try:
+                shutil.copy2(doc_path, doc_new_path)
+            except FileNotFoundError:
+                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
+                with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
+                    log_writer = csv.writer(log)
+                    log_writer.writerow([topic, doc])
 
 
 def split_congress_year(df, output_dir):
