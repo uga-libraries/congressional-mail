@@ -535,7 +535,7 @@ def sort_correspondence(df, input_dir, output_dir):
                  (df['communication_document_name'] != 'nan')]
     sort_df = sort_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
 
-    # For each topic in in_topic, makes a folder in the output directory with that topic
+    # For each topic in group_name, makes a folder in the output directory with that topic
     # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
     topic_list = sort_df['group_name'].unique()
