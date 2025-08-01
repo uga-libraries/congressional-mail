@@ -6,7 +6,8 @@ Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
 preservation: prepare export for general_aip.py script [TBD]
-access: remove metadata rows for appraisal and columns for PII and make copy of metadata split by congress year
+access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
+        and make a copy of incoming correspondence in folders by topic
 """
 import csv
 from datetime import date
