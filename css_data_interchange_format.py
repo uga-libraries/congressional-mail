@@ -555,6 +555,9 @@ def sort_correspondence(df, input_dir, output_dir):
                 with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
                     log_writer = csv.writer(log)
                     log_writer.writerow([topic, doc])
+        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
+        if not os.listdir(topic_path):
+            os.rmdir(topic_path)
 
 
 def split_congress_year(df, output_dir):
