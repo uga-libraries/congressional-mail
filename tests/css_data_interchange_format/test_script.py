@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
                     'and columns with PII, make copies of the metadata split by congress year, '
-                    'and make a copy of the constituent letters organized by topic"\n')
+                    'and make a copy of the constituent letters organized by topic\n')
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
