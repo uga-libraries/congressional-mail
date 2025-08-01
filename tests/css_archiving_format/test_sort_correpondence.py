@@ -145,6 +145,12 @@ class MyTestCase(unittest.TestCase):
                     ['Peanuts', r'..\documents\BlobExport\missing\file3.txt']]
         self.assertEqual(result, expected, "Problem with test for folder empty, log")
 
+        # Verifies folders without a file are not still present.
+        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
+                  os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
+        expected = [False, False]
+        self.assertEqual(result, expected, "Problem with test for folder empty, folders not deleted")
+
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
         # Makes a dataframe to use as test input and runs the function being tested.
