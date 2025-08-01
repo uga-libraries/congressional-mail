@@ -523,6 +523,19 @@ def remove_pii(df):
     return df
 
 
+def sort_correspondence(df, input_dir, output_dir):
+    """Sort copy of correspondence into folders by topic"""
+
+    # Makes a dataframe with any row that is incoming correspondence (type is INCOMING or AT_IN#)
+    # with values (blanks are 'nan') in group_name and communication_document_name,
+    # and any duplicate combinations of group and document names removed.
+    sort_df = df[(df['document_type'].str.contains('IN')) & (df['group_name'] != 'nan') &
+                 (df['communication_document_name'] != 'nan')]
+    sort_df = sort_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
+
+
+
+
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
