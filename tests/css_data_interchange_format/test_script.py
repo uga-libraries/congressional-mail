@@ -7,6 +7,7 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
+from test_sort_correspondence import make_dir_list
 
 
 def csv_to_list(csv_path):
@@ -46,6 +47,11 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(file_path):
             shutil.rmtree(file_path)
 
+        # Incoming letters organized by topic, in own directory.
+        file_path = os.path.join('test_data', 'script', 'Correspondence_by_Topic')
+        if os.path.exists(file_path):
+            shutil.rmtree(file_path)
+
         # Copy of test data.
         test_folders = ['access_test', 'appraisal_test']
         for test_folder in test_folders:
@@ -67,9 +73,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the print statement.
         result = output.stdout
-        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters, '
-                    'save the merged metadata tables without columns with PII,'
-                    ' and make copies of the metadata split by congress year\n')
+        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
+                    'and columns with PII, make copies of the metadata split by congress year, '
+                    'and make a copy of the constituent letters organized by topic"\n')
         self.assertEqual(result, expected, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
@@ -117,7 +123,7 @@ class MyTestCase(unittest.TestCase):
                      '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html', '2103422',
                      ' ', 'nan'],
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'nan', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '19990315', 'imail', 'FARMING', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan'],
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
@@ -163,7 +169,7 @@ class MyTestCase(unittest.TestCase):
                      '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\2076104.doc',
                      'nan', ' ', 'nan'],
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'nan', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '19990315', 'imail', 'FARMING', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan'],
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
@@ -195,6 +201,12 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
                      'Airline Passenger BOR Act2 1999', ' ', 'nan']]
         self.assertEqual(result, expected, "Problem with test for access, undated.csv")
+
+        # Tests that Correspondence_by_Topic has the expected files.
+        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
+        result = make_dir_list(by_topic)
+        expected = [os.path.join(by_topic, 'FARMING', '4007000.eml')]
+        self.assertEqual(result, expected, "Problem with test for access, Correspondence_by_Topic")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode."""
