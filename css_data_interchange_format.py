@@ -533,7 +533,17 @@ def sort_correspondence(df, input_dir, output_dir):
                  (df['communication_document_name'] != 'nan')]
     sort_df = sort_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
 
-
+    # For each topic in in_topic, makes a folder in the output directory with that topic
+    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    topic_list = sort_df['group_name'].unique()
+    for topic in topic_list:
+        doc_list = sort_df.loc[sort_df['group_name'] == topic, 'communication_document_name'].tolist()
+        # Characters that Windows does not permit in a folder name are replaced with an underscore.
+        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
+            topic = topic.replace(character, '_')
+        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
+        os.mkdir(topic_path)
 
 
 def split_congress_year(df, output_dir):
