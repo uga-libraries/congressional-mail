@@ -666,14 +666,17 @@ if __name__ == '__main__':
         print("\nThe script is running in preservation mode.")
         print("The steps are TBD.")
 
-    # For access, makes a copy of the metadata with tables merged and rows for appraisal and columns for PII removed
-    # and makes a copy of the data split by congress year.
+    # For access, removes rows for appraisal and columns with PII from the metadata,
+    # makes a copy of the data split by congress year,
+    # and makes a copy of the letters from constituents organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters, save the merged metadata tables without columns with PII,"
-              " and make copies of the metadata split by congress year")
+        print("It will remove rows for deleted letters and columns with PII, "
+              "make copies of the metadata split by congress year, "
+              "and make a copy of the constituent letters organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_congress_year(md_df, output_directory)
+        sort_correspondence(md_df, input_directory, output_directory)
 
