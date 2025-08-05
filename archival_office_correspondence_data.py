@@ -151,14 +151,14 @@ def remove_casework_letters(input_dir):
         # Creates a file deletion log, with a header row.
         log_path = os.path.join(os.path.dirname(input_dir),
                                 f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-        file_deletion_log(log_path, None, True)
+        file_deletion_log(log_path, None, 'header')
 
         for q_number in q_list:
             # Change "text" to match the folder name in the export which contains the letters, if different.
             q_number = q_number.split(' ')[0]
             file_path = os.path.join(input_dir, 'text', f"{q_number.replace('Q', '')}.txt")
             try:
-                file_deletion_log(log_path, file_path)
+                file_deletion_log(log_path, file_path, 'Casework')
                 os.remove(file_path)
             except FileNotFoundError:
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
