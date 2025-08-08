@@ -162,6 +162,23 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_pa_rk_', 'file4.txt')]
         self.assertEqual(result, expected, "Problem with test for folder name error")
 
+    def test_folder_name_trailing(self):
+        """Test for when a topic ends with a space or period, which cannot be in the folder name"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', ' apple.com', 'INCOMING', r'..\documents\ima\file1.txt'],
+                      ['30601', 'cat ', 'INCOMING', r'..\documents\objects\file2.txt'],
+                      ['30602', 'dog.', 'AT_IN1', r'..\documents\objects\file3.txt'],
+                      ['30603', 'park and rec. ', 'AT_IN2', r'..\documents\objects\file4.txt']])
+        sort_correspondence(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, ' apple.com', 'file1.txt'),
+                    os.path.join(self.by_topic, 'cat', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dog', 'file3.txt'),
+                    os.path.join(self.by_topic, 'park and rec', 'file4.txt')]
+        self.assertEqual(result, expected, "Problem with test for folder name trailing")
+
     def test_outgoing(self):
         """Test for when some rows are for outgoing correspondence and should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.

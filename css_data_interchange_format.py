@@ -544,6 +544,8 @@ def sort_correspondence(df, input_dir, output_dir):
         # Characters that Windows does not permit in a folder name are replaced with an underscore.
         for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
             topic = topic.replace(character, '_')
+        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
+        topic = topic.rstrip('. ')
         topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
         os.mkdir(topic_path)
         for doc in doc_list:
