@@ -547,7 +547,11 @@ def sort_correspondence(df, input_dir, output_dir):
         # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
         topic = topic.rstrip('. ')
         topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
-        os.mkdir(topic_path)
+        # Topic path may be duplicated if there is a version that does and does not require cleanup.
+        try:
+            os.mkdir(topic_path)
+        except FileExistsError:
+            continue
         for doc in doc_list:
             doc_path = update_path(doc, input_dir)
             doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
