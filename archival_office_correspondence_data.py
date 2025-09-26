@@ -76,23 +76,24 @@ def check_metadata(df, output_dir):
     columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
 
     # Calculates the number and percentage of blank cells in each column, and saves it all to a CSV.
-    blank_count = df.isna().sum()
+    blank_count = df.eq('').sum()
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
     columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
     columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
+    print(columns_df)
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
     # Counts the number of each topic
-    df['correspondence_topic'] = df['correspondence_topic'].fillna('BLANK')
+    df['correspondence_topic'] = df['correspondence_topic'].replace('', 'BLANK')
     df_counts = df['correspondence_topic'].value_counts().reset_index()
     df_counts.columns = ['Topic', 'Topic_Count']
     df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
     # Checking the rows with a possible file name
-    blank_count = df['document_number'].isna().sum()
+    blank_count = df['document_number'].eq('').sum()
     doc_num_count = df['document_number'].nunique()
-    q_count = df['document_number'].str.startswith('Q')
+    q_count = df['document_number'].str.startswith('Q').sum()
     with open(os.path.join(output_dir, 'file_names_options.txt'), 'w', newline='') as report:
         report.write(f'Document number blank        : {blank_count}\n')
         report.write(f'Document number unique values: {doc_num_count}\n')
@@ -270,8 +271,8 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Finds rows in the metadata that are for casework and saves to a CSV.
-    casework_df = find_casework_rows(md_df, output_directory)
+    # # Finds rows in the metadata that are for casework and saves to a CSV.
+    # casework_df = find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
