@@ -127,13 +127,14 @@ def check_letter_matching(df, output_dir, input_dir):
     match = list(set(metadata_paths) & set(input_dir_paths))
 
     # Saves a summary of the results.
+    metadata_total = len(metadata_only) + len(match) + blank_total
     with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
         report_writer = csv.writer(report)
-        report_writer.writerow(['Category', 'Count'])
-        report_writer.writerow(['Metadata_Only', len(metadata_only)])
-        report_writer.writerow(['Directory_Only', len(directory_only)])
-        report_writer.writerow(['Match', len(match)])
-        report_writer.writerow(['Metadata_Blank', blank_total])
+        report_writer.writerow(['Category', 'Row/File_Count', 'Row_Percent'])
+        report_writer.writerow(['Match', len(match), f'{int(round(len(match)/metadata_total*100,0))}%'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only), f'{int(round(len(metadata_only)/metadata_total*100,0))}%'])
+        report_writer.writerow(['Metadata_Blank', blank_total, f'{int(round(blank_total/metadata_total*100,0))}%']),
+        report_writer.writerow(['Directory_Only', len(directory_only), 'n/a'])
 
     # Saves the paths that did not match to a log.
     with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:

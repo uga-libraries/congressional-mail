@@ -41,11 +41,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 2],
-                    ['Directory_Only', 4],
-                    ['Match', 2],
-                    ['Metadata_Blank', 4]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '25%'],
+                    ['Metadata_Only', 2, '25%'],
+                    ['Metadata_Blank', 4, '50%'],
+                    ['Directory_Only', 4, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for all, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -75,11 +75,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 0],
-                    ['Match', 2],
-                    ['Metadata_Blank', 8]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '20%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 8, '80%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for blanks, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -99,11 +99,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 6],
-                    ['Match', 2],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '100%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 6, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for directory_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -137,11 +137,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 0],
-                    ['Match', 8],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 8, '100%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for match, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -169,11 +169,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 7],
-                    ['Directory_Only', 0],
-                    ['Match', 1],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 1, '12%'],
+                    ['Metadata_Only', 7, '88%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for metadata_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
