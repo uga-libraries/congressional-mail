@@ -306,11 +306,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the usability_report_matching.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
         result = csv_to_list(csv_path)
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', '3'],
-                    ['Directory_Only', '1'],
-                    ['Match', '6'],
-                    ['Metadata_Blank', '0']]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', '6', '67%'],
+                    ['Metadata_Only', '3', '33%'],
+                    ['Metadata_Blank', '0', '0%'],
+                    ['Directory_Only', '1', 'nan']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
 
         # Tests the contents of the usability_report_matching_details.csv.
@@ -319,7 +319,7 @@ class MyTestCase(unittest.TestCase):
         result.sort()
         expected = [['Category', 'Path'],
                     ['Directory Only', r'test_data\script\accession_test\documents\indivletters\casework_999999.doc'],
-                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\Airline Act2.doc'],
+                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\airline act2.doc'],
                     ['Metadata Only', r'test_data\script\accession_test\documents\formletters\busintax.doc'],
                     ['Metadata Only', r'test_data\script\accession_test\documents\indivletters\00002.doc']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
