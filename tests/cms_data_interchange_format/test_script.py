@@ -265,20 +265,20 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the usability_report_matching.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
         result = csv_to_list(csv_path)
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', '2'],
-                    ['Directory_Only', '1'],
-                    ['Match', '4'],
-                    ['Metadata_Blank', '0']]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', '4', '67%'],
+                    ['Metadata_Only', '2', '33%'],
+                    ['Metadata_Blank', '0', '0%'],
+                    ['Directory_Only', '1', 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
 
         # Tests the contents of the usability_report_matching_details.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
         result = csv_to_list(csv_path, sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', f'{input_directory}\\documents\\out-custom\\1002.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\in-email\\3.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\out-custom\\100X.txt']]
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\out-custom\\1002.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\in-email\\3.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\out-custom\\100x.txt']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
 
         # Tests the contents of the usability_report_metadata.csv.
