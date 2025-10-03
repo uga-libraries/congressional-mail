@@ -43,12 +43,12 @@ class MyTestCase(unittest.TestCase):
                      'Casework|Job_Application'],
                     ['20240404', 'academy02', r'..\documents\casework\good job.doc', 'good job.doc',
                      'Academy_Application|Casework|Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for all - multiple, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for all - multiple, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for all - multiple, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for all - multiple, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -61,7 +61,7 @@ class MyTestCase(unittest.TestCase):
                      'Casework|Job_Application'],
                     ['20240404', 'academy02', r'..\documents\casework\good job.doc', 'good job.doc', 'x',
                      'Academy_Application|Casework|Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for all - multiple, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for all - multiple, appraisal_delete_log.csv")
 
     def test_all_single(self):
         """Test for when all appraisal categories are present and each row matches a single category"""
@@ -82,14 +82,14 @@ class MyTestCase(unittest.TestCase):
                     ['20240202', 'Case1', '', '', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'Job_Application'],
                     ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for all - single, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for all - single, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20240606', 'Admin', 'nan', 'legal_case.txt', 'x', 'Casework'],
                     ['20240404', 'Arts', 'nan', 'artist recommendation.txt', 'x', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for all - single, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for all - single, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -98,7 +98,7 @@ class MyTestCase(unittest.TestCase):
                     ['20240202', 'Case1', 'nan', 'nan', 'x', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x', 'Job_Application'],
                     ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', 'nan', 'x', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for all - single, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for all - single, appraisal_delete_log.csv")
 
     def test_one(self):
         """Test for when only one appraisal category is present"""
@@ -119,13 +119,13 @@ class MyTestCase(unittest.TestCase):
                     ['20240202', 'case 2', '', '', 'Casework'],
                     ['20240404', 'Case3', r'..\documents\casework\3.txt', '3.txt', 'Casework'],
                     ['20240506', 'Econ', r'..\documents\casework\3.txt', '3.txt', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for one, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20240505', 'Econ', r'..\documents\objects\case.txt', 'case.txt', 'x', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for one, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -134,7 +134,7 @@ class MyTestCase(unittest.TestCase):
                     ['20240202', 'case 2', 'nan', 'nan', 'x', 'Casework'],
                     ['20240404', 'Case3', r'..\documents\casework\3.txt', '3.txt', 'x', 'Casework'],
                     ['20240506', 'Econ', r'..\documents\casework\3.txt', '3.txt', 'x', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for one, appraisal_delete_log.csv")
 
     def test_none(self):
         """Test for when no rows match any appraisal categories"""
@@ -148,17 +148,17 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_df are correct.
         result = df_to_list(appraisal_df)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for something, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for something, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for something, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for something, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for something, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for something, appraisal_delete_log.csv")
 
 
 if __name__ == '__main__':

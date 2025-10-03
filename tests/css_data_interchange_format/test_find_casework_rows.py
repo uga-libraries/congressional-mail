@@ -30,12 +30,12 @@ class MyTestCase(unittest.TestCase):
                     ['20250401', 'Admin', 'doc\\Casework - Initial Reply.doc', '', '', 'Casework'],
                     ['20250404', 'Admin', 'doc\\initialssacase.doc', '', '', 'Casework'],
                     ['20250405', 'Admin', 'doc\\Close Favorably - Casework.doc', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for both, df_casework")
+        self.assertEqual(expected, result, "Problem with test for both, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for both, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for both, df_casework_check")
 
     def test_doc_name(self):
         """Test for when the column communication_document_name indicates casework is present"""
@@ -65,7 +65,7 @@ class MyTestCase(unittest.TestCase):
                     ['20250406', 'Admin', 'doc\\Open Sixth District Casework.doc', '', '', 'Casework'],
                     ['20250408', 'Admin', 'doc\\initialssacase.doc', '', '', 'Casework'],
                     ['20250409', 'Admin', 'doc\\Open Sixth District Cases.doc', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for both, df_casework")
+        self.assertEqual(expected, result, "Problem with test for both, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
                     ['20250407', 'Admin', 'doc\\Napster Case.doc', '', '', 'Casework'],
                     ['20250410', 'Admin', 'doc\\Antitrust Case.doc', '', '', 'Casework'],
                     ['20250411', 'Admin', 'doc\\doc.txt', 'case_file.txt', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for both, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for both, df_casework_check")
 
     def test_group_name(self):
         """Test for when the column group_name indicates casework is present"""
@@ -90,14 +90,14 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250401', 'case12', 'doc\\doc.txt', '', '', 'Casework'],
                     ['20250402', 'CASE 1', '', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for group_name, df_casework")
+        self.assertEqual(expected, result, "Problem with test for group_name, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250403', 'legal case concern', '', '', '', 'Casework'],
                     ['20250404', 'Smith Case', '', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for group_name, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for group_name, df_casework_check")
 
     def test_none(self):
         """Test for when no patterns indicating casework are present"""
@@ -112,12 +112,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_casework")
+        self.assertEqual(expected, result, "Problem with test for none, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_casework_check")
 
 
 if __name__ == '__main__':

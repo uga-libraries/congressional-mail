@@ -41,7 +41,7 @@ class MyTestCase(unittest.TestCase):
                      r'..\doc\formletter\court.pdf', 'JSmith', '17', 'JSmith', '20101212', '20110101', '20150101',
                      'Inactive', 'Y', 'Form Letters', 'staff_member', 'Full Name:', 'COURT', 'COM',
                      r'..\doc\formletter\court.pdf', 'JSmith', '20120101', 'text', 'Y', 'court.pdf', 'JSmith']]
-        self.assertEqual(result, expected, "Problem with test for form letter metadata function")
+        self.assertEqual(expected, result, "Problem with test for form letter metadata function")
 
 
 if __name__ == '__main__':

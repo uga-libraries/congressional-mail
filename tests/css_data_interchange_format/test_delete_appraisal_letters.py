@@ -56,12 +56,12 @@ class MyTestCase(unittest.TestCase):
                      '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'Casework'],
                     [os.path.join(input_directory, 'documents', 'objects', '200002.txt'),
                      '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for deletion, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for deletion, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = []
-        self.assertEqual(result, expected, "Problem with test for deletion, directory contents")
+        self.assertEqual(expected, result, "Problem with test for deletion, directory contents")
 
     def test_file_not_found(self):
         """Test for when the file paths in the metadata do not match files in the export"""
@@ -82,12 +82,12 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
                     [os.path.join(input_directory, 'documents', 'objects', '900000.txt'),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for file not found, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for file not found, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['100001.txt', 'ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for file not found, directory contents")
+        self.assertEqual(expected, result, "Problem with test for file not found, directory contents")
 
     def test_new_pattern(self):
         """Test for when the file paths in the metadata match files in the export but are a new pattern"""
@@ -110,12 +110,12 @@ class MyTestCase(unittest.TestCase):
                      'Cannot determine file path: new path pattern in metadata'],
                     ['..\\letters\\200002.txt', 'nan', 'nan', 'nan', 'nan',
                      'Cannot determine file path: new path pattern in metadata']]
-        self.assertEqual(result, expected, "Problem with test for no deletion - form, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for no deletion - form, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['100001.txt', '200002.txt']
-        self.assertEqual(result, expected, "Problem with test for no deletion - form, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
     def test_no_deletion_blank(self):
         """Test for when the file paths in the metadata are blank"""
@@ -133,12 +133,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for no deletion - blank, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for no deletion - blank, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for no deletion - blank, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no deletion - blank, directory contents")
 
     def test_no_deletion_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
@@ -156,12 +156,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for no deletion - empty string, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for no deletion - empty string, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for no deletion - empty string, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no deletion - empty string, directory contents")
 
     def test_no_deletion_form(self):
         """Test for when the file paths in the metadata match files in the export but are form letters (not deleted)"""
@@ -180,12 +180,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for no deletion - form, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for no deletion - form, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['100001.txt', '200002.txt']
-        self.assertEqual(result, expected, "Problem with test for no deletion - form, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
 
 if __name__ == '__main__':

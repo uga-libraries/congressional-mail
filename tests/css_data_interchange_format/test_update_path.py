@@ -11,19 +11,19 @@ class MyTestCase(unittest.TestCase):
         """Test for the pattern ..\\documents\\folder\\..\\file.ext"""
         file_path = update_path(r'..\documents\formletters\form_a.txt', 'input_dir')
         expected = r'input_dir\documents\formletters\form_a.txt'
-        self.assertEqual(file_path, expected, "Problem with test for pattern match")
+        self.assertEqual(expected, file_path, "Problem with test for pattern match")
 
     def test_new(self):
         """Test for a new pattern"""
         file_path = update_path(r'\folder\folder\letter\111111.txt', 'input_dir')
         expected = 'error_new'
-        self.assertEqual(file_path, expected, "Problem with test for new")
+        self.assertEqual(expected, file_path, "Problem with test for new")
 
     def test_new_doc(self):
         """Test for a new pattern that starts with ..\\ still but not documents"""
         file_path = update_path(r'..\folder\111111.txt', 'input_dir')
         expected = 'error_new'
-        self.assertEqual(file_path, expected, "Problem with test for new")
+        self.assertEqual(expected, file_path, "Problem with test for new")
 
 
 if __name__ == '__main__':
