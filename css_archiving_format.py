@@ -89,7 +89,8 @@ def check_arguments(arg_list):
 
 
 def check_letter_matching(df, output_dir, input_dir):
-    """Compare the files in the metadata to the files in the export"""
+    """Compare the files in the metadata to the files in the export,
+    reformatting the metadata paths and making all characters lowercase, so they can match"""
 
     # Makes a list of paths for the letters in the documents folder within the input directory.
     # This way, the metadata file is not counted as missing.
@@ -97,18 +98,21 @@ def check_letter_matching(df, output_dir, input_dir):
     for root, dirs, files in os.walk(os.path.join(input_dir, 'documents')):
         for file in files:
             file_path = os.path.join(root, file)
+            file_path = file_path.lower()
             input_dir_paths.append(file_path)
 
     # Makes a list of paths for letters from constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
     in_doc_df = df.dropna(subset=['in_document_name']).copy()
     in_doc_df['in_document_name'] = in_doc_df['in_document_name'].apply(update_path, input_dir=input_dir)
+    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].str.lower()
     in_doc_list = in_doc_df['in_document_name'].tolist()
 
     # Makes a list of paths for letters to constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
     out_doc_df = df.dropna(subset=['out_document_name']).copy()
     out_doc_df['out_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
+    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].str.lower()
     out_doc_list = out_doc_df['out_document_name'].tolist()
 
     # Number of metadata rows without a file path.
@@ -123,13 +127,14 @@ def check_letter_matching(df, output_dir, input_dir):
     match = list(set(metadata_paths) & set(input_dir_paths))
 
     # Saves a summary of the results.
+    metadata_total = len(metadata_only) + len(match) + blank_total
     with open(os.path.join(output_dir, 'usability_report_matching.csv'), 'w', newline='') as report:
         report_writer = csv.writer(report)
-        report_writer.writerow(['Category', 'Count'])
-        report_writer.writerow(['Metadata_Only', len(metadata_only)])
-        report_writer.writerow(['Directory_Only', len(directory_only)])
-        report_writer.writerow(['Match', len(match)])
-        report_writer.writerow(['Metadata_Blank', blank_total])
+        report_writer.writerow(['Category', 'Row/File_Count', 'Row_Percent'])
+        report_writer.writerow(['Match', len(match), f'{int(round(len(match)/metadata_total*100,0))}%'])
+        report_writer.writerow(['Metadata_Only', len(metadata_only), f'{int(round(len(metadata_only)/metadata_total*100,0))}%'])
+        report_writer.writerow(['Metadata_Blank', blank_total, f'{int(round(blank_total/metadata_total*100,0))}%']),
+        report_writer.writerow(['Directory_Only', len(directory_only), 'n/a'])
 
     # Saves the paths that did not match to a log.
     with open(os.path.join(output_dir, 'usability_report_matching_details.csv'), 'w', newline='') as report:

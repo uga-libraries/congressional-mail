@@ -17,6 +17,9 @@ During the initial review, determine if the export meets acceptance guidelines.
 5. Review the usability reports and determine if the donation is accepted.
 6. If accepted, move on to appraisal. If not accepted, stop the accession and discuss with the collecting archivist.
 
+Note: the letter matching report removes duplicates before attempting to match (response letters often repeat).
+so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
+
 ### Appraisal
 1. Check the appraisal reports made during review for errors (based on file names) in what will be deleted or not delete.
 2. Refine the script to catch new patterns, but some errors are acceptable given the scale.

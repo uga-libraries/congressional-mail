@@ -30,10 +30,10 @@ class MyTestCase(unittest.TestCase):
         """Test for all possible outcomes of matching and not matching"""
         # Makes variables to use as test input and runs the function.
         md_df = pd.DataFrame([['30601', np.nan, np.nan],
-                              ['30602', np.nan, r'..\BlobExport\documents\formletters\form_a.txt'],
+                              ['30602', np.nan, r'..\BlobExport\documents\Formletters\form_a.txt'],
                               ['30603', r'..\BlobExport\documents\indivletters\300.txt', np.nan],
                               ['30604', r'..\BlobExport\documents\indivletters\400.txt',
-                               r'..\BlobExport\documents\formletters\form_b.txt']],
+                               r'..\BlobExport\documents\Formletters\form_b.txt']],
                              columns=['zip', 'in_document_name', 'out_document_name'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'all')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -41,22 +41,22 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 2],
-                    ['Directory_Only', 4],
-                    ['Match', 2],
-                    ['Metadata_Blank', 4]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '25%'],
+                    ['Metadata_Only', 2, '25%'],
+                    ['Metadata_Blank', 4, '50%'],
+                    ['Directory_Only', 4, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for all, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\100.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\500.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\300.txt']]
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\100.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt']]
         self.assertEqual(result, expected, "Problem with test for all, details")
 
     def test_blanks(self):
@@ -75,11 +75,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 0],
-                    ['Match', 2],
-                    ['Metadata_Blank', 8]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '20%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 8, '80%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for blanks, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -99,36 +99,36 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 6],
-                    ['Match', 2],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 2, '100%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 6, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for directory_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\300.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\400.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\500.txt']]
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\400.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt']]
         self.assertEqual(result, expected, "Problem with test for directory_only, details")
 
     def test_match(self):
-        """Test for when the metadata and input directory match (some repeat)"""
+        """Test for when the metadata and input directory match (some repeat, some capitalization differences)"""
         # Makes variables to use as test input and runs the function.
-        md_df = pd.DataFrame([['30601', r'..\BlobExport\documents\indivletters\100.txt',
+        md_df = pd.DataFrame([['30601', r'..\BlobExport\documents\indivletters\PART_ONE\100.txt',
                                r'..\BlobExport\documents\formletters\form_a.txt'],
-                              ['30602', r'..\BlobExport\documents\indivletters\200.txt',
+                              ['30602', r'..\BlobExport\documents\indivletters\PART_ONE\200.txt',
                                r'..\BlobExport\documents\formletters\form_a.txt'],
-                              ['30603', r'..\BlobExport\documents\indivletters\300.txt',
+                              ['30603', r'..\BlobExport\documents\indivletters\PART_ONE\300.txt',
                               r'..\BlobExport\documents\formletters\form_b.txt'],
-                              ['30604', r'..\BlobExport\documents\indivletters\400.txt',
+                              ['30604', r'..\BlobExport\documents\indivletters\part_two\400.txt',
                               r'..\BlobExport\documents\formletters\form_b.txt'],
-                              ['30605', r'..\BlobExport\documents\indivletters\500.txt',
+                              ['30605', r'..\BlobExport\documents\indivletters\part_two\500.txt',
                               r'..\BlobExport\documents\formletters\form_c.txt']],
                              columns=['zip', 'in_document_name', 'out_document_name'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'match')
@@ -137,11 +137,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 0],
-                    ['Directory_Only', 0],
-                    ['Match', 8],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 8, '100%'],
+                    ['Metadata_Only', 0, '0%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for match, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -169,23 +169,23 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in usability_report_matching.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching.csv'))
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 7],
-                    ['Directory_Only', 0],
-                    ['Match', 1],
-                    ['Metadata_Blank', 0]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 1, '12%'],
+                    ['Metadata_Only', 7, '88%'],
+                    ['Metadata_Blank', 0, '0%'],
+                    ['Directory_Only', 0, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for metadata_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\100.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\300.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\400.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\500.txt']]
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\100.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\400.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt']]
         self.assertEqual(result, expected, "Problem with test for metadata_only, details")
 
 
