@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30601', r'..\documents\formletters\form_a.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_c.txt'],
                               ['GA', '30602-0001', r'..\documents\formletters\form_c.txt'],
-                              ['GA', '30603', r'..\documents\objects\100.txt'],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt'],
                               ['GA', '30604', r'..\documents\200.txt'],
                               ['GA', '30605', r'..\documents\201.txt'],
                               ['GA', '30605', r'..\documents\202.txt']],
@@ -49,13 +49,13 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         result.sort()
         expected = [['Category', 'Path'],
-                    ['Directory Only', fr'{input_directory}\documents\formletters\form_b.txt'],
-                    ['Directory Only', fr'{input_directory}\documents\objects\200.txt'],
-                    ['Directory Only', fr'{input_directory}\documents\objects\300.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\200.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\201.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\202.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\formletters\form_c.txt']]
+                    ['Directory Only', fr'{input_directory.lower()}\documents\formletters\form_b.txt'],
+                    ['Directory Only', fr'{input_directory.lower()}\documents\objects\part_two\200.txt'],
+                    ['Directory Only', fr'{input_directory.lower()}\documents\objects\part_two\300.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\200.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\201.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\202.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\formletters\form_c.txt']]
         self.assertEqual(result, expected, "Problem with test for all, details")
 
     def test_blanks(self):
@@ -65,9 +65,9 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30601', r'..\documents\formletters\form_a.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
                               ['GA', '30602-0001', np.nan],
-                              ['GA', '30603', r'..\documents\objects\100.txt'],
-                              ['GA', '30604', r'..\documents\objects\200.txt'],
-                              ['GA', '30605', r'..\documents\objects\300.txt'],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt'],
+                              ['GA', '30604', r'..\documents\objects\part_two\200.txt'],
+                              ['GA', '30605', r'..\documents\objects\part_two\300.txt'],
                               ['GA', '30606', np.nan],],
                              columns=['state_code', 'zip_code', 'communication_document_name'])
         output_directory = os.path.join('test_data', 'test_check_letter_matching')
@@ -92,7 +92,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when some file paths are in the directory but not the metadata"""
         # Makes variables to use as test input and runs the function.
         md_df = pd.DataFrame([['GA', '30601', r'..\documents\formletters\form_a.txt'],
-                              ['GA', '30603', r'..\documents\objects\100.txt']],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt']],
                              columns=['state_code', 'zip_code', 'communication_document_name'])
         output_directory = os.path.join('test_data', 'test_check_letter_matching')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -111,9 +111,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         result.sort()
         expected = [['Category', 'Path'],
-                    ['Directory Only', fr'{input_directory}\documents\formletters\form_b.txt'],
-                    ['Directory Only', fr'{input_directory}\documents\objects\200.txt'],
-                    ['Directory Only', fr'{input_directory}\documents\objects\300.txt']]
+                    ['Directory Only', fr'{input_directory.lower()}\documents\formletters\form_b.txt'],
+                    ['Directory Only', fr'{input_directory.lower()}\documents\objects\part_two\200.txt'],
+                    ['Directory Only', fr'{input_directory.lower()}\documents\objects\part_two\300.txt']]
         self.assertEqual(result, expected, "Problem with test for directory_only, details")
 
     def test_duplicates(self):
@@ -123,10 +123,10 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
-                              ['GA', '30603', r'..\documents\objects\100.txt'],
-                              ['GA', '30604', r'..\documents\objects\200.txt'],
-                              ['GA', '30604', r'..\documents\objects\200.txt'],
-                              ['GA', '30605', r'..\documents\objects\300.txt']],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt'],
+                              ['GA', '30604', r'..\documents\objects\part_two\200.txt'],
+                              ['GA', '30604', r'..\documents\objects\part_two\200.txt'],
+                              ['GA', '30605', r'..\documents\objects\part_two\300.txt']],
                              columns=['state_code', 'zip_code', 'communication_document_name'])
         output_directory = os.path.join('test_data', 'test_check_letter_matching')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -151,9 +151,9 @@ class MyTestCase(unittest.TestCase):
         # Makes variables to use as test input and runs the function.
         md_df = pd.DataFrame([['GA', '30601', r'..\documents\formletters\form_a.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
-                              ['GA', '30603', r'..\documents\objects\100.txt'],
-                              ['GA', '30604', r'..\documents\objects\200.txt'],
-                              ['GA', '30605', r'..\documents\objects\300.txt']],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt'],
+                              ['GA', '30604', r'..\documents\objects\Part_Two\200.txt'],
+                              ['GA', '30605', r'..\documents\objects\Part_Two\300.txt']],
                              columns=['state_code', 'zip_code', 'communication_document_name'])
         output_directory = os.path.join('test_data', 'test_check_letter_matching')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -179,11 +179,11 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['GA', '30601', r'..\documents\formletters\form_a.txt'],
                               ['GA', '30602', r'..\documents\formletters\form_b.txt'],
                               ['GA', '30606', r'..\documents\formletters\form_c.txt'],
-                              ['GA', '30603', r'..\documents\objects\100.txt'],
-                              ['GA', '30604', r'..\documents\objects\200.txt'],
-                              ['GA', '30607', r'..\documents\objects\202.txt'],
-                              ['GA', '30605', r'..\documents\objects\300.txt'],
-                              ['GA', '30608', r'..\documents\objects\303.txt']],
+                              ['GA', '30603', r'..\documents\objects\part_one\100.txt'],
+                              ['GA', '30604', r'..\documents\objects\part_two\200.txt'],
+                              ['GA', '30607', r'..\documents\objects\part_two\202.txt'],
+                              ['GA', '30605', r'..\documents\objects\part_two\300.txt'],
+                              ['GA', '30608', r'..\documents\objects\part_two\303.txt']],
                              columns=['state_code', 'zip_code', 'communication_document_name'])
         output_directory = os.path.join('test_data', 'test_check_letter_matching')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -202,9 +202,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         result.sort()
         expected = [['Category', 'Path'],
-                    ['Metadata Only', fr'{input_directory}\documents\formletters\form_c.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\objects\202.txt'],
-                    ['Metadata Only', fr'{input_directory}\documents\objects\303.txt']]
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\formletters\form_c.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\objects\part_two\202.txt'],
+                    ['Metadata Only', fr'{input_directory.lower()}\documents\objects\part_two\303.txt']]
         self.assertEqual(result, expected, "Problem with test for metadata_only, details")
 
 
