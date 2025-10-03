@@ -66,7 +66,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
                     os.path.join(self.by_topic, 'Agriculture', 'file2.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt')]
-        self.assertEqual(result, expected, "Problem with test for blank")
+        self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_duplicate_file(self):
         """Test for when a file is in the metadata with the same topic more than once"""
@@ -81,7 +81,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file1.txt'),
                     os.path.join(self.by_topic, 'Small Business', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for duplicate_file")
+        self.assertEqual(expected, result, "Problem with test for duplicate_file")
 
     def test_duplicate_topic(self):
         """Test for when a topic is in the metadata more than once, due to topic combinations"""
@@ -99,7 +99,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file3.txt'),
                     os.path.join(self.by_topic, 'Tax', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for duplicate_topic")
+        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_filenotfounderror(self):
         """Test for when a file is in the metadata but not the directory"""
@@ -114,14 +114,14 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt')]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror, topic folders")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
         expected = [['Agriculture', r'..\documents\BlobExport\file_missing.txt'],
                     ['Peanuts', r'..\documents\BlobExport\file_missing.txt'],
                     ['Peanuts', r'..\documents\BlobExport\folder_missing\file3.txt']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror, log")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
         """Test for when no files for a topic are in the directory and the topic folder is empty"""
@@ -135,7 +135,7 @@ class MyTestCase(unittest.TestCase):
         result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
                   os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
         expected = [False, False]
-        self.assertEqual(result, expected, "Problem with test for folder empty, topic folders")
+        self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
@@ -143,13 +143,13 @@ class MyTestCase(unittest.TestCase):
                     ['Agriculture', r'..\documents\BlobExport\missing\file2.txt'],
                     ['Peanuts', r'..\documents\BlobExport\missing\file2.txt'],
                     ['Peanuts', r'..\documents\BlobExport\missing\file3.txt']]
-        self.assertEqual(result, expected, "Problem with test for folder empty, log")
+        self.assertEqual(expected, result, "Problem with test for folder empty, log")
 
         # Verifies folders without a file are not still present.
         result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
                   os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
         expected = [False, False]
-        self.assertEqual(result, expected, "Problem with test for folder empty, folders not deleted")
+        self.assertEqual(expected, result, "Problem with test for folder empty, folders not deleted")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
@@ -168,7 +168,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_H_', 'file2.txt'),
                     os.path.join(self.by_topic, '_I_J_', 'file3.txt'),
                     os.path.join(self.by_topic, '___', 'file1.txt')]
-        self.assertEqual(result, expected, "Problem with test for folder name error")
+        self.assertEqual(expected, result, "Problem with test for folder name error")
 
     def test_folder_name_trailing(self):
         """Test for when a topic ends with a space or period, which cannot be in the folder name"""
@@ -183,7 +183,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'cat', 'file2.txt'),
                     os.path.join(self.by_topic, 'dog', 'file3.txt'),
                     os.path.join(self.by_topic, 'park and rec', 'file1.txt')]
-        self.assertEqual(result, expected, "Problem with test for folder name trailing")
+        self.assertEqual(expected, result, "Problem with test for folder name trailing")
 
     def test_multiple_topic(self):
         """Test for when a row has multiple topics (joined by ^)"""
@@ -201,7 +201,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
                     os.path.join(self.by_topic, 'Small Business', 'file3.txt'),
                     os.path.join(self.by_topic, 'Tax', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for multiple topic")
+        self.assertEqual(expected, result, "Problem with test for multiple topic")
 
     def test_unique(self):
         """Test for when each topic and file is unique"""
@@ -216,7 +216,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
                     os.path.join(self.by_topic, 'Small Business', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for unique")
+        self.assertEqual(expected, result, "Problem with test for unique")
 
 
 if __name__ == '__main__':

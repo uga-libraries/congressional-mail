@@ -78,7 +78,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 0, 0.0, 'uncheckable'],
                     ['out_document_name', True, 0, 0, '0'],
                     ['out_fillin', True, 0, 0.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for correct")
+        self.assertEqual(expected, result, "Problem with test for correct")
 
     def test_columns_blanks(self):
         """Test for when some columns have blank cells"""
@@ -133,7 +133,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 3, 75.0, 'uncheckable'],
                     ['out_document_name', True, 3, 75.0, '0'],
                     ['out_fillin', True, 4, 100.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for blanks")
+        self.assertEqual(expected, result, "Problem with test for blanks")
 
     def test_columns_extra(self):
         """Test for when some columns are not expected"""
@@ -181,7 +181,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_document_name', 'True', 0, 0.0, '0'],
                     ['out_fillin', 'True', 0, 0.0, 'uncheckable'],
                     ['extra', 'Error: unexpected column', 0, 0.0, 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for extra")
+        self.assertEqual(expected, result, "Problem with test for extra")
 
     def test_columns_format(self):
         """Test for when some cells in the six tested columns do not match the expected formats"""
@@ -238,7 +238,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', True, 0, 0.0, 'uncheckable'],
                     ['out_document_name', True, 1, 20.0, '1'],
                     ['out_fillin', True, 0, 0.0, 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for formatting")
+        self.assertEqual(expected, result, "Problem with test for formatting")
 
     def test_columns_missing(self):
         """Test for when some columns are missing"""
@@ -286,7 +286,7 @@ class MyTestCase(unittest.TestCase):
                     ['out_text', False, 'BLANK', 'BLANK', 'uncheckable'],
                     ['out_document_name', True, 0.0, 0.0, '0'],
                     ['out_fillin', False, 'BLANK', 'BLANK', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for missing")
+        self.assertEqual(expected, result, "Problem with test for missing")
 
 
 if __name__ == '__main__':

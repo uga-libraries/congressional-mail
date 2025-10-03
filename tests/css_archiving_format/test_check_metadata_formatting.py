@@ -32,13 +32,13 @@ class MyTestCase(unittest.TestCase):
         in_date_mismatch = check_metadata_formatting('in_date', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(in_date_mismatch, 5, "Problem with test for in_date, count")
+        self.assertEqual(5, in_date_mismatch, "Problem with test for in_date, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_date.csv'))
         expected = [['zip', 'in_date'], [30602, '20001212.0600'], [30604, '2000'], [30605, '2000-12-12'],
                     [30606, 'Dec 12, 2000'], [30606, 'rcvd 20001212']]
-        self.assertEqual(result, expected, "Problem with test for in_date, report")
+        self.assertEqual(expected, result, "Problem with test for in_date, report")
 
     def test_out_date(self):
         """Test for the out_date column, including correct cells, formatting errors, and blanks"""
@@ -49,13 +49,13 @@ class MyTestCase(unittest.TestCase):
         out_date_mismatch = check_metadata_formatting('out_date', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_date_mismatch, 5, "Problem with test for out_date, count")
+        self.assertEqual(5, out_date_mismatch, "Problem with test for out_date, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_date.csv'))
         expected = [['zip', 'out_date'], [30602, '20001212.0600'], [30604, '2000'], [30605, '2000-12-12'],
                     [30606, 'Dec 12, 2000'], [30606, 'rcvd 20001212']]
-        self.assertEqual(result, expected, "Problem with test for out_date, report")
+        self.assertEqual(expected, result, "Problem with test for out_date, report")
 
     def test_state(self):
         """Test for the state column, including correct cells, formatting errors, and blanks"""
@@ -66,12 +66,12 @@ class MyTestCase(unittest.TestCase):
         state_mismatch = check_metadata_formatting('state', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(state_mismatch, 3, "Problem with test for state, count")
+        self.assertEqual(3, state_mismatch, "Problem with test for state, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_state.csv'))
         expected = [['state', 'zip'], ['ga', 30603], ['GEORGIA', 30604], ['NDK', 30606]]
-        self.assertEqual(result, expected, "Problem with test for state, report")
+        self.assertEqual(expected, result, "Problem with test for state, report")
 
     def test_zip(self):
         """Test for the zip column, including correct cells, formatting errors, and blanks"""
@@ -82,12 +82,12 @@ class MyTestCase(unittest.TestCase):
         zip_mismatch = check_metadata_formatting('zip', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(zip_mismatch, 4, "Problem with test for zip, count")
+        self.assertEqual(4, zip_mismatch, "Problem with test for zip, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_zip.csv'))
         expected = [['state', 'zip'], ['MS', '306024444'], ['TX', 'no zip'], ['DC', 'no zip'], ['MO', '3060']]
-        self.assertEqual(result, expected, "Problem with test for zip, report")
+        self.assertEqual(expected, result, "Problem with test for zip, report")
 
     def test_column_blank(self):
         """Test for a column that is entirely blank, which would be the same for any column"""
@@ -97,12 +97,12 @@ class MyTestCase(unittest.TestCase):
         state_mismatch = check_metadata_formatting('state', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(state_mismatch, 'column_blank', "Problem with test for column_blank, count")
+        self.assertEqual('column_blank', state_mismatch, "Problem with test for column_blank, count")
 
         # Tests the report was not made.
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_state.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for no column_blank, report")
+        self.assertEqual(expected, result, "Problem with test for no column_blank, report")
 
     def test_column_missing(self):
         """Test for a column that is missing, which would be the same for any column"""
@@ -112,12 +112,12 @@ class MyTestCase(unittest.TestCase):
         out_date_mismatch = check_metadata_formatting('out_date', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_date_mismatch, 'column_missing', "Problem with test for column_missing, count")
+        self.assertEqual('column_missing', out_date_mismatch, "Problem with test for column_missing, count")
 
         # Tests the report was not made.
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_date.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for column_missing, report")
+        self.assertEqual(expected, result, "Problem with test for column_missing, report")
 
     def test_no_errors(self):
         """Test for the column has no formatting errors, which would be the same for any column"""
@@ -127,12 +127,12 @@ class MyTestCase(unittest.TestCase):
         zip_mismatch = check_metadata_formatting('zip', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(zip_mismatch, 0, "Problem with test for no errors, count")
+        self.assertEqual(0, zip_mismatch, "Problem with test for no errors, count")
 
         # Tests the report was not made.
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for no errors, report")
+        self.assertEqual(expected, result, "Problem with test for no errors, report")
 
 
 if __name__ == '__main__':

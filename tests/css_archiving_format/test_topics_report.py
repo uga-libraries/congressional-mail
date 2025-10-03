@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
                     ['Puppies', 2, 0, 2],
                     ['Sports', 0, 3, 3],
                     ['Water', 3, 2, 5]]
-        self.assertEqual(result, expected, "Problem with test for all")
+        self.assertEqual(expected, result, "Problem with test for all")
 
     def test_blanks(self):
         """Test for when there are blanks in both topic columns."""
@@ -61,7 +61,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
                     ['BLANK', 3, 2, 5],
                     ['Water', 1, 2, 3]]
-        self.assertEqual(result, expected, "Problem with test for blanks")
+        self.assertEqual(expected, result, "Problem with test for blanks")
 
     def test_shared(self):
         """Test for when the topics are both the in and out columns."""
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
                     ['Puppies', 3, 1, 4],
                     ['Sports', 1, 1, 2],
                     ['Water', 2, 2, 4]]
-        self.assertEqual(result, expected, "Problem with test for shared")
+        self.assertEqual(expected, result, "Problem with test for shared")
 
     def test_unique(self):
         """Test for when the topics are only the in or out columns."""
@@ -103,7 +103,7 @@ class MyTestCase(unittest.TestCase):
                     ['Ecology', 0, 1, 1],
                     ['Sports', 0, 2, 2],
                     ['Water', 2, 0, 2]]
-        self.assertEqual(result, expected, "Problem with test for unique")
+        self.assertEqual(expected, result, "Problem with test for unique")
 
 
 if __name__ == '__main__':

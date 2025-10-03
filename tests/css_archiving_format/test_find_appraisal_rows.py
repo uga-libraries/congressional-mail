@@ -49,7 +49,7 @@ class MyTestCase(unittest.TestCase):
                     ['30603', 'Admin', '', '', '', 'Recommendations', 'wrote recommendation', '', '', 'Recommendation'],
                     ['30604', 'Social Security', 'Casework candidate', '', '', '', '', '', '', 'Casework'],
                     ['30605', 'Intern', '', r'..\doc\resume.txt', '', '', 'job request', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for four categories, df")
+        self.assertEqual(expected, result, "Problem with test for four categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'Casework'],
                     [30605, 'Intern', 'BLANK', r'..\doc\resume.txt', 'BLANK', 'BLANK', 'job request', 'BLANK',
                      'BLANK', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
@@ -78,7 +78,7 @@ class MyTestCase(unittest.TestCase):
                      'Job_Application'],
                     [30607, 'Legislation', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Recommendation noted', 'BLANK',
                      'BLANK', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_three(self):
         """Test for when there are three categories for appraisal (academy applications, casework, job application)"""
@@ -101,7 +101,7 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'Casework', '', '', '', '', '', '', '', 'Casework'],
                     ['30603', 'Social Security', 'Casework candidate', '', '', '', '', '', '', 'Casework'],
                     ['30604', 'Intern', '', '', '', 'job request', '', r'..\doc\resume.txt', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for three categories, df")
+        self.assertEqual(expected, result, "Problem with test for three categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -114,7 +114,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'Casework'],
                     [30604, 'Intern', 'BLANK', 'BLANK', 'BLANK', 'job request', 'BLANK', r'..\doc\resume.txt',
                      'BLANK', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for three categories, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for three categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
@@ -122,7 +122,7 @@ class MyTestCase(unittest.TestCase):
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     [30605, 'Judicial', 'Napster case', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Casework']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_two(self):
         """Test for when there are two categories for appraisal (academy applications and casework)"""
@@ -144,7 +144,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Academy Applicant', 'Nomination', '', '', '', '', '', '', 'Academy_Application'],
                     ['30601', 'Casework', '', '', '', '', '', '', '', 'Casework'],
                     ['30603', 'Social Security', 'Casework candidate', '', '', '', '', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for two categories, df")
+        self.assertEqual(expected, result, "Problem with test for two categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -155,7 +155,7 @@ class MyTestCase(unittest.TestCase):
                     [30601, 'Casework', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Casework'],
                     [30603, 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for two categories, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for two categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
@@ -165,7 +165,7 @@ class MyTestCase(unittest.TestCase):
                      'Academy_Application'],
                     [30605, 'Farming', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', r'..\doc\case\file.doc', 'BLANK',
                      'Casework']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_one(self):
         """Test for when there is one category for appraisal (casework)"""
@@ -186,7 +186,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Casework Issues', '', '', '', 'Casework', '', '', '', 'Casework'],
                     ['30601', 'Health^Casework', 'Note', '', '', '', '', '', '', 'Casework'],
                     ['30603', 'Social Security', 'Open Case', '', '', '', '', '', '', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one category, df")
+        self.assertEqual(expected, result, "Problem with test for one category, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -198,14 +198,14 @@ class MyTestCase(unittest.TestCase):
                      'Casework'],
                     [30603, 'Social Security', 'Open Case', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one category, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for one category, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     [30604, 'Admin', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'For Casey', 'BLANK', 'BLANK', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_none(self):
         """Test for when there are no indicators for appraisal"""
@@ -220,19 +220,19 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(appraisal_df)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for no appraisal, df")
+        self.assertEqual(expected, result, "Problem with test for no appraisal, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for no appraisal, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for no appraisal, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_multiple(self):
         """Test for when there are rows that match multiple categories for appraisal"""
@@ -251,7 +251,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Casework^Academy Applicant', '', '', '', '', '', '', '', 'Academy_Application|Casework'],
                     ['30601', 'Academy Applicant', 'Maybe casework', '', '', '', 'rec for doe', '', '',
                      'Academy_Application|Casework|Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for multiple categories, df")
+        self.assertEqual(expected, result, "Problem with test for multiple categories, df")
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -261,7 +261,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'Academy_Application|Casework'],
                     [30601, 'Academy Applicant', 'Maybe casework', 'BLANK', 'BLANK', 'BLANK', 'rec for doe', 'BLANK',
                      'BLANK', 'Academy_Application|Casework|Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for four categories, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for four categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
@@ -275,7 +275,7 @@ class MyTestCase(unittest.TestCase):
                      'Job_Application'],
                     [30603, 'Admin', 'note', r'doc\case.txt', 'BLANK', 'Admin', 'recommendation', 'BLANK', 'BLANK',
                      'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal check log")
 
 
 if __name__ == '__main__':

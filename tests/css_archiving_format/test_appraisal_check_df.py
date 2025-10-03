@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30601', '', 'CASE', r'doc\Case_File.txt', '', '', '', r'form\a.txt', '', 'Casework'],
                     ['30603', '', '', '', '', 'started case Tue', r'case\abc.txt', '', 'Mr._Case', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one column")
+        self.assertEqual(expected, result, "Problem with test for one column")
 
     def test_one_column(self):
         """Test for when the keyword is in one column per row"""
@@ -52,7 +52,7 @@ class MyTestCase(unittest.TestCase):
                     ['30603', '', '', '', '', '', 'started case Tue', '', 'a_b', 'Casework'],
                     ['30604', '', 'note', r'doc\file2.txt', '', '', 'reply note', r'case\abc.txt', '', 'Casework'],
                     ['30606', '', '', '', r'doc\file4.txt', '', 'Note', r'letter\123.txt', 'Mr._Case', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one column")
+        self.assertEqual(expected, result, "Problem with test for one column")
 
     def test_no_column(self):
         """Test for when the keyword is in no columns"""
@@ -68,7 +68,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for no column")
+        self.assertEqual(expected, result, "Problem with test for no column")
 
 
 if __name__ == '__main__':

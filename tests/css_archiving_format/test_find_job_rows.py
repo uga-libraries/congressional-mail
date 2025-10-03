@@ -37,13 +37,13 @@ class MyTestCase(unittest.TestCase):
                      '', 'Job_Application'],
                     ['30605', 'Admin', 'job request', '', '', 'Resume', '', r'..\doc\resume.txt', '', 'Job_Application'],
                     ['30604', '', 'Job Request', '', '', '', 'job request', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for all patterns, df_job")
+        self.assertEqual(expected, result, "Problem with test for all patterns, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for all patterns, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for all patterns, df_job_check")
 
     def test_in_document_name(self):
         """Test for when column in_document_name contains a word or phrase indicating job applications"""
@@ -65,7 +65,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Admin', '', r'..\doc\Doe Job Interview.txt', '', '', '', '', '', 'Job_Application'],
                     ['30602', 'Admin', '', r'..\doc\resume.txt', '', 'Admin', 'Files', '', '', 'Job_Application'],
                     ['30605', '', '', r'..\doc\jobs\Resume_Regret.doc', '', '', 'Note', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30601', 'Arts', '', r'..\doc\job_file.txt', '', '', '', '', '', 'Job_Application'],
                     ['30604', '', '', r'..\doc\jobs\file.doc', '', '', 'Note', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_job_check")
 
     def test_in_text(self):
         """Test for when column in_text contains a word or phrase indicating job applications"""
@@ -99,14 +99,14 @@ class MyTestCase(unittest.TestCase):
                     ['30602', '', 'Job Request', '', '', '', '', '', '', 'Job_Application'],
                     ['30605', '', 'resume', '', '', '', '', '', '', 'Job_Application'],
                     ['30606', '', 'Forwarded Resume', '', '', '', '', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for in_text, df_job")
+        self.assertEqual(expected, result, "Problem with test for in_text, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', 'Arts', 'Freelance job', '', '', '', '', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for in_text, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for in_text, df_job_check")
 
     def test_in_topic(self):
         """Test for when column in_topic contains one of the topics indicating job applications"""
@@ -129,14 +129,14 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'Admin^RESUMES', '', '', '', '', 'Note', '', '', 'Job_Application'],
                     ['30603', 'Resumes', '', '', '', 'Economy', '', '', '', 'Job_Application'],
                     ['30604', 'intern', '', '', '', '', '', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, df_job")
+        self.assertEqual(expected, result, "Problem with test for in_topic, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30605', 'Job Hunting', '', '', '', '', '', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for in_topic, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for in_topic, df_job_check")
 
     def test_none(self):
         """Test for when no patterns indicating job applications are present"""
@@ -152,13 +152,13 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_job")
+        self.assertEqual(expected, result, "Problem with test for none (no patterns matched), df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no patterns matched), df_job_check")
+        self.assertEqual(expected, result, "Problem with test for none (no patterns matched), df_job_check")
 
     def test_out_document_name(self):
         """Test for when column out_document_name contains a word or phrase indicating job applications"""
@@ -180,7 +180,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'Admin', '', '', '', '', '', r'..\doc\Doe Job Interview.txt', '', 'Job_Application'],
                     ['30602', 'Admin', '', '', '', 'Admin', 'Files', r'..\doc\resume.txt', '', 'Job_Application'],
                     ['30605', '', '', '', '', '', 'Note', r'..\doc\jobs\Resume_Regret.doc', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
@@ -188,7 +188,7 @@ class MyTestCase(unittest.TestCase):
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30601', 'Arts', '', '', '', '', '', r'..\doc\job_file.txt', '', 'Job_Application'],
                     ['30604', '', '', '', '', '', 'Note', r'..\doc\jobs\file.doc', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_document_name, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_job_check")
 
     def test_out_text(self):
         """Test for when column out_text contains a word or phrase indicating job applications"""
@@ -213,7 +213,7 @@ class MyTestCase(unittest.TestCase):
                     ['30604', 'Admin', '', '', '', '', 'job request - accept', '', '', 'Job_Application'],
                     ['30605', 'Admin', '', '', '', '', 'Doe resume', '', '', 'Job_Application'],
                     ['30606', 'Admin', '', '', '', '', 'RESUME', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_text, df_job")
+        self.assertEqual(expected, result, "Problem with test for out_text, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
@@ -221,7 +221,7 @@ class MyTestCase(unittest.TestCase):
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', 'Farms', '', '', '', 'Agriculture', 'Job numbers', '', '', 'Job_Application'],
                     ['30602', '', '', '', '', 'Economy', '', 'Jobs report', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_text, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for out_text, df_job_check")
 
     def test_out_topic(self):
         """"Test for when column out_topic contains one of the topics indicating job applications"""
@@ -244,13 +244,13 @@ class MyTestCase(unittest.TestCase):
                     ['30602', '', '', '', '', 'Intern', '', '', '', 'Job_Application'],
                     ['30603', '', '', '', '', 'INTERN^Admin', 'note', '', '', 'Job_Application'],
                     ['30605', '', '', '', '', 'Resumes', 'note', '', '', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for out_topic, df_job")
+        self.assertEqual(expected, result, "Problem with test for out_topic, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text', 
                      'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for out_topic, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for out_topic, df_job_check")
 
         
 if __name__ == '__main__':
