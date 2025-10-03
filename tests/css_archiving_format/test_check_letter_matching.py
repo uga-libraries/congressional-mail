@@ -30,10 +30,10 @@ class MyTestCase(unittest.TestCase):
         """Test for all possible outcomes of matching and not matching"""
         # Makes variables to use as test input and runs the function.
         md_df = pd.DataFrame([['30601', np.nan, np.nan],
-                              ['30602', np.nan, r'..\BlobExport\documents\formletters\form_a.txt'],
+                              ['30602', np.nan, r'..\BlobExport\documents\Formletters\form_a.txt'],
                               ['30603', r'..\BlobExport\documents\indivletters\300.txt', np.nan],
                               ['30604', r'..\BlobExport\documents\indivletters\400.txt',
-                               r'..\BlobExport\documents\formletters\form_b.txt']],
+                               r'..\BlobExport\documents\Formletters\form_b.txt']],
                              columns=['zip', 'in_document_name', 'out_document_name'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'all')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
@@ -51,12 +51,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\100.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\500.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\300.txt']]
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\100.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt']]
         self.assertEqual(result, expected, "Problem with test for all, details")
 
     def test_blanks(self):
@@ -109,26 +109,26 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\300.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\400.txt'],
-                    ['Directory Only', f'{input_directory}\\documents\\indivletters\\500.txt']]
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\400.txt'],
+                    ['Directory Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt']]
         self.assertEqual(result, expected, "Problem with test for directory_only, details")
 
     def test_match(self):
-        """Test for when the metadata and input directory match (some repeat)"""
+        """Test for when the metadata and input directory match (some repeat, some capitalization differences)"""
         # Makes variables to use as test input and runs the function.
-        md_df = pd.DataFrame([['30601', r'..\BlobExport\documents\indivletters\100.txt',
+        md_df = pd.DataFrame([['30601', r'..\BlobExport\documents\indivletters\PART_ONE\100.txt',
                                r'..\BlobExport\documents\formletters\form_a.txt'],
-                              ['30602', r'..\BlobExport\documents\indivletters\200.txt',
+                              ['30602', r'..\BlobExport\documents\indivletters\PART_ONE\200.txt',
                                r'..\BlobExport\documents\formletters\form_a.txt'],
-                              ['30603', r'..\BlobExport\documents\indivletters\300.txt',
+                              ['30603', r'..\BlobExport\documents\indivletters\PART_ONE\300.txt',
                               r'..\BlobExport\documents\formletters\form_b.txt'],
-                              ['30604', r'..\BlobExport\documents\indivletters\400.txt',
+                              ['30604', r'..\BlobExport\documents\indivletters\part_two\400.txt',
                               r'..\BlobExport\documents\formletters\form_b.txt'],
-                              ['30605', r'..\BlobExport\documents\indivletters\500.txt',
+                              ['30605', r'..\BlobExport\documents\indivletters\part_two\500.txt',
                               r'..\BlobExport\documents\formletters\form_c.txt']],
                              columns=['zip', 'in_document_name', 'out_document_name'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'match')
@@ -179,13 +179,13 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_b.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\formletters\\form_c.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\100.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\200.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\300.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\400.txt'],
-                    ['Metadata Only', f'{input_directory}\\documents\\indivletters\\500.txt']]
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_b.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\formletters\\form_c.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\100.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\200.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\300.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\400.txt'],
+                    ['Metadata Only', f'{input_directory.lower()}\\documents\\indivletters\\500.txt']]
         self.assertEqual(result, expected, "Problem with test for metadata_only, details")
 
 
