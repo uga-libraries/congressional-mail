@@ -291,22 +291,22 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of usability_report_matching.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
         result = csv_to_list(csv_path)
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', 3],
-                    ['Directory_Only', 2],
-                    ['Match', 10],
-                    ['Metadata_Blank', 1]]
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', 10, '71%'],
+                    ['Metadata_Only', 3, '21%'],
+                    ['Metadata_Blank', 1, '7%'],
+                    ['Directory_Only', 2, 'BLANK']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
 
         # Tests the contents of usability_report_matching_details.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
         result = csv_to_list(csv_path, sort=True)
         expected = [['Category', 'Path'],
-                    ['Directory Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\formletters\B.txt'],
-                    ['Directory Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\666666.txt'],
-                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\444444.txt'],
-                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\555555.txt'],
-                    ['Metadata Only', r'test_data\script\Accession_Constituent_Mail_Export\documents\objects\B.txt']]
+                    ['Directory Only', r'test_data\script\accession_constituent_mail_export\documents\formletters\b.txt'],
+                    ['Directory Only', r'test_data\script\accession_constituent_mail_export\documents\objects\666666.txt'],
+                    ['Metadata Only', r'test_data\script\accession_constituent_mail_export\documents\objects\444444.txt'],
+                    ['Metadata Only', r'test_data\script\accession_constituent_mail_export\documents\objects\555555.txt'],
+                    ['Metadata Only', r'test_data\script\accession_constituent_mail_export\documents\objects\b.txt']]
         self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
 
         # Tests the contents of usability_report_metadata.csv.
