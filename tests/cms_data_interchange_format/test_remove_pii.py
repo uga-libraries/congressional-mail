@@ -23,11 +23,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['constituent_id', 'city', 'state', 'zip_code', 'country']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 1B, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 1B, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '13', '14', '15', '18']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 1B, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 1B, values")
 
     def test_2a(self):
         """Test for columns in table 2A."""
@@ -41,11 +41,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['constituent_id', 'correspondence_id', 'correspondence_type', 'staff', 'date_in', 'date_out',
                     'tickler_date', 'update_date', 'response_type']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 2A, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 2A, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '3', '4', '5', '6', '7', '8', '9', '10']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 2A, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 2A, values")
 
     def test_2b(self):
         """Test for columns in table 2B."""
@@ -57,11 +57,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['constituent_id', 'correspondence_id', 'correspondence_code', 'position']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 2B, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 2B, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '3', '4', '5']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 2B, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 2B, values")
 
     def test_2c(self):
         """Test for columns in table 2C."""
@@ -74,11 +74,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['constituent_id', 'correspondence_id', '2C_sequence_number', 'document_type',
                     'correspondence_document_name', 'file_location']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 2C, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 2C, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '3', '4', '5', '6', '7']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 2C, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 2C, values")
 
 
 if __name__ == '__main__':

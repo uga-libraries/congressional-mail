@@ -1,5 +1,5 @@
 """
-Tests for the function delete_appraisal_letters(), which deletes letters for appraisal reasons.
+Tests for the function delete_appraisal_letters(), which deletes letters for appraisal reaassertEqual(expected, resultns.
 To simplify input, the test uses dataframes with only a few of the columns present in a real export.
 """
 from datetime import date
@@ -56,12 +56,12 @@ class MyTestCase(unittest.TestCase):
                      '0.6', today, today, '6CF993E723D5AD2B841A303056E0535B', 'Academy_Application'],
                     [os.path.join(input_directory, 'documents', 'out-custom', '1002.txt'),
                      '2.8', today, today, '2F48B70AB29E2B466768B6897A1640E2', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for delete, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for delete, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1.txt', '3.txt']
-        self.assertEqual(result, expected, "Problem with test for delete, directory contents")
+        self.assertEqual(expected, result, "Problem with test for delete, directory contents")
 
     def test_error_filenotfound(self):
         """Test for when the file paths in the metadata do not match files in the export"""
@@ -82,12 +82,12 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [os.path.join(input_directory, 'documents', 'out-custom', '1.txt'),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for error_filenotfound, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for error_filenotfound, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1.txt']
-        self.assertEqual(result, expected, "Problem with test for error_filenotfound, directory contents")
+        self.assertEqual(expected, result, "Problem with test for error_filenotfound, directory contents")
 
     def test_error_new(self):
         """Test for when the file paths in the metadata are a new pattern"""
@@ -108,12 +108,12 @@ class MyTestCase(unittest.TestCase):
                     'Cannot determine file path: new path pattern in metadata'],
                     ['new_folder\\1001.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Cannot determine file path: new path pattern in metadata']]
-        self.assertEqual(result, expected, "Problem with test for error_new, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for error_new, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1.txt']
-        self.assertEqual(result, expected, "Problem with test for error_new, directory contents")
+        self.assertEqual(expected, result, "Problem with test for error_new, directory contents")
 
     def test_skip_blank(self):
         """Test for when the file paths in the metadata are blank"""
@@ -130,12 +130,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for skip_blank, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for skip_blank, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1000.txt', '1001.txt']
-        self.assertEqual(result, expected, "Problem with test for skip_blank, directory contents")
+        self.assertEqual(expected, result, "Problem with test for skip_blank, directory contents")
 
     def test_skip_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
@@ -152,12 +152,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for skip_empty_string, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for skip_empty_string, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1000.txt', '1001.txt']
-        self.assertEqual(result, expected, "Problem with test for skip_empty_string, directory contents")
+        self.assertEqual(expected, result, "Problem with test for skip_empty_string, directory contents")
 
     def test_skip_form(self):
         """Test for when the file paths in the metadata are for form letters (not deleted)"""
@@ -175,12 +175,12 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for skip_form, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for skip_form, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(os.path.join(input_directory, 'documents'))
         expected = ['1.txt', '2.txt', '1.txt']
-        self.assertEqual(result, expected, "Problem with test for skip_form, directory contents")
+        self.assertEqual(expected, result, "Problem with test for skip_form, directory contents")
 
 
 if __name__ == '__main__':

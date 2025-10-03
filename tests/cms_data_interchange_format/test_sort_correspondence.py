@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'farm', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for blank")
+        self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_duplicate_file(self):
         """Test for when a file is in the metadata with the same topic more than once"""
@@ -78,7 +78,7 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'cats', 'file1.txt'),
                     os.path.join(self.by_topic, 'dogs', 'file2.txt')]
-        self.assertEqual(result, expected, "Problem with test for duplicate_file")
+        self.assertEqual(expected, result, "Problem with test for duplicate_file")
 
     def test_duplicate_topic(self):
         """Test for when a topic is in the metadata more than once"""
@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cats', 'file3.txt'),
                     os.path.join(self.by_topic, 'cats', 'file4.txt'),
                     os.path.join(self.by_topic, 'dogs', 'file2.txt')]
-        self.assertEqual(result, expected, "Problem with test for duplicate_topic")
+        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_filenotfounderror(self):
         """Test for when a file is in the metadata but not the directory"""
@@ -110,13 +110,13 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'cats', 'file1.txt'),
                     os.path.join(self.by_topic, 'farm', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror, topic folders")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
         expected = [['dogs', r'new\in-email\file2.txt'],
                     ['park', r'\doc\in-email\file4.txt']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror, log")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
         """Test for when no files for a topic are in the directory and the topic folder is empty"""
@@ -131,19 +131,19 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'farm', 'file3.txt'),
                     os.path.join(self.by_topic, 'park', 'file4.txt')]
-        self.assertEqual(result, expected, "Problem with test for folder empty, topic folders")
+        self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
         expected = [['cats', r'in-email\file01.txt'],
                     ['dogs', r'in-email\new\file2.txt']]
-        self.assertEqual(result, expected, "Problem with test for folder empty, log")
+        self.assertEqual(expected, result, "Problem with test for folder empty, log")
 
         # Verifies folders without a file are not still present.
         result = [os.path.exists(os.path.join(self.by_topic, 'cats')),
                   os.path.exists(os.path.join(self.by_topic, 'dogs'))]
         expected = [False, False]
-        self.assertEqual(result, expected, "Problem with test for folder empty, folders not deleted")
+        self.assertEqual(expected, result, "Problem with test for folder empty, folders not deleted")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
@@ -160,7 +160,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'Ga_', 'file2.txt'),
                     os.path.join(self.by_topic, '_H_', 'file3.txt'),
                     os.path.join(self.by_topic, '_pa_rk_', 'file4.txt')]
-        self.assertEqual(result, expected, "Problem with test for folder name error")
+        self.assertEqual(expected, result, "Problem with test for folder name error")
 
     def test_folder_name_trailing(self):
         """Test for when a topic ends with a space or period, which cannot be in the folder name"""
@@ -177,7 +177,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cat', 'file2.txt'),
                     os.path.join(self.by_topic, 'dog', 'file3.txt'),
                     os.path.join(self.by_topic, 'park and rec', 'file4.txt')]
-        self.assertEqual(result, expected, "Problem with test for folder name trailing")
+        self.assertEqual(expected, result, "Problem with test for folder name trailing")
 
     def test_outgoing(self):
         """Test for when some rows are for outgoing correspondence and should be skipped"""
@@ -192,7 +192,7 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'cats', 'file1.txt'),
                     os.path.join(self.by_topic, 'farm', 'file3.txt')]
-        self.assertEqual(result, expected, "Problem with test for outgoing")
+        self.assertEqual(expected, result, "Problem with test for outgoing")
 
     def test_unique(self):
         """Test for when topic and file is unique"""
@@ -209,7 +209,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'dogs', 'file2.txt'),
                     os.path.join(self.by_topic, 'farm', 'file3.txt'),
                     os.path.join(self.by_topic, 'park', 'file4.txt')]
-        self.assertEqual(result, expected, "Problem with test for unique")
+        self.assertEqual(expected, result, "Problem with test for unique")
 
 
 if __name__ == '__main__':

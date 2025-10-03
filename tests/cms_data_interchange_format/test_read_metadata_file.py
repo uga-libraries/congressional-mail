@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
                      'City Two', 'GA', '30002', 'C2', 'Clarke', 'USA', 'D2', 'P2', 'Y', 'BLANK'],
                     ['1B', '3', '33', 'HO', 'Y', 'Y', 'BLANK', 'BLANK', '30 Elm Ave', 'BLANK', 'BLANK', 'BLANK',
                      'City Three', 'GA', '30003', 'C3', 'Clarke', 'USA', 'D3', 'P3', 'BLANK', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for 1B")
+        self.assertEqual(expected, result, "Problem with test for 1B")
 
     def test_2a(self):
         """Test for the metadata file 2A.out"""
@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
                      'EMAIL', '22', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['2A', '3', '3003', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330',
                      'EMAIL', '33', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for 2A")
+        self.assertEqual(expected, result, "Problem with test for 2A")
 
     def test_2b(self):
         """Test for the metadata file 2B.out"""
@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
                     ['2B', '1', '1001', '15001', 'CON'],
                     ['2B', '2', '2002', '15002', 'PRO'],
                     ['2B', '3', '3003', '15003', 'PRO']]
-        self.assertEqual(result, expected, "Problem with test for 2B")
+        self.assertEqual(expected, result, "Problem with test for 2B")
 
     def test_2c(self):
         """Test for the metadata file 2C.out"""
@@ -69,7 +69,7 @@ class MyTestCase(unittest.TestCase):
                     ['2C', '1', '1001', '1', 'main', 'taxes_con.docx', 'BLANK'],
                     ['2C', '2', '2002', '1', 'main', 'min_wage_pro.docx', 'BLANK'],
                     ['2C', '3', '3003', '1', 'main', 'rights_pro.docx', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for 2C")
+        self.assertEqual(expected, result, "Problem with test for 2C")
 
     def test_2d(self):
         """Test for the metadata file 2D.out"""
@@ -81,7 +81,7 @@ class MyTestCase(unittest.TestCase):
                     ['2D', '1', '1001', '1', 'CM', 'text1'],
                     ['2D', '2', '2002', '1', 'CM', 'text2'],
                     ['2D', '2', '3003', '1', 'CM', 'text3']]
-        self.assertEqual(result, expected, "Problem with test for 2D")
+        self.assertEqual(expected, result, "Problem with test for 2D")
 
     def test_8a(self):
         """Test for the metadata file 8A.out"""
@@ -92,7 +92,7 @@ class MyTestCase(unittest.TestCase):
                     ['8A', 'COR', '15001', 'Taxes', 'Y'],
                     ['8A', 'COR', '15002', 'Minimum Wage', 'BLANK'],
                     ['8A', 'COR', '15003', 'Rights > Workers', 'Y']]
-        self.assertEqual(result, expected, "Problem with test for 8A")
+        self.assertEqual(expected, result, "Problem with test for 8A")
 
 
 if __name__ == '__main__':

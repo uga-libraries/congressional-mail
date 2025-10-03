@@ -32,13 +32,13 @@ class MyTestCase(unittest.TestCase):
                     ['file_4.doc', 'CASEWORK', 'x', 'Casework'],
                     ['file_5.doc', 'Forwarded to me for a response', 'x', 'Casework'],
                     ['file_6.doc', 'Add to open case', 'x', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_casework")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_7.doc', 'Potential case', 'x', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_casework_check")
 
     def test_none(self):
         """Test for when no rows have casework"""
@@ -52,12 +52,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_casework")
+        self.assertEqual(expected, result, "Problem with test for none, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_casework_check")
 
 
 if __name__ == '__main__':

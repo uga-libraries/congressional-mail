@@ -25,7 +25,7 @@ class MyTestCase(unittest.TestCase):
                      'Appraisal_Category'],
                     ['20230101', r'doc\legal case.txt', 'Concern re doe case', 'court > case', 'Casework'],
                     ['20230202', r'doc\CASE.txt', 'POSSIBLE CASE', 'admin', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for multiple columns")
+        self.assertEqual(expected, result, "Problem with test for multiple columns")
 
     def test_one(self):
         """ Test for when the keyword is in one column"""
@@ -48,7 +48,7 @@ class MyTestCase(unittest.TestCase):
                     ['20230303', r'doc\CASE_FILE.txt', 'note3', 'admin', 'Casework'],
                     ['20230404', r'doc\file4.txt', 'case', 'general', 'Casework'],
                     ['20230405', r'doc\file5.txt', 'note5', 'court > case', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for one column")
+        self.assertEqual(expected, result, "Problem with test for one column")
 
     def test_none(self):
         """ Test for when the keyword is not in any column"""
@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_check)
         expected = [['date_in', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no match for appraisal)")
+        self.assertEqual(expected, result, "Problem with test for none (no match for appraisal)")
 
 
 if __name__ == '__main__':

@@ -30,13 +30,13 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'letters of recommendation for girl scouts', 'x', 'Recommendation'],
                     ['file_5.doc', 'RECOMMENDATION LETTER', 'x', 'Recommendation'],
                     ['file_6.doc', 'recommendation letters', 'x', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_recommendation")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_recommendation")
 
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendation_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_4.doc', 'Recommendation for policy', 'x', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_recommendation_check")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_recommendation_check")
 
     def test_none(self):
         """Test for when no rows have recommendations"""
@@ -50,12 +50,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendation are correct.
         result = df_to_list(df_recommendation)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_recommendation")
+        self.assertEqual(expected, result, "Problem with test for none, df_recommendation")
 
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendation_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_recommendation_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_recommendation_check")
 
 
 if __name__ == '__main__':

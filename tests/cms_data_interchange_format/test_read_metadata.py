@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
                      '20220330', 'EMAIL', '15003', 'PRO', '1', 'main', 'rights_pro.docx', 'BLANK', 'text3',
                      'COR', '15003', 'Rights > Workers', 'Y']]
-        self.assertEqual(result, expected, "Problem with test for function read_metadata")
+        self.assertEqual(expected, result, "Problem with test for function read_metadata")
 
 
 if __name__ == '__main__':
