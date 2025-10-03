@@ -40,7 +40,7 @@ def check_arguments(arg_list):
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
-        if arg_list[2] in ('access', 'preservation'):
+        if arg_list[2] in ('access', 'preservation', 'test'):
             mode = arg_list[2]
         else:
             errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
@@ -52,6 +52,52 @@ def check_arguments(arg_list):
         errors.append("Provided more than the required arguments, input_directory and script_mode")
 
     return input_dir, md_path, mode, errors
+
+
+def check_metadata(df, output_dir):
+    """This is a quickly made function for looking at the metadata, to decide if it is complete enough to keep
+    but needs to be refined if we do keep it"""
+
+    # Tests if all expected columns are present and if there are any unexpected columns.
+    column_names = df.columns.tolist()
+    expected = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
+                'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
+                'letter_date', 'staffer_initials', 'document_number', 'comments']
+    columns_dict = dict.fromkeys(expected)
+    match = list(set(expected).intersection(column_names))
+    for column in match:
+        columns_dict[column] = True
+    missing = list(set(expected) - set(column_names))
+    for column in missing:
+        columns_dict[column] = False
+    extra = list(set(column_names) - set(expected))
+    for column in extra:
+        columns_dict[column] = 'Error: unexpected column'
+    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
+
+    # Calculates the number and percentage of blank cells in each column, and saves it all to a CSV.
+    blank_count = df.eq('').sum()
+    total_rows = len(df.index)
+    blank_percent = round((blank_count / total_rows) * 100, 2)
+    columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
+    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
+    print(columns_df)
+    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+
+    # Counts the number of each topic
+    df['correspondence_topic'] = df['correspondence_topic'].replace('', 'BLANK')
+    df_counts = df['correspondence_topic'].value_counts().reset_index()
+    df_counts.columns = ['Topic', 'Topic_Count']
+    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+    # Checking the rows with a possible file name
+    blank_count = df['document_number'].eq('').sum()
+    doc_num_count = df['document_number'].nunique()
+    q_count = df['document_number'].str.startswith('Q').sum()
+    with open(os.path.join(output_dir, 'file_names_options.txt'), 'w', newline='') as report:
+        report.write(f'Document number blank        : {blank_count}\n')
+        report.write(f'Document number unique values: {doc_num_count}\n')
+        report.write(f'Comments with Q# (filename?) : {q_count}\n')
 
 
 def find_casework_rows(df, output_dir):
@@ -151,14 +197,14 @@ def remove_casework_letters(input_dir):
         # Creates a file deletion log, with a header row.
         log_path = os.path.join(os.path.dirname(input_dir),
                                 f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-        file_deletion_log(log_path, None, True)
+        file_deletion_log(log_path, None, 'header')
 
         for q_number in q_list:
             # Change "text" to match the folder name in the export which contains the letters, if different.
             q_number = q_number.split(' ')[0]
             file_path = os.path.join(input_dir, 'text', f"{q_number.replace('Q', '')}.txt")
             try:
-                file_deletion_log(log_path, file_path)
+                file_deletion_log(log_path, file_path, 'Casework')
                 os.remove(file_path)
             except FileNotFoundError:
                 file_deletion_log(log_path, file_path, note='Cannot delete: FileNotFoundError')
@@ -225,8 +271,8 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Finds rows in the metadata that are for casework and saves to a CSV.
-    casework_df = find_casework_rows(md_df, output_directory)
+    # # Finds rows in the metadata that are for casework and saves to a CSV.
+    # casework_df = find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
@@ -240,3 +286,6 @@ if __name__ == '__main__':
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archive_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
+
+    if script_mode == 'test':
+        check_metadata(md_df, output_directory)
