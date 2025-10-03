@@ -47,12 +47,12 @@ class MyTestCase(unittest.TestCase):
                      '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'Casework'],
                     [os.path.join(input_directory, 'text', '300003.txt'),
                      '0.0', today, today, 'F270E85FDB08BDB6B7BE83270F077E6B', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for deletion, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for deletion, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for deletion, directory contents")
+        self.assertEqual(expected, result, "Problem with test for deletion, directory contents")
 
     def test_file_not_found(self):
         """Test for when the files in the metadata deletion log are not present in the export"""
@@ -70,12 +70,12 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
                     [os.path.join(input_directory, 'text', '50.txt'),
                      'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for file not found, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for file not found, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['100001.txt', 'ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for file not found, directory contents")
+        self.assertEqual(expected, result, "Problem with test for file not found, directory contents")
 
     def test_no_deletion(self):
         """Test for when there is a metadata deletion log but no rows have an associated file"""
@@ -86,12 +86,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the file deletion log was not made.
         result = os.path.exists(os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"))
-        self.assertEqual(result, False, "Problem with test for no deletion, file deletion log")
+        self.assertEqual(False, result, "Problem with test for no deletion, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for no deletion, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no deletion, directory contents")
 
     def test_no_log(self):
         """Test for when there is no metadata deletion log"""
@@ -102,12 +102,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the file deletion log was not made.
         result = os.path.exists(os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv"))
-        self.assertEqual(result, False, "Problem with test for no log, file deletion log")
+        self.assertEqual(False, result, "Problem with test for no log, file deletion log")
 
         # Tests that no files have been deleted.
         result = files_in_dir(input_directory)
         expected = ['ABC-1.txt']
-        self.assertEqual(result, expected, "Problem with test for no log, directory contents")
+        self.assertEqual(expected, result, "Problem with test for no log, directory contents")
 
 
 if __name__ == '__main__':

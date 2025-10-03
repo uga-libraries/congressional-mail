@@ -28,7 +28,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['state_code', 'zip_code', 'comments'],
                     ['GA', 30601, 'info'],
                     ['GA', 30603, 'other info']]
-        self.assertEqual(result, expected, "Problem with test for function")
+        self.assertEqual(expected, result, "Problem with test for function")
 
 
 if __name__ == '__main__':

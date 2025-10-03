@@ -22,7 +22,7 @@ class MyTestCase(unittest.TestCase):
                      'CASE', 'TR-HWY', '', '', 'RA', '555QRS667', 'ANOTHER NOTE'],
                     ['LAST B, FIRST B MIDDLE, JR.', '', '', '200 ROAD', 'APT 5B', 'CITY A', 'GA', '30001',
                      'ISSUE', 'TR-RAL', '', '980104', 'NOP', '', '']]
-        self.assertEqual(result, expected, "Problem with test for blank rows")
+        self.assertEqual(expected, result, "Problem with test for blank rows")
 
     def test_no_blank(self):
         """Test for when the metadata file has no blank rows"""
@@ -42,7 +42,7 @@ class MyTestCase(unittest.TestCase):
                      'CASE', 'TR-HWY', '', '', 'RA', '555QRS667', 'ANOTHER NOTE'],
                     ['LAST B, FIRST B MIDDLE, JR.', '', '', '200 ROAD', 'APT 5B', 'CITY A', 'GA', '30001',
                      'ISSUE', 'TR-RAL', '', '980104', 'NOP', '', '']]
-        self.assertEqual(result, expected, "Problem with test for no blank rows")
+        self.assertEqual(expected, result, "Problem with test for no blank rows")
 
 
 if __name__ == '__main__':
