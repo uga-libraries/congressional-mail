@@ -24,11 +24,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['city', 'state_code', 'zip_code', 'correspondence_type', 'correspondence_topic',
                     'correspondence_subtopic', 'letter_date', 'staffer_initials', 'document_number', 'comments']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for function, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for function, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['6', '7', '8', '9', '10', '11', '12', '13', '14', '15']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for function, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for function, values")
 
 
 if __name__ == '__main__':

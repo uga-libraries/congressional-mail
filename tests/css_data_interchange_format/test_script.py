@@ -76,7 +76,7 @@ class MyTestCase(unittest.TestCase):
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
                     'and columns with PII, make copies of the metadata split by congress year, '
                     'and make a copy of the constituent letters organized by topic\n')
-        self.assertEqual(result, expected, "Problem with test for access, printed statement")
+        self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
                      'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for access, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for access, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
                     [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990315', '19990402', 'nan', '19990315',
                      'usmail', 'CASEWORK', 'OUTGOING', r'..\documents\indivletters\2070078.doc', '2070078.doc',
                      ' ', 'nan', 'Neutral', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for access, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for access, appraisal_delete_log.csv")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
@@ -128,7 +128,7 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
                      ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, archiving_correspondence_redacted.csv")
+        self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of form_letter_metadata.csv.
         csv_path = os.path.join('test_data', 'script', 'form_letter_metadata.csv')
@@ -150,7 +150,7 @@ class MyTestCase(unittest.TestCase):
                      r'..\doc\formletter\court.pdf', 'JSmith', '17', 'JSmith', '20101212', '20110101', '20150101',
                      'Inactive', 'Y', 'Form Letters', 'staff_member', 'Full Name:', 'COURT', 'COM',
                      r'..\doc\formletter\court.pdf', 'JSmith', '20120101', 'text', 'Y', 'court.pdf', 'JSmith']]
-        self.assertEqual(result, expected, "Problem with test for access, form_letter_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for access, form_letter_metadata.csv")
 
         # Tests the contents of 1999-2000.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '1999-2000.csv')
@@ -174,7 +174,7 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
                      ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, 1999-2000.csv")
+        self.assertEqual(expected, result, "Problem with test for access, 1999-2000.csv")
 
         # Tests the contents of 2011-2012.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2011-2012.csv')
@@ -186,7 +186,7 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html',
                      '2103422', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, 2011-2012.csv")
+        self.assertEqual(expected, result, "Problem with test for access, 2011-2012.csv")
 
         # Tests the contents of undated.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', 'undated.csv')
@@ -200,13 +200,13 @@ class MyTestCase(unittest.TestCase):
                     ['Smyrna', 'GA', '30080-1944', 'USA', 'usmail', 'nan', 'C', 'nan', 'nan', 'nan', 'nan', 'usmail',
                      'nan', 'OUTGOING', r'..\documents\formletters\Airline Passenger BOR Act2 1999.doc',
                      'Airline Passenger BOR Act2 1999', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, undated.csv")
+        self.assertEqual(expected, result, "Problem with test for access, undated.csv")
 
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
         expected = [os.path.join(by_topic, 'FARMING', '4007000.eml')]
-        self.assertEqual(result, expected, "Problem with test for access, Correspondence_by_Topic")
+        self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode."""
@@ -220,7 +220,7 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout
         expected = ('\nThe script is running in accession mode.\n'
                     'It will produce usability and appraisal reports and not change the export.\n')
-        self.assertEqual(result, expected, "Problem with test for accession, printed statement")
+        self.assertEqual(expected, result, "Problem with test for accession, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
@@ -232,7 +232,7 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
                      'legal_case.html', ' ', 'nan', 'text8', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for accession, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
@@ -256,7 +256,7 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
                      '19990315', 'imail', 'CASE2', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan', 'text7', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for accession, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, appraisal_delete_log.csv")
 
         # Tests the contents of the metadata_formatting_errors_update_date.csv.
         csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_update_date.csv')
@@ -271,7 +271,7 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '2000 April 27', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
                      'nan', ' ', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_update_date.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_update_date.csv")
 
         # Tests the contents of the metadata_formatting_errors_state_code.csv.
         csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state_code.csv')
@@ -291,7 +291,7 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'Georgia', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
                      '19990315', 'imail', 'CASE2', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
                      '1c8614bf01caf83e00010e44.eml', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
 
         # Tests the contents of the topics_report.csv.
         csv_path = os.path.join('test_data', 'script', 'topics_report.csv')
@@ -301,17 +301,17 @@ class MyTestCase(unittest.TestCase):
                     ['CASE2', '3'],
                     ['CASE 1', '1'],
                     ['INTTAX', '1']]
-        self.assertEqual(result, expected, "Problem with test for accession, topics_report.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, topics_report.csv")
 
         # Tests the contents of the usability_report_matching.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
         result = csv_to_list(csv_path)
-        expected = [['Category', 'Count'],
-                    ['Metadata_Only', '3'],
-                    ['Directory_Only', '1'],
-                    ['Match', '6'],
-                    ['Metadata_Blank', '0']]
-        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching.csv")
+        expected = [['Category', 'Row/File_Count', 'Row_Percent'],
+                    ['Match', '6', '67%'],
+                    ['Metadata_Only', '3', '33%'],
+                    ['Metadata_Blank', '0', '0%'],
+                    ['Directory_Only', '1', 'nan']]
+        self.assertEqual(expected, result, "Problem with test for accession, usability_report_matching.csv")
 
         # Tests the contents of the usability_report_matching_details.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
@@ -319,10 +319,10 @@ class MyTestCase(unittest.TestCase):
         result.sort()
         expected = [['Category', 'Path'],
                     ['Directory Only', r'test_data\script\accession_test\documents\indivletters\casework_999999.doc'],
-                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\Airline Act2.doc'],
+                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\airline act2.doc'],
                     ['Metadata Only', r'test_data\script\accession_test\documents\formletters\busintax.doc'],
                     ['Metadata Only', r'test_data\script\accession_test\documents\indivletters\00002.doc']]
-        self.assertEqual(result, expected, "Problem with test for accession, usability_report_matching_details.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, usability_report_matching_details.csv")
 
         # Tests the contents of the usability_report_metadata.csv.
         csv_path = os.path.join('test_data', 'script', 'usability_report_metadata.csv')
@@ -346,7 +346,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '2', '22.22', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
                     ['file_name', 'True', '9', '100.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for accession, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for accession, usability_report_metadata.csv")
 
     def test_appraisal(self):
         """Test for when the script runs correctly in appraisal mode."""
@@ -364,7 +364,7 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout
         expected = ('\nThe script is running in appraisal mode.\n'
                     'It will delete letters due to appraisal but not change the metadata file.\n')
-        self.assertEqual(result, expected, "Problem with test for appraisal, printed statement")
+        self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
         # Tests the contents of the appraisal check log.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
@@ -376,7 +376,7 @@ class MyTestCase(unittest.TestCase):
                     ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
                      '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\legal_case.html',
                      'legal_case.html', ' ', 'nan', 'text8', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for appraisal check log")
+        self.assertEqual(expected, result, "Problem with test for appraisal check log")
 
         # Tests the contents of the appraisal delete log.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
@@ -400,7 +400,7 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
                      'nan', ' ', 'nan', 'text5', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for appraisal, appraisal delete log")
+        self.assertEqual(expected, result, "Problem with test for appraisal, appraisal delete log")
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -415,13 +415,13 @@ class MyTestCase(unittest.TestCase):
                      '0.0', today, today, '49C13D076A41E65DBE137D695E22A6A7', 'Casework'],
                     [r'..\documents\indivletters\casework_12345.doc'.replace('..', input_directory),
                      '26.6', today, today, 'A9C52FA2BA1A0E51AD59DA2E4DA08C9D', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for appraisal, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for appraisal, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat',
                     '2103422.html', '30046.doc', 'legal_case.html']
-        self.assertEqual(result, expected, "Problem with test for appraisal, input_directory contents")
+        self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
@@ -435,7 +435,7 @@ class MyTestCase(unittest.TestCase):
         output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
         result = output.stdout.decode('utf-8')
         expected = "Missing required arguments, input_directory and script_mode\r\n"
-        self.assertEqual(result, expected, "Problem with test for error argument, printed error")
+        self.assertEqual(expected, result, "Problem with test for error argument, printed error")
 
     def test_preservation(self):
         """Test for when the script runs correctly in preservation mode."""
@@ -449,7 +449,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the print statement.
         result = output.stdout
         expected = '\nThe script is running in preservation mode.\nThe steps are TBD.\n'
-        self.assertEqual(result, expected, "Problem with test for preservation, printed statement")
+        self.assertEqual(expected, result, "Problem with test for preservation, printed statement")
 
 
 if __name__ == '__main__':

@@ -67,12 +67,12 @@ class MyTestCase(unittest.TestCase):
                      'ISSUE', 'CASE', 'nan', '970813', 'FWIW', '725SAT100', 'Q111111'],
                     ['nan', 'CEO', 'START UP Z', '444 BROAD ST', 'nan', 'ATLANTA', 'GA', '30002', 'ISSUE', 'CASE',
                      'nan', 'nan', 'FWIW', 'nan', 'Q444444']]
-        self.assertEqual(result, expected, "Problem with test for access, case delete log")
+        self.assertEqual(expected, result, "Problem with test for access, case delete log")
 
         # Tests the case remains log was not made.
         csv_path = os.path.join(output_directory, 'case_remains_log.csv')
         result = os.path.exists(csv_path)
-        self.assertEqual(result, False, "Problem with test for access, case remains log")
+        self.assertEqual(False, result, "Problem with test for access, case remains log")
 
         # Tests the contents of archive_redacted.csv.
         csv_path = os.path.join(output_directory, 'archive_redacted.csv')
@@ -86,7 +86,7 @@ class MyTestCase(unittest.TestCase):
                      'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
                      'THE LAST ONE'],
                     ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, archive_redacted.csv")
+        self.assertEqual(expected, result, "Problem with test for access, archive_redacted.csv")
 
         # Tests the contents of 1997-1998.csv.
         csv_path = os.path.join(output_directory, '1997-1998.csv')
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
                     ['CAIRO', 'GA', '30001', 'ISSUE', 'nan', 'nan', '980801', 'TBD', 'nan', 'nan'],
                     ['ATLANTA', 'GA', '30000-0001', 'ISSUE', 'TD-GEN', 'nan', '971001', 'FWIW', '725SAT101', 'nan'],
                     ['COLUMBUS', 'GA', '30003', 'ISSUE', 'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for access, 1997-1998")
+        self.assertEqual(expected, result, "Problem with test for access, 1997-1998")
 
         # Tests the contents of undated.csv.
         csv_path = os.path.join(output_directory, 'undated.csv')
@@ -107,7 +107,7 @@ class MyTestCase(unittest.TestCase):
                     ['ATLANTA', 'GA', '30002', 'ISSUE', 'nan', 'nan', 'nan', 'FWIW', 'nan',
                      'A COMMENT THAT IS AS LONG AS IS PERMITTED BY THE FIELD LENGTH FOR THE COMMENTS COLUMN, '
                      'THE LAST ONE']]
-        self.assertEqual(result, expected, "Problem with test for access, undated")
+        self.assertEqual(expected, result, "Problem with test for access, undated")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
@@ -121,7 +121,7 @@ class MyTestCase(unittest.TestCase):
         output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
         result = output.stdout.decode('utf-8')
         expected = "Missing required arguments, input_directory and script_mode\r\n"
-        self.assertEqual(result, expected, "Problem with test for error argument, printed error")
+        self.assertEqual(expected, result, "Problem with test for error argument, printed error")
 
     def test_preservation(self):
         """Test for when the script runs in preservation mode."""
@@ -149,7 +149,7 @@ class MyTestCase(unittest.TestCase):
                      'nan', 'nan', 'FWIW', 'nan', 'Q444444'],
                     ['Zayne', 'nan', 'nan', '456 Street', 'nan', 'ATLANTA', 'GA', '30004', 'ISSUE', 'CASE', 'nan',
                      '980113', 'TBD', 'nan', 'Q000000']]
-        self.assertEqual(result, expected, "Problem with test for preservation, case delete log")
+        self.assertEqual(expected, result, "Problem with test for preservation, case delete log")
 
         # Tests the contents of the case remains log.
         csv_path = os.path.join(output_directory, 'case_remains_log.csv')
@@ -159,7 +159,7 @@ class MyTestCase(unittest.TestCase):
                      'letter_date', 'staffer_initials', 'document_number', 'comments'],
                     ['SMITH', 'nan', 'AN INSTITUTE', 'PO BOX 123', '1000 MAIN', 'CASEYVILLE', 'GA', '30003', 'ISSUE',
                      'AG-TOB', 'ABC', '980113', 'TBD', 'nan', 'Comment']]
-        self.assertEqual(result, expected, "Problem with test for preservation, case remains log")
+        self.assertEqual(expected, result, "Problem with test for preservation, case remains log")
 
         # Tests the contents of the file deletion log.
         csv_path = os.path.join(output_directory, f"file_deletion_log_{today}.csv")
@@ -171,12 +171,12 @@ class MyTestCase(unittest.TestCase):
                      'C29C5262DF8A6B0072322ED6942BE134', 'casework'],
                     [os.path.join(input_directory, 'text', '000000.txt'), 'nan', 'nan', 'nan', 'nan',
                      'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for preservation, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for preservation, file deletion log")
 
         # Tests the correct files were deleted.
         result = files_in_dir(os.path.join(input_directory, 'text'))
         expected = ['222222.txt', '333333.txt', '555555.txt', 'ED55-1.txt', 'F01-11.txt']
-        self.assertEqual(result, expected, "Problem with test for preservation, files deleted")
+        self.assertEqual(expected, result, "Problem with test for preservation, files deleted")
 
 
 if __name__ == '__main__':

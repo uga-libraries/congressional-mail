@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'True', '0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0', '0.0', 'uncheckable'],
                     ['inactive_flag', 'True', '0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for all correct, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for all correct, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -84,7 +84,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for all correct, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for all correct, metadata_formatting_errors csvs")
 
     def test_blank(self):
         """Test for when every row is blank"""
@@ -120,7 +120,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'True', '2', '100.0', 'uncheckable'],
                     ['code_description', 'True', '2', '100.0', 'uncheckable'],
                     ['inactive_flag', 'True', '2', '100.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for blank, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for blank, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -131,7 +131,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for all blank, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for all blank, metadata_formatting_errors csvs")
 
     def test_blank_partial(self):
         """Test for some rows of each column have blanks but no column is entirely blank"""
@@ -173,7 +173,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'True', '3', '60.0', 'uncheckable'],
                     ['code_description', 'True', '4', '80.0', 'uncheckable'],
                     ['inactive_flag', 'True', '1', '20.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for blank_partial, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for blank_partial, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -184,7 +184,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for blank_partial, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for blank_partial, metadata_formatting_errors csvs")
 
     def test_columns_extra(self):
         """Test for when there are additional columns beyond what is expected"""
@@ -226,7 +226,7 @@ class MyTestCase(unittest.TestCase):
                     ['tickler_date', 'True', '0', '0.0', '0'],
                     ['update_date', 'True', '0', '0.0', '0'],
                     ['zip_code', 'True', '0', '0.0', '0']]
-        self.assertEqual(result, expected, "Problem with test for columns_extra, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for columns_extra, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -237,7 +237,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for columns_metadata, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for columns_metadata, metadata_formatting_errors csvs")
 
     def test_columns_missing(self):
         """Test for when every column except dates is missing
@@ -273,7 +273,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['code_description', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['inactive_flag', 'False', 'BLANK', 'BLANK', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns_missing, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for columns_missing, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -284,7 +284,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for columns_missing, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for columns_missing, metadata_formatting_errors csvs")
 
     def test_columns_missing_dates(self):
         """Test for when the date columns are missing
@@ -324,7 +324,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'True', '0.0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0.0', '0.0', 'uncheckable'],
                     ['inactive_flag', 'True', '0.0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns_missing_dates, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for columns_missing_dates, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -335,7 +335,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [False, False, False, False, False, False, False]
-        self.assertEqual(result, expected, "Problem with test for columns_missing_datest, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for columns_missing_datest, metadata_formatting_errors csvs")
 
     def test_formatting(self):
         """Test for when each column with formatting tests has errors"""
@@ -373,7 +373,7 @@ class MyTestCase(unittest.TestCase):
                     ['code', 'True', '0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0', '0.0', 'uncheckable'],
                     ['inactive_flag', 'True', '0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for formatting, usability_report_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for formatting, usability_report_metadata.csv")
 
         # Tests which formatting reports were made, if any.
         result = [os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_correspondence_document_name.csv')),
@@ -384,7 +384,7 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv')),
                   os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))]
         expected = [True, True, True, True, True, True, True]
-        self.assertEqual(result, expected, "Problem with test for formatting, metadata_formatting_errors csvs")
+        self.assertEqual(expected, result, "Problem with test for formatting, metadata_formatting_errors csvs")
 
 
 if __name__ == '__main__':

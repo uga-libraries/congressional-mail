@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', '1'],
                     ['Pet Parade', '1'],
                     ['education', '1']]
-        self.assertEqual(result, expected, "Problem with test for all")
+        self.assertEqual(expected, result, "Problem with test for all")
 
     def test_blanks(self):
         """Test for when group is blank"""
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
         expected = [['Topic', 'Topic_Count'],
                     ['BLANK', '6']]
-        self.assertEqual(result, expected, "Problem with test for blanks")
+        self.assertEqual(expected, result, "Problem with test for blanks")
 
     def test_repeat(self):
         """Test for when groups are repeated"""
@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
                     ['Farms', '4'],
                     ['Pets', '3'],
                     ['Econ', '2']]
-        self.assertEqual(result, expected, "Problem with test for repeat")
+        self.assertEqual(expected, result, "Problem with test for repeat")
 
     def test_unique(self):
         """Test for when each group is used once"""
@@ -79,7 +79,7 @@ class MyTestCase(unittest.TestCase):
                     ['Econ', '1'],
                     ['farm - aid', '1'],
                     ['pets', '1']]
-        self.assertEqual(result, expected, "Problem with test for unique")
+        self.assertEqual(expected, result, "Problem with test for unique")
 
 
 if __name__ == '__main__':

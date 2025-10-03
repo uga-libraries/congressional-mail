@@ -27,14 +27,14 @@ class MyTestCase(unittest.TestCase):
                     ['file_1.doc', 'Intern Assignments', 'x', 'Job_Application'],
                     ['file_3.doc', 'batch intern response', 'x', 'Job_Application'],
                     ['file_4.doc', 'INTERNSHIP', 'x', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_job")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_2.doc', 'good job with everything', 'x', 'Job_Application'],
                     ['file_5.doc', 'Jobs Act', 'x', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for corr_text, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_job_check")
 
     def test_none(self):
         """Test for when no rows have job applications"""
@@ -48,12 +48,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_job are correct.
         result = df_to_list(df_job)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_job")
+        self.assertEqual(expected, result, "Problem with test for none, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_job_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_job_check")
 
 
 if __name__ == '__main__':

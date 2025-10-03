@@ -44,11 +44,11 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'topic', 'subtopic', 'Casework'],
                     ['30602', 'type', 'topic', 'subtopic', 'SEND CASE TO ATL'],
                     ['30603', 'type', 'topic', 'subtopic', 'case']]
-        self.assertEqual(result, expected, "Problem with test for case - comments, df")
+        self.assertEqual(expected, result, "Problem with test for case - comments, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
-        self.assertEqual(result, False, "Problem with test for case - comments, case log")
+        self.assertEqual(False, result, "Problem with test for case - comments, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'topic', 'subtopic', 'Casework'],
                     ['30602', 'type', 'topic', 'subtopic', 'SEND CASE TO ATL'],
                     ['30603', 'type', 'topic', 'subtopic', 'case']]
-        self.assertEqual(result, expected, "Problem with test for case - comments, delete log")
+        self.assertEqual(expected, result, "Problem with test for case - comments, delete log")
 
     def test_case_subtopic(self):
         """Test for when the column correspondence_subtopic contains the string "case" and is deleted"""
@@ -77,11 +77,11 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'topic', 'Casework', 'comments'],
                     ['30602', 'type', 'topic', 'NEW CASE SS', 'comments'],
                     ['30603', 'type', 'topic', 'case', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - subtopic, df")
+        self.assertEqual(expected, result, "Problem with test for case - subtopic, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
-        self.assertEqual(result, False, "Problem with test for case - subtopic, case log")
+        self.assertEqual(False, result, "Problem with test for case - subtopic, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
@@ -90,7 +90,7 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'topic', 'Casework', 'comments'],
                     ['30602', 'type', 'topic', 'NEW CASE SS', 'comments'],
                     ['30603', 'type', 'topic', 'case', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - subtopic, delete log")
+        self.assertEqual(expected, result, "Problem with test for case - subtopic, delete log")
 
     def test_case_topic(self):
         """Test for when the correspondence_topic contains the string "case" and is deleted"""
@@ -110,11 +110,11 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'Casework', 'subtopic', 'comments'],
                     ['30602', 'type', 'SEND CASE TO ATL', 'subtopic', 'comments'],
                     ['30603', 'type', 'case', 'subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - topic, df")
+        self.assertEqual(expected, result, "Problem with test for case - topic, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
-        self.assertEqual(result, False, "Problem with test for case - topic, case log")
+        self.assertEqual(False, result, "Problem with test for case - topic, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
@@ -123,7 +123,7 @@ class MyTestCase(unittest.TestCase):
                     ['30601', 'type', 'Casework', 'subtopic', 'comments'],
                     ['30602', 'type', 'SEND CASE TO ATL', 'subtopic', 'comments'],
                     ['30603', 'type', 'case', 'subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - topic, delete log")
+        self.assertEqual(expected, result, "Problem with test for case - topic, delete log")
 
     def test_case_type(self):
         """Test for when the column correspondence_type contains the string "case" and is deleted"""
@@ -141,11 +141,11 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'CASE', 'topic', 'subtopic', 'comments'],
                     ['30601', 'Casework', 'topic', 'subtopic', 'comments'],
                     ['30602', 'legal case', 'topic', 'subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - type, df")
+        self.assertEqual(expected, result, "Problem with test for case - type, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
-        self.assertEqual(result, False, "Problem with test for case - type, case log")
+        self.assertEqual(False, result, "Problem with test for case - type, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
@@ -153,7 +153,7 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'CASE', 'topic', 'subtopic', 'comments'],
                     ['30601', 'Casework', 'topic', 'subtopic', 'comments'],
                     ['30602', 'legal case', 'topic', 'subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for case - type, delete log")
+        self.assertEqual(expected, result, "Problem with test for case - type, delete log")
 
     def test_casework_some(self):
         """Test for when some rows contain the string case and are deleted, and one row is not"""
@@ -176,11 +176,11 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'ITEM', 'OF-GEN, CASE', '', 'NOTE'],
                     ['30603', 'ITEM', 'OF-GEN', 'Legal Case', ''],
                     ['30604', 'ITEM', 'TR-RAL', '', 'SENT TO CASE WORK, ATL']]
-        self.assertEqual(result, expected, "Problem with test for casework - some, df")
+        self.assertEqual(expected, result, "Problem with test for casework - some, df")
 
         # Tests the case remains log was not made.
         result = os.path.exists(os.path.join('test_data', 'case_remains_log.csv'))
-        self.assertEqual(result, False, "Problem with test for casework - some, case log")
+        self.assertEqual(False, result, "Problem with test for casework - some, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
@@ -190,7 +190,7 @@ class MyTestCase(unittest.TestCase):
                     ['30602', 'ITEM', 'OF-GEN, CASE', 'nan', 'NOTE'],
                     ['30603', 'ITEM', 'OF-GEN', 'Legal Case', 'nan'],
                     ['30604', 'ITEM', 'TR-RAL', 'nan', 'SENT TO CASE WORK, ATL']]
-        self.assertEqual(result, expected, "Problem with test for casework - some, delete log")
+        self.assertEqual(expected, result, "Problem with test for casework - some, delete log")
 
     def test_no_casework(self):
         """Test for when none of the tested columns contain the string case and nothing is deleted"""
@@ -205,19 +205,19 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the returned dataframe are correct.
         result = df_to_list(casework_df)
         expected = [['city', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for no casework, df")
+        self.assertEqual(expected, result, "Problem with test for no casework, df")
 
         # Tests the values in the case remains log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_remains_log.csv'))
         expected = [['city', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments'],
                     ['CASEYVILLE', 'ITEM', 'PR', 'nan', 'I AM ON IT'],
                     ['CASE', 'ITEM', 'TR-RAL', 'nan', 'NOTE']]
-        self.assertEqual(result, expected, "Problem with test for no casework, case log")
+        self.assertEqual(expected, result, "Problem with test for no casework, case log")
 
         # Tests the values in the case delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'case_delete_log.csv'))
         expected = [['city', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic', 'comments']]
-        self.assertEqual(result, expected, "Problem with test for no casework, delete log")
+        self.assertEqual(expected, result, "Problem with test for no casework, delete log")
 
 
 if __name__ == '__main__':

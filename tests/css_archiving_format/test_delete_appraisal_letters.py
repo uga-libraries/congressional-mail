@@ -59,12 +59,12 @@ class MyTestCase(unittest.TestCase):
                      0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\objects\222222.txt'.replace('..', input_directory),
                      0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'],]
-        self.assertEqual(result, expected, "Problem with test for in_document_name, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for in_document_name, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['form_a.txt', '333333.txt']
-        self.assertEqual(result, expected, "Problem with test for in_document_name, directory contents")
+        self.assertEqual(expected, result, "Problem with test for in_document_name, directory contents")
 
     def test_in_skip(self):
         """Test for deleting files in the in_document_name column, where some rows should be skipped"""
@@ -91,12 +91,12 @@ class MyTestCase(unittest.TestCase):
                      0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\objects\222222.txt'.replace('..', input_directory),
                      0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'], ]
-        self.assertEqual(result, expected, "Problem with test for in_skip, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for in_skip, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['form_a.txt', '333333.txt']
-        self.assertEqual(result, expected, "Problem with test for in_skip, directory contents")
+        self.assertEqual(expected, result, "Problem with test for in_skip, directory contents")
 
     def test_out_document_name(self):
         """Test for deleting files in the out_document_name column"""
@@ -121,12 +121,12 @@ class MyTestCase(unittest.TestCase):
                      0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\letter\333333.txt'.replace('..', input_directory),
                      0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework'], ]
-        self.assertEqual(result, expected, "Problem with test for out_document_name, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['form_a.txt', 'test.txt', '222222.txt']
-        self.assertEqual(result, expected, "Problem with test for out_document_name, directory contents")
+        self.assertEqual(expected, result, "Problem with test for out_document_name, directory contents")
 
     def test_out_skip(self):
         """Test for deleting files in the out_document_name column, where some rows should be skipped"""
@@ -155,12 +155,12 @@ class MyTestCase(unittest.TestCase):
                      0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\letter\333333.txt'.replace('..', input_directory),
                      0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework'], ]
-        self.assertEqual(result, expected, "Problem with test for out_skip, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for out_skip, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['form_a.txt', 'test.txt', '222222.txt']
-        self.assertEqual(result, expected, "Problem with test for out_skip, directory contents")
+        self.assertEqual(expected, result, "Problem with test for out_skip, directory contents")
 
     def test_error_new(self):
         """Test for when paths in the metadata do not match expected patterns"""
@@ -182,7 +182,7 @@ class MyTestCase(unittest.TestCase):
                      'Cannot determine file path: new path pattern in metadata'],
                     [r'indivletters\500.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Cannot determine file path: new path pattern in metadata']]
-        self.assertEqual(result, expected, "Problem with test for error_new, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for error_new, file deletion log")
 
     def test_filenotfounderror_in(self):
         """Test for when files in in_document_name are not present and cannot be deleted"""
@@ -204,7 +204,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [r'..\documents\indivletters\500.txt'.replace('..', input_directory),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror - in, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror - in, file deletion log")
 
     def test_filenotfounderror_out(self):
         """Test for when files in out_document_name are not present and cannot be deleted"""
@@ -226,7 +226,7 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [r'..\documents\indivletters\500.txt'.replace('..', input_directory),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror - out, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror - out, file deletion log")
 
 
 if __name__ == '__main__':

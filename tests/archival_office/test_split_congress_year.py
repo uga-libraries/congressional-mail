@@ -38,27 +38,27 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'TX-GEN', '970102', 'AC'],
                     ['RIVERDALE', 'FR-GEN', '980505', 'AC']]
-        self.assertEqual(result, expected, "Problem with test for all years, 1997-1998")
+        self.assertEqual(expected, result, "Problem with test for all years, 1997-1998")
 
         # Tests that 1999-2000.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1999-2000.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'EV-WAT', '990719', 'VT'],
                     ['ROSWELL', 'nan', '001031', 'TGO']]
-        self.assertEqual(result, expected, "Problem with test for all years, 1999-2000")
+        self.assertEqual(expected, result, "Problem with test for all years, 1999-2000")
 
         # Tests that 2003-2004.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '2003-2004.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['COLUMBUS', 'TX-GEN', '030315', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for all years, 2003-2004")
+        self.assertEqual(expected, result, "Problem with test for all years, 2003-2004")
 
         # Tests that undated.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'undated.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['LAWRENCEVILLE', 'FR-GEN', 'nan', 'AC'],
                     ['LAWRENCEVILLE', 'CO-OLD', 'nan', 'VT']]
-        self.assertEqual(result, expected, "Problem with test for all years, undated")
+        self.assertEqual(expected, result, "Problem with test for all years, undated")
 
     def test_blank(self):
         """Test for when some of the letters do not have a date (letter_date column is empty string)"""
@@ -76,7 +76,7 @@ class MyTestCase(unittest.TestCase):
                     ['ROSWELL', 'nan', 'nan', 'TGO'],
                     ['COLUMBUS', 'TX-GEN', 'nan', 'nan'],
                     ['LAWRENCEVILLE', 'CO-OLD', 'nan', 'VT']]
-        self.assertEqual(result, expected, "Problem with test for blank, undated")
+        self.assertEqual(expected, result, "Problem with test for blank, undated")
 
     def test_1900s(self):
         """Test for when the years are from the 1900s (two-digit year is 60 or later)"""
@@ -92,18 +92,18 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', '1959-1960.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'EV-WAT', '600719', 'VT']]
-        self.assertEqual(result, expected, "Problem with test for 1900S, 1959-1960")
+        self.assertEqual(expected, result, "Problem with test for 1900S, 1959-1960")
 
         # Tests that 1997-1998.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '1997-1998.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'TX-GEN', '970102', 'AC'],
                     ['RIVERDALE', 'FR-GEN', '980505', 'AC']]
-        self.assertEqual(result, expected, "Problem with test for 1900S, 1997-1998")
+        self.assertEqual(expected, result, "Problem with test for 1900S, 1997-1998")
 
         # Tests that undated.csv was not made.
         result = os.path.exists(os.path.join('test_data', 'undated.csv'))
-        self.assertEqual(result, False, "Problem with test for 1900s, undated")
+        self.assertEqual(False, result, "Problem with test for 1900s, undated")
 
     def test_2000s(self):
         """Test for when the years are from the 2000s (two-digit year is 59 or earlier"""
@@ -119,23 +119,23 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', '1999-2000.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ROSWELL', 'nan', '001031', 'TGO']]
-        self.assertEqual(result, expected, "Problem with test for 2000s, 1999-2000")
+        self.assertEqual(expected, result, "Problem with test for 2000s, 1999-2000")
 
         # Tests that 2001-2002.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '2001-2002.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['COLUMBUS', 'TX-GEN', '010315', 'nan']]
-        self.assertEqual(result, expected, "Problem with test for 2000s, 2001-2002")
+        self.assertEqual(expected, result, "Problem with test for 2000s, 2001-2002")
 
         # Tests that 2059-2060.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', '2059-2060.csv'))
         expected = [['city', 'correspondence_topic', 'letter_date', 'staffer_initials'],
                     ['ATLANTA', 'TX-GEN', '590102', 'AC']]
-        self.assertEqual(result, expected, "Problem with test for 2000s, 2059-2060")
+        self.assertEqual(expected, result, "Problem with test for 2000s, 2059-2060")
 
         # Tests that undated.csv was not made.
         result = os.path.exists(os.path.join('test_data', 'undated.csv'))
-        self.assertEqual(result, False, "Problem with test for 2000s, undated")
+        self.assertEqual(False, result, "Problem with test for 2000s, undated")
 
 
 if __name__ == '__main__':

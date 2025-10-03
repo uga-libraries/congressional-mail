@@ -33,17 +33,17 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_df are correct.
         result = df_to_list(appraisal_df)
         expected = [['correspondence_document_name', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for none (no appraisal), appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for none (no appraisal), appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none (no appraisal), appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for none (no appraisal), appraisal_delete_log.csv")
 
     def test_one(self):
         """Test for when rows match only one appraisal category, if any"""
@@ -67,7 +67,7 @@ class MyTestCase(unittest.TestCase):
                     ['file_5.doc', 'x', 'Casework'],
                     ['file_6.doc', 'x', 'Job_Application'],
                     ['file_8.doc', 'academy nomination', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for one category, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for one category, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
@@ -76,7 +76,7 @@ class MyTestCase(unittest.TestCase):
                     ['file_4.doc', 'x', 'legal > case', 'Casework'],
                     ['file_7.doc', 'create jobs now', 'x', 'Job_Application'],
                     ['file_9.doc', 'good job with this one', 'x', 'Job_Application']]
-        self.assertEqual(result, expected, "Problem with test for one category, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for one category, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
                     ['file_5.doc', 'casework - forwarded to me for a response', 'x', 'Casework'],
                     ['file_6.doc', 'Internship applicant', 'x', 'Job_Application'],
                     ['file_8.doc', 'x', 'academy nomination', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for one category, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for one category, appraisal_delete_log.csv")
 
     def test_multiple(self):
         """Test for when rows match multiple appraisal categories, if any"""
@@ -104,14 +104,14 @@ class MyTestCase(unittest.TestCase):
                     ['file_1.doc', 'x', 'Casework|Job_Application'],
                     ['file_3.doc', 'x', 'Job_Application|Recommendation'],
                     ['file_4.doc', 'x', 'Casework|Job_Application|Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_df")
+        self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Casework'],
                     ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_check_log.csv")
+        self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -120,7 +120,7 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'internship recommendation letter', 'x', 'Job_Application|Recommendation'],
                     ['file_4.doc', 'internship recommendation letter closed case file', 'x',
                      'Casework|Job_Application|Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for multiple categories, appraisal_delete_log.csv")
+        self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_delete_log.csv")
 
 
 if __name__ == '__main__':

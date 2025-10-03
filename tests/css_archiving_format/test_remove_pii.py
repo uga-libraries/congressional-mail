@@ -22,11 +22,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['city', 'state', 'zip', 'in_id', 'out_id']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for all present, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for all present, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['13', '14', '15', '16', '19']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for all present, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for all present, values")
 
     def test_some_present(self):
         """Test for when some PII columns are present."""
@@ -37,11 +37,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['in_type', 'country']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for some present, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for some present, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['1', '5']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for some present, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for some present, values")
 
     def test_none_present(self):
         """Test for when no PII columns are present."""
@@ -52,11 +52,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['zip', 'country', 'in_id', 'out_id']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for none present, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for none present, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['1', '2', '3', '4'], ['11', '12', '13', '14']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for none present, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for none present, values")
 
 
 if __name__ == '__main__':

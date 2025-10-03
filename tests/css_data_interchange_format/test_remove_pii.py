@@ -23,11 +23,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the columns of the returned dataframe are correct.
         expected = ['person_id', 'city', 'state_code', 'zip_code', 'country']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 1B, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 1B, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '13', '14', '15', '18']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 1B, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 1B, values")
 
     def test_2a(self):
         """Test for columns in table 2A."""
@@ -44,11 +44,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['person_id', 'communication_id', 'communication_type', 'approved_by', 'status', 'date_in',
                     'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 2A, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 2A, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '19']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 2A, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 2A, values")
 
     def test_2c(self):
         """Test for columns in table 2C."""
@@ -62,11 +62,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the columns of the returned dataframe are correct.
         expected = ['person_id', 'communication_id', 'document_type', 'communication_document_name',
                     'communication_document_id', 'file_location', 'file_name']
-        self.assertEqual(md_df.columns.tolist(), expected, "Problem with test for 2C, columns")
+        self.assertEqual(expected, md_df.columns.tolist(), "Problem with test for 2C, columns")
 
         # Tests the values in the returned dataframe are correct.
         expected = [['2', '3', '4', '5', '6', '7', '8']]
-        self.assertEqual(md_df.values.tolist(), expected, "Problem with test for 2C, values")
+        self.assertEqual(expected, md_df.values.tolist(), "Problem with test for 2C, values")
 
 
 if __name__ == '__main__':

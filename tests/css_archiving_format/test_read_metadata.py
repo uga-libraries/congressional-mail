@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
                     ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
                      'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
                      'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank']]
-        self.assertEqual(result, expected, "Problem with test for correct")
+        self.assertEqual(expected, result, "Problem with test for correct")
 
     def test_correct_blanks(self):
         """Test for when the DAT file can be read in its entirety but has blank rows to skip"""
@@ -53,7 +53,7 @@ class MyTestCase(unittest.TestCase):
                     ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
                      'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
                      'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank']]
-        self.assertEqual(result, expected, "Problem with test for correct - blanks")
+        self.assertEqual(expected, result, "Problem with test for correct - blanks")
 
     def test_parser_error(self):
         """Test for when the DAT file has content with tabs, resulting in a ParserError
@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
                      'blank', 'blank', 'D city', 'DE', '45678', 'blank', 'd400', 'General', 'Email', '20240404', 'D1',
                      'blank', 'fileD400', 'blank', 'r400', 'General', 'Email', '20240414', 'formD', 'blank',
                      'replyD400', 'blank']]
-        self.assertEqual(result, expected, "Problem with test for ParserError")
+        self.assertEqual(expected, result, "Problem with test for ParserError")
 
 
 if __name__ == '__main__':

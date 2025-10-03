@@ -30,14 +30,14 @@ class MyTestCase(unittest.TestCase):
                     ['20250401', 'Admin', 'docs\\Intern Rec.txt', '', '', 'Recommendation'],
                     ['20250402', 'Admin', 'docs\\PAGE REC.txt', '', '', 'Recommendation'],
                     ['20250403', 'Admin', 'docs\\intern rec-no', '', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for doc_name, df_rec")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_rec")
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250404', 'Admin', 'docs\\doc.txt', 'page recommendation', '', 'Recommendation'],
                     ['20250406', 'Admin', 'docs\\doc.txt', 'intern recommendation', '', 'Recommendation']]
-        self.assertEqual(result, expected, "Problem with test for doc_name, df_rec_check")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_rec_check")
 
     def test_none(self):
         """Test for no patterns indicating recommendations are present"""
@@ -51,12 +51,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_rec are correct.
         result = df_to_list(df_rec)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_rec")
+        self.assertEqual(expected, result, "Problem with test for none, df_rec")
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_rec_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_rec_check")
         
         
 if __name__ == '__main__':

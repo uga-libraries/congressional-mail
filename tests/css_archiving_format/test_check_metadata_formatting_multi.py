@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
         in_document_name_mismatch = check_metadata_formatting_multi('in_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(in_document_name_mismatch, 3, "Problem with test for blob, count")
+        self.assertEqual(3, in_document_name_mismatch, "Problem with test for blob, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_document_name.csv'))
@@ -45,7 +45,7 @@ class MyTestCase(unittest.TestCase):
                     [30602, 'root\\documents\\BlobExport\\foldera\\filea.txt'],
                     [30606, 'dir\\..\\documents\\BlobExport\\folder1\\file1.txt'],
                     [30607, 'fileb.txt']]
-        self.assertEqual(result, expected, "Problem with test for blob, report")
+        self.assertEqual(expected, result, "Problem with test for blob, report")
 
     def test_dos(self):
         """Test for the dos pattern, including correct cells, formatting errors, and blanks"""
@@ -61,14 +61,14 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 2, "Problem with test for dos, count")
+        self.assertEqual(2, out_document_name_mismatch, "Problem with test for dos, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
                     [30602, 'root\\\\smith-atlanta\\dos\\public\\foldera\\filea.txt'],
                     [30606, 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
-        self.assertEqual(result, expected, "Problem with test for dos, report")
+        self.assertEqual(expected, result, "Problem with test for dos, report")
 
     def test_e(self):
         """Test for the e\\: pattern, including correct cells, formatting errors, and blanks"""
@@ -81,13 +81,13 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 1, "Problem with test for e, count")
+        self.assertEqual(1, out_document_name_mismatch, "Problem with test for e, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
                     [30602, 'root\\e:\\emailobj\\200202\\416120451.txt']]
-        self.assertEqual(result, expected, "Problem with test for e, report")
+        self.assertEqual(expected, result, "Problem with test for e, report")
 
     def test_column_blank(self):
         """Test for when the column is blank"""
@@ -101,12 +101,12 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 'column_blank', "Problem with test for 'column_blank', count")
+        self.assertEqual('column_blank', out_document_name_mismatch, "Problem with test for 'column_blank', count")
 
         # Tests the report was not made
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for 'column_blank', report")
+        self.assertEqual(expected, result, "Problem with test for 'column_blank', report")
 
     def test_column_missing(self):
         """Test for when the column is missing"""
@@ -120,12 +120,12 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 'column_missing', "Problem with test for column_missing, count")
+        self.assertEqual('column_missing', out_document_name_mismatch, "Problem with test for column_missing, count")
 
         # Tests the report was not made
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for column_missing, report")
+        self.assertEqual(expected, result, "Problem with test for column_missing, report")
 
     def test_no_errors(self):
         """Test for both patterns when there are no errors or blanks"""
@@ -139,12 +139,12 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 0, "Problem with test for no errors, count")
+        self.assertEqual(0, out_document_name_mismatch, "Problem with test for no errors, count")
 
         # Tests the report was not made
         result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = False
-        self.assertEqual(result, expected, "Problem with test for no errors, report")
+        self.assertEqual(expected, result, "Problem with test for no errors, report")
 
     def test_only_errors(self):
         """Test for when there are only errors, no correct or blanks"""
@@ -157,7 +157,7 @@ class MyTestCase(unittest.TestCase):
         out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(out_document_name_mismatch, 4, "Problem with test for only errors, count")
+        self.assertEqual(4, out_document_name_mismatch, "Problem with test for only errors, count")
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
@@ -166,7 +166,7 @@ class MyTestCase(unittest.TestCase):
                     [30602, '..\\documents\\file2.txt'],
                     [30603, '\\public\\file1.txt'],
                     [30604, 'file2.txt']]
-        self.assertEqual(result, expected, "Problem with test for only, report")
+        self.assertEqual(expected, result, "Problem with test for only, report")
 
 
 if __name__ == '__main__':

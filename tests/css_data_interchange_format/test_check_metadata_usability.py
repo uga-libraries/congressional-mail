@@ -70,7 +70,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
                     ['file_name', 'True', '0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for all correct")
+        self.assertEqual(expected, result, "Problem with test for all correct")
 
     def test_blank(self):
         """Test for when every row is blank"""
@@ -103,7 +103,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '2', '100.0', 'uncheckable'],
                     ['file_location', 'True', '2', '100.0', 'uncheckable'],
                     ['file_name', 'True', '2', '100.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for blank")
+        self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_blank_partial(self):
         """Test for when some rows of each column have blanks but no columns are all blank"""
@@ -138,7 +138,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '1', '33.33', 'uncheckable'],
                     ['file_location', 'True', '1', '33.33', 'uncheckable'],
                     ['file_name', 'True', '1', '33.33', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for blank, partial")
+        self.assertEqual(expected, result, "Problem with test for blank, partial")
 
     def test_columns_extra(self):
         """Test for when there are additional columns beyond what is expected"""
@@ -178,7 +178,7 @@ class MyTestCase(unittest.TestCase):
                     ['status', 'True', '0', '0.0', 'uncheckable'],
                     ['update_date', 'True', '0', '0.0', '0'],
                     ['zip_code', 'True', '0', '0.0', '0']]
-        self.assertEqual(result, expected, "Problem with test for columns extra")
+        self.assertEqual(expected, result, "Problem with test for columns extra")
 
     def test_formatting(self):
         """Test for when each column with formatting tests has errors"""
@@ -213,7 +213,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
                     ['file_name', 'True', '0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for formatting")
+        self.assertEqual(expected, result, "Problem with test for formatting")
 
     def test_columns_missing(self):
         """Test for when every column except dates is missing
@@ -244,7 +244,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'False', 'nan', 'nan', 'uncheckable'],
                     ['file_location', 'False', 'nan', 'nan', 'uncheckable'],
                     ['file_name', 'False', 'nan', 'nan', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns missing")
+        self.assertEqual(expected, result, "Problem with test for columns missing")
 
     def test_columns_missing_dates(self):
         """Test for when the date columns are missing
@@ -278,7 +278,7 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_id', 'True', '0.0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0.0', '0.0', 'uncheckable'],
                     ['file_name', 'True', '0.0', '0.0', 'uncheckable']]
-        self.assertEqual(result, expected, "Problem with test for columns missing dates")
+        self.assertEqual(expected, result, "Problem with test for columns missing dates")
 
 
 if __name__ == '__main__':

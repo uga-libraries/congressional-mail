@@ -40,7 +40,7 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '2', '33%'],
                     ['Metadata_Blank', '1', '17%'],
                     ['Directory_Only', '3', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for all, matching csv")
+        self.assertEqual(expected, result, "Problem with test for all, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
@@ -50,7 +50,7 @@ class MyTestCase(unittest.TestCase):
                     ['Directory Only', f'{input_directory.lower()}\\documents\\in-email\\part_two\\3.txt'],
                     ['Metadata Only', f'{input_directory.lower()}\\documents\\forms\\extra.txt'],
                     ['Metadata Only', f'{input_directory.lower()}\\documents\\in-email\\extra.txt'],]
-        self.assertEqual(result, expected, "Problem with test for all, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for all, matching details csv")
 
     def test_blanks(self):
         """Test for when the document column includes blanks"""
@@ -74,12 +74,12 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '9', '60%'],
                     ['Directory_Only', '0', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for blanks, matching csv")
+        self.assertEqual(expected, result, "Problem with test for blanks, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         expected = [['Category', 'Path']]
-        self.assertEqual(result, expected, "Problem with test for blanks, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for blanks, matching details csv")
 
     def test_directory_only(self):
         """Test for when some file paths are in the directory but not the metadata"""
@@ -98,7 +98,7 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
                     ['Directory_Only', '3', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for directory_only, matching csv")
+        self.assertEqual(expected, result, "Problem with test for directory_only, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
@@ -106,7 +106,7 @@ class MyTestCase(unittest.TestCase):
                     ['Directory Only', f'{input_directory.lower()}\\documents\\forms\\2.txt'],
                     ['Directory Only', f'{input_directory.lower()}\\documents\\in-email\\part_one\\1.txt'],
                     ['Directory Only', f'{input_directory.lower()}\\documents\\in-email\\part_two\\3.txt']]
-        self.assertEqual(result, expected, "Problem with test for directory_only, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for directory_only, matching details csv")
 
     def test_duplicates(self):
         """Test for when the document column includes duplicates, which are not counted"""
@@ -130,12 +130,12 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
                     ['Directory_Only', '0', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for duplicates, matching csv")
+        self.assertEqual(expected, result, "Problem with test for duplicates, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         expected = [['Category', 'Path']]
-        self.assertEqual(result, expected, "Problem with test for duplicates, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for duplicates, matching details csv")
 
     def test_match(self):
         """Test for when the document column matches the directory contents, with some case differences"""
@@ -156,12 +156,12 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
                     ['Directory_Only', '0', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for match, matching csv")
+        self.assertEqual(expected, result, "Problem with test for match, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'))
         expected = [['Category', 'Path']]
-        self.assertEqual(result, expected, "Problem with test for match, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for match, matching details csv")
 
     def test_metadata_only(self):
         """Test for when some file paths are in the metadata but not the directory"""
@@ -183,14 +183,14 @@ class MyTestCase(unittest.TestCase):
                     ['Metadata_Only', '2', '25%'],
                     ['Metadata_Blank', '0', '0%'],
                     ['Directory_Only', '0', 'BLANK']]
-        self.assertEqual(result, expected, "Problem with test for metadata_only, matching csv")
+        self.assertEqual(expected, result, "Problem with test for metadata_only, matching csv")
 
         # Tests the values in usability_report_matching_details.csv are correct.
         result = csv_to_list(os.path.join(output_directory, 'usability_report_matching_details.csv'), sort=True)
         expected = [['Category', 'Path'],
                     ['Metadata Only', f'{input_directory.lower()}\\documents\\documents\\1.txt'],
                     ['Metadata Only', f'{input_directory.lower()}\\documents\\forms\\extra.txt']]
-        self.assertEqual(result, expected, "Problem with test for metadata_only, matching details csv")
+        self.assertEqual(expected, result, "Problem with test for metadata_only, matching details csv")
 
 
 if __name__ == '__main__':

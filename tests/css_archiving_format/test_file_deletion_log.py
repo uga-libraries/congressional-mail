@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [file_path_1, 0.0, '2025-04-07', today, '89D31DC38A6C7D68653F452A2F44AC3D', 'Academy_Application'],
                     [file_path_2, 1.2, '2025-04-07', today, '9452DF84756C849AE0ED9FE2A14948F5', 'Casework']]
-        self.assertEqual(result, expected, "Problem with test for delete two")
+        self.assertEqual(expected, result, "Problem with test for delete two")
 
     def test_error_new(self):
         """Test for adding a row for a file with a new path format in the metadata."""
@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [file_path, 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Cannot determine file path: new path pattern in metadata']]
-        self.assertEqual(result, expected, "Problem with test for error_new")
+        self.assertEqual(expected, result, "Problem with test for error_new")
 
     def test_filenotfounderror(self):
         """Test for adding a row for a file that cannot be deleted."""
@@ -76,7 +76,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [file_path, 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
-        self.assertEqual(result, expected, "Problem with test for filenotfounderror")
+        self.assertEqual(expected, result, "Problem with test for filenotfounderror")
 
     def test_header(self):
         """Test for making a new log with a header row."""
@@ -87,7 +87,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the file deletion log.
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(result, expected, "Problem with test for header")
+        self.assertEqual(expected, result, "Problem with test for header")
 
 
 if __name__ == '__main__':

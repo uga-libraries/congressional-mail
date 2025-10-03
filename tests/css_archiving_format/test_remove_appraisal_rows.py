@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['last', 'title', 'zip', 'in_type', 'in_document_name'],
                     ['Blue', '', '23456', 'Issue', r'..\objects\222222.txt'],
                     ['Dudley', '', '45678', 'Issue', '']]
-        self.assertEqual(result, expected, "Problem with test for type different")
+        self.assertEqual(expected, result, "Problem with test for type different")
 
     def test_type_same(self):
         """Test for when columns in md_df have the same datatype and value as appraisal_df"""
@@ -52,7 +52,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['last', 'title', 'zip', 'in_type', 'in_document_name'],
                     ['Blue', '', '23456', 'Issue', r'..\objects\222222.txt'],
                     ['Dudley', '', '45678', 'Issue', '']]
-        self.assertEqual(result, expected, "Problem with test for same type")
+        self.assertEqual(expected, result, "Problem with test for same type")
 
 
 if __name__ == '__main__':

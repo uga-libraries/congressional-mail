@@ -27,12 +27,12 @@ class MyTestCase(unittest.TestCase):
                     ['file_2.doc', 'academy appointment request', 'Academy Nominations', 'Academy_Application'],
                     ['file_3.doc', 'HELP WITH ACADEMY ISSUE', 'acad - academy nominations', 'Academy_Application'],
                     ['file_4.doc', 'Academy Issue', 'WEBACAD - Web Form Academy Nominations', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for both, df_academy")
+        self.assertEqual(expected, result, "Problem with test for both, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for both, df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for both, df_academy_check")
 
     def test_code_desc(self):
         """Test for when the column code_description indicates academy applications are present"""
@@ -54,13 +54,13 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'x', 'WEBACAD - Web Form Academy Nominations', 'Academy_Application'],
                     ['file_4.doc', 'x', 'webacad - web form academy nominations', 'Academy_Application'],
                     ['file_5.doc', 'x', 'academy nomination', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for code_desc, df_academy")
+        self.assertEqual(expected, result, "Problem with test for code_desc, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_6.doc', 'x', 'academy awards', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for code_desc df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for code_desc df_academy_check")
 
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates academy applications are present"""
@@ -81,14 +81,14 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'HELP WITH ACADEMY ISSUE', 'x', 'Academy_Application'],
                     ['file_5.doc', 'Academy Nominations', 'x', 'Academy_Application'],
                     ['file_6.doc', 'Military Academy - Application', 'x', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for COLUMN, df_academy")
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
                     ['file_1.doc', 'Sports Academy', 'x', 'Academy_Application'],
                     ['file_4.doc', 'academy vouchers', 'x', 'Academy_Application']]
-        self.assertEqual(result, expected, "Problem with test for COLUMN, df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy_check")
 
     def test_none(self):
         """Test for when no rows have academy applications"""
@@ -102,12 +102,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy are correct.
         result = df_to_list(df_academy)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_academy")
+        self.assertEqual(expected, result, "Problem with test for none, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(result, expected, "Problem with test for none, df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for none, df_academy_check")
 
 
 if __name__ == '__main__':
