@@ -21,7 +21,7 @@ Note: the letter matching report removes duplicates before attempting to match (
 so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
 
 ### Appraisal
-1. Check the appraisal reports made during review for errors (based on file names) in what will be deleted or not delete.
+1. Check the appraisal reports made during review for errors (based on file names) in what will be deleted or not deleted. Double check no form letters are being deleted.
 2. Refine the script to catch new patterns, but some errors are acceptable given the scale.
 3. Update the function update_path() for transforming the metadata path into the directory path, if needed.
 4. Run the script in "accession" mode again to check your changes. It takes a long time to recopy an export if there are mistakes with deletion (next step).
