@@ -272,7 +272,7 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_path)
 
     # # Finds rows in the metadata that are for casework and saves to a CSV.
-    # casework_df = find_casework_rows(md_df, output_directory)
+    casework_df = find_casework_rows(md_df, output_directory)
 
     # For preservation, deletes the casework files, which is an appraisal decision.
     # It uses the log from find_casework_rows() to know what to delete.
