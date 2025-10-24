@@ -175,12 +175,14 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'park and rec. ', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'cat ', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', 'dog.', r'..\documents\BlobExport\file3.txt']])
+                      ['30601', 'dog. ', r'..\documents\BlobExport\file2.txt'],
+                      ['30602', 'dog', r'..\documents\BlobExport\file3.txt']])
         sort_correspondence(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'cat', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dog', 'file2.txt'),
                     os.path.join(self.by_topic, 'dog', 'file3.txt'),
                     os.path.join(self.by_topic, 'park and rec', 'file1.txt')]
         self.assertEqual(expected, result, "Problem with test for folder name trailing")

@@ -555,7 +555,7 @@ def sort_correspondence(df, input_dir, output_dir):
         try:
             os.mkdir(topic_path)
         except FileExistsError:
-            continue
+            pass
         for doc in doc_list:
             doc_path = update_path(doc, input_dir)
             doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
