@@ -619,15 +619,8 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-
-    # Makes a dataframe with any row that has values in in_topic and in_document_name,
-    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^)
-    # and any duplicate combinations of in_topic and in_document_name removed.
-    sort_df = df[(df['in_topic'] != 'nan') & (df['in_document_name'] != 'nan')]
-    sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
-    sort_df = sort_df.explode('in_topic')
-    sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
-
+    # Dataframe with in_document_names and their topic.
+    sort_df = topics_sort_df(df, 'in')
     # For each topic in in_topic, makes a folder in the output directory with that topic
     # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
@@ -659,6 +652,26 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
+
+
+def topics_sort_df(df, letter_type):
+    """Make a dataframe with any row that has values in topic and document_name"""
+    # Initial df, with any row that has some value in topic and document_name
+    topic_column = f'{letter_type}_topic'
+    doc_column = f'{letter_type}_document_name'
+    topic_df = df[(df[topic_column] != 'nan') & (df[doc_column] != 'nan')]
+
+    # If there is more than one topic or document_name in a row (divided by ^),
+    # splits them to their own row, repeating the related topic or document_name for each row.
+    topic_df[topic_column] = topic_df[topic_column].str.split(r'^')
+    topic_df = topic_df.explode(topic_column)
+    topic_df[doc_column] = topic_df[doc_column].str.split(r'^')
+    topic_df = topic_df.explode(doc_column)
+
+    # Removes any duplicate combinations of topic and document_name,
+    # which is most common when the office sends the same letter to multiple constituents.
+    topic_df = topic_df.drop_duplicates(subset=[topic_column, doc_column])
+    return topic_df
 
 
 def update_path(md_path, input_dir):
