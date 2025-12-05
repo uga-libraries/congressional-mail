@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import shutil
 import unittest
-from css_archiving_format import sort_correspondence
+from css_archiving_format import topics_sort
 
 
 def make_df(row_list):
@@ -59,7 +59,7 @@ class MyTestCase(unittest.TestCase):
                       ['30602', 'Agriculture^Peanuts', r'..\documents\BlobExport\file2.txt'],
                       ['30603', 'Agriculture^Peanuts', 'nan'],
                       ['30604', 'nan', 'nan']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file1.txt'],
                       ['30602', 'Small Business', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -89,7 +89,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file2.txt'],
                       ['30602', 'Agriculture^Peanuts^Tax', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -108,7 +108,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file_missing.txt'],
                       ['30602', 'Peanuts', r'..\documents\BlobExport\file2.txt'],
                       ['30603', 'Peanuts', r'..\documents\BlobExport\folder_missing\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -129,7 +129,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\missing\file1.txt'],
                       ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\missing\file2.txt'],
                       ['30602', 'Peanuts', r'..\documents\BlobExport\missing\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the topic folders are not in Correspondence_by_Topic:
         result = [os.path.exists(os.path.join(self.by_topic, 'from_constituents', 'Agriculture')),
@@ -157,7 +157,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'A\\B^C/D^E:F^***', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'G?^"H"', r'..\documents\BlobExport\file2.txt'],
                       ['30602', '<I|J>', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -177,7 +177,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'cat ', r'..\documents\BlobExport\file2.txt'],
                       ['30601', 'dog. ', r'..\documents\BlobExport\file2.txt'],
                       ['30602', 'dog', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -193,7 +193,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'Farm^Peanuts', r'..\documents\BlobExport\file2.txt'],
                       ['30602', 'Admin^Small Business^Tax', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -211,7 +211,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
                       ['30601', 'Peanuts', r'..\documents\BlobExport\file2.txt'],
                       ['30602', 'Small Business', r'..\documents\BlobExport\file3.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)

@@ -559,50 +559,6 @@ def remove_pii(df):
     return df
 
 
-def sort_correspondence(df, input_dir, output_dir):
-    """Sort copy of correspondence into folders by topic"""
-
-    # Makes a dataframe with any row that has values in in_topic and in_document_name,
-    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^)
-    # and any duplicate combinations of in_topic and in_document_name removed.
-    sort_df = df[(df['in_topic'] != 'nan') & (df['in_document_name'] != 'nan')]
-    sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
-    sort_df = sort_df.explode('in_topic')
-    sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
-
-    # For each topic in in_topic, makes a folder in the output directory with that topic
-    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
-    topic_list = sort_df['in_topic'].unique()
-    for topic in topic_list:
-        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
-        # Characters that Windows does not permit in a folder name are replaced with an underscore.
-        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
-            topic = topic.replace(character, '_')
-        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
-        topic = topic.rstrip('. ')
-        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents', topic)
-        # Topic path may be duplicated if there is a version that does and does not require cleanup.
-        try:
-            os.mkdir(topic_path)
-        except FileExistsError:
-            pass
-        for doc in doc_list:
-            doc_path = update_path(doc, input_dir)
-            doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
-            try:
-                shutil.copy2(doc_path, doc_new_path)
-            except FileNotFoundError:
-                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
-                with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
-                    log_writer = csv.writer(log)
-                    log_writer.writerow([topic, doc])
-        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
-        if not os.listdir(topic_path):
-            os.rmdir(topic_path)
-
-
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
@@ -659,6 +615,50 @@ def topics_report(df, output_dir):
 
     # Save to a CSV.
     df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+
+def topics_sort(df, input_dir, output_dir):
+    """Sort copy of incoming and outgoing correspondence into folders by topic"""
+
+    # Makes a dataframe with any row that has values in in_topic and in_document_name,
+    # with rows split and in_document_name repeated if there is more than one in_topic (divided by ^)
+    # and any duplicate combinations of in_topic and in_document_name removed.
+    sort_df = df[(df['in_topic'] != 'nan') & (df['in_document_name'] != 'nan')]
+    sort_df['in_topic'] = sort_df['in_topic'].str.split(r'^')
+    sort_df = sort_df.explode('in_topic')
+    sort_df = sort_df.drop_duplicates(subset=['in_topic', 'in_document_name'])
+
+    # For each topic in in_topic, makes a folder in the output directory with that topic
+    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
+    topic_list = sort_df['in_topic'].unique()
+    for topic in topic_list:
+        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
+        # Characters that Windows does not permit in a folder name are replaced with an underscore.
+        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
+            topic = topic.replace(character, '_')
+        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
+        topic = topic.rstrip('. ')
+        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents', topic)
+        # Topic path may be duplicated if there is a version that does and does not require cleanup.
+        try:
+            os.mkdir(topic_path)
+        except FileExistsError:
+            pass
+        for doc in doc_list:
+            doc_path = update_path(doc, input_dir)
+            doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
+            try:
+                shutil.copy2(doc_path, doc_new_path)
+            except FileNotFoundError:
+                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
+                with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
+                    log_writer = csv.writer(log)
+                    log_writer.writerow([topic, doc])
+        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
+        if not os.listdir(topic_path):
+            os.rmdir(topic_path)
 
 
 def update_path(md_path, input_dir):
@@ -737,4 +737,4 @@ if __name__ == '__main__':
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
-        sort_correspondence(md_df, input_directory, output_directory)
+        topics_sort(md_df, input_directory, output_directory)
