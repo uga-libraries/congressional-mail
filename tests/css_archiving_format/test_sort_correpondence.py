@@ -63,9 +63,9 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file2.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file2.txt')]
         self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_duplicate_file(self):
@@ -78,9 +78,9 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Small Business', 'file3.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Small Business', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate_file")
 
     def test_duplicate_topic(self):
@@ -93,12 +93,12 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'file3.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Tax', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_filenotfounderror(self):
@@ -112,8 +112,8 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file2.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file2.txt')]
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
@@ -132,8 +132,8 @@ class MyTestCase(unittest.TestCase):
         sort_correspondence(df, self.input_dir, self.output_dir)
 
         # Verifies the topic folders are not in Correspondence_by_Topic:
-        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
-                  os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
+        result = [os.path.exists(os.path.join(self.by_topic, 'from_constituents', 'Agriculture')),
+                  os.path.exists(os.path.join(self.by_topic, 'from_constituents', 'Peanuts'))]
         expected = [False, False]
         self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
 
@@ -161,13 +161,13 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'A_B', 'file1.txt'),
-                    os.path.join(self.by_topic, 'C_D', 'file1.txt'),
-                    os.path.join(self.by_topic, 'E_F', 'file1.txt'),
-                    os.path.join(self.by_topic, 'G_', 'file2.txt'),
-                    os.path.join(self.by_topic, '_H_', 'file2.txt'),
-                    os.path.join(self.by_topic, '_I_J_', 'file3.txt'),
-                    os.path.join(self.by_topic, '___', 'file1.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'A_B', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'C_D', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'E_F', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'G_', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', '_H_', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', '_I_J_', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', '___', 'file1.txt')]
         self.assertEqual(expected, result, "Problem with test for folder name error")
 
     def test_folder_name_trailing(self):
@@ -181,10 +181,10 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cat', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'file3.txt'),
-                    os.path.join(self.by_topic, 'park and rec', 'file1.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'cat', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'dog', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'dog', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'park and rec', 'file1.txt')]
         self.assertEqual(expected, result, "Problem with test for folder name trailing")
 
     def test_multiple_topic(self):
@@ -197,12 +197,12 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Admin', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Farm', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Small Business', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'file3.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Admin', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Farm', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Small Business', 'file3.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Tax', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for multiple topic")
 
     def test_unique(self):
@@ -215,9 +215,9 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Small Business', 'file3.txt')]
+        expected = [os.path.join(self.by_topic, 'from_constituents', 'Agriculture', 'file1.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Peanuts', 'file2.txt'),
+                    os.path.join(self.by_topic, 'from_constituents', 'Small Business', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for unique")
 
 

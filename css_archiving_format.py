@@ -573,6 +573,7 @@ def sort_correspondence(df, input_dir, output_dir):
     # For each topic in in_topic, makes a folder in the output directory with that topic
     # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
     topic_list = sort_df['in_topic'].unique()
     for topic in topic_list:
         doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
@@ -581,7 +582,7 @@ def sort_correspondence(df, input_dir, output_dir):
             topic = topic.replace(character, '_')
         # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
         topic = topic.rstrip('. ')
-        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
+        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents', topic)
         # Topic path may be duplicated if there is a version that does and does not require cleanup.
         try:
             os.mkdir(topic_path)
