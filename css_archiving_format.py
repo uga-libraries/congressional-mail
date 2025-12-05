@@ -620,14 +620,13 @@ def topics_report(df, output_dir):
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     # Dataframe with in_document_names and their topic.
-    sort_df = topics_sort_df(df, 'in')
-    # For each topic in in_topic, makes a folder in the output directory with that topic
-    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
-    topic_list = sort_df['in_topic'].unique()
+    in_df = topics_sort_df(df, 'in')
+
+    # Make a folder for each topic and copy the documents to it.
+    os.makedirs(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
+    topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
-        doc_list = sort_df.loc[sort_df['in_topic'] == topic, 'in_document_name'].tolist()
+        doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
         # Characters that Windows does not permit in a folder name are replaced with an underscore.
         for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
             topic = topic.replace(character, '_')
