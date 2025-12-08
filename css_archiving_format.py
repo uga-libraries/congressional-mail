@@ -626,7 +626,7 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir)
+        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         # Deletes the from_constituent folder and topic folder if the from_constituent folder is empty.
@@ -675,7 +675,7 @@ def topics_sort_df(df, letter_type):
     return topic_df
 
 
-def topics_sort_folder(topic, output_dir):
+def topics_sort_folder(topic, output_dir, type_folder):
     """Make a folder named with the topic and return the path to that folder"""
     # Replaces characters that Windows does not permit in a folder name with an underscore.
     for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
@@ -683,7 +683,9 @@ def topics_sort_folder(topic, output_dir):
 
     # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
     topic = topic.rstrip('. ')
-    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, 'from_constituents')
+
+    # Makes the path, include a folder with the letter type.
+    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, type_folder)
 
     # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
     # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
