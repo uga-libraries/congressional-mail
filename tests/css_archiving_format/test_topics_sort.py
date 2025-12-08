@@ -1,5 +1,5 @@
 """
-Tests for the function sort_correspondence(), which organizes a copy of the letters by topic.
+Tests for the function topics_sort(), which organizes a copy of the letters by topic.
 To simplify input, tests use dataframes with only some of the columns present in a real export.
 """
 import os
@@ -26,7 +26,7 @@ def make_dir_list(dir_path):
 
 def make_log_list():
     """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
-    log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topics_sort_file_not_found.csv')
+    log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
     log_df = pd.read_csv(log_path)
     log_list = [log_df.columns.tolist()] + log_df.values.tolist()
     return log_list
@@ -36,9 +36,9 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         """Variables used by every test"""
-        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'Correspondence_by_Topic')
-        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'css_export')
-        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence')
+        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'Correspondence_by_Topic')
+        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
+        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
 
     def tearDown(self):
         """Delete the script outputs, if made"""
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
             shutil.rmtree(self.by_topic)
 
         # Log for FileNotFoundError.
-        log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topics_sort_file_not_found.csv')
+        log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
         if os.path.exists(log_path):
             os.remove(log_path)
 
