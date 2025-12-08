@@ -257,6 +257,25 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'park and rec', 'to_constituents', 'answer1.txt'),]
         self.assertEqual(expected, result, "Problem with test for folder name trailing")
 
+    def test_multiple_doc(self):
+        """Test for when a row has multiple documents (joined by ^)"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'Agriculture^Farm',
+                       '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file2.txt',
+                       'Agriculture',
+                       '..\\documents\\BlobExport\\responses\\ag.txt^..\\documents\\BlobExport\\responses\\answer1.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'ag.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'answer1.txt'),
+                    os.path.join(self.by_topic, 'Farm', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'Farm', 'from_constituents', 'file2.txt')]
+        self.assertEqual(expected, result, "Problem with test for multiple doc")
+
     def test_multiple_topic(self):
         """Test for when a row has multiple topics (joined by ^)"""
         # Makes a dataframe to use as test input and runs the function being tested.
