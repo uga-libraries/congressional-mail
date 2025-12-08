@@ -619,10 +619,8 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    # Dataframe with in_document_names and their topic.
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
     in_df = topics_sort_df(df, 'in')
-
-    # Makes a folder for each topic and copies the documents to it.
     os.makedirs(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
