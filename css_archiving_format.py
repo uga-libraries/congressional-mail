@@ -629,11 +629,27 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        # Deletes the from_constituent folder and topic folder if the from_constituent folder is empty.
+        # Deletes the from_constituents folder and topic folder if the from_constituent folder is empty.
         # That means none of the documents were present in the export.
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
             os.rmdir(os.path.dirname(topic_path))
+
+    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
+    # In and out letters with the same topic are in the same topic folder, but different subfolders.
+    out_df = topics_sort_df(df, 'out')
+    topic_list = out_df['out_topic'].unique()
+    for topic in topic_list:
+        doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
+        topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
+        for doc in doc_list:
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        # Deletes the to_constituents folder if it is empty, from none of the documents being in the export,
+        # and deletes the topic folder if it is also empty. It could contain a from_constituents folder.
+        if not os.listdir(topic_path):
+            os.rmdir(topic_path)
+            if not os.listdir(os.path.dirname(topic_path)):
+                os.rmdir(os.path.dirname(topic_path))
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
