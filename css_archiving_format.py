@@ -629,11 +629,7 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        # Deletes the from_constituents folder and topic folder if the from_constituent folder is empty.
-        # That means none of the documents were present in the export.
-        if not os.listdir(topic_path):
-            os.rmdir(topic_path)
-            os.rmdir(os.path.dirname(topic_path))
+        topics_sort_delete_empty(topic_path)
 
     # Sorts a copy of correspondence to constituents ("out" letters) by topic.
     # In and out letters with the same topic are in the same topic folder, but different subfolders.
@@ -644,12 +640,7 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        # Deletes the to_constituents folder if it is empty, from none of the documents being in the export,
-        # and deletes the topic folder if it is also empty. It could contain a from_constituents folder.
-        if not os.listdir(topic_path):
-            os.rmdir(topic_path)
-            if not os.listdir(os.path.dirname(topic_path)):
-                os.rmdir(os.path.dirname(topic_path))
+        topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
@@ -669,6 +660,18 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
             log_writer = csv.writer(log)
             topic = topic_path.split('\\')[-2]
             log_writer.writerow([topic, doc])
+
+
+def topics_sort_delete_empty(topic_path):
+    """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
+    # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
+    if not os.listdir(topic_path):
+        os.rmdir(topic_path)
+
+        # Deletes the topic folder if it is also empty.
+        # It could contain a from_constituents folder if the function is called to delete to_constituents.
+        if not os.listdir(os.path.dirname(topic_path)):
+            os.rmdir(os.path.dirname(topic_path))
 
 
 def topics_sort_df(df, letter_type):
