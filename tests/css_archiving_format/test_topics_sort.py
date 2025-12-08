@@ -40,16 +40,16 @@ class MyTestCase(unittest.TestCase):
         self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
 
-    # def tearDown(self):
-    #     """Delete the script outputs, if made"""
-    #     # Correspondence_by_Topic folder.
-    #     if os.path.exists(self.by_topic):
-    #         shutil.rmtree(self.by_topic)
-    #
-    #     # Log for FileNotFoundError.
-    #     log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
-    #     if os.path.exists(log_path):
-    #         os.remove(log_path)
+    def tearDown(self):
+        """Delete the script outputs, if made"""
+        # Correspondence_by_Topic folder.
+        if os.path.exists(self.by_topic):
+            shutil.rmtree(self.by_topic)
+
+        # Log for FileNotFoundError.
+        log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
+        if os.path.exists(log_path):
+            os.remove(log_path)
 
     def test_blank(self):
         """Test for when some rows have no topic and/or no document and should be skipped"""

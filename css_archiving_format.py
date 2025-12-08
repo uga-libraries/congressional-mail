@@ -649,7 +649,7 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
     except FileNotFoundError:
         with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
             log_writer = csv.writer(log)
-            topic = os.path.basename(topic_path)
+            topic = topic_path.split('\\')[-2]
             log_writer.writerow([topic, doc])
 
 
