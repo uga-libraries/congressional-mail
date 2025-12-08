@@ -26,7 +26,7 @@ def make_dir_list(dir_path):
 
 def make_log_list():
     """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
-    log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+    log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topics_sort_file_not_found.csv')
     log_df = pd.read_csv(log_path)
     log_list = [log_df.columns.tolist()] + log_df.values.tolist()
     return log_list
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
             shutil.rmtree(self.by_topic)
 
         # Log for FileNotFoundError.
-        log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+        log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topics_sort_file_not_found.csv')
         if os.path.exists(log_path):
             os.remove(log_path)
 
