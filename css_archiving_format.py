@@ -619,9 +619,10 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
+    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+
     # Sorts a copy of correspondence from constituents ("in" letters) by topic.
     in_df = topics_sort_df(df, 'in')
-    os.makedirs(os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents'))
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
@@ -680,12 +681,12 @@ def topics_sort_folder(topic, output_dir):
 
     # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
     topic = topic.rstrip('. ')
-    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', 'from_constituents', topic)
+    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, 'from_constituents')
 
     # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
     # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
     if not os.path.exists(topic_path):
-        os.mkdir(topic_path)
+        os.makedirs(topic_path)
 
     return topic_path
 
