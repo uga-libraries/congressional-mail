@@ -151,7 +151,34 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
-        """Test for when no files for a topic are in the directory and the topic folder is empty"""
+        """Test for when no out files for a topic are in the directory, but some in are"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
+                       'Agriculture', r'..\documents\BlobExport\responses\missing.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\missing\file2.txt',
+                       'Agriculture^Peanuts', r'..\documents\BlobExport\responses\missing.txt'],
+                      ['30602', 'Peanuts', r'..\documents\BlobExport\objects\missing\file3.txt',
+                       'Peanuts', r'..\documents\BlobExport\responses\missing.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the empty topic folder and empty from_constituents folder are not in Correspondence_by_Topic:
+        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture', 'from_constituents')),
+                  os.path.exists(os.path.join(self.by_topic, 'Agriculture', 'to_constituents')),
+                  os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
+        expected = [True, False, False]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, topic folders")
+
+        # Verifies the expected log was created and has the expected contents.
+        result = make_log_list()
+        expected = [['Agriculture', r'..\documents\BlobExport\objects\missing\file2.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\missing\file2.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\missing\file3.txt'],
+                    ['Agriculture', r'..\documents\BlobExport\responses\missing.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\responses\missing.txt']]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, log")
+
+    def test_folders_empty(self):
+        """Test for when no files (in or out) for a topic are in the directory and the topic folder is empty"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\missing\file1.txt',
                        'Agriculture', r'..\documents\BlobExport\responses\missing.txt'],
@@ -161,11 +188,11 @@ class MyTestCase(unittest.TestCase):
                        'Peanuts', r'..\documents\BlobExport\responses\missing.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the topic folders are not in Correspondence_by_Topic:
-        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture', 'from_constituents')),
-                  os.path.exists(os.path.join(self.by_topic, 'Peanuts', 'from_constituents'))]
+        # Verifies the empty topic folders are not in Correspondence_by_Topic:
+        result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
+                  os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
         expected = [False, False]
-        self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
+        self.assertEqual(expected, result, "Problem with test for folders empty, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
@@ -175,7 +202,7 @@ class MyTestCase(unittest.TestCase):
                     ['Peanuts', r'..\documents\BlobExport\objects\missing\file3.txt'],
                     ['Agriculture', r'..\documents\BlobExport\responses\missing.txt'],
                     ['Peanuts', r'..\documents\BlobExport\responses\missing.txt']]
-        self.assertEqual(expected, result, "Problem with test for folder empty, log")
+        self.assertEqual(expected, result, "Problem with test for folders empty, log")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
