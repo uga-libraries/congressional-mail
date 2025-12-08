@@ -54,9 +54,9 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when some rows have no topic and/or no document and should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'nan', r'..\documents\BlobExport\file3.txt'],
-                      ['30601', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30602', 'Agriculture^Peanuts', r'..\documents\BlobExport\file2.txt'],
+        df = make_df([['30600', 'nan', r'..\documents\BlobExport\objects\\file3.txt'],
+                      ['30601', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30602', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\\file2.txt'],
                       ['30603', 'Agriculture^Peanuts', 'nan'],
                       ['30604', 'nan', 'nan']])
         topics_sort(df, self.input_dir, self.output_dir)
@@ -71,9 +71,9 @@ class MyTestCase(unittest.TestCase):
     def test_duplicate_file(self):
         """Test for when a file is in the metadata with the same topic more than once"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file1.txt'],
-                      ['30602', 'Small Business', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30602', 'Small Business', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -86,9 +86,9 @@ class MyTestCase(unittest.TestCase):
     def test_duplicate_topic(self):
         """Test for when a topic is in the metadata more than once, due to topic combinations"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', 'Agriculture^Peanuts^Tax', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30602', 'Agriculture^Peanuts^Tax', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -104,10 +104,10 @@ class MyTestCase(unittest.TestCase):
     def test_filenotfounderror(self):
         """Test for when a file is in the metadata but not the directory"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\file_missing.txt'],
-                      ['30602', 'Peanuts', r'..\documents\BlobExport\file2.txt'],
-                      ['30603', 'Peanuts', r'..\documents\BlobExport\folder_missing\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\\file_missing.txt'],
+                      ['30602', 'Peanuts', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30603', 'Peanuts', r'..\documents\BlobExport\objects\\folder_missing\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -118,17 +118,17 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
-        expected = [['Agriculture', r'..\documents\BlobExport\file_missing.txt'],
-                    ['Peanuts', r'..\documents\BlobExport\file_missing.txt'],
-                    ['Peanuts', r'..\documents\BlobExport\folder_missing\file3.txt']]
+        expected = [['Agriculture', r'..\documents\BlobExport\objects\\file_missing.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\\file_missing.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\\folder_missing\file3.txt']]
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
         """Test for when no files for a topic are in the directory and the topic folder is empty"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\missing\file1.txt'],
-                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\missing\file2.txt'],
-                      ['30602', 'Peanuts', r'..\documents\BlobExport\missing\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\missing\file1.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\\missing\file2.txt'],
+                      ['30602', 'Peanuts', r'..\documents\BlobExport\objects\\missing\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the topic folders are not in Correspondence_by_Topic:
@@ -139,10 +139,10 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
-        expected = [['Agriculture', r'..\documents\BlobExport\missing\file1.txt'],
-                    ['Agriculture', r'..\documents\BlobExport\missing\file2.txt'],
-                    ['Peanuts', r'..\documents\BlobExport\missing\file2.txt'],
-                    ['Peanuts', r'..\documents\BlobExport\missing\file3.txt']]
+        expected = [['Agriculture', r'..\documents\BlobExport\objects\\missing\file1.txt'],
+                    ['Agriculture', r'..\documents\BlobExport\objects\\missing\file2.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\\missing\file2.txt'],
+                    ['Peanuts', r'..\documents\BlobExport\objects\\missing\file3.txt']]
         self.assertEqual(expected, result, "Problem with test for folder empty, log")
 
         # Verifies folders without a file are not still present.
@@ -154,9 +154,9 @@ class MyTestCase(unittest.TestCase):
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'A\\B^C/D^E:F^***', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'G?^"H"', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', '<I|J>', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'A\\B^C/D^E:F^***', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'G?^"H"', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30602', '<I|J>', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -173,10 +173,10 @@ class MyTestCase(unittest.TestCase):
     def test_folder_name_trailing(self):
         """Test for when a topic ends with a space or period, which cannot be in the folder name"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'park and rec. ', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'cat ', r'..\documents\BlobExport\file2.txt'],
-                      ['30601', 'dog. ', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', 'dog', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'park and rec. ', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'cat ', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30601', 'dog. ', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30602', 'dog', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -190,9 +190,9 @@ class MyTestCase(unittest.TestCase):
     def test_multiple_topic(self):
         """Test for when a row has multiple topics (joined by ^)"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'Farm^Peanuts', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', 'Admin^Small Business^Tax', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'Farm^Peanuts', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30602', 'Admin^Small Business^Tax', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -208,9 +208,9 @@ class MyTestCase(unittest.TestCase):
     def test_unique(self):
         """Test for when each topic and file is unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\file1.txt'],
-                      ['30601', 'Peanuts', r'..\documents\BlobExport\file2.txt'],
-                      ['30602', 'Small Business', r'..\documents\BlobExport\file3.txt']])
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\\file1.txt'],
+                      ['30601', 'Peanuts', r'..\documents\BlobExport\objects\\file2.txt'],
+                      ['30602', 'Small Business', r'..\documents\BlobExport\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
