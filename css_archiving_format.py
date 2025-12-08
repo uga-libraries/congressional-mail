@@ -629,9 +629,11 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = topics_sort_folder(topic, output_dir)
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
+        # Deletes the from_constituent folder and topic folder if the from_constituent folder is empty.
+        # That means none of the documents were present in the export.
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
+            os.rmdir(os.path.dirname(topic_path))
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
