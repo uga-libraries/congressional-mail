@@ -577,20 +577,13 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-
-    # Makes a dataframe with any row that is incoming correspondence (type is INCOMING or AT_IN#)
-    # with values (blanks are 'nan') in group_name and communication_document_name,
-    # and any duplicate combinations of group and document names removed.
-    sort_df = df[(df['document_type'].str.startswith(('IN', 'AT_IN'))) & (df['group_name'] != 'nan') &
-                 (df['communication_document_name'] != 'nan')]
-    sort_df = sort_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
-
-    # For each topic in group_name, makes a folder in the output directory with that topic
-    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
-    topic_list = sort_df['group_name'].unique()
+
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    in_df = topics_sort_df(df, 'in')
+    topic_list = in_df['group_name'].unique()
     for topic in topic_list:
-        doc_list = sort_df.loc[sort_df['group_name'] == topic, 'communication_document_name'].tolist()
+        doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
         # Characters that Windows does not permit in a folder name are replaced with an underscore.
         for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
             topic = topic.replace(character, '_')
@@ -615,6 +608,21 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
+
+
+def topics_sort_df(df, letter_type):
+    """Make a dataframe with any row that has values in topic and document_name"""
+    # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
+    if letter_type == 'in':
+        doc_type = ('IN', 'AT_IN')
+    else:
+        doc_type = 'TBD'
+    topic_df = df[(df['document_type'].str.startswith(doc_type)) & (df['group_name'] != 'nan') &
+                  (df['communication_document_name'] != 'nan')]
+
+    # Removes any duplicate combinations of topic (group) and document_name.
+    topic_df = topic_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
+    return topic_df
 
 
 def update_path(md_path, input_dir):
