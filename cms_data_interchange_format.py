@@ -446,8 +446,8 @@ def remove_pii(df):
     return df
 
 
-def sort_correspondence(df, input_dir, output_dir):
-    """Sort copy of correspondence into folders by topic"""
+def topics_sort(df, input_dir, output_dir):
+    """Sort copy of incoming and outgoing correspondence into folders by topic"""
 
     # Makes a dataframe with any row that is incoming correspondence (document is in "in-email")
     # with values (blanks are 'nan') in code_description and correspondence_document_name,
@@ -574,4 +574,4 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_congress_year(md_df, output_directory)
-        sort_correspondence(md_df, input_directory, output_directory)
+        topics_sort(md_df, input_directory, output_directory)
