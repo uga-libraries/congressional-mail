@@ -7,7 +7,7 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_sort_correspondence import make_dir_list
+from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
