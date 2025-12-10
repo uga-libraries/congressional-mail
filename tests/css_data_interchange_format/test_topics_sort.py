@@ -1,12 +1,12 @@
 """
-Tests for the function sort_correspondence(), which organizes a copy of the incoming letters by topic.
+Tests for the function topics_sort(), which organizes a copy of the incoming and outgoing letters by topic.
 To simplify input, tests use dataframes with only some of the columns present in a real export.
 """
 import os
 import pandas as pd
 import shutil
 import unittest
-from css_data_interchange_format import sort_correspondence
+from css_data_interchange_format import topics_sort
 
 
 def make_df(row_list):
@@ -26,7 +26,7 @@ def make_dir_list(dir_path):
 
 def make_log_list():
     """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
-    log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+    log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topic_sort_file_not_found.csv')
     log_df = pd.read_csv(log_path)
     log_list = [log_df.columns.tolist()] + log_df.values.tolist()
     return log_list
@@ -36,9 +36,9 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         """Variables used by every test"""
-        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'Correspondence_by_Topic')
-        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'css_export')
-        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence')
+        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'Correspondence_by_Topic')
+        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
+        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
 
     def tearDown(self):
         """Delete the script outputs, if made"""
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
             shutil.rmtree(self.by_topic)
 
         # Log for FileNotFoundError.
-        log_path = os.path.join(os.getcwd(), 'test_data', 'sort_correspondence', 'topic_sort_file_not_found.csv')
+        log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topic_sort_file_not_found.csv')
         if os.path.exists(log_path):
             os.remove(log_path)
 
@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', 'nan'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'nan', 'AT_IN2', 'nan']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -72,7 +72,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'dogs', 'AT_IN1', r'..\documents\objects\file2.txt'],
                       ['30603', 'dogs', 'AT_IN2', r'..\documents\objects\file2.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -87,7 +87,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'cats', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -104,7 +104,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', r'..\documents\ima\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'park', 'AT_IN2', r'\doc\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -125,7 +125,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -152,7 +152,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'Ga?', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', '"H"', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', '<pa|rk>', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -170,7 +170,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dog', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'dog.', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'park and rec. ', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -188,7 +188,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'OUTGOING', r'..\documents\objects\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'park', 'AT_OUT2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
@@ -203,7 +203,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
                       ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        sort_correspondence(df, self.input_dir, self.output_dir)
+        topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
