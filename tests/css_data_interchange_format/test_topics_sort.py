@@ -57,12 +57,17 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'nan', 'INCOMING', r'..\documents\ima\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', 'nan'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'nan', 'AT_IN2', 'nan']])
+                      ['30603', 'nan', 'AT_IN2', 'nan'],
+                      ['30604', 'nan', 'OUTGOING', 'nan'],
+                      ['30605', 'dogs', 'AT_OUT2', 'nan'],
+                      ['30606', 'nan', 'AT_OUT2', r'..\documents\indivletters\toA.txt'],
+                      ['30607', 'farm', 'AT_OUT2', r'..\documents\indivletters\toB.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt')]
+        expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'farm', 'to_constituents', 'toB.txt')]
         self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_duplicate_file(self):
@@ -71,13 +76,16 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'dogs', 'AT_IN1', r'..\documents\objects\file2.txt'],
-                      ['30603', 'dogs', 'AT_IN2', r'..\documents\objects\file2.txt']])
+                      ['30603', 'dogs', 'AT_IN2', r'..\documents\objects\file2.txt'],
+                      ['30604', 'dogs', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
+                      ['30605', 'dogs', 'AT_OUT2', r'..\documents\indivletters\toA.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt')]
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'toA.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate_file")
 
     def test_duplicate_topic(self):
@@ -86,7 +94,9 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'cats', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt']])
+                      ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt'],
+                      ['30604', 'cats', 'AT_OUT2', r'..\documents\indivletters\toB.txt'],
+                      ['30605', 'cats', 'OUTGOING', r'..\documents\indivletters\toD.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -94,6 +104,8 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
                     os.path.join(self.by_topic, 'cats', 'from_constituents', 'file3.txt'),
                     os.path.join(self.by_topic, 'cats', 'from_constituents', 'file4.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'toB.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'toD.txt'),
                     os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
@@ -103,7 +115,9 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\ima\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'\doc\objects\file4.txt']])
+                      ['30603', 'park', 'AT_IN2', r'\doc\objects\file4.txt'],
+                      ['30604', 'park', 'OUT_IN2', r'\doc\indivletter\toX.txt'],
+                      ['30605', 'park', 'OUT_IN2', r'\doc\missing\toA.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -115,7 +129,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
         expected = [['dogs', r'..\documents\ima\file2.txt'],
-                    ['park', r'\doc\objects\file4.txt']]
+                    ['park', r'\doc\objects\file4.txt'],
+                    ['park', r'\doc\indivletter\toX.txt'],
+                    ['park', r'\doc\missing\toA.txt']]
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
@@ -124,7 +140,9 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt']])
+                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt'],
+                      ['30604', 'cats', 'OUTGOING', r'..\documents\toX.txt'],
+                      ['30605', 'cats', 'AT_OUT3', r'..\documents\toY.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -136,7 +154,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
         expected = [['cats', r'..\documents\file1.txt'],
-                    ['dogs', r'..\documents\file2.txt']]
+                    ['dogs', r'..\documents\file2.txt'],
+                    ['cats', r'..\documents\toX.txt'],
+                    ['cats', r'..\documents\toY.txt']]
         self.assertEqual(expected, result, "Problem with test for folder empty, log")
 
         # Verifies folders without a file are not still present.
@@ -149,52 +169,37 @@ class MyTestCase(unittest.TestCase):
         """Test for when a topic contains a character that cannot be in a folder name"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'A\\BC/DE:***', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'Ga?', 'INCOMING', r'..\documents\objects\file2.txt'],
+                      ['30601', 'Ga?', 'OUTGOMING', r'..\documents\indivletters\toB.txt'],
                       ['30602', '"H"', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', '<pa|rk>', 'AT_IN2', r'..\documents\objects\file4.txt']])
+                      ['30603', '<pa|rk>', 'OUT_IN2', r'..\documents\indivletters\toC.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'A_BC_DE____', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Ga_', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'Ga_', 'to_constituents', 'toB.txt'),
                     os.path.join(self.by_topic, '_H_', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, '_pa_rk_', 'from_constituents', 'file4.txt')]
+                    os.path.join(self.by_topic, '_pa_rk_', 'to_constituents', 'toC.txt')]
         self.assertEqual(expected, result, "Problem with test for folder name error")
 
     def test_folder_name_trailing(self):
         """Test for when a topic ends with a space or period, which cannot be in the folder name"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', ' apple.com', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'cat ', 'INCOMING', r'..\documents\objects\file2.txt'],
+                      ['30601', 'cat ', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
                       ['30601', 'dog', 'INCOMING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'dog.', 'AT_IN1', r'..\documents\objects\file3.txt'],
+                      ['30602', 'dog.', 'OUT_IN1', r'..\documents\indivletters\toC.txt'],
                       ['30603', 'park and rec. ', 'AT_IN2', r'..\documents\objects\file4.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, ' apple.com', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'toA.txt'),
                     os.path.join(self.by_topic, 'dog', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'toC.txt'),
                     os.path.join(self.by_topic, 'park and rec', 'from_constituents', 'file4.txt')]
         self.assertEqual(expected, result, "Problem with test for folder name trailing")
-
-    def test_outgoing(self):
-        """Test for when some rows are for outgoing correspondence and should be skipped"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'OUTGOING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_OUT2', r'..\documents\objects\file4.txt']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt')]
-        self.assertEqual(expected, result, "Problem with test for outgoing")
 
     def test_unique(self):
         """Test for when topic and file is unique"""
@@ -202,7 +207,9 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt']])
+                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt'],
+                      ['30604', 'tree', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
+                      ['30605', 'zoo', 'AT_OUT2', r'..\documents\indivletters\toB.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -210,7 +217,9 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
                     os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
                     os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt')]
+                    os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt'),
+                    os.path.join(self.by_topic, 'tree', 'to_constituents', 'toA.txt'),
+                    os.path.join(self.by_topic, 'zoo', 'to_constituents', 'toB.txt')]
         self.assertEqual(expected, result, "Problem with test for unique")
 
 
