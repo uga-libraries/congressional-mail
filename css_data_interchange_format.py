@@ -584,17 +584,7 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = in_df['group_name'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
-        # Characters that Windows does not permit in a folder name are replaced with an underscore.
-        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
-            topic = topic.replace(character, '_')
-        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
-        topic = topic.rstrip('. ')
-        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
-        # Topic path may be duplicated if there is a version that does and does not require cleanup.
-        try:
-            os.mkdir(topic_path)
-        except FileExistsError:
-            pass
+        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             doc_path = update_path(doc, input_dir)
             doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
@@ -623,6 +613,26 @@ def topics_sort_df(df, letter_type):
     # Removes any duplicate combinations of topic (group) and document_name.
     topic_df = topic_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
     return topic_df
+
+
+def topics_sort_folder(topic, output_dir, type_folder_name):
+    """Make a folder named with the topic and return the path to that folder"""
+    # Replaces characters that Windows does not permit in a folder name with an underscore.
+    for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
+        topic = topic.replace(character, '_')
+
+    # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
+    topic = topic.rstrip('. ')
+
+    # Makes the path, including a folder with the letter type.
+    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, type_folder_name)
+
+    # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
+    # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
+    if not os.path.exists(topic_path):
+        os.makedirs(topic_path)
+
+    return topic_path
 
 
 def update_path(md_path, input_dir):
