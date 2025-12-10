@@ -529,8 +529,8 @@ def remove_pii(df):
     return df
 
 
-def sort_correspondence(df, input_dir, output_dir):
-    """Sort copy of correspondence into folders by topic"""
+def topics_sort(df, input_dir, output_dir):
+    """Sort copy of incoming and outgoing correspondence into folders by topic"""
 
     # Makes a dataframe with any row that is incoming correspondence (type is INCOMING or AT_IN#)
     # with values (blanks are 'nan') in group_name and communication_document_name,
@@ -689,5 +689,5 @@ if __name__ == '__main__':
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_congress_year(md_df, output_directory)
-        sort_correspondence(md_df, input_directory, output_directory)
+        topics_sort(md_df, input_directory, output_directory)
 
