@@ -448,19 +448,13 @@ def remove_pii(df):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-
-    # Makes a dataframe with any row that is incoming correspondence (document is in "in-email")
-    # with values (blanks are 'nan') in code_description and correspondence_document_name,
-    # and any duplicate combinations of description and document names removed.
-    sort_df = df[(df['code_description'] != 'nan') & (df['correspondence_document_name'].str.contains('in-email'))]
-    sort_df = sort_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-
-    # For each topic in code_description, makes a folder in the output directory with that topic
-    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
-    topic_list = sort_df['code_description'].unique()
+
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    in_df = topics_sort_df(df, 'in-email')
+    topic_list = in_df['code_description'].unique()
     for topic in topic_list:
-        doc_list = sort_df.loc[sort_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+        doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
         # Characters that Windows does not permit in a folder name are replaced with an underscore.
         for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
             topic = topic.replace(character, '_')
@@ -485,6 +479,18 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
+
+
+def topics_sort_df(df, letter_type):
+    """Make a dataframe with any row that has values in topic and document name for that letter type"""
+    # Initial df, with any row of the specified type that has some value in topic (code_description)
+    # and correspondence_document_name.
+    topic_df = df[(df['code_description'] != 'nan') & (df['correspondence_document_name'].str.contains(letter_type))]
+    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+
+    # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
+    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+    return topic_df
 
 
 def topics_report(df, output_dir):
