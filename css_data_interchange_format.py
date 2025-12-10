@@ -632,7 +632,7 @@ def topics_sort_delete_empty(topic_path):
 
 
 def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has values in topic and document_name"""
+    """Make a dataframe with any row that has values in topic and document_name for that letter type"""
     # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
     doc_type = (letter_type, f'AT_{letter_type}')
     topic_df = df[(df['document_type'].str.startswith(doc_type)) & (df['group_name'] != 'nan') &
