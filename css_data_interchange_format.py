@@ -579,17 +579,25 @@ def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
-    in_df = topics_sort_df(df, 'in')
+    # Sorts a copy of correspondence from constituents ("incoming" letters) by topic.
+    in_df = topics_sort_df(df, 'IN')
     topic_list = in_df['group_name'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
-        if not os.listdir(topic_path):
-            os.rmdir(topic_path)
+        topics_sort_delete_empty(topic_path)
+
+    # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
+    out_df = topics_sort_df(df, 'OUT')
+    topic_list = out_df['group_name'].unique()
+    for topic in topic_list:
+        doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
+        topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
+        for doc in doc_list:
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
@@ -611,13 +619,22 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
             log_writer.writerow([topic, doc])
 
 
+def topics_sort_delete_empty(topic_path):
+    """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
+    # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
+    if not os.listdir(topic_path):
+        os.rmdir(topic_path)
+
+        # Deletes the topic folder if it is also empty.
+        # It could contain a from_constituents folder if the function is called to delete to_constituents.
+        if not os.listdir(os.path.dirname(topic_path)):
+            os.rmdir(os.path.dirname(topic_path))
+
+
 def topics_sort_df(df, letter_type):
     """Make a dataframe with any row that has values in topic and document_name"""
     # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
-    if letter_type == 'in':
-        doc_type = ('IN', 'AT_IN')
-    else:
-        doc_type = 'TBD'
+    doc_type = (letter_type, f'AT_{letter_type}')
     topic_df = df[(df['document_type'].str.startswith(doc_type)) & (df['group_name'] != 'nan') &
                   (df['communication_document_name'] != 'nan')]
 
