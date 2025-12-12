@@ -16,7 +16,7 @@ import pandas as pd
 import shutil
 import sys
 from css_data_interchange_format import (remove_appraisal_rows, split_congress_year, topics_sort_copy,
-                                         topics_sort_delete_empty, topics_sort_df, topics_sort_folder)
+                                         topics_sort_delete_empty, topics_sort_folder)
 from css_archiving_format import file_deletion_log
 
 
