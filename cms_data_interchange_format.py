@@ -15,8 +15,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_data_interchange_format import (remove_appraisal_rows, split_congress_year, topics_sort_copy,
-                                         topics_sort_delete_empty, topics_sort_folder)
+from css_data_interchange_format import remove_appraisal_rows, split_congress_year, topics_sort_delete_empty, topics_sort_folder
 from css_archiving_format import file_deletion_log
 
 
@@ -458,18 +457,29 @@ def topics_sort(df, input_dir, output_dir):
         doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
-            doc_path = update_path(doc, input_dir)
-            doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
-            try:
-                shutil.copy2(doc_path, doc_new_path)
-            except FileNotFoundError:
-                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
-                with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
-                    log_writer = csv.writer(log)
-                    log_writer.writerow([topic, doc])
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
         # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
         if not os.listdir(topic_path):
             os.rmdir(topic_path)
+
+
+def topics_sort_copy(doc, input_dir, output_dir, topic_path):
+    """Copy document to topic folder and log if error"""
+    # Gets the path for the current doc location by updating the path in the metadata.
+    doc_path = update_path(doc, input_dir)
+
+    # Copies the doc to the topic_path folder.
+    # If the doc is not in the expected location, logs it instead.
+    # It is common to have docs in the metadata but not in the input directory.
+    doc_name = doc.split('\\')[-1]
+    doc_new_path = os.path.join(topic_path, doc_name)
+    try:
+        shutil.copy2(doc_path, doc_new_path)
+    except FileNotFoundError:
+        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            log_writer = csv.writer(log)
+            topic = topic_path.split('\\')[-2]
+            log_writer.writerow([topic, doc])
 
 
 def topics_sort_df(df, letter_type):
