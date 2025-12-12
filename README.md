@@ -16,12 +16,12 @@ Path to the metadata file: archival_office_correspondence_data.py and css_archiv
 
 Path to the folder with all metadata files: cms_data_interchange_format.py and css_data_interchange_format.py
 
-Script mode (all)
+Script mode (all export types)
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
 preservation: prepare export for general_aip.py script [TBD]
 access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
-and make a copy of incoming correspondence in folders by topic
+and make a copy of incoming and outgoing correspondence in folders by topic
 
 ### Testing
 
