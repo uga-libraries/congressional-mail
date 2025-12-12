@@ -15,7 +15,8 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_data_interchange_format import remove_appraisal_rows, split_congress_year
+from css_data_interchange_format import (remove_appraisal_rows, split_congress_year, topics_sort_copy,
+                                         topics_sort_delete_empty, topics_sort_df, topics_sort_folder)
 from css_archiving_format import file_deletion_log
 
 
@@ -455,17 +456,7 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = in_df['code_description'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        # Characters that Windows does not permit in a folder name are replaced with an underscore.
-        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
-            topic = topic.replace(character, '_')
-        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
-        topic = topic.rstrip('. ')
-        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
-        # Topic path may be duplicated if there is a version that does and does not require cleanup.
-        try:
-            os.mkdir(topic_path)
-        except FileExistsError:
-            pass
+        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             doc_path = update_path(doc, input_dir)
             doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
