@@ -460,6 +460,16 @@ def topics_sort(df, input_dir, output_dir):
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         css_dif.topics_sort_delete_empty(topic_path)
 
+    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
+    out_df = topics_sort_df(df, 'out-custom')
+    topic_list = out_df['code_description'].unique()
+    for topic in topic_list:
+        doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
+        for doc in doc_list:
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        css_dif.topics_sort_delete_empty(topic_path)
+
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
     """Copy document to topic folder and log if error"""
