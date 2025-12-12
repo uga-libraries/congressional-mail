@@ -135,7 +135,37 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
-        """Test for when no files for a topic are in the directory and the topic folder is empty"""
+        """Test for when no outgoing files for a topic are in the directory, but some incoming are"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\file1.txt'],
+                      ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
+                      ['30602', 'cats', 'AT_IN1', r'..\documents\objects\file3.txt'],
+                      ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt'],
+                      ['30604', 'cats', 'OUTGOING', r'..\documents\toX.txt'],
+                      ['30605', 'cats', 'AT_OUT3', r'..\documents\toY.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file4.txt')]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, topic folders")
+
+        # Verifies the expected log was created and has the expected contents.
+        result = make_log_list()
+        expected = [['cats', r'..\documents\file1.txt'],
+                    ['dogs', r'..\documents\file2.txt'],
+                    ['cats', r'..\documents\toX.txt'],
+                    ['cats', r'..\documents\toY.txt']]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, log")
+
+        # Verifies folder without a file is not still present.
+        result = os.path.exists(os.path.join(self.by_topic, 'dogs'))
+        expected = False
+        self.assertEqual(expected, result, "Problem with test for one folder empty, folders not deleted")
+
+    def test_folders_empty(self):
+        """Test for when no files (incoming or outgoing) for a topic are in the directory and the topic folder is empty"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\file1.txt'],
                       ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
@@ -149,7 +179,7 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
                     os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt')]
-        self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
+        self.assertEqual(expected, result, "Problem with test for folders empty, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
@@ -157,13 +187,13 @@ class MyTestCase(unittest.TestCase):
                     ['dogs', r'..\documents\file2.txt'],
                     ['cats', r'..\documents\toX.txt'],
                     ['cats', r'..\documents\toY.txt']]
-        self.assertEqual(expected, result, "Problem with test for folder empty, log")
+        self.assertEqual(expected, result, "Problem with test for folders empty, log")
 
         # Verifies folders without a file are not still present.
         result = [os.path.exists(os.path.join(self.by_topic, 'cats')),
                   os.path.exists(os.path.join(self.by_topic, 'dogs'))]
         expected = [False, False]
-        self.assertEqual(expected, result, "Problem with test for folder empty, folders not deleted")
+        self.assertEqual(expected, result, "Problem with test for folders empty, folders not deleted")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""

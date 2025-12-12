@@ -130,7 +130,33 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
-        """Test for when no files for a topic are in the directory and the topic folder is empty"""
+        """Test for when no out files for a topic are in the directory, but some in are"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'cats', r'in-email\file1.txt'],
+                      ['30601', 'dogs', r'in-email\new\file2.txt'],
+                      ['30604', 'cats', r'missing\out-custom\Doe.txt'],
+                      ['30605', 'dogs', r'out-custom\missing.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folder was created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt')]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, topic folders")
+
+        # Verifies the expected log was created and has the expected contents.
+        result = make_log_list()
+        expected = [['dogs', r'in-email\new\file2.txt'],
+                    ['cats', r'missing\out-custom\Doe.txt'],
+                    ['dogs', r'out-custom\missing.txt']]
+        self.assertEqual(expected, result, "Problem with test for one folder empty, log")
+
+        # Verifies folder without a file is not still present.
+        result = os.path.exists(os.path.join(self.by_topic, 'dogs'))
+        expected = False
+        self.assertEqual(expected, result, "Problem with test for one folder empty, folder not deleted")
+
+    def test_folders_empty(self):
+        """Test for when no files (in or out) for a topic are in the directory and the topic folder is empty"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'cats', r'in-email\file01.txt'],
                       ['30601', 'dogs', r'in-email\new\file2.txt'],
@@ -144,7 +170,7 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.by_topic)
         expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
                     os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt')]
-        self.assertEqual(expected, result, "Problem with test for folder empty, topic folders")
+        self.assertEqual(expected, result, "Problem with test for folders empty, topic folders")
 
         # Verifies the expected log was created and has the expected contents.
         result = make_log_list()
@@ -152,13 +178,13 @@ class MyTestCase(unittest.TestCase):
                     ['dogs', r'in-email\new\file2.txt'],
                     ['dogs', r'missing\out-custom\Doe.txt'],
                     ['park', r'out-custom\missing.txt']]
-        self.assertEqual(expected, result, "Problem with test for folder empty, log")
+        self.assertEqual(expected, result, "Problem with test for folders empty, log")
 
         # Verifies folders without a file are not still present.
         result = [os.path.exists(os.path.join(self.by_topic, 'cats')),
                   os.path.exists(os.path.join(self.by_topic, 'dogs'))]
         expected = [False, False]
-        self.assertEqual(expected, result, "Problem with test for folder empty, folders not deleted")
+        self.assertEqual(expected, result, "Problem with test for folders empty, folders not deleted")
 
     def test_folder_name_error(self):
         """Test for when a topic contains a character that cannot be in a folder name"""
