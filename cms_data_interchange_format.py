@@ -15,7 +15,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_data_interchange_format import remove_appraisal_rows, split_congress_year, topics_sort_delete_empty, topics_sort_folder
+import css_data_interchange_format as css_dif
 from css_archiving_format import file_deletion_log
 
 
@@ -455,10 +455,10 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = in_df['code_description'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
+        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
+        css_dif.topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
@@ -576,7 +576,7 @@ if __name__ == '__main__':
         print("It will remove rows for deleted letters and columns with PII, "
               "make copies of the metadata split by congress year, "
               "and make a copy of the constituent letters organized by topic")
-        md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-        split_congress_year(md_df, output_directory)
+        css_dif.split_congress_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
