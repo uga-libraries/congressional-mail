@@ -7,7 +7,6 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
@@ -28,6 +27,15 @@ def files_in_dir(dir_path):
         for file in files:
             file_list.append(file)
     return file_list
+
+
+def make_dir_list(dir_path):
+    """Make a list of the files in the folder created by the function to compare to expected results"""
+    contents_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            contents_list.append(os.path.join(root, file))
+    return contents_list
 
 
 class MyTestCase(unittest.TestCase):
