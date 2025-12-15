@@ -1,0 +1,4 @@
+city,state,zip,country,in_id,in_typ,in_method,in_date,in_topic,in_document_name,out_id,out_type,out_method,out_date,out_topic,out_document_name
+city1,GA,30601,,a1,General,Email,20210101,Agriculture,..\documents\BlobExport\objects\file1.txt,r1,General,Email,20210101,Agriculture,..\documents\BlobExport\responses\ag.txt
+city2,GA,30602,,a2,General,Email,20220202,Peanuts,..\documents\BlobExport\objects\file2.txt,r2,General,Email,20220202,Peanuts,..\documents\BlobExport\responses\answer1.txt
+city3,GA,30603,,a3,General,Email,20230303,Small Business,..\documents\BlobExport\objects\file3.txt,r3,General,Email,20230303,Tax,..\documents\BlobExport\responses\answer2.txt
