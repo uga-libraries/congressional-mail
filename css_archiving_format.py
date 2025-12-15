@@ -736,8 +736,9 @@ def topics_sort_metadata(topic_path, row):
             metadata_writer = csv.writer(metadata_file)
             metadata_writer.writerow(columns)
 
-    # Otherwise, updates the path to match the access reorganization [TBD] and adds to the CSV.
+    # Otherwise, updates the path to match the access reorganization and adds to the CSV.
     else:
+        row[9] = os.path.join(topic_path, row[9].split('\\')[-1])
         with open(csv_path, 'a', newline='') as metadata_file:
             metadata_writer = csv.writer(metadata_file)
             metadata_writer.writerow(row)
