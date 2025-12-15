@@ -621,12 +621,14 @@ def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic
+    # and saves the metadata for those letters to a CSV in the topic folder.
     in_df = topics_sort_df(df, 'in')
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
+        topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
@@ -712,6 +714,28 @@ def topics_sort_folder(topic, output_dir, type_folder_name):
         os.makedirs(topic_path)
 
     return topic_path
+
+
+def topics_sort_metadata(topic_path, row):
+    """Save a document's metadata to a row in a CSV within the topic folder"""
+    # topic_path ends with to/from constituents, and the parent folder is the topic normalized for Windows names.
+    topic = topic_path.split('\\')[-2]
+    topic_folder = os.path.dirname(topic_path)
+    csv_path = os.path.join(topic_folder, f'{topic}_metadata.csv')
+
+    # If this is a new CSV (row is "header"), makes the CSV with the column names.
+    if row == 'header':
+        columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
+                   'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name']
+        with open(csv_path, 'w', newline='') as metadata_file:
+            metadata_writer = csv.writer(metadata_file)
+            metadata_writer.writerow(columns)
+
+    # Otherwise, updates the path to match the access reorganization [TBD] and adds to the CSV.
+    else:
+        with open(csv_path, 'w', newline='') as metadata_file:
+            metadata_writer = csv.writer(metadata_file)
+            metadata_writer.writerow(row)
 
 
 def update_path(md_path, input_dir):
