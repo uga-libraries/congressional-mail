@@ -643,8 +643,12 @@ def topics_sort(df, input_dir, output_dir):
     for topic in topic_list:
         doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
+        topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            doc_present = topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            if doc_present:
+                doc_row = in_df[(in_df['out_document_name'] == doc) & (in_df['out_topic'] == topic)].values.tolist()[0]
+                topics_sort_metadata(topic_path, doc_row)
         topics_sort_delete_empty(topic_path)
 
 
@@ -728,13 +732,16 @@ def topics_sort_metadata(topic_path, row):
     topic_folder = os.path.dirname(topic_path)
     csv_path = os.path.join(topic_folder, f'{topic}_metadata.csv')
 
-    # If this is a new CSV (row is "header"), makes the CSV with the column names.
+    # If this is a new CSV (row is "header"), makes the CSV with the column names,
+    # unless it already exists, which happens if there are "in" and "out" letters for a topic.
     if row == 'header':
-        columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                   'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name']
-        with open(csv_path, 'w', newline='') as metadata_file:
-            metadata_writer = csv.writer(metadata_file)
-            metadata_writer.writerow(columns)
+        if not os.path.exists(csv_path):
+            columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
+                       'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
+                       'out_document_name']
+            with open(csv_path, 'w', newline='') as metadata_file:
+                metadata_writer = csv.writer(metadata_file)
+                metadata_writer.writerow(columns)
 
     # Otherwise, updates the path to match the access reorganization and adds to the CSV.
     else:
