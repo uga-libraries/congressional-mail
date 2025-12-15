@@ -630,7 +630,10 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            doc_present = topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            if doc_present:
+                doc_row = in_df[(in_df['in_document_name'] == doc) & (in_df['in_topic'] == topic)].values.tolist()[0]
+                topics_sort_metadata(topic_path, doc_row)
         topics_sort_delete_empty(topic_path)
 
     # Sorts a copy of correspondence to constituents ("out" letters) by topic.
@@ -646,7 +649,7 @@ def topics_sort(df, input_dir, output_dir):
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
+    """Copy document to topic folder, return if found, and log if error"""
     # Gets the path for the current doc location by updating the path in the metadata.
     doc_path = update_path(doc, input_dir)
 
@@ -657,11 +660,13 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
     doc_new_path = os.path.join(topic_path, doc_name)
     try:
         shutil.copy2(doc_path, doc_new_path)
+        return True
     except FileNotFoundError:
         with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
             log_writer = csv.writer(log)
             topic = topic_path.split('\\')[-2]
             log_writer.writerow([topic, doc])
+        return False
 
 
 def topics_sort_delete_empty(topic_path):
@@ -733,7 +738,7 @@ def topics_sort_metadata(topic_path, row):
 
     # Otherwise, updates the path to match the access reorganization [TBD] and adds to the CSV.
     else:
-        with open(csv_path, 'w', newline='') as metadata_file:
+        with open(csv_path, 'a', newline='') as metadata_file:
             metadata_writer = csv.writer(metadata_file)
             metadata_writer.writerow(row)
 
