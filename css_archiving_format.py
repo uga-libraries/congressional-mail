@@ -646,6 +646,7 @@ def topics_sort(df, input_dir, output_dir):
         topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
             doc_present = topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            # TODO don't add if row is already there from "in" document
             if doc_present:
                 doc_row = in_df[(in_df['out_document_name'] == doc) & (in_df['out_topic'] == topic)].values.tolist()[0]
                 topics_sort_metadata(topic_path, doc_row)
@@ -744,8 +745,8 @@ def topics_sort_metadata(topic_path, row):
                 metadata_writer.writerow(columns)
 
     # Otherwise, updates the path to match the access reorganization and adds to the CSV.
+    # TODO update paths
     else:
-        row[9] = os.path.join(topic_path, row[9].split('\\')[-1])
         with open(csv_path, 'a', newline='') as metadata_file:
             metadata_writer = csv.writer(metadata_file)
             metadata_writer.writerow(row)
