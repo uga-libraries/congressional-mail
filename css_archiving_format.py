@@ -602,6 +602,19 @@ def sort_correspondence(df, input_dir, output_dir):
             os.rmdir(topic_path)
 
 
+def split_aip(input_dir, output_dir):
+    """Make copy of unredacted, post-appraisal export ready for general_aip.py to transform into AIPs"""
+
+    # Makes folder for output.
+
+    # Starts metadata.csv.
+
+    # Copies metadata to AIP folder and adds to metadata.csv.
+
+    # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
+    # and adds to metadata.csv.
+
+
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
@@ -718,11 +731,11 @@ if __name__ == '__main__':
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
-    # TODO For preservation, prepares the export for the general_aip.py script.
     # Run in appraisal mode first to remove letters.
     elif script_mode == 'preservation':
         print("\nThe script is running in preservation mode.")
-        print("The steps are TBD.")
+        print("It will make a copy of the export split into folders small enough for AIPs and start the metadata.csv.")
+        split_aip(input_directory, output_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by congress year, and makes a copy of the letters from constituents
