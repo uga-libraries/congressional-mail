@@ -2,6 +2,7 @@
 Tests for the function split_aip(), which makes a folder for every 10,000 files and starts the metadata.csv
 for transforming these folders into AIPs for the preservation system.
 """
+from datetime import datetime
 import os
 import shutil
 import unittest
@@ -91,6 +92,9 @@ class MyTestCase(unittest.TestCase):
 
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 3)
+        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'aa'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'ab'), 3)
         make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'cats'), 2)
         make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'dogs'), 1)
         make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'apples'), 7)
@@ -101,6 +105,11 @@ class MyTestCase(unittest.TestCase):
         aip_dir = os.path.join(output_directory, 'aip_dir')
         result = files_in_dir(aip_dir)
         expected = [os.path.join(aip_dir, 'metadata.csv'),
+                    os.path.join(aip_dir, 'form_1', 'a', 'file_1.txt'),
+                    os.path.join(aip_dir, 'form_1', 'a', 'aa', 'file_1.txt'),
+                    os.path.join(aip_dir, 'form_1', 'a', 'ab', 'file_1.txt'),
+                    os.path.join(aip_dir, 'form_2', 'a', 'ab', 'file_2.txt'),
+                    os.path.join(aip_dir, 'form_2', 'a', 'ab', 'file_3.txt'),
                     os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_1.txt'),
                     os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_2.txt'),
                     os.path.join(aip_dir, 'indivletters_1', 'dogs', 'file_1.txt'),
@@ -130,6 +139,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
         expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
                     ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
+                    ['BLANK', 'BLANK', 'form_1', 'BLANK', 'CSS form 1', 1],
+                    ['BLANK', 'BLANK', 'form_2', 'BLANK', 'CSS form 2', 1],
                     ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1],
                     ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
                     ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
@@ -138,6 +149,50 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', 'BLANK', 'objects_5', 'BLANK', 'CSS objects 5', 1],
                     ['BLANK', 'BLANK', 'objects_6', 'BLANK', 'CSS objects 6', 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
+
+    def test_subfolders_empty(self):
+        """Test for when the type folders have subfolders, and some are empty (logged instead of copied to AIPs)"""
+        # Makes output directory and input directory with test data and runs the function.
+        output_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips')
+        os.mkdir(output_directory)
+
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
+        make_input_folder(input_directory, 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters'), 2)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'lions'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'bears'), 0),
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'tigers'), 0)
+        split_aips(input_directory, output_directory)
+
+        # Tests the aip_dir has the correct contents.
+        aip_dir = os.path.join(output_directory, 'aip_dir')
+        result = files_in_dir(aip_dir)
+        expected = [os.path.join(aip_dir, 'metadata.csv'),
+                    os.path.join(aip_dir, 'indivletters_1', 'file_1.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'file_2.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'lions', 'file_1.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_1.txt')]
+        self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
+
+        # Tests the metadata.csv has the correct values.
+        result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
+        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1]]
+        self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
+
+        # Tests the empty_subfolders_log.txt has the correct values.
+        result = []
+        with open(os.path.join(output_directory, 'empty_subfolders_log.txt'), newline='\n') as log:
+            rows = log.readlines()
+            for row in rows:
+                result.append(row)
+        today = datetime.now().strftime("%Y-%m-%d")
+        expected = [f"{os.path.join(input_directory, 'documents', 'indivletters', 'bears')} "
+                    f"was empty on {today} when this export was split into smaller folders for AIP creation\r\n",
+                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'tigers')} "
+                    f"was empty on {today} when this export was split into smaller folders for AIP creation\r\n"]
+        self.assertEqual(expected, result, "Problem with test for subfolders_empty, empty_subfolders_log.txt")
 
 
 if __name__ == '__main__':
