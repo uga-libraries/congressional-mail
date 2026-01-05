@@ -44,6 +44,7 @@ class MyTestCase(unittest.TestCase):
 
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 3)
+        make_input_folder(os.path.join(input_directory, 'documents'), 1)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.

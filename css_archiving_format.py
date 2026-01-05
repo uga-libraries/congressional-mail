@@ -616,14 +616,18 @@ def split_aips(input_dir, output_dir):
         md_csv_writer.writerow(['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'])
 
         # Copies metadata (loose files directly within input_dir) to AIP folder and adds to metadata.csv.
+        # Skips the documents folder that contains the exported letters.
         aip_folder = os.path.join(aip_dir, 'metadata')
         os.mkdir(aip_folder)
         for metadata_file in os.listdir(input_dir):
-            shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_folder, metadata_file))
+            if not metadata_file == 'documents':
+                shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_folder, metadata_file))
         md_csv_writer.writerow(['', '', 'metadata', '', 'CSS Metadata', '1'])
 
-        # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
-        # and adds to metadata.csv.
+        # # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
+        # # and adds to metadata.csv.
+        # for type_folder in os.listdir(os.path.join(input_dir, 'documents')):
+        #     type_path = os.path.join(input_dir, 'documents', 'type_folder')
 
 
 def split_congress_year(df, output_dir):
