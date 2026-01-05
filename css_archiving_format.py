@@ -609,6 +609,10 @@ def split_aips(input_dir, output_dir):
     os.mkdir(os.path.join(output_dir, 'aip_dir'))
 
     # Starts metadata.csv.
+    metadata_csv = os.path.join(output_dir, 'aip_dir', 'metadata.csv')
+    with open(metadata_csv, 'w', newline='') as md_csv:
+        md_csv_writer = csv.writer(md_csv)
+        md_csv_writer.writerow(['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'])
 
     # Copies metadata to AIP folder and adds to metadata.csv.
 
