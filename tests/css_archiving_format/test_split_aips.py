@@ -83,6 +83,62 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS Objects 3', 1]]
         self.assertEqual(expected, result, "Problem with test for no_subfolders, metadata.csv")
 
+    def test_subfolders(self):
+        """Test for when the type folders have subfolders and may be split into 1 or more AIPs"""
+        # Makes output directory and input directory with test data and runs the function.
+        output_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips')
+        os.mkdir(output_directory)
+
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
+        make_input_folder(input_directory, 3)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'cats'), 2)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'dogs'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'apples'), 7)
+        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'bananas'), 10)
+        split_aips(input_directory, output_directory)
+
+        # Tests the aip_dir has the correct contents.
+        aip_dir = os.path.join(output_directory, 'aip_dir')
+        result = files_in_dir(aip_dir)
+        expected = [os.path.join(aip_dir, 'metadata.csv'),
+                    os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_1.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_2.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'dogs', 'file_1.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_1.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_2.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_3.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_1.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_2.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_3.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_4.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_5.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_6.txt'),
+                    os.path.join(aip_dir, 'objects_3', 'apples', 'file_7.txt'),
+                    os.path.join(aip_dir, 'objects_3', 'bananas', 'file_1.txt'),
+                    os.path.join(aip_dir, 'objects_3', 'bananas', 'file_10.txt'),
+                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_2.txt'),
+                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_3.txt'),
+                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_4.txt'),
+                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_5.txt'),
+                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_6.txt'),
+                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_7.txt'),
+                    os.path.join(aip_dir, 'objects_6', 'bananas', 'file_8.txt'),
+                    os.path.join(aip_dir, 'objects_6', 'bananas', 'file_9.txt')]
+        self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
+
+        # Tests the metadata.csv has the correct values.
+        result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
+        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1],
+                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
+                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
+                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS objects 3', 1],
+                    ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'CSS objects 4', 1],
+                    ['BLANK', 'BLANK', 'objects_5', 'BLANK', 'CSS objects 5', 1],
+                    ['BLANK', 'BLANK', 'objects_6', 'BLANK', 'CSS objects 6', 1]]
+        self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
+
 
 if __name__ == '__main__':
     unittest.main()

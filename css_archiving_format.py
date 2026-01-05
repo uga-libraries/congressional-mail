@@ -629,20 +629,30 @@ def split_aips(input_dir, output_dir):
         # and adds to metadata.csv.
         for type_folder in os.listdir(os.path.join(input_dir, 'documents')):
             type_path = os.path.join(input_dir, 'documents', type_folder)
+            # Gets the path to every file in the type folder, including if it is in subfolders.
+            file_paths_list = []
             for root, dirs, files in os.walk(type_path):
-                # TODO max will be 10,000 instead of 3 once done with initial testing.
-                for i in range(0, len(files), 3):
-                    # Make folder for this AIP.
-                    seq_number = i // 3 + 1
-                    aip_folder_name = f'{type_folder.lower()}_{seq_number}'
-                    aip_folder_path = os.path.join(aip_dir, aip_folder_name)
-                    os.mkdir(aip_folder_path)
-                    # Copy files for this AIP.
-                    included_files = files[i:i + 3]
-                    for file_name in included_files:
-                        shutil.copy2(os.path.join(root, file_name), os.path.join(aip_folder_path, file_name))
-                    # Add to metadata.csv
-                    md_csv_writer.writerow(['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
+                for file in files:
+                    file_paths_list.append(os.path.join(root, file))
+            # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
+            # TODO max will be 10,000 instead of 3 once done with initial testing.
+            for i in range(0, len(file_paths_list), 3):
+                # Makes folder for this AIP.
+                seq_number = i // 3 + 1
+                aip_folder_name = f'{type_folder.lower()}_{seq_number}'
+                aip_folder_path = os.path.join(aip_dir, aip_folder_name)
+                os.mkdir(aip_folder_path)
+                # Copies files for this AIP.
+                # The relative path to the file is used to replicate the subfolders.
+                included_files = file_paths_list[i:i + 3]
+                for file_path in included_files:
+                    relative_path = Path(file_path).relative_to(type_path)
+                    subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
+                    if not os.path.exists(subfolder_path):
+                        os.makedirs(subfolder_path)
+                    shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
+                # Add to metadata.csv
+                md_csv_writer.writerow(['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
 
 
 def split_congress_year(df, output_dir):
