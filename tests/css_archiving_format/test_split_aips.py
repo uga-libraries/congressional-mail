@@ -36,31 +36,52 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join('test_data', 'split_aips')
         shutil.rmtree(output_directory)
 
-    def test_function(self):
-        """Test for initial development"""
+    def test_no_subfolders(self):
+        """Test for when the type folders have no subfolders and may be split into 1, 2, or 3 AIPs"""
         # Makes output directory and input directory with test data and runs the function.
         output_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips')
         os.mkdir(output_directory)
 
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 3)
-        make_input_folder(os.path.join(input_directory, 'documents'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'CASE'), 2)
+        make_input_folder(os.path.join(input_directory, 'documents', 'Indivletters'), 4)
+        make_input_folder(os.path.join(input_directory, 'documents', 'Objects'), 7)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.
         aip_dir = os.path.join(output_directory, 'aip_dir')
         result = files_in_dir(aip_dir)
         expected = [os.path.join(aip_dir, 'metadata.csv'),
+                    os.path.join(aip_dir, 'case_1', 'file_1.txt'),
+                    os.path.join(aip_dir, 'case_1', 'file_2.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'file_1.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'file_2.txt'),
+                    os.path.join(aip_dir, 'indivletters_1', 'file_3.txt'),
+                    os.path.join(aip_dir, 'indivletters_2', 'file_4.txt'),
                     os.path.join(aip_dir, 'metadata', 'file_1.txt'),
                     os.path.join(aip_dir, 'metadata', 'file_2.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_3.txt')]
-        self.assertEqual(expected, result, "Problem with test for function, aip_dir")
+                    os.path.join(aip_dir, 'metadata', 'file_3.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'file_1.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'file_2.txt'),
+                    os.path.join(aip_dir, 'objects_1', 'file_3.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'file_4.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'file_5.txt'),
+                    os.path.join(aip_dir, 'objects_2', 'file_6.txt'),
+                    os.path.join(aip_dir, 'objects_3', 'file_7.txt')]
+        self.assertEqual(expected, result, "Problem with test for no_subfolders, aip_dir")
 
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
         expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1]]
-        self.assertEqual(expected, result, "Problem with test for function, metadata.csv")
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
+                    ['BLANK', 'BLANK', 'case_1', 'BLANK', 'CSS CASE 1', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS Indivletters 1', 1],
+                    ['BLANK', 'BLANK', 'indivletters_2', 'BLANK', 'CSS Indivletters 2', 1],
+                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS Objects 1', 1],
+                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS Objects 2', 1],
+                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS Objects 3', 1]]
+        self.assertEqual(expected, result, "Problem with test for no_subfolders, metadata.csv")
 
 
 if __name__ == '__main__':
