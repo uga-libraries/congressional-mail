@@ -634,6 +634,11 @@ def split_aips(input_dir, output_dir):
             for root, dirs, files in os.walk(type_path):
                 for file in files:
                     file_paths_list.append(os.path.join(root, file))
+                # Makes a log of any empty subfolders, since those will not be included in the final AIPs.
+                if not dirs and not files:
+                    with open(os.path.join(output_dir, 'empty_subfolders_log.txt'), 'a') as log:
+                        log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
+                                  f'when this export was split into smaller folders for AIP creation\n')
             # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
             # TODO max will be 10,000 instead of 3 once done with initial testing.
             for i in range(0, len(file_paths_list), 3):
