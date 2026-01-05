@@ -10,14 +10,13 @@ from css_archiving_format import split_aips
 from test_script import csv_to_list
 
 
-def files_in_dir(dir_path):
-    """Make a list of the path of every file in a directory, for testing the result of the function"""
-    # TODO - update the version in test_script to use path for everything?
-    file_list = []
+def files_per_dir(dir_path):
+    """Make a list of lists with the path for every folder and the number of files in that folder to test results,
+    since there are too many test files used to check each one"""
+    file_count = []
     for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            file_list.append(os.path.join(root, file))
-    return file_list
+        file_count.append([root, len(files)])
+    return file_count
 
 
 def make_input_folder(folder_path, file_count):
@@ -45,31 +44,22 @@ class MyTestCase(unittest.TestCase):
 
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 3)
-        make_input_folder(os.path.join(input_directory, 'documents', 'CASE'), 2)
-        make_input_folder(os.path.join(input_directory, 'documents', 'Indivletters'), 4)
-        make_input_folder(os.path.join(input_directory, 'documents', 'Objects'), 7)
+        make_input_folder(os.path.join(input_directory, 'documents', 'CASE'), 2500)
+        make_input_folder(os.path.join(input_directory, 'documents', 'Indivletters'), 10001)
+        make_input_folder(os.path.join(input_directory, 'documents', 'Objects'), 20123)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.
         aip_dir = os.path.join(output_directory, 'aip_dir')
-        result = files_in_dir(aip_dir)
-        expected = [os.path.join(aip_dir, 'metadata.csv'),
-                    os.path.join(aip_dir, 'case_1', 'file_1.txt'),
-                    os.path.join(aip_dir, 'case_1', 'file_2.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'file_1.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'file_2.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'file_3.txt'),
-                    os.path.join(aip_dir, 'indivletters_2', 'file_4.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_1.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_2.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_3.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'file_1.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'file_2.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'file_3.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'file_4.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'file_5.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'file_6.txt'),
-                    os.path.join(aip_dir, 'objects_3', 'file_7.txt')]
+        result = files_per_dir(aip_dir)
+        expected = [[aip_dir, 1],
+                    [os.path.join(aip_dir, 'case_1'), 2500],
+                    [os.path.join(aip_dir, 'indivletters_1'), 10000],
+                    [os.path.join(aip_dir, 'indivletters_2'), 1],
+                    [os.path.join(aip_dir, 'metadata'), 3],
+                    [os.path.join(aip_dir, 'objects_1'), 10000],
+                    [os.path.join(aip_dir, 'objects_2'), 10000],
+                    [os.path.join(aip_dir, 'objects_3'), 123]]
         self.assertEqual(expected, result, "Problem with test for no_subfolders, aip_dir")
 
         # Tests the metadata.csv has the correct values.
@@ -93,46 +83,38 @@ class MyTestCase(unittest.TestCase):
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 3)
         make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a'), 1)
-        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'aa'), 1)
-        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'ab'), 3)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'cats'), 2)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'dogs'), 1)
-        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'apples'), 7)
-        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'bananas'), 10)
+        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'aa'), 2)
+        make_input_folder(os.path.join(input_directory, 'documents', 'form', 'a', 'ab'), 10000)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'cats'), 20)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'dogs'), 10)
+        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'apples'), 10001)
+        make_input_folder(os.path.join(input_directory, 'documents', 'objects', 'bananas'), 20002)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.
         aip_dir = os.path.join(output_directory, 'aip_dir')
-        result = files_in_dir(aip_dir)
-        expected = [os.path.join(aip_dir, 'metadata.csv'),
-                    os.path.join(aip_dir, 'form_1', 'a', 'file_1.txt'),
-                    os.path.join(aip_dir, 'form_1', 'a', 'aa', 'file_1.txt'),
-                    os.path.join(aip_dir, 'form_1', 'a', 'ab', 'file_1.txt'),
-                    os.path.join(aip_dir, 'form_2', 'a', 'ab', 'file_2.txt'),
-                    os.path.join(aip_dir, 'form_2', 'a', 'ab', 'file_3.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_1.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'cats', 'file_2.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'dogs', 'file_1.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_1.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_2.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_3.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_1.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_2.txt'),
-                    os.path.join(aip_dir, 'objects_1', 'apples', 'file_3.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_4.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_5.txt'),
-                    os.path.join(aip_dir, 'objects_2', 'apples', 'file_6.txt'),
-                    os.path.join(aip_dir, 'objects_3', 'apples', 'file_7.txt'),
-                    os.path.join(aip_dir, 'objects_3', 'bananas', 'file_1.txt'),
-                    os.path.join(aip_dir, 'objects_3', 'bananas', 'file_10.txt'),
-                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_2.txt'),
-                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_3.txt'),
-                    os.path.join(aip_dir, 'objects_4', 'bananas', 'file_4.txt'),
-                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_5.txt'),
-                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_6.txt'),
-                    os.path.join(aip_dir, 'objects_5', 'bananas', 'file_7.txt'),
-                    os.path.join(aip_dir, 'objects_6', 'bananas', 'file_8.txt'),
-                    os.path.join(aip_dir, 'objects_6', 'bananas', 'file_9.txt')]
+        result = files_per_dir(aip_dir)
+        expected = [[aip_dir, 1],
+                    [os.path.join(aip_dir, 'form_1'), 0],
+                    [os.path.join(aip_dir, 'form_1', 'a'), 1],
+                    [os.path.join(aip_dir, 'form_1', 'a', 'aa'), 2],
+                    [os.path.join(aip_dir, 'form_1', 'a', 'ab'), 9997],
+                    [os.path.join(aip_dir, 'form_2'), 0],
+                    [os.path.join(aip_dir, 'form_2', 'a', ), 0],
+                    [os.path.join(aip_dir, 'form_2', 'a', 'ab'), 3],
+                    [os.path.join(aip_dir, 'indivletters_1'), 0],
+                    [os.path.join(aip_dir, 'indivletters_1', 'cats'), 20],
+                    [os.path.join(aip_dir, 'indivletters_1', 'dogs'), 10],
+                    [os.path.join(aip_dir, 'metadata'), 3],
+                    [os.path.join(aip_dir, 'objects_1'), 0],
+                    [os.path.join(aip_dir, 'objects_1', 'apples'), 10000],
+                    [os.path.join(aip_dir, 'objects_2'), 0],
+                    [os.path.join(aip_dir, 'objects_2', 'apples'), 1],
+                    [os.path.join(aip_dir, 'objects_2', 'bananas'), 9999],
+                    [os.path.join(aip_dir, 'objects_3'), 0],
+                    [os.path.join(aip_dir, 'objects_3', 'bananas'), 10000],
+                    [os.path.join(aip_dir, 'objects_4'), 0],
+                    [os.path.join(aip_dir, 'objects_4', 'bananas'), 3]]
         self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
 
         # Tests the metadata.csv has the correct values.
@@ -145,9 +127,7 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
                     ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
                     ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS objects 3', 1],
-                    ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'CSS objects 4', 1],
-                    ['BLANK', 'BLANK', 'objects_5', 'BLANK', 'CSS objects 5', 1],
-                    ['BLANK', 'BLANK', 'objects_6', 'BLANK', 'CSS objects 6', 1]]
+                    ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'CSS objects 4', 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
 
     def test_subfolders_empty(self):
@@ -159,19 +139,18 @@ class MyTestCase(unittest.TestCase):
         input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
         make_input_folder(input_directory, 1)
         make_input_folder(os.path.join(input_directory, 'documents', 'indivletters'), 2)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'lions'), 1)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'lions'), 3)
         make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'bears'), 0),
         make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'tigers'), 0)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.
         aip_dir = os.path.join(output_directory, 'aip_dir')
-        result = files_in_dir(aip_dir)
-        expected = [os.path.join(aip_dir, 'metadata.csv'),
-                    os.path.join(aip_dir, 'indivletters_1', 'file_1.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'file_2.txt'),
-                    os.path.join(aip_dir, 'indivletters_1', 'lions', 'file_1.txt'),
-                    os.path.join(aip_dir, 'metadata', 'file_1.txt')]
+        result = files_per_dir(aip_dir)
+        expected = [[aip_dir, 1],
+                    [os.path.join(aip_dir, 'indivletters_1'), 2],
+                    [os.path.join(aip_dir, 'indivletters_1', 'lions'), 3],
+                    [os.path.join(aip_dir, 'metadata'), 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
 
         # Tests the metadata.csv has the correct values.

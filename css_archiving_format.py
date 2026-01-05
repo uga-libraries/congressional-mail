@@ -640,16 +640,15 @@ def split_aips(input_dir, output_dir):
                         log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
                                   f'when this export was split into smaller folders for AIP creation\n')
             # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
-            # TODO max will be 10,000 instead of 3 once done with initial testing.
-            for i in range(0, len(file_paths_list), 3):
+            for i in range(0, len(file_paths_list), 10000):
                 # Makes folder for this AIP.
-                seq_number = i // 3 + 1
+                seq_number = i // 10000 + 1
                 aip_folder_name = f'{type_folder.lower()}_{seq_number}'
                 aip_folder_path = os.path.join(aip_dir, aip_folder_name)
                 os.mkdir(aip_folder_path)
                 # Copies files for this AIP.
                 # The relative path to the file is used to replicate the subfolders.
-                included_files = file_paths_list[i:i + 3]
+                included_files = file_paths_list[i:i + 10000]
                 for file_path in included_files:
                     relative_path = Path(file_path).relative_to(type_path)
                     subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
