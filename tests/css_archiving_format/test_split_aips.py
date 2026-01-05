@@ -19,6 +19,16 @@ def files_in_dir(dir_path):
     return file_list
 
 
+def make_input_folder(folder_path, file_count):
+    """Make a folder with the specified name and number of files for test input,
+    since the needed number of files is larger than we want to store in a GitHub repo"""
+    os.makedirs(folder_path)
+    for i in range(1, file_count + 1):
+        file_path = os.path.join(folder_path, f'file_{i}.txt')
+        with open(file_path, 'w') as file:
+            file.write("Test input")
+
+
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
@@ -32,18 +42,23 @@ class MyTestCase(unittest.TestCase):
         output_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips')
         os.mkdir(output_directory)
 
-        input_directory = 'TBD - put in split_aips'
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'split_aips', 'export')
+        make_input_folder(input_directory, 3)
         split_aips(input_directory, output_directory)
 
         # Tests the aip_dir has the correct contents.
         aip_dir = os.path.join(output_directory, 'aip_dir')
         result = files_in_dir(aip_dir)
-        expected = [os.path.join(aip_dir, 'metadata.csv')]
+        expected = [os.path.join(aip_dir, 'metadata.csv'),
+                    os.path.join(aip_dir, 'metadata', 'file_1.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_2.txt'),
+                    os.path.join(aip_dir, 'metadata', 'file_3.txt')]
         self.assertEqual(expected, result, "Problem with test for function, aip_dir")
 
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
-        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version']]
+        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1]]
         self.assertEqual(expected, result, "Problem with test for function, metadata.csv")
 
 

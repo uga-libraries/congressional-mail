@@ -605,19 +605,25 @@ def sort_correspondence(df, input_dir, output_dir):
 def split_aips(input_dir, output_dir):
     """Make copy of unredacted, post-appraisal export ready for general_aip.py to transform into AIPs"""
 
-    # Makes folder for output.
-    os.mkdir(os.path.join(output_dir, 'aip_dir'))
+    # Makes folder for function output.
+    aip_dir = os.path.join(output_dir, 'aip_dir')
+    os.mkdir(aip_dir)
 
     # Starts metadata.csv.
-    metadata_csv = os.path.join(output_dir, 'aip_dir', 'metadata.csv')
+    metadata_csv = os.path.join(aip_dir, 'metadata.csv')
     with open(metadata_csv, 'w', newline='') as md_csv:
         md_csv_writer = csv.writer(md_csv)
         md_csv_writer.writerow(['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'])
 
-    # Copies metadata to AIP folder and adds to metadata.csv.
+        # Copies metadata (loose files directly within input_dir) to AIP folder and adds to metadata.csv.
+        aip_folder = os.path.join(aip_dir, 'metadata')
+        os.mkdir(aip_folder)
+        for metadata_file in os.listdir(input_dir):
+            shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_folder, metadata_file))
+        md_csv_writer.writerow(['', '', 'metadata', '', 'CSS Metadata', '1'])
 
-    # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
-    # and adds to metadata.csv.
+        # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
+        # and adds to metadata.csv.
 
 
 def split_congress_year(df, output_dir):
