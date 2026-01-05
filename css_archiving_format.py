@@ -602,10 +602,11 @@ def sort_correspondence(df, input_dir, output_dir):
             os.rmdir(topic_path)
 
 
-def split_aip(input_dir, output_dir):
+def split_aips(input_dir, output_dir):
     """Make copy of unredacted, post-appraisal export ready for general_aip.py to transform into AIPs"""
 
     # Makes folder for output.
+    os.mkdir(os.path.join(output_dir, 'aip_dir'))
 
     # Starts metadata.csv.
 
@@ -735,7 +736,7 @@ if __name__ == '__main__':
     elif script_mode == 'preservation':
         print("\nThe script is running in preservation mode.")
         print("It will make a copy of the export split into folders small enough for AIPs and start the metadata.csv.")
-        split_aip(input_directory, output_directory)
+        split_aips(input_directory, output_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by congress year, and makes a copy of the letters from constituents
