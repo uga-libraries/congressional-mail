@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import unittest
 from test_sort_correpondence import make_dir_list
+from test_split_aips import files_per_dir, make_input_folder
 
 
 def csv_to_list(csv_path, sort=False):
@@ -467,20 +468,52 @@ class MyTestCase(unittest.TestCase):
 
     def test_correct_preservation(self):
         """Test for when the script runs correctly and is in preservation mode."""
-        # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export_copy'),
-                        os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export'))
+        # Makes test data in the repo, since the script requires too many files to store in the repo.
+        input_directory = os.path.join('test_data', 'script', 'preservation_constituent_mail_export')
+        make_input_folder(input_directory, 7)
+        make_input_folder(os.path.join(input_directory, 'documents', 'formletters'), 2000)
+        make_input_folder(os.path.join(input_directory, 'documents', 'formletters', 'topic_a'), 8001)
+        make_input_folder(os.path.join(input_directory, 'documents', 'formletters', 'topic_b'), 20)
+        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters'), 100)
+        make_input_folder(os.path.join(input_directory, 'documents', 'objects'), 20001)
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export')
         printed = subprocess.run(f"python {script_path} {input_directory} preservation",
                                  shell=True, capture_output=True, text=True)
 
         # Tests the printed statement.
         result = printed.stdout
-        expected = "\nThe script is running in preservation mode.\nThe steps are TBD.\n"
+        expected = ("\nThe script is running in preservation mode.\n"
+                    "It will make a copy of the export split into folders small enough for AIPs "
+                    "and start the metadata.csv.\n")
         self.assertEqual(expected, result, "Problem with test for preservation, printed statement")
+
+        # Tests the aip_dir has the correct contents.
+        aip_dir = os.path.join('test_data', 'script', 'aip_dir')
+        result = files_per_dir(aip_dir)
+        expected = [[aip_dir, 1],
+                    [os.path.join(aip_dir, 'formletters_1'), 2000],
+                    [os.path.join(aip_dir, 'formletters_1', 'topic_a'), 8000],
+                    [os.path.join(aip_dir, 'formletters_2', 'topic_a'), 1],
+                    [os.path.join(aip_dir, 'formletters_2', 'topic_b'), 20],
+                    [os.path.join(aip_dir, 'indivletters_1'), 100],
+                    [os.path.join(aip_dir, 'objects_1'), 10000],
+                    [os.path.join(aip_dir, 'objects_2'), 10000],
+                    [os.path.join(aip_dir, 'objects_3'), 1]]
+        self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
+
+        # Tests the metadata.csv has the correct values.
+        result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
+        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
+                    ['BLANK', 'BLANK', 'formletters_1', 'BLANK', 'CSS formletters 1', 1],
+                    ['BLANK', 'BLANK', 'formletters_2', 'BLANK', 'CSS formletters 2', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1],
+                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
+                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
+                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS objects 3', 1]]
+        self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
 
         # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
