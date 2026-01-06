@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_empty_subfolder(self):
         """Test for when the type folder includes an empty subfolder"""
-        # Makes variables needed as function input and runs the function.
+        # Runs the function.
         output_dir = os.path.join(os.getcwd(), 'type_files')
         type_path = os.path.join(output_dir, 'empty_subfolder')
         result = type_files(output_dir, type_path)
@@ -35,7 +35,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_files_only(self):
         """Test for when the type folder has no subfolder"""
-        # Makes variables needed as function input and runs the function.
+        # Runs the function.
         output_dir = os.path.join(os.getcwd(), 'type_files')
         type_path = os.path.join(output_dir, 'files_only')
         result = type_files(output_dir, type_path)
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_subfolders(self):
         """Test for when the type folder includes subfolders"""
-        # Makes variables needed as function input and runs the function.
+        # Runs the function.
         output_dir = os.path.join(os.getcwd(), 'type_files')
         type_path = os.path.join(output_dir, 'subfolders')
         result = type_files(output_dir, type_path)

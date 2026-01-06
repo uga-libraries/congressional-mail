@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_function(self):
         """No meaningful variations in how this function works"""
-        # Makes variables needed as function input and runs the function.
+        # Makes aips_dir, which is typically made earlier in the script, and runs the function.
         input_dir = os.path.join(os.getcwd(), 'metadata_aip', 'export')
         aips_dir = os.path.join(os.getcwd(), 'metadata_aip', 'aips_dir')
         os.mkdir(aips_dir)

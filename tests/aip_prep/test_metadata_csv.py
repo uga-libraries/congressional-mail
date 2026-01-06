@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_new(self):
         """Test for making the metadata.csv for the first time"""
-        # Makes variable needed as function input and runs the function.
+        # Runs the function.
         csv_path = os.path.join(os.getcwd(), 'metadata.csv')
         metadata_csv(csv_path, 'header')
 
@@ -25,7 +25,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_addition(self):
         """Test for adding rows to an existing metadata.csv"""
-        # Makes variable needed as function input and runs the function multiple times.
+        # Runs the function three times, the first time to make it and the other two to add to an existing csv.
         csv_path = os.path.join(os.getcwd(), 'metadata.csv')
         metadata_csv(csv_path, 'header')
         metadata_csv(csv_path, ['', '', 'metadata', '', 'Constituent Mail Metadata', '1'])

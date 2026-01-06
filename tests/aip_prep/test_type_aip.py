@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_no_sub_multi(self):
         """Test for when the type folder has no subfolders and enough files to be multiple AIPs"""
-        # Makes the test data and variables for function parameters and runs the function.
+        # Makes test data, folders, and metadata.csv and runs the function.
         aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
         input_dir = os.path.join(os.getcwd(), 'test_data', 'export')
         metadata_path = os.path.join(aips_dir, 'metadata.csv')
@@ -43,7 +43,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_no_sub_one(self):
         """Test for when the type folder has no subfolders and few enough files to be a single AIP"""
-        # Makes the test data and variables for function parameters and runs the function.
+        # Makes test data, folders, and metadata.csv and runs the function.
         aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
         input_dir = os.path.join(os.getcwd(), 'test_data', 'export')
         metadata_path = os.path.join(aips_dir, 'metadata.csv')
@@ -69,7 +69,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_sub_combo(self):
         """Test for when the type folder has subfolders, each with few enough files to be combined in an AIP"""
-        # Makes the test data and variables for function parameters and runs the function.
+        # Makes test data, folders, and metadata.csv and runs the function.
         aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
         input_dir = os.path.join(os.getcwd(), 'test_data', 'export')
         metadata_path = os.path.join(aips_dir, 'metadata.csv')
@@ -105,7 +105,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_sub_one(self):
         """Test for when the type folder has subfolders, each with enough files to be a separate AIP"""
-        # Makes the test data and variables for function parameters and runs the function.
+        # Makes test data, folders, and metadata.csv and runs the function.
         aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
         input_dir = os.path.join(os.getcwd(), 'test_data', 'export')
         metadata_path = os.path.join(aips_dir, 'metadata.csv')
@@ -139,7 +139,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_sub_split(self):
         """Test for when the type folder has subfolders, each with enough files to be spit across AIPs"""
-        # Makes the test data and variables for function parameters and runs the function.
+        # Makes test data, folders, and metadata.csv and runs the function.
         aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
         input_dir = os.path.join(os.getcwd(), 'test_data', 'export')
         metadata_path = os.path.join(aips_dir, 'metadata.csv')
@@ -164,7 +164,7 @@ class MyTestCase(unittest.TestCase):
                     [os.path.join(aips_dir, 'form_3', 'fish'), 9995],
                     [os.path.join(aips_dir, 'form_4'), 0],
                     [os.path.join(aips_dir, 'form_4', 'fish'), 5]]
-        self.assertEqual(expected, result, "Problem with test for sub_combo, aips_dir")
+        self.assertEqual(expected, result, "Problem with test for sub_split, aips_dir")
 
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(metadata_path)
@@ -173,7 +173,7 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', 'BLANK', 'form_2', 'BLANK', 'Constituent Mail form 2', 1],
                     ['BLANK', 'BLANK', 'form_3', 'BLANK', 'Constituent Mail form 3', 1],
                     ['BLANK', 'BLANK', 'form_4', 'BLANK', 'Constituent Mail form 4', 1]]
-        self.assertEqual(expected, result, "Problem with test for sub_combo, metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for sub_spit, metadata.csv")
 
 
 if __name__ == '__main__':

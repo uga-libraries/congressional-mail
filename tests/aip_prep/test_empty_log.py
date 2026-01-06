@@ -15,7 +15,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_new(self):
         """Test for making the log for the first time"""
-        # Makes variables needed as function input and runs the function.
+        # Runs the function.
         output_dir = os.getcwd()
         empty_log(output_dir, 'C:/test/folder_empty')
 
@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_addition(self):
         """Test for adding a row to an existing log"""
-        # Makes variables needed as function input and runs the function twice.
+        # Runs the function twice, once to make the log and once to add to the existing log.
         output_dir = os.getcwd()
         empty_log(output_dir, 'C:/test/empty_one')
         empty_log(output_dir, 'C:/test/empty_two')
