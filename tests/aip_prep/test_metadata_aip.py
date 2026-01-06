@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 from aip_prep import metadata_aip
 
@@ -9,7 +10,7 @@ class MyTestCase(unittest.TestCase):
         """Deletes the output folder, if made"""
         aips_dir = os.path.join(os.getcwd(), 'metadata_aip', 'aips_dir')
         if os.path.exists(aips_dir):
-            os.remove(aips_dir)
+            shutil.rmtree(aips_dir)
 
     def test_function(self):
         """No meaningful variations in how this function works"""
