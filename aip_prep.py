@@ -89,7 +89,8 @@ def type_aip(aips_dir, metadata_path, paths_list, type_path):
             shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
 
         # Adds this AIP to the metadata csv.
-        metadata_csv(metadata_path, ['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
+        aip_title = f'Constituent Mail {type_folder} {seq_number}'
+        metadata_csv(metadata_path, ['', '', aip_folder_name, '', aip_title, '1'])
 
 
 def type_files(output_dir, type_path):
@@ -120,7 +121,7 @@ if __name__ == '__main__':
     
     # Copies metadata files to an AIP folder and adds it to the metadata.csv.
     metadata_aip(input_directory, aips_directory)
-    metadata_csv(metadata_csv_path, ['', '', 'metadata', '', 'CSS Metadata', '1'])
+    metadata_csv(metadata_csv_path, ['', '', 'metadata', '', 'Constituent Mail Metadata', '1'])
 
     # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
     # and adds to metadata.csv.
