@@ -25,6 +25,22 @@ import shutil
 import sys
 
 
+def empty_log(output_dir, empty_path):
+    """Make a text file with the path to any empty subfolder"""
+
+    # If this is the first empty subfolder (log does not exist), creates it with explanatory text and adds the path.
+    # Otherwise, adds the path to the existing log.
+    log_path = os.path.join(output_dir, 'empty_subfolders_log.txt')
+    if not os.path.exists(log_path):
+        with open(log_path, 'w') as log:
+            log.write(f'{empty_path} was empty on {datetime.now().strftime("%Y-%m-%d")} '
+                      f'when this export was split into smaller folders for AIP creation\n')
+    else:
+        with open(log_path, 'a') as log:
+            log.write(f'{empty_path} was empty on {datetime.now().strftime("%Y-%m-%d")} '
+                      f'when this export was split into smaller folders for AIP creation\n')
+
+
 def metadata_aip(input_dir, aips_dir):
     """Make the AIP for the metadata, which are the files directly within the input_dir"""
 
@@ -76,7 +92,7 @@ def type_aip(aips_dir, metadata_path, paths_list, type_path):
         metadata_csv(metadata_path, ['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
 
 
-def type_files(type_path):
+def type_files(output_dir, type_path):
     """Returns a list with the path to every file in the type folder, including if it is within subfolders"""
     paths_list = []
     for root, dirs, files in os.walk(type_path):
@@ -84,9 +100,7 @@ def type_files(type_path):
             paths_list.append(os.path.join(root, file))
         # Makes a log of any empty subfolders, since those will not be included in the final AIPs.
         if not dirs and not files:
-            with open(os.path.join(output_directory, 'empty_subfolders_log.txt'), 'a') as log:
-                log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
-                          f'when this export was split into smaller folders for AIP creation\n')
+            empty_log(output_dir, root)
     return paths_list
 
 
@@ -112,5 +126,5 @@ if __name__ == '__main__':
     # and adds to metadata.csv.
     for type_folder in os.listdir(os.path.join(input_directory, 'documents')):
         type_folder_path = os.path.join(input_directory, 'documents', type_folder)
-        file_paths_list = type_files(type_folder_path)
+        file_paths_list = type_files(output_directory, type_folder_path)
         type_aip(aips_directory, metadata_csv_path, file_paths_list, type_folder_path)
