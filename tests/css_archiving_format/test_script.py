@@ -8,7 +8,6 @@ import shutil
 import subprocess
 import unittest
 from test_sort_correpondence import make_dir_list
-from test_split_aips import files_per_dir, make_input_folder
 
 
 def csv_to_list(csv_path, sort=False):
@@ -29,6 +28,25 @@ def files_in_dir(dir_path):
         for file in files:
             file_list.append(file)
     return file_list
+
+
+def files_per_dir(dir_path):
+    """Make a list of lists with the path for every folder and the number of files in that folder to test results,
+    since there are too many test files used to check each one"""
+    file_count = []
+    for root, dirs, files in os.walk(dir_path):
+        file_count.append([root, len(files)])
+    return file_count
+
+
+def make_input_folder(folder_path, file_count):
+    """Make a folder with the specified name and number of files for test input,
+    since the needed number of files is larger than we want to store in a GitHub repo"""
+    os.makedirs(folder_path)
+    for i in range(1, file_count + 1):
+        file_path = os.path.join(folder_path, f'file_{i}.txt')
+        with open(file_path, 'w') as file:
+            file.write("Test input")
 
 
 class MyTestCase(unittest.TestCase):
