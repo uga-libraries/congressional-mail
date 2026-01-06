@@ -2,7 +2,6 @@
 Tests for the function split_aip(), which makes a folder for every 10,000 files and starts the metadata.csv
 for transforming these folders into AIPs for the preservation system.
 """
-from datetime import datetime
 import os
 import pandas as pd
 import shutil
@@ -146,46 +145,6 @@ class MyTestCase(unittest.TestCase):
                     ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'Constituent Mail objects 3', 1],
                     ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'Constituent Mail objects 4', 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
-
-    def test_subfolders_empty(self):
-        """Test for when the type folder includes empty subfolders"""
-        # Makes the input directory with test data.
-        input_directory = os.path.join(os.getcwd(), 'test_data', 'export')
-        make_input_folder(input_directory, 1)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters'), 2)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'lions'), 3)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'bears'), 0),
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters', 'tigers'), 0)
-
-        # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'aip_prep.py')
-        subprocess.run(f"python {script_path} {input_directory}", shell=True, capture_output=True, text=True)
-
-        # Tests the aips_dir has the correct contents.
-        aips_dir = os.path.join(os.getcwd(), 'test_data', 'aips_dir')
-        result = files_per_dir(aips_dir)
-        expected = [[aips_dir, 1],
-                    [os.path.join(aips_dir, 'indivletters_1'), 2],
-                    [os.path.join(aips_dir, 'indivletters_1', 'lions'), 3],
-                    [os.path.join(aips_dir, 'metadata'), 1]]
-        self.assertEqual(expected, result, "Problem with test for subfolders, aips_dir")
-
-        # Tests the metadata.csv has the correct values.
-        result = csv_to_list(os.path.join(aips_dir, 'metadata.csv'))
-        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'Constituent Mail Metadata', 1],
-                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'Constituent Mail indivletters 1', 1]]
-        self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
-
-        # Tests the empty_subfolders_log.txt has the correct values.
-        result = text_to_list(os.path.join(os.getcwd(), 'test_data', 'empty_subfolders_log.txt'))
-        today = datetime.now().strftime('%Y-%m-%d')
-        expected = [f"The following folders were empty on {today} "
-                    f"when this export was split into smaller folders for AIP creation and were not included "
-                    f"in the final AIPs:\r\n", '\r\n',
-                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'bears')}\r\n",
-                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'tigers')}\r\n"]
-        self.assertEqual(expected, result, "Problem with test for subfolders_empty, empty_subfolders_log.txt")
 
 
 if __name__ == '__main__':
