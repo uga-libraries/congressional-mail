@@ -34,7 +34,8 @@ def empty_log(output_dir, empty_path):
     if not os.path.exists(log_path):
         with open(log_path, 'w') as log:
             log.write(f"The following folders were empty on {datetime.now().strftime('%Y-%m-%d')} "
-                      f"when this export was split into smaller folders for AIP creation:\n\n")
+                      f"when this export was split into smaller folders for AIP creation "
+                      f"and were not included in the final AIPs:\n\n")
             log.write(f'{empty_path}\n')
     else:
         with open(log_path, 'a') as log:

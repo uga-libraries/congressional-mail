@@ -23,7 +23,8 @@ class MyTestCase(unittest.TestCase):
         result = text_to_list(os.path.join(output_dir, 'empty_subfolders_log.txt'))
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         expected = [f"The following folders were empty on {today} "
-                    f"when this export was split into smaller folders for AIP creation:\r\n", '\r\n',
+                    f"when this export was split into smaller folders for AIP creation and were not included "
+                    f"in the final AIPs:\r\n", '\r\n',
                     "C:/test/folder_empty\r\n"]
         self.assertEqual(expected, result, "Problem with test for new log")
 
@@ -38,7 +39,8 @@ class MyTestCase(unittest.TestCase):
         result = text_to_list(os.path.join(output_dir, 'empty_subfolders_log.txt'))
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         expected = [f"The following folders were empty on {today} "
-                    f"when this export was split into smaller folders for AIP creation:\r\n", '\r\n',
+                    f"when this export was split into smaller folders for AIP creation and were not included "
+                    f"in the final AIPs:\r\n", '\r\n',
                     "C:/test/empty_one\r\n",
                     "C:/test/empty_two\r\n"]
         self.assertEqual(expected, result, "Problem with test for addition to log")

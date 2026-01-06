@@ -28,8 +28,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the empty_subfolders_log.txt.
         result = text_to_list(os.path.join(output_dir, 'empty_subfolders_log.txt'))
         today = datetime.date.today()
-        expected = [f'The following folders were empty on {today} when this export was split into smaller folders for AIP creation:\r\n',
-                    '\r\n',
+        expected = [f'The following folders were empty on {today} when this export was split into smaller folders '
+                    f'for AIP creation and were not included in the final AIPs:\r\n', '\r\n',
                     f"{os.path.join(type_path, 'folder_empty')}\r\n"]
         self.assertEqual(result, expected, "Problem with test for empty_subfolder, log")
 

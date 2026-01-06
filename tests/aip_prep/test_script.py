@@ -181,7 +181,8 @@ class MyTestCase(unittest.TestCase):
         result = text_to_list(os.path.join(os.getcwd(), 'test_data', 'empty_subfolders_log.txt'))
         today = datetime.now().strftime('%Y-%m-%d')
         expected = [f"The following folders were empty on {today} "
-                    f"when this export was split into smaller folders for AIP creation:\r\n", '\r\n',
+                    f"when this export was split into smaller folders for AIP creation and were not included "
+                    f"in the final AIPs:\r\n", '\r\n',
                     f"{os.path.join(input_directory, 'documents', 'indivletters', 'bears')}\r\n",
                     f"{os.path.join(input_directory, 'documents', 'indivletters', 'tigers')}\r\n"]
         self.assertEqual(expected, result, "Problem with test for subfolders_empty, empty_subfolders_log.txt")
