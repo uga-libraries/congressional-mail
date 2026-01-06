@@ -1,0 +1,1 @@
+This folder would contain the exported letters and should not be included in the metadata aip.

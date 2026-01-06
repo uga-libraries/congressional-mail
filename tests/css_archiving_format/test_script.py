@@ -465,43 +465,6 @@ class MyTestCase(unittest.TestCase):
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(expected, result, "Problem with test for appraisal, other script mode outputs")
 
-    def test_correct_preservation(self):
-        """Test for when the script runs correctly and is in preservation mode."""
-        # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export_copy'),
-                        os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export'))
-
-        # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'Preservation_Constituent_Mail_Export')
-        printed = subprocess.run(f"python {script_path} {input_directory} preservation",
-                                 shell=True, capture_output=True, text=True)
-
-        # Tests the printed statement.
-        result = printed.stdout
-        expected = "\nThe script is running in preservation mode.\nThe steps are TBD.\n"
-        self.assertEqual(expected, result, "Problem with test for preservation, printed statement")
-
-        # Tests the other script mode outputs were not made.
-        output_directory = os.path.join('test_data', 'script')
-        today = date.today().strftime('%Y-%m-%d')
-        result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
-                  os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
-                  os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
-                  os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
-                  os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
-        expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-        self.assertEqual(expected, result, "Problem with test for preservation, other script mode outputs")
-
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
