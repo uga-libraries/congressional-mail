@@ -25,6 +25,21 @@ import shutil
 import sys
 
 
+def metadata_aip(input_dir, aips_dir):
+    """Make the AIP for the metadata, which are the files directly within the input_dir"""
+
+    # Makes a folder for the AIP.
+    # There are always few enough files for the metadata to be a single AIP.
+    aip_path = os.path.join(aips_dir, 'metadata')
+    os.mkdir(aip_path)
+
+    # Copies all files directly within input_dir to the AIP folder.
+    # The only other thing in that location is a folder named "documents".
+    for metadata_file in os.listdir(input_dir):
+        if not metadata_file == 'documents':
+            shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_path, metadata_file))
+
+
 def metadata_csv(csv_path, row):
     """Make the metadata.csv (if row is header) and add a row to the metadata.csv (header or one AIP's data)"""
     if row == 'header':
@@ -44,20 +59,15 @@ if __name__ == '__main__':
 
     # Makes a folder aips_dir in the parent folder of the input_directory for most script output.
     output_directory = os.path.dirname(input_directory)
-    aips_dir = os.path.join(output_directory, 'aips_dir')
-    os.mkdir(aips_dir)
+    aips_directory = os.path.join(output_directory, 'aips_dir')
+    os.mkdir(aips_directory)
     
     # Starts the metadata.csv.
-    metadata_csv_path = os.path.join(aips_dir, 'metadata.csv')
+    metadata_csv_path = os.path.join(aips_directory, 'metadata.csv')
     metadata_csv(metadata_csv_path, 'header')
     
-    # Copies metadata (loose files directly within input_directory) to AIP folder and adds to metadata.csv.
-    # Skips the documents folder that contains the exported letters.
-    aip_folder_path = os.path.join(aips_dir, 'metadata')
-    os.mkdir(aip_folder_path)
-    for metadata_file in os.listdir(input_directory):
-        if not metadata_file == 'documents':
-            shutil.copy2(os.path.join(input_directory, metadata_file), os.path.join(aip_folder_path, metadata_file))
+    # Copies metadata files to an AIP folder and adds it to the metadata.csv.
+    metadata_aip(input_directory, aips_directory)
     metadata_csv(metadata_csv_path, ['', '', 'metadata', '', 'CSS Metadata', '1'])
 
     # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
@@ -79,7 +89,7 @@ if __name__ == '__main__':
             # Makes folder for this AIP.
             seq_number = i // 10000 + 1
             aip_folder_name = f'{type_folder.lower()}_{seq_number}'
-            aip_folder_path = os.path.join(aips_dir, aip_folder_name)
+            aip_folder_path = os.path.join(aips_directory, aip_folder_name)
             os.mkdir(aip_folder_path)
             # Copies files for this AIP.
             # The relative path to the file is used to replicate the subfolders.
