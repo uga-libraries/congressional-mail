@@ -52,6 +52,20 @@ def metadata_csv(csv_path, row):
             md_writer.writerow(row)
 
 
+def type_files(type_path):
+    """Returns a list with the path to every file in the type folder, including if it is within subfolders"""
+    paths_list = []
+    for root, dirs, files in os.walk(type_path):
+        for file in files:
+            paths_list.append(os.path.join(root, file))
+        # Makes a log of any empty subfolders, since those will not be included in the final AIPs.
+        if not dirs and not files:
+            with open(os.path.join(output_directory, 'empty_subfolders_log.txt'), 'a') as log:
+                log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
+                          f'when this export was split into smaller folders for AIP creation\n')
+    return paths_list
+
+
 if __name__ == '__main__':
 
     # Gets the path to the export from the script argument.
@@ -73,17 +87,8 @@ if __name__ == '__main__':
     # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
     # and adds to metadata.csv.
     for type_folder in os.listdir(os.path.join(input_directory, 'documents')):
-        type_path = os.path.join(input_directory, 'documents', type_folder)
-        # Gets the path to every file in the type folder, including if it is in subfolders.
-        file_paths_list = []
-        for root, dirs, files in os.walk(type_path):
-            for file in files:
-                file_paths_list.append(os.path.join(root, file))
-            # Makes a log of any empty subfolders, since those will not be included in the final AIPs.
-            if not dirs and not files:
-                with open(os.path.join(output_directory, 'empty_subfolders_log.txt'), 'a') as log:
-                    log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
-                              f'when this export was split into smaller folders for AIP creation\n')
+        type_folder_path = os.path.join(input_directory, 'documents', type_folder)
+        file_paths_list = type_files(type_folder_path)
         # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
         for i in range(0, len(file_paths_list), 10000):
             # Makes folder for this AIP.
@@ -95,7 +100,7 @@ if __name__ == '__main__':
             # The relative path to the file is used to replicate the subfolders.
             included_files = file_paths_list[i:i + 10000]
             for file_path in included_files:
-                relative_path = Path(file_path).relative_to(type_path)
+                relative_path = Path(file_path).relative_to(type_folder_path)
                 subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
                 if not os.path.exists(subfolder_path):
                     os.makedirs(subfolder_path)
