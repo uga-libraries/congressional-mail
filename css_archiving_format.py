@@ -5,7 +5,6 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-preservation: prepare export for general_aip.py script [TBD]
 access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
         and make a copy of incoming correspondence in folders by topic
 """
@@ -15,7 +14,6 @@ import hashlib
 import numpy as np
 import os
 import pandas as pd
-from pathlib import Path
 import re
 import shutil
 import sys
@@ -603,62 +601,6 @@ def sort_correspondence(df, input_dir, output_dir):
             os.rmdir(topic_path)
 
 
-def split_aips(input_dir, output_dir):
-    """Make copy of unredacted, post-appraisal export ready for general_aip.py to transform into AIPs"""
-
-    # Makes folder for function output.
-    aip_dir = os.path.join(output_dir, 'aip_dir')
-    os.mkdir(aip_dir)
-
-    # Starts metadata.csv.
-    metadata_csv = os.path.join(aip_dir, 'metadata.csv')
-    with open(metadata_csv, 'w', newline='') as md_csv:
-        md_csv_writer = csv.writer(md_csv)
-        md_csv_writer.writerow(['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'])
-
-        # Copies metadata (loose files directly within input_dir) to AIP folder and adds to metadata.csv.
-        # Skips the documents folder that contains the exported letters.
-        aip_folder_path = os.path.join(aip_dir, 'metadata')
-        os.mkdir(aip_folder_path)
-        for metadata_file in os.listdir(input_dir):
-            if not metadata_file == 'documents':
-                shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_folder_path, metadata_file))
-        md_csv_writer.writerow(['', '', 'metadata', '', 'CSS Metadata', '1'])
-
-        # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
-        # and adds to metadata.csv.
-        for type_folder in os.listdir(os.path.join(input_dir, 'documents')):
-            type_path = os.path.join(input_dir, 'documents', type_folder)
-            # Gets the path to every file in the type folder, including if it is in subfolders.
-            file_paths_list = []
-            for root, dirs, files in os.walk(type_path):
-                for file in files:
-                    file_paths_list.append(os.path.join(root, file))
-                # Makes a log of any empty subfolders, since those will not be included in the final AIPs.
-                if not dirs and not files:
-                    with open(os.path.join(output_dir, 'empty_subfolders_log.txt'), 'a') as log:
-                        log.write(f'{root} was empty on {datetime.now().strftime("%Y-%m-%d")} '
-                                  f'when this export was split into smaller folders for AIP creation\n')
-            # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
-            for i in range(0, len(file_paths_list), 10000):
-                # Makes folder for this AIP.
-                seq_number = i // 10000 + 1
-                aip_folder_name = f'{type_folder.lower()}_{seq_number}'
-                aip_folder_path = os.path.join(aip_dir, aip_folder_name)
-                os.mkdir(aip_folder_path)
-                # Copies files for this AIP.
-                # The relative path to the file is used to replicate the subfolders.
-                included_files = file_paths_list[i:i + 10000]
-                for file_path in included_files:
-                    relative_path = Path(file_path).relative_to(type_path)
-                    subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
-                    if not os.path.exists(subfolder_path):
-                        os.makedirs(subfolder_path)
-                    shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
-                # Add to metadata.csv
-                md_csv_writer.writerow(['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
-
-
 def split_congress_year(df, output_dir):
     """Make one CSV per Congress Year"""
 
@@ -774,12 +716,6 @@ if __name__ == '__main__':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-
-    # Run in appraisal mode first to remove letters.
-    elif script_mode == 'preservation':
-        print("\nThe script is running in preservation mode.")
-        print("It will make a copy of the export split into folders small enough for AIPs and start the metadata.csv.")
-        split_aips(input_directory, output_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by congress year, and makes a copy of the letters from constituents

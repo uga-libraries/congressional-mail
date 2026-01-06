@@ -30,25 +30,6 @@ def files_in_dir(dir_path):
     return file_list
 
 
-def files_per_dir(dir_path):
-    """Make a list of lists with the path for every folder and the number of files in that folder to test results,
-    since there are too many test files used to check each one"""
-    file_count = []
-    for root, dirs, files in os.walk(dir_path):
-        file_count.append([root, len(files)])
-    return file_count
-
-
-def make_input_folder(folder_path, file_count):
-    """Make a folder with the specified name and number of files for test input,
-    since the needed number of files is larger than we want to store in a GitHub repo"""
-    os.makedirs(folder_path)
-    for i in range(1, file_count + 1):
-        file_path = os.path.join(folder_path, f'file_{i}.txt')
-        with open(file_path, 'w') as file:
-            file.write("Test input")
-
-
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
@@ -483,75 +464,6 @@ class MyTestCase(unittest.TestCase):
                   os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
         expected = [False, False, False, False, False, False, False, False, False, False, False, False, False]
         self.assertEqual(expected, result, "Problem with test for appraisal, other script mode outputs")
-
-    def test_correct_preservation(self):
-        """Test for when the script runs correctly and is in preservation mode."""
-        # Makes test data in the repo, since the script requires too many files to store in the repo.
-        input_directory = os.path.join('test_data', 'script', 'preservation_constituent_mail_export')
-        make_input_folder(input_directory, 7)
-        make_input_folder(os.path.join(input_directory, 'documents', 'formletters'), 2000)
-        make_input_folder(os.path.join(input_directory, 'documents', 'formletters', 'topic_a'), 8001)
-        make_input_folder(os.path.join(input_directory, 'documents', 'formletters', 'topic_b'), 20)
-        make_input_folder(os.path.join(input_directory, 'documents', 'indivletters'), 100)
-        make_input_folder(os.path.join(input_directory, 'documents', 'objects'), 20001)
-
-        # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        printed = subprocess.run(f"python {script_path} {input_directory} preservation",
-                                 shell=True, capture_output=True, text=True)
-
-        # Tests the printed statement.
-        result = printed.stdout
-        expected = ("\nThe script is running in preservation mode.\n"
-                    "It will make a copy of the export split into folders small enough for AIPs "
-                    "and start the metadata.csv.\n")
-        self.assertEqual(expected, result, "Problem with test for preservation, printed statement")
-
-        # Tests the aip_dir has the correct contents.
-        aip_dir = os.path.join('test_data', 'script', 'aip_dir')
-        result = files_per_dir(aip_dir)
-        expected = [[aip_dir, 1],
-                    [os.path.join(aip_dir, 'formletters_1'), 2000],
-                    [os.path.join(aip_dir, 'formletters_1', 'topic_a'), 8000],
-                    [os.path.join(aip_dir, 'formletters_2', 'topic_a'), 1],
-                    [os.path.join(aip_dir, 'formletters_2', 'topic_b'), 20],
-                    [os.path.join(aip_dir, 'indivletters_1'), 100],
-                    [os.path.join(aip_dir, 'objects_1'), 10000],
-                    [os.path.join(aip_dir, 'objects_2'), 10000],
-                    [os.path.join(aip_dir, 'objects_3'), 1]]
-        self.assertEqual(expected, result, "Problem with test for subfolders, aip_dir")
-
-        # Tests the metadata.csv has the correct values.
-        result = csv_to_list(os.path.join(aip_dir, 'metadata.csv'))
-        expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
-                    ['BLANK', 'BLANK', 'formletters_1', 'BLANK', 'CSS formletters 1', 1],
-                    ['BLANK', 'BLANK', 'formletters_2', 'BLANK', 'CSS formletters 2', 1],
-                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1],
-                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
-                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
-                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS objects 3', 1]]
-        self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
-
-        # Tests the other script mode outputs were not made.
-        output_directory = os.path.join('test_data', 'script')
-        today = date.today().strftime('%Y-%m-%d')
-        result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
-                  os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
-                  os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
-                  os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
-                  os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
-        expected = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-        self.assertEqual(expected, result, "Problem with test for preservation, other script mode outputs")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
