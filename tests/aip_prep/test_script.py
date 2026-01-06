@@ -37,6 +37,16 @@ def make_input_folder(folder_path, file_count):
             file.write("Test input")
 
 
+def text_to_list(text_path):
+    """Convert the contents of a text file to a list which contains one string per line for easier comparison"""
+    line_list = []
+    with open(text_path, newline='\n') as log:
+        lines = log.readlines()
+        for line in lines:
+            line_list.append(line)
+    return line_list
+
+
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
@@ -72,13 +82,13 @@ class MyTestCase(unittest.TestCase):
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(os.path.join(aips_dir, 'metadata.csv'))
         expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
-                    ['BLANK', 'BLANK', 'case_1', 'BLANK', 'CSS CASE 1', 1],
-                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS Indivletters 1', 1],
-                    ['BLANK', 'BLANK', 'indivletters_2', 'BLANK', 'CSS Indivletters 2', 1],
-                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS Objects 1', 1],
-                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS Objects 2', 1],
-                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS Objects 3', 1]]
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'Constituent Mail Metadata', 1],
+                    ['BLANK', 'BLANK', 'case_1', 'BLANK', 'Constituent Mail CASE 1', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'Constituent Mail Indivletters 1', 1],
+                    ['BLANK', 'BLANK', 'indivletters_2', 'BLANK', 'Constituent Mail Indivletters 2', 1],
+                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'Constituent Mail Objects 1', 1],
+                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'Constituent Mail Objects 2', 1],
+                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'Constituent Mail Objects 3', 1]]
         self.assertEqual(expected, result, "Problem with test for no_subfolders, metadata.csv")
 
     def test_subfolders(self):
@@ -127,14 +137,14 @@ class MyTestCase(unittest.TestCase):
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(os.path.join(aips_dir, 'metadata.csv'))
         expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
-                    ['BLANK', 'BLANK', 'form_1', 'BLANK', 'CSS form 1', 1],
-                    ['BLANK', 'BLANK', 'form_2', 'BLANK', 'CSS form 2', 1],
-                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1],
-                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'CSS objects 1', 1],
-                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'CSS objects 2', 1],
-                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'CSS objects 3', 1],
-                    ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'CSS objects 4', 1]]
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'Constituent Mail Metadata', 1],
+                    ['BLANK', 'BLANK', 'form_1', 'BLANK', 'Constituent Mail form 1', 1],
+                    ['BLANK', 'BLANK', 'form_2', 'BLANK', 'Constituent Mail form 2', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'Constituent Mail indivletters 1', 1],
+                    ['BLANK', 'BLANK', 'objects_1', 'BLANK', 'Constituent Mail objects 1', 1],
+                    ['BLANK', 'BLANK', 'objects_2', 'BLANK', 'Constituent Mail objects 2', 1],
+                    ['BLANK', 'BLANK', 'objects_3', 'BLANK', 'Constituent Mail objects 3', 1],
+                    ['BLANK', 'BLANK', 'objects_4', 'BLANK', 'Constituent Mail objects 4', 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
 
     def test_subfolders_empty(self):
@@ -163,16 +173,12 @@ class MyTestCase(unittest.TestCase):
         # Tests the metadata.csv has the correct values.
         result = csv_to_list(os.path.join(aips_dir, 'metadata.csv'))
         expected = [['Department', 'Collection', 'Folder', 'AIP_ID', 'Title', 'Version'],
-                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'CSS Metadata', 1],
-                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'CSS indivletters 1', 1]]
+                    ['BLANK', 'BLANK', 'metadata', 'BLANK', 'Constituent Mail Metadata', 1],
+                    ['BLANK', 'BLANK', 'indivletters_1', 'BLANK', 'Constituent Mail indivletters 1', 1]]
         self.assertEqual(expected, result, "Problem with test for subfolders, metadata.csv")
 
         # Tests the empty_subfolders_log.txt has the correct values.
-        result = []
-        with open(os.path.join(os.getcwd(), 'test_data', 'empty_subfolders_log.txt'), newline='\n') as log:
-            rows = log.readlines()
-            for row in rows:
-                result.append(row)
+        result = text_to_list(os.path.join(os.getcwd(), 'test_data', 'empty_subfolders_log.txt'))
         today = datetime.now().strftime('%Y-%m-%d')
         expected = [f"The following folders were empty on {today} "
                     f"when this export was split into smaller folders for AIP creation:\r\n", '\r\n',
