@@ -8,16 +8,15 @@ from test_script import text_to_list
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Deletes the temporary folder which would contain the log, if made"""
-        temp = os.path.join(os.getcwd(), 'empty_log_test')
-        if os.path.exists(temp):
-            os.remove(temp)
+        """Deletes the log, if made"""
+        log_path = os.path.join(os.getcwd(), 'empty_subfolders_log.txt')
+        if os.path.exists(log_path):
+            os.remove(log_path)
 
     def test_new(self):
         """Test for making the log for the first time"""
         # Makes variables needed as function input and runs the function.
-        output_dir = os.path.join(os.getcwd(), 'empty_log_test')
-        os.mkdir(output_dir)
+        output_dir = os.getcwd()
         empty_log(output_dir, 'C:/test/folder_empty')
 
         # Tests the contents of the empty subfolder log.
@@ -31,8 +30,7 @@ class MyTestCase(unittest.TestCase):
     def test_addition(self):
         """Test for adding a row to an existing log"""
         # Makes variables needed as function input and runs the function twice.
-        output_dir = os.path.join(os.getcwd(), 'empty_log_test')
-        os.mkdir(output_dir)
+        output_dir = os.getcwd()
         empty_log(output_dir, 'C:/test/empty_one')
         empty_log(output_dir, 'C:/test/empty_two')
 
