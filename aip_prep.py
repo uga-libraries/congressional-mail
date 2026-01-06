@@ -52,6 +52,30 @@ def metadata_csv(csv_path, row):
             md_writer.writerow(row)
 
 
+def type_aip(aips_dir, metadata_path, paths_list, type_path):
+    """Copies every 10,000 files, including replicating subfolders, to an AIP folder."""
+    for i in range(0, len(paths_list), 10000):
+
+        # Makes a folder for this AIP.
+        seq_number = i // 10000 + 1
+        aip_folder_name = f'{os.path.basename(type_path).lower()}_{seq_number}'
+        aip_folder_path = os.path.join(aips_dir, aip_folder_name)
+        os.mkdir(aip_folder_path)
+
+        # Copies the files for this AIP.
+        # The relative path to the file is used to replicate the subfolders.
+        included_files = paths_list[i:i + 10000]
+        for file_path in included_files:
+            relative_path = Path(file_path).relative_to(type_path)
+            subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
+            shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
+
+        # Adds this AIP to the metadata csv.
+        metadata_csv(metadata_path, ['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
+
+
 def type_files(type_path):
     """Returns a list with the path to every file in the type folder, including if it is within subfolders"""
     paths_list = []
@@ -89,21 +113,4 @@ if __name__ == '__main__':
     for type_folder in os.listdir(os.path.join(input_directory, 'documents')):
         type_folder_path = os.path.join(input_directory, 'documents', type_folder)
         file_paths_list = type_files(type_folder_path)
-        # Copies every 10,000 files, including replicating subfolders, to an AIP folder.
-        for i in range(0, len(file_paths_list), 10000):
-            # Makes folder for this AIP.
-            seq_number = i // 10000 + 1
-            aip_folder_name = f'{type_folder.lower()}_{seq_number}'
-            aip_folder_path = os.path.join(aips_directory, aip_folder_name)
-            os.mkdir(aip_folder_path)
-            # Copies files for this AIP.
-            # The relative path to the file is used to replicate the subfolders.
-            included_files = file_paths_list[i:i + 10000]
-            for file_path in included_files:
-                relative_path = Path(file_path).relative_to(type_folder_path)
-                subfolder_path = os.path.join(aip_folder_path, os.path.dirname(relative_path))
-                if not os.path.exists(subfolder_path):
-                    os.makedirs(subfolder_path)
-                shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
-            # Add to metadata.csv
-            metadata_csv(metadata_csv_path, ['', '', aip_folder_name, '', f'CSS {type_folder} {seq_number}', '1'])
+        type_aip(aips_directory, metadata_csv_path, file_paths_list, type_folder_path)
