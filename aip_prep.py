@@ -71,6 +71,7 @@ def metadata_csv(csv_path, row):
 
 def type_aip(aips_dir, metadata_path, paths_list, type_path):
     """Copies every 10,000 files, including replicating subfolders, to an AIP folder."""
+
     for i in range(0, len(paths_list), 10000):
 
         # Makes a folder for this AIP.
@@ -90,7 +91,7 @@ def type_aip(aips_dir, metadata_path, paths_list, type_path):
             shutil.copy2(file_path, os.path.join(aip_folder_path, relative_path))
 
         # Adds this AIP to the metadata csv.
-        aip_title = f'Constituent Mail {type_folder} {seq_number}'
+        aip_title = f'Constituent Mail {os.path.basename(type_path)} {seq_number}'
         metadata_csv(metadata_path, ['', '', aip_folder_name, '', aip_title, '1'])
 
 
