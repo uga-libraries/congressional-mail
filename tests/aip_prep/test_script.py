@@ -173,11 +173,11 @@ class MyTestCase(unittest.TestCase):
             rows = log.readlines()
             for row in rows:
                 result.append(row)
-        today = datetime.now().strftime("%Y-%m-%d")
-        expected = [f"{os.path.join(input_directory, 'documents', 'indivletters', 'bears')} "
-                    f"was empty on {today} when this export was split into smaller folders for AIP creation\r\n",
-                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'tigers')} "
-                    f"was empty on {today} when this export was split into smaller folders for AIP creation\r\n"]
+        today = datetime.now().strftime('%Y-%m-%d')
+        expected = [f"The following folders were empty on {today} "
+                    f"when this export was split into smaller folders for AIP creation:\r\n", '\r\n',
+                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'bears')}\r\n",
+                    f"{os.path.join(input_directory, 'documents', 'indivletters', 'tigers')}\r\n"]
         self.assertEqual(expected, result, "Problem with test for subfolders_empty, empty_subfolders_log.txt")
 
 
