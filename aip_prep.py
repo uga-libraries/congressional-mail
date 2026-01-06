@@ -1,8 +1,11 @@
 """
 Script to split an export of any type into folders small enough for AIPs in our preservation system (ARCHive).
+The folder hierarchy is maintained, and folders may be repeated in multiple AIPs
+if the number of files exceeds the maximum of 10,000.
+Empty folders are not included.
 Also starts the metadata.csv. Add the remaining fields in Excel and then run general_aip.py to make the AIPs.
 
-The export should have letters deleted for appraisal but the original (non-redacted metadata)
+The export should have letters deleted for appraisal but the original (non-redacted) metadata
 prior to running this script.
 
 The initial copy of the export may be deleted after confirming this script ran correctly
@@ -26,7 +29,7 @@ import sys
 
 
 def empty_log(output_dir, empty_path):
-    """Make a text file with the path to any empty subfolder"""
+    """Make a text file with the path to any empty subfolders"""
 
     # If this is the first empty subfolder (log does not exist), creates it with explanatory text and adds the path.
     # Otherwise, adds the path to the existing log.
@@ -51,7 +54,7 @@ def metadata_aip(input_dir, aips_dir):
     os.mkdir(aip_path)
 
     # Copies all files directly within input_dir to the AIP folder.
-    # The only other thing in that location is a folder named "documents".
+    # The only other thing in that location is a folder named "documents", which is split by type_aip().
     for metadata_file in os.listdir(input_dir):
         if not metadata_file == 'documents':
             shutil.copy2(os.path.join(input_dir, metadata_file), os.path.join(aip_path, metadata_file))
@@ -70,17 +73,19 @@ def metadata_csv(csv_path, row):
 
 
 def type_aip(aips_dir, metadata_path, paths_list, type_path):
-    """Copies every 10,000 files, including replicating subfolders, to an AIP folder."""
+    """Copies every 10,000 files of a single type, including replicating subfolders, to an AIP folder
+    Type is how the export is organized, for example Forms, Indivletters, and Objects.
+    """
 
     for i in range(0, len(paths_list), 10000):
 
-        # Makes a folder for this AIP.
+        # Makes a folder for this AIP, which is named type_#, for example forms_3.
         seq_number = i // 10000 + 1
         aip_folder_name = f'{os.path.basename(type_path).lower()}_{seq_number}'
         aip_folder_path = os.path.join(aips_dir, aip_folder_name)
         os.mkdir(aip_folder_path)
 
-        # Copies the files for this AIP.
+        # Copies the files for this AIP to the AIP folder.
         # The relative path to the file is used to replicate the subfolders.
         included_files = paths_list[i:i + 10000]
         for file_path in included_files:
@@ -113,6 +118,7 @@ if __name__ == '__main__':
     input_directory = sys.argv[1]
 
     # Makes a folder aips_dir in the parent folder of the input_directory for most script output.
+    # The empty_subfolders_log.txt is saved to the output_directory instead, if made.
     output_directory = os.path.dirname(input_directory)
     aips_directory = os.path.join(output_directory, 'aips_dir')
     os.mkdir(aips_directory)
@@ -125,8 +131,8 @@ if __name__ == '__main__':
     metadata_aip(input_directory, aips_directory)
     metadata_csv(metadata_csv_path, ['', '', 'metadata', '', 'Constituent Mail Metadata', '1'])
 
-    # For each type folder, copies into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
-    # and adds to metadata.csv.
+    # For each type folder, copies files into AIP folders (maximum 10,000 files) while maintaining folder hierarchy,
+    # and adds every AIP to metadata.csv.
     for type_folder in os.listdir(os.path.join(input_directory, 'documents')):
         type_folder_path = os.path.join(input_directory, 'documents', type_folder)
         file_paths_list = type_files(output_directory, type_folder_path)
