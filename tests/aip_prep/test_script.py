@@ -1,7 +1,3 @@
-"""
-Tests for the function split_aip(), which makes a folder for every 10,000 files and starts the metadata.csv
-for transforming these folders into AIPs for the preservation system.
-"""
 import os
 import pandas as pd
 import shutil
