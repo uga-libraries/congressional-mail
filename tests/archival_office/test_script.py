@@ -166,9 +166,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [os.path.join(input_directory, 'text', '111111.txt'), '0.0', today, today,
-                     '6ECB035862F8047CC98F39AA54F62C15', 'casework'],
+                     '6ECB035862F8047CC98F39AA54F62C15', 'Casework'],
                     [os.path.join(input_directory, 'text', '444444.txt'), '0.1', today, today,
-                     'C29C5262DF8A6B0072322ED6942BE134', 'casework'],
+                     'C29C5262DF8A6B0072322ED6942BE134', 'Casework'],
                     [os.path.join(input_directory, 'text', '000000.txt'), 'nan', 'nan', 'nan', 'nan',
                      'Cannot delete: FileNotFoundError']]
         self.assertEqual(expected, result, "Problem with test for preservation, file deletion log")

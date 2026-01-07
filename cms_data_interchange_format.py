@@ -6,7 +6,7 @@ Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
 access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
-        and make a copy of incoming correspondence in folders by topic
+        and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
 from datetime import date
@@ -14,7 +14,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_data_interchange_format import remove_appraisal_rows, split_congress_year
+import css_data_interchange_format as css_dif
 from css_archiving_format import file_deletion_log
 
 
@@ -445,45 +445,60 @@ def remove_pii(df):
     return df
 
 
-def sort_correspondence(df, input_dir, output_dir):
-    """Sort copy of correspondence into folders by topic"""
-
-    # Makes a dataframe with any row that is incoming correspondence (document is in "in-email")
-    # with values (blanks are 'nan') in code_description and correspondence_document_name,
-    # and any duplicate combinations of description and document names removed.
-    sort_df = df[(df['code_description'] != 'nan') & (df['correspondence_document_name'].str.contains('in-email'))]
-    sort_df = sort_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-
-    # For each topic in code_description, makes a folder in the output directory with that topic
-    # and copies all documents with that topic into the folder, updating the metadata path to match the directory.
+def topics_sort(df, input_dir, output_dir):
+    """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
-    topic_list = sort_df['code_description'].unique()
+
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    in_df = topics_sort_df(df, 'in-email')
+    topic_list = in_df['code_description'].unique()
     for topic in topic_list:
-        doc_list = sort_df.loc[sort_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        # Characters that Windows does not permit in a folder name are replaced with an underscore.
-        for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
-            topic = topic.replace(character, '_')
-        # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
-        topic = topic.rstrip('. ')
-        topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic)
-        # Topic path may be duplicated if there is a version that does and does not require cleanup.
-        try:
-            os.mkdir(topic_path)
-        except FileExistsError:
-            pass
+        doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
-            doc_path = update_path(doc, input_dir)
-            doc_new_path = os.path.join(topic_path, doc.split('\\')[-1])
-            try:
-                shutil.copy2(doc_path, doc_new_path)
-            except FileNotFoundError:
-                # If the expected file is not in the directory, adds the topic and doc path from the metadata to a log.
-                with open(os.path.join(output_dir, 'topic_sort_file_not_found.csv'), 'a', newline='') as log:
-                    log_writer = csv.writer(log)
-                    log_writer.writerow([topic, doc])
-        # Deletes the topic folder if it is still empty after checking for all the documents (all FileNotFoundError).
-        if not os.listdir(topic_path):
-            os.rmdir(topic_path)
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        css_dif.topics_sort_delete_empty(topic_path)
+
+    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
+    out_df = topics_sort_df(df, 'out-custom')
+    topic_list = out_df['code_description'].unique()
+    for topic in topic_list:
+        doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
+        for doc in doc_list:
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        css_dif.topics_sort_delete_empty(topic_path)
+
+
+def topics_sort_copy(doc, input_dir, output_dir, topic_path):
+    """Copy document to topic folder and log if error"""
+    # Gets the path for the current doc location by updating the path in the metadata.
+    doc_path = update_path(doc, input_dir)
+
+    # Copies the doc to the topic_path folder.
+    # If the doc is not in the expected location, logs it instead.
+    # It is common to have docs in the metadata but not in the input directory.
+    doc_name = doc.split('\\')[-1]
+    doc_new_path = os.path.join(topic_path, doc_name)
+    try:
+        shutil.copy2(doc_path, doc_new_path)
+    except FileNotFoundError:
+        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            log_writer = csv.writer(log)
+            topic = topic_path.split('\\')[-2]
+            log_writer.writerow([topic, doc])
+
+
+def topics_sort_df(df, letter_type):
+    """Make a dataframe with any row that has values in topic and document name for that letter type"""
+    # Initial df, with any row of the specified type that has some value in topic (code_description)
+    # and correspondence_document_name.
+    topic_df = df[(df['code_description'] != 'nan') & (df['correspondence_document_name'].str.contains(letter_type))]
+    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+
+    # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
+    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+    return topic_df
 
 
 def topics_report(df, output_dir):
@@ -564,8 +579,8 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters and columns with PII, "
               "make copies of the metadata split by congress year, "
-              "and make a copy of the constituent letters organized by topic")
-        md_df = remove_appraisal_rows(md_df, appraisal_df)
+              "and make a copy of the letters to and from constituents organized by topic")
+        md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-        split_congress_year(md_df, output_directory)
-        sort_correspondence(md_df, input_directory, output_directory)
+        css_dif.split_congress_year(md_df, output_directory)
+        topics_sort(md_df, input_directory, output_directory)

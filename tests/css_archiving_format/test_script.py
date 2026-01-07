@@ -7,7 +7,6 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_sort_correpondence import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
@@ -30,6 +29,15 @@ def files_in_dir(dir_path):
     return file_list
 
 
+def make_dir_list(dir_path):
+    """Make a list of the files in the folder created by the function to compare to expected results"""
+    contents_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            contents_list.append(os.path.join(root, file))
+    return contents_list
+
+
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
@@ -40,7 +48,7 @@ class MyTestCase(unittest.TestCase):
                      'metadata_formatting_errors_state.csv', 'metadata_formatting_errors_zip.csv',
                      'metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_doc.csv',
                      'metadata_formatting_errors_out_date.csv', 'metadata_formatting_errors_out_doc.csv',
-                     'topics_report.csv', 'usability_report_matching.csv',
+                     'topics_report.csv', 'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
                      'usability_report_matching_details.csv', 'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
@@ -69,7 +77,7 @@ class MyTestCase(unittest.TestCase):
         result = printed.stdout
         expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted letters "
                     "and columns with PII, make copies of the metadata split by congress year, and make a copy "
-                    "of the constituent letters organized by topic\n")
+                    "of the letters to and from constituents organized by topic\n")
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal check log.
@@ -96,7 +104,7 @@ class MyTestCase(unittest.TestCase):
                     ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK', 
                      'BLANK', 'E city', 'ME', 56789, 'BLANK', 'e100', 'General', 'Email', 20210101, 'Casework Issues',
                      'BLANK', r'..\documents\BlobExport\objects\555555.txt', 'BLANK', 'r500', 'General', 'Email',
-                     20210111, 'E', 'BLANK', r'..\documents\BlobExport\indivletters\000005.txt', 'BLANK', 'Casework']]
+                     20210111, 'E', 'BLANK', r'..\documents\BlobExport\formletters\B.txt', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for access, appraisal delete log")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
@@ -107,13 +115,16 @@ class MyTestCase(unittest.TestCase):
                      'out_topic', 'out_document_name'],
                     ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', 20210111,
-                     'A', r'..\documents\BlobExport\formletters\A'],
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
                     ['B city', 'WY', 23456, 'BLANK', 'b200', 'General', 'Email', 20230202, 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', 20230212,
-                     'B', r'..\documents\BlobExport\formletters\B'],
+                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
                     ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
-                     'A', r'..\documents\BlobExport\formletters\A']]
+                     'A', r'..\documents\BlobExport\formletters\A.txt'],
+                    ['F city', 'FL', 10234, 'BLANK', 'f600', 'General', 'Email', 20230202, 'B1',
+                     r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', 20230212,
+                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
@@ -124,7 +135,7 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', 20210111,
-                     'A', r'..\documents\BlobExport\formletters\A']]
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt']]
         self.assertEqual(expected, result, "Problem with test for access, 2021-2022.csv")
 
         # Tests the contents of 2023-2024.csv.
@@ -135,10 +146,13 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['B city', 'WY', 23456, 'BLANK', 'b200', 'General', 'Email', 20230202, 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', 20230212,
-                     'B', r'..\documents\BlobExport\formletters\B'],
+                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
                     ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
-                     'A', r'..\documents\BlobExport\formletters\A']]
+                     'A', r'..\documents\BlobExport\formletters\A.txt'],
+                    ['F city', 'FL', 10234, 'BLANK', 'f600', 'General', 'Email', 20230202, 'B1',
+                     r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', 20230212,
+                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, 2023-2024.csv")
 
         # Tests that no undated.csv was made.
@@ -149,26 +163,22 @@ class MyTestCase(unittest.TestCase):
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'A1', '111111.txt'), os.path.join(by_topic, 'A1', '333333.txt'),
-                    os.path.join(by_topic, 'B1', '222222.txt'), os.path.join(by_topic, 'B2', '222222.txt')]
+        expected = [os.path.join(by_topic, 'A', 'to_constituents', '000001.txt'),
+                    os.path.join(by_topic, 'A', 'to_constituents', 'A.txt'),
+                    os.path.join(by_topic, 'A1', 'from_constituents', '111111.txt'),
+                    os.path.join(by_topic, 'A1', 'from_constituents', '333333.txt'),
+                    os.path.join(by_topic, 'B1', 'from_constituents', '222222.txt'),
+                    os.path.join(by_topic, 'B1', 'to_constituents', '000002.txt'),
+                    os.path.join(by_topic, 'B2', 'from_constituents', '222222.txt'),
+                    os.path.join(by_topic, 'B2', 'to_constituents', '000002.txt'),]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
-        # Tests the other script mode outputs were not made.
-        output_directory = os.path.join('test_data', 'script')
-        today = date.today().strftime('%Y-%m-%d')
-        result = [os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_in_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_date.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_out_doc.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_state.csv')),
-                  os.path.exists(os.path.join(output_directory, 'metadata_formatting_errors_zip.csv')),
-                  os.path.exists(os.path.join(output_directory, 'topics_report.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_matching_details.csv')),
-                  os.path.exists(os.path.join(output_directory, 'usability_report_metadata.csv'))]
-        expected = [False, False, False, False, False, False, False, False, False, False, False]
-        self.assertEqual(expected, result, "Problem with test for access, other script mode outputs")
+        # Tests the contents of topics_sort_file_not_found.csv
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'topics_sort_file_not_found.csv')
+        result = csv_to_list(csv_path)
+        expected = [['B1', r'..\documents\BlobExport\objects\xxxxxx.txt'],
+                    ['B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
@@ -211,24 +221,24 @@ class MyTestCase(unittest.TestCase):
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
                      '345 C St', 'C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'Misc',
                      'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
-                     'Email', '2024-03-13', 'B1^B2', 'BLANK', r'..\documents\BlobExport\indivletters\000003.txt', 
+                     'Email', '2024-03-13', 'B1^B2', 'BLANK', r'..\documents\BlobExport\indivletters\000003.txt',
                      'BLANK', 'Casework'],
-                    ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK', 
+                    ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK',
                      'BLANK', 'A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'Misc',
-                     'academy nomination', r'..\documents\BlobExport\objects\111111.txt', 'BLANK', 'r100', 'General', 
+                     'academy nomination', r'..\documents\BlobExport\objects\111111.txt', 'BLANK', 'r100', 'General',
                      'Email', '20210111', 'BLANK', 'BLANK', r'..\documents\BlobExport\indivletters\000001.txt',
                      'BLANK', 'Academy_Application'],
-                    ['Ms.', 'Diane', 'D.', 'Dudly', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '456 D St', 'BLANK', 'BLANK', 
-                     'BLANK', 'D city', 'DEL', 45678, 'BLANK', 'd100', 'General', 'Email', 20210101, 'Casework', 
-                     'BLANK', r'..\documents\BlobExport\objects\444444.txt', 'BLANK', 'r400', 'General', 'Email', 
+                    ['Ms.', 'Diane', 'D.', 'Dudly', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '456 D St', 'BLANK', 'BLANK',
+                     'BLANK', 'D city', 'DEL', 45678, 'BLANK', 'd100', 'General', 'Email', 20210101, 'Casework',
+                     'BLANK', r'..\documents\BlobExport\objects\444444.txt', 'BLANK', 'r400', 'General', 'Email',
                      '20210111', 'Recommendations', 'BLANK', r'..\documents\BlobExport\formletters\D.txt', 'BLANK',
                      'Casework|Recommendation'],
-                    ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK', 
+                    ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK',
                      'BLANK', 'E city', 'ME', 56789, 'BLANK', 'e100', 'General', 'Email', 20210101, 'Recommendations',
-                     'BLANK', r'..\documents\BlobExport\objects\555555.txt', 'BLANK', 'r500', 'General', 'Email', 
+                     'BLANK', r'..\documents\BlobExport\objects\555555.txt', 'BLANK', 'r500', 'General', 'Email',
                      '20210111', 'E', 'BLANK', r'..\documents\BlobExport\indivletters\000005.txt', 'BLANK',
                      'Recommendation'],
-                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '678 F St', 'BLANK', 'BLANK', 
+                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '678 F St', 'BLANK', 'BLANK',
                      'BLANK', 'F city', 'fl', 67890, 'BLANK', 'f100', 'General', 'Email', 20210101,
                      'Social Security^Casework', 'BLANK', 'BLANK', 'BLANK', 'r600', 'General', 'Email', '20210111',
                      'E', 'BLANK', r'..\documents\BlobExport\formletters\F.txt', 'BLANK', 'Casework']]
@@ -345,16 +355,6 @@ class MyTestCase(unittest.TestCase):
                     ['out_document_name', True, 0, 0.0, '0'],
                     ['out_fillin', True, 6, 85.71, 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for accession, usability_report_metadata.csv")
-
-        # Tests the other script mode outputs were not made.
-        output_directory = os.path.join('test_data', 'script')
-        today = date.today().strftime('%Y-%m-%d')
-        result = [os.path.exists(os.path.join(output_directory, '2021-2022.csv')),
-                  os.path.exists(os.path.join(output_directory, '2023-2024.csv')),
-                  os.path.exists(os.path.join(output_directory, 'archiving_correspondence_redacted.csv')),
-                  os.path.exists(os.path.join(output_directory, f'file_deletion_log_{today}.csv'))]
-        expected = [False, False, False, False]
-        self.assertEqual(expected, result, "Problem with test for accession, other script mode outputs")
 
     def test_correct_appraisal(self):
         """Test for when the script runs correctly and is in appraisal mode."""

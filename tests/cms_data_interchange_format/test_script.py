@@ -7,7 +7,7 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_sort_correspondence import make_dir_list
+from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
@@ -38,8 +38,8 @@ class MyTestCase(unittest.TestCase):
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
                      'metadata_formatting_errors_date_out.csv', 'metadata_formatting_errors_state.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'topics_report.csv',
-                     'usability_report_matching.csv', 'usability_report_matching_details.csv',
-                     'usability_report_metadata.csv']
+                     'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
+                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -72,7 +72,7 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
                     'and columns with PII, make copies of the metadata split by congress year, '
-                    'and make a copy of the constituent letters organized by topic\n')
+                    'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
@@ -115,10 +115,10 @@ class MyTestCase(unittest.TestCase):
                      '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\33.txt', 'BLANK',
+                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\333.txt', 'BLANK',
+                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
@@ -148,7 +148,7 @@ class MyTestCase(unittest.TestCase):
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\333.txt', 'BLANK',
+                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, 2023-2024")
 
@@ -160,19 +160,24 @@ class MyTestCase(unittest.TestCase):
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\33.txt', 'BLANK',
+                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, undated")
 
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'LEGAL CASE', '1.txt'),
-                    os.path.join(by_topic, 'MINWAGE', '2.txt'),
-                    os.path.join(by_topic, 'RIGHTS', '3.txt'),
-                    os.path.join(by_topic, 'RIGHTS', '33.txt'),
-                    os.path.join(by_topic, 'RIGHTS', '333.txt')]
+        expected = [os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', '1.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', '2.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', '33.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
+
+        # Tests the contents of topics_sort_file_not_found.csv.
+        csv_path = os.path.join('test_data', 'script', 'topics_sort_file_not_found.csv')
+        result = csv_to_list(csv_path)
+        expected = [['RIGHTS', r'in-email\3.txt']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode"""

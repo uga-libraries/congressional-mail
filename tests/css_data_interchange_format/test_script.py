@@ -7,7 +7,7 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_sort_correspondence import make_dir_list
+from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path):
@@ -35,8 +35,8 @@ class MyTestCase(unittest.TestCase):
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv',
                      'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',
-                     'topics_report.csv', 'usability_report_matching.csv', 'usability_report_matching_details.csv',
-                     'usability_report_metadata.csv']
+                     'topics_report.csv', 'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
+                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         result = output.stdout
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
                     'and columns with PII, make copies of the metadata split by congress year, '
-                    'and make a copy of the constituent letters organized by topic\n')
+                    'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
@@ -205,8 +205,15 @@ class MyTestCase(unittest.TestCase):
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'FARMING', '4007000.eml')]
+        expected = [os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+                    os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
+
+        # Tests the contents of topics_sort_file_not_found.csv.
+        csv_path = os.path.join('test_data', 'script', 'topics_sort_file_not_found.csv')
+        result = csv_to_list(csv_path)
+        expected = [['TOUR5', r'..\documents\formletters\flag.doc']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode."""
