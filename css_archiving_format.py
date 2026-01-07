@@ -621,19 +621,14 @@ def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic
-    # and saves the metadata for those letters to a CSV in the topic folder.
+    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
     in_df = topics_sort_df(df, 'in')
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
-        topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
-            doc_present = topics_sort_copy(doc, input_dir, output_dir, topic_path)
-            if doc_present:
-                doc_row = in_df[(in_df['in_document_name'] == doc) & (in_df['in_topic'] == topic)].values.tolist()[0]
-                topics_sort_metadata(topic_path, doc_row)
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
 
     # Sorts a copy of correspondence to constituents ("out" letters) by topic.
@@ -643,18 +638,13 @@ def topics_sort(df, input_dir, output_dir):
     for topic in topic_list:
         doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
-        topics_sort_metadata(topic_path, 'header')
         for doc in doc_list:
-            doc_present = topics_sort_copy(doc, input_dir, output_dir, topic_path)
-            # TODO don't add if row is already there from "in" document
-            if doc_present:
-                doc_row = in_df[(in_df['out_document_name'] == doc) & (in_df['out_topic'] == topic)].values.tolist()[0]
-                topics_sort_metadata(topic_path, doc_row)
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder, return if found, and log if error"""
+    """Copy document to topic folder and log if error"""
     # Gets the path for the current doc location by updating the path in the metadata.
     doc_path = update_path(doc, input_dir)
 
@@ -665,13 +655,11 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
     doc_new_path = os.path.join(topic_path, doc_name)
     try:
         shutil.copy2(doc_path, doc_new_path)
-        return True
     except FileNotFoundError:
         with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
             log_writer = csv.writer(log)
             topic = topic_path.split('\\')[-2]
             log_writer.writerow([topic, doc])
-        return False
 
 
 def topics_sort_delete_empty(topic_path):
@@ -724,32 +712,6 @@ def topics_sort_folder(topic, output_dir, type_folder_name):
         os.makedirs(topic_path)
 
     return topic_path
-
-
-def topics_sort_metadata(topic_path, row):
-    """Save a document's metadata to a row in a CSV within the topic folder"""
-    # topic_path ends with to/from constituents, and the parent folder is the topic normalized for Windows names.
-    topic = topic_path.split('\\')[-2]
-    topic_folder = os.path.dirname(topic_path)
-    csv_path = os.path.join(topic_folder, f'{topic}_metadata.csv')
-
-    # If this is a new CSV (row is "header"), makes the CSV with the column names,
-    # unless it already exists, which happens if there are "in" and "out" letters for a topic.
-    if row == 'header':
-        if not os.path.exists(csv_path):
-            columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                       'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                       'out_document_name']
-            with open(csv_path, 'w', newline='') as metadata_file:
-                metadata_writer = csv.writer(metadata_file)
-                metadata_writer.writerow(columns)
-
-    # Otherwise, updates the path to match the access reorganization and adds to the CSV.
-    # TODO update paths
-    else:
-        with open(csv_path, 'a', newline='') as metadata_file:
-            metadata_writer = csv.writer(metadata_file)
-            metadata_writer.writerow(row)
 
 
 def update_path(md_path, input_dir):

@@ -1,22 +1,17 @@
 """
 Tests for the function topics_sort(), which organizes a copy of the letters by topic.
-To simplify input, tests use dataframes with only some of the columns present in a real export.
-
-UNIQUE IS THE ONLY ONE THAT PASSES DUE TO ADDITION OF THE METADATA FILE
 """
 import os
 import pandas as pd
 import shutil
 import unittest
 from css_archiving_format import topics_sort
-from test_script import csv_to_list, make_dir_list
+from test_script import make_dir_list
 
 
 def make_df(row_list):
     """Make a dataframe from a list of rows with consistent columns, used for test input"""
-    column_names = ['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                    'out_document_name']
+    column_names = ['zip', 'in_topic', 'in_document_name', 'out_topic', 'out_document_name']
     df = pd.DataFrame(row_list, columns=column_names)
     return df
 
@@ -303,73 +298,23 @@ class MyTestCase(unittest.TestCase):
     def test_unique(self):
         """Test for when each topic and file combination is unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['city1', 'GA', '30601', 'nan', 'a1', 'General', 'Email', '20210101', 'Agriculture',
-                       r'..\documents\BlobExport\objects\file1.txt', 'r1', 'General', 'Email', '20210101',
+        df = make_df([['30601', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
                        'Agriculture', r'..\documents\BlobExport\responses\ag.txt'],
-                      ['city2', 'GA', '30602', 'nan', 'a2', 'General', 'Email', '20220202', 'Peanuts',
-                       r'..\documents\BlobExport\objects\file2.txt', 'r2', 'General', 'Email', '20220202',
+                      ['30602', 'Peanuts', r'..\documents\BlobExport\objects\file2.txt',
                        'Peanuts', r'..\documents\BlobExport\responses\answer1.txt'],
-                      ['city3', 'GA', '30603', 'nan', 'a3', 'General', 'Email', '20230303', 'Small Business',
-                       r'..\documents\BlobExport\objects\file3.txt', 'r3', 'General', 'Email', '20230303',
+                      ['30603', 'Small Business', r'..\documents\BlobExport\objects\file3.txt',
                        'Tax', r'..\documents\BlobExport\responses\answer2.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'Agriculture_metadata.csv'),
-                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
+        expected = [os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
                     os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'ag.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'Peanuts_metadata.csv'),
                     os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file2.txt'),
                     os.path.join(self.by_topic, 'Peanuts', 'to_constituents', 'answer1.txt'),
-                    os.path.join(self.by_topic, 'Small Business', 'Small Business_metadata.csv'),
                     os.path.join(self.by_topic, 'Small Business', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'Tax_metadata.csv'),
                     os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer2.txt')]
-        self.assertEqual(expected, result, "Problem with test for unique, directory")
-
-        # Verifies each of the metadata files have the expected content.
-        result = csv_to_list(os.path.join(self.by_topic, 'Agriculture', 'Agriculture_metadata.csv'))
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                     'out_document_name'],
-                    ['city1', 'GA', 30601, 'BLANK', 'a1', 'General', 'Email', 20210101, 'Agriculture',
-                     r'..\documents\BlobExport\objects\file1.txt', 'r1', 'General', 'Email', 20210101, 'Agriculture',
-                     r'..\documents\BlobExport\responses\ag.txt'],
-                    ['city1', 'GA', 30601, 'BLANK', 'a1', 'General', 'Email', 20210101, 'Agriculture',
-                     r'..\documents\BlobExport\objects\file1.txt', 'r1', 'General', 'Email', 20210101, 'Agriculture',
-                     r'..\documents\BlobExport\responses\ag.txt']]
-        self.assertEqual(expected, result, "Problem with test for unique, Agriculture CSV")
-
-        result = csv_to_list(os.path.join(self.by_topic, 'Peanuts', 'Peanuts_metadata.csv'))
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                     'out_document_name'],
-                    ['city2', 'GA', 30602, 'BLANK', 'a2', 'General', 'Email', 20220202, 'Peanuts',
-                     r'..\documents\BlobExport\objects\file2.txt', 'r2', 'General', 'Email', 20220202, 'Peanuts',
-                     r'..\documents\BlobExport\responses\answer1.txt'],
-                    ['city2', 'GA', 30602, 'BLANK', 'a2', 'General', 'Email', 20220202, 'Peanuts',
-                     r'..\documents\BlobExport\objects\file2.txt', 'r2', 'General', 'Email', 20220202, 'Peanuts',
-                     r'..\documents\BlobExport\responses\answer1.txt']]
-        self.assertEqual(expected, result, "Problem with test for unique, Peanuts CSV")
-
-        result = csv_to_list(os.path.join(self.by_topic, 'Small Business', 'Small Business_metadata.csv'))
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                     'out_document_name'],
-                    ['city3', 'GA', 30603, 'BLANK', 'a3', 'General', 'Email', 20230303, 'Small Business',
-                     r'..\documents\BlobExport\objects\file3.txt', 'r3', 'General', 'Email', 20230303, 'Tax',
-                     r'..\documents\BlobExport\responses\answer2.txt']]
-        self.assertEqual(expected, result, "Problem with test for unique, Small Business CSV")
-
-        result = csv_to_list(os.path.join(self.by_topic, 'Tax', 'Tax_metadata.csv'))
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_typ', 'in_method', 'in_date', 'in_topic',
-                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
-                     'out_document_name'],
-                    ['city3', 'GA', 30603, 'BLANK', 'a3', 'General', 'Email', 20230303, 'Small Business',
-                     r'..\documents\BlobExport\objects\file3.txt', 'r3', 'General', 'Email', 20230303, 'Tax',
-                     r'..\documents\BlobExport\responses\answer2.txt']]
-        self.assertEqual(expected, result, "Problem with test for unique, Tax CSV")
+        self.assertEqual(expected, result, "Problem with test for unique")
 
 
 if __name__ == '__main__':
