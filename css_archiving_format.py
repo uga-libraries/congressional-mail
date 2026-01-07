@@ -573,21 +573,14 @@ def split_year(df, output_dir):
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
 
-    # Adds a column with the year received, which will be used to calculate the Congress Year.
-    # Column in_date is formatted YYYYMMDD.
+    # Adds a column with the year received. Column in_date is formatted YYYYMMDD.
     df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
 
-    # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
-    # First, if the year received is even, the Congress Year is year-1 to year.
-    # Second, if the year received is odd, the Congress Year is year to year+1.
-    df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
-    df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
-
-    # Splits the rows with date information by Congress Year received and saves each group to a separate CSV.
-    # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    for congress_year, cy_df in df.groupby('congress_year'):
-        cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
+    # Splits the rows with date information by year received and saves each group to a separate CSV.
+    # The year column is first removed, so the metadata CSVs only has the original columns.
+    for year, df in df.groupby('year'):
+        df = df.drop(['year'], axis=1)
+        df.to_csv(os.path.join(cy_dir, f'{year}.csv'), index=False)
 
 
 def topics_report(df, output_dir):
