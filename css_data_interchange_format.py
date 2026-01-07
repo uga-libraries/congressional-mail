@@ -5,7 +5,7 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
+access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
@@ -528,36 +528,29 @@ def remove_pii(df):
     return df
 
 
-def split_congress_year(df, output_dir):
-    """Make one CSV per Congress Year"""
+def split_year(df, output_dir):
+    """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
     # Makes a folder for all the CSVs.
-    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
-    os.mkdir(cy_dir)
+    year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
+    os.mkdir(year_dir)
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     df_undated = df[pd.to_numeric(df['date_in'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(cy_dir, 'undated.csv'), index=False)
+        df_undated.to_csv(os.path.join(year_dir, 'undated.csv'), index=False)
 
-    # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
+    # Removes rows without a year from the dataframe, so the rest can be split by calendar.
     df = df[pd.to_numeric(df['date_in'], errors='coerce').notnull()].copy()
 
-    # Adds a column with the year received, which will be used to calculate the Congress Year.
-    # Column date_ is formatted YYYYMMDD.
+    # Adds a column with the year received. Column date_in is formatted YYYYMMDD.
     df.loc[:, 'year'] = df['date_in'].astype(str).str[:4].astype(int)
 
-    # Adds a column with the Congress Year received, which is a two-year range starting with an odd year.
-    # First, if the year received is even, the Congress Year is year-1 to year.
-    # Second, if the year received is odd, the Congress Year is year to year+1.
-    df.loc[df['year'] % 2 == 0, 'congress_year'] = (df['year'] - 1).astype(str) + '-' + df['year'].astype(str)
-    df.loc[df['year'] % 2 == 1, 'congress_year'] = df['year'].astype(str) + '-' + (df['year'] + 1).astype(str)
-
-    # Splits the rows with date information by Congress Year received and saves each group to a separate CSV.
-    # The year and congress_year columns are first removed, so the CSV only has the original columns.
-    for congress_year, cy_df in df.groupby('congress_year'):
-        cy_df = cy_df.drop(['year', 'congress_year'], axis=1)
-        cy_df.to_csv(os.path.join(cy_dir, f'{congress_year}.csv'), index=False)
+    # Splits the rows with date information by year received and saves each group to a separate CSV.
+    # The year column is first removed, so the metadata CSVs only have the original columns.
+    for year, df in df.groupby('year'):
+        df = df.drop(['year'], axis=1)
+        df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
 
 
 def topics_report(df, output_dir):
@@ -718,16 +711,16 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
-    # makes a copy of the data split by congress year,
+    # makes a copy of the data split by calendar year,
     # and makes a copy of the letters from constituents organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters and columns with PII, "
-              "make copies of the metadata split by congress year, "
+              "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
-        split_congress_year(md_df, output_directory)
+        split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
 

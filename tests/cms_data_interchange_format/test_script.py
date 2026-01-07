@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(file_path)
 
         # Metadata split by congress year, in own directory.
-        folder_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
+        folder_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year')
         if os.path.exists(folder_path):
             shutil.rmtree(folder_path)
 
@@ -71,7 +71,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the print statement.
         result = output.stdout
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
-                    'and columns with PII, make copies of the metadata split by congress year, '
+                    'and columns with PII, make copies of the metadata split by calendar year, '
                     'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
@@ -122,8 +122,8 @@ class MyTestCase(unittest.TestCase):
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
-        # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2021-2022.csv')
+        # Tests the contents of 2021.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2021.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -131,17 +131,26 @@ class MyTestCase(unittest.TestCase):
                      'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
                      '20210110', 'LETTER', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
-                     'COR', '11111', 'LEGAL CASE', 'Y'],
+                     'COR', '11111', 'LEGAL CASE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access, 2021")
+
+        # Tests the contents of 2022.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2022.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
+                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
                      '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
                      'COR', '22222', 'MINWAGE', 'Y'],
                     ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
                      '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
-        self.assertEqual(expected, result, "Problem with test for access, 2021-2022")
+        self.assertEqual(expected, result, "Problem with test for access, 2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2023-2024.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2023.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -150,10 +159,10 @@ class MyTestCase(unittest.TestCase):
                     ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
                      '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
-        self.assertEqual(expected, result, "Problem with test for access, 2023-2024")
+        self.assertEqual(expected, result, "Problem with test for access, 2023")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',

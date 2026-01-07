@@ -5,7 +5,7 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
+access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
@@ -573,14 +573,14 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
-    # makes a copy of the data split by congress year,
+    # makes a copy of the data split by calendar year,
     # and makes a copy of the letters from constituents organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters and columns with PII, "
-              "make copies of the metadata split by congress year, "
+              "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-        css_dif.split_congress_year(md_df, output_directory)
+        css_dif.split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
