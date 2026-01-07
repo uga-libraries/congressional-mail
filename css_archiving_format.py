@@ -5,7 +5,7 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
+access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
@@ -570,7 +570,7 @@ def split_year(df, output_dir):
     if len(df_undated.index) > 0:
         df_undated.to_csv(os.path.join(year_dir, 'undated.csv'), index=False)
 
-    # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
+    # Removes rows without a year from the dataframe, so the rest can be split by calendar year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
 
     # Adds a column with the year received. Column in_date is formatted YYYYMMDD.
@@ -765,12 +765,11 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
-    # makes a copy of the data split by congress year, and makes a copy of the letters from constituents
-    # organized by topic.
+    # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted letters and columns with PII, "
-              "make copies of the metadata split by congress year, "
+              "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_pii(md_df)
