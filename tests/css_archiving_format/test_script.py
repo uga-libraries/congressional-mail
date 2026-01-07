@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
         # Folders saved in the output_directory, including copies of test data used for different script modes
         # and folders with script outputs from the access script mode.
         folders = ['Accession_Constituent_Mail_Export', 'Appraisal_Constituent_Mail_Export',
-                   'archiving_correspondence_by_congress_year', 'Correspondence_by_Topic',
+                   'correspondence_metadata_by_year', 'Correspondence_by_Topic',
                    'preservation_constituent_mail_export']
         for folder in folders:
             folder_path = os.path.join('test_data', 'script', folder)
@@ -76,7 +76,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the printed statement.
         result = printed.stdout
         expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted letters "
-                    "and columns with PII, make copies of the metadata split by congress year, and make a copy "
+                    "and columns with PII, make copies of the metadata split by calendar year, and make a copy "
                     "of the letters to and from constituents organized by topic\n")
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
@@ -127,8 +127,8 @@ class MyTestCase(unittest.TestCase):
                      'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
-        # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2021-2022.csv')
+        # Tests the contents of 2021.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2021.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -136,10 +136,10 @@ class MyTestCase(unittest.TestCase):
                     ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', 20210111,
                      'A', r'..\documents\BlobExport\indivletters\000001.txt']]
-        self.assertEqual(expected, result, "Problem with test for access, 2021-2022.csv")
+        self.assertEqual(expected, result, "Problem with test for access, 2021.csv")
 
-        # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'archiving_correspondence_by_congress_year', '2023-2024.csv')
+        # Tests the contents of 2023.csv.
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'correspondence_metadata_by_year', '2023.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -147,17 +147,25 @@ class MyTestCase(unittest.TestCase):
                     ['B city', 'WY', 23456, 'BLANK', 'b200', 'General', 'Email', 20230202, 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', 20230212,
                      'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
-                    ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
-                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
-                     'A', r'..\documents\BlobExport\formletters\A.txt'],
                     ['F city', 'FL', 10234, 'BLANK', 'f600', 'General', 'Email', 20230202, 'B1',
                      r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', 20230212,
                      'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
-        self.assertEqual(expected, result, "Problem with test for access, 2023-2024.csv")
+        self.assertEqual(expected, result, "Problem with test for access, 2023.csv")
+
+        # Tests the contents of 2024.csv.
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'correspondence_metadata_by_year', '2024.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_document_name'],
+                    ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
+                     'A', r'..\documents\BlobExport\formletters\A.txt']]
+        self.assertEqual(expected, result, "Problem with test for access, 2024.csv")
 
         # Tests that no undated.csv was made.
         result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script',
-                                             'archiving_correspondence_by_congress_year', 'undated.csv'))
+                                             'correspondence_metadata_by_year', 'undated.csv'))
         self.assertEqual(False, result, "Problem with test for access, undated.csv")
 
         # Tests that Correspondence_by_Topic has the expected files.
