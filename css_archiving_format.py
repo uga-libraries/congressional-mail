@@ -562,13 +562,13 @@ def split_year(df, output_dir):
     """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
     # Makes a folder for all the CSVs.
-    cy_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
-    os.mkdir(cy_dir)
+    year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
+    os.mkdir(year_dir)
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
     df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
     if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(cy_dir, 'undated.csv'), index=False)
+        df_undated.to_csv(os.path.join(year_dir, 'undated.csv'), index=False)
 
     # Removes rows without a year from the dataframe, so the rest can be split by Congress Year.
     df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
@@ -580,7 +580,7 @@ def split_year(df, output_dir):
     # The year column is first removed, so the metadata CSVs only has the original columns.
     for year, df in df.groupby('year'):
         df = df.drop(['year'], axis=1)
-        df.to_csv(os.path.join(cy_dir, f'{year}.csv'), index=False)
+        df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
 
 
 def topics_report(df, output_dir):
