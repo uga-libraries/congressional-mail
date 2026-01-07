@@ -444,20 +444,6 @@ class MyTestCase(unittest.TestCase):
         expected = "Missing required arguments, input_directory and script_mode\r\n"
         self.assertEqual(expected, result, "Problem with test for error argument, printed error")
 
-    def test_preservation(self):
-        """Test for when the script runs correctly in preservation mode."""
-        # Runs the script.
-        # Since just testing printing right now, using a folder for input_directory that is not an export.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script', 'preservation_test')
-        output = subprocess.run(f"python {script_path} {input_directory} preservation",
-                                shell=True, capture_output=True, text=True)
-
-        # Tests the print statement.
-        result = output.stdout
-        expected = '\nThe script is running in preservation mode.\nThe steps are TBD.\n'
-        self.assertEqual(expected, result, "Problem with test for preservation, printed statement")
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,6 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-preservation: prepare export for general_aip.py script [TBD]
 access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 """
@@ -717,11 +716,6 @@ if __name__ == '__main__':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-
-    # TODO For preservation, prepares the export for the general_aip.py script.
-    elif script_mode == 'preservation':
-        print("\nThe script is running in preservation mode.")
-        print("The steps are TBD.")
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by congress year,
