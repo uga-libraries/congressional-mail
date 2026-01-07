@@ -43,7 +43,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(file_path)
 
         # Metadata split by congress year, in own directory.
-        file_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
+        file_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year')
         if os.path.exists(file_path):
             shutil.rmtree(file_path)
 
@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the print statement.
         result = output.stdout
         expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
-                    'and columns with PII, make copies of the metadata split by congress year, '
+                    'and columns with PII, make copies of the metadata split by calendar year, '
                     'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
@@ -152,8 +152,26 @@ class MyTestCase(unittest.TestCase):
                      r'..\doc\formletter\court.pdf', 'JSmith', '20120101', 'text', 'Y', 'court.pdf', 'JSmith']]
         self.assertEqual(expected, result, "Problem with test for access, form_letter_metadata.csv")
 
-        # Tests the contents of 1999-2000.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '1999-2000.csv')
+        # Tests the contents of 1999.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '1999.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
+                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
+                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                     'file_name'],
+                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
+                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\inttax.doc', 'inttax.doc',
+                     ' ', 'nan'],
+                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
+                     '19990315', 'imail', 'FARMING', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
+                     '1c8614bf01caf83e00010e44.eml', 'nan'],
+                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
+                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
+                     ' ', 'nan']]
+        self.assertEqual(expected, result, "Problem with test for access, 1999.csv")
+
+        # Tests the contents of 2000.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2000.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -162,22 +180,13 @@ class MyTestCase(unittest.TestCase):
                     ['Ellijay', 'GA', '30540', 'USA', 'usmail', 'nan', 'C', '20000427', '20000427', 'nan', '20000427',
                      'usmail', 'TOUR5', 'OUTGOING', r'..\documents\formletters\flag.doc', 'flag.doc',
                      ' ', 'nan'],
-                    [' ', ' ', 'nan', 'POLAND', 'usmail', 'nan', 'C', '19990331', '19990402', 'nan', '19990331',
-                     'usmail', 'INTTAX', 'OUTGOING', r'..\documents\formletters\inttax.doc', 'inttax.doc',
-                     ' ', 'nan'],
                     ['Marietta', 'GA', '30067-8581', 'USA', 'nan', '513', 'C', '20000427', '20000427', 'nan',
                      '20000427', 'imail', 'nan', 'OUTGOING', r'..\documents\indivletters\2076104.doc',
-                     'nan', ' ', 'nan'],
-                    ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '551', 'C', '19990315', '19990402', 'nan',
-                     '19990315', 'imail', 'FARMING', 'INCOMING', r'..\documents\objects\4007000.eml', 'nan',
-                     '1c8614bf01caf83e00010e44.eml', 'nan'],
-                    ['Washington', 'DC', '20420-0002', 'USA', 'nan', '513', 'C', '19990721', '19990721', 'nan',
-                     '19990721', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
-                     ' ', 'nan']]
-        self.assertEqual(expected, result, "Problem with test for access, 1999-2000.csv")
+                     'nan', ' ', 'nan']]
+        self.assertEqual(expected, result, "Problem with test for access, 2000.csv")
 
-        # Tests the contents of 2011-2012.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2011-2012.csv')
+        # Tests the contents of 2012.csv.
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2012.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
@@ -186,10 +195,10 @@ class MyTestCase(unittest.TestCase):
                     ['Marietta', 'GA', '30062-1668', 'USA', 'nan', '513', 'C', '20120914', '20120914', 'nan',
                      '20120914', 'imail', 'nan', 'OUTGOING', r'..\documents\formletters\2103422.html',
                      '2103422', ' ', 'nan']]
-        self.assertEqual(expected, result, "Problem with test for access, 2011-2012.csv")
+        self.assertEqual(expected, result, "Problem with test for access, 2012.csv")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                      'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
