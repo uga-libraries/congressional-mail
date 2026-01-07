@@ -562,7 +562,7 @@ def split_year(df, output_dir):
     """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
     # Makes a folder for all the CSVs.
-    cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
+    cy_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
     os.mkdir(cy_dir)
 
     # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
