@@ -19,7 +19,7 @@ Path to the folder with all metadata files: cms_data_interchange_format.py and c
 Script mode (all three export types)
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal; metadata not changed
-access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by congress year,
+access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by calendar year,
 and make a copy of incoming and outgoing correspondence in folders by topic
 
 aip_prep: input_directory (path to the folder with the export)
