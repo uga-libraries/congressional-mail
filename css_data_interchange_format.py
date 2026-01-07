@@ -528,8 +528,8 @@ def remove_pii(df):
     return df
 
 
-def split_congress_year(df, output_dir):
-    """Make one CSV per Congress Year"""
+def split_year(df, output_dir):
+    """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
     # Makes a folder for all the CSVs.
     cy_dir = os.path.join(output_dir, 'archiving_correspondence_by_congress_year')
@@ -728,6 +728,6 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
-        split_congress_year(md_df, output_directory)
+        split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
 

@@ -7,7 +7,7 @@ import shutil
 
 import pandas as pd
 import unittest
-from css_data_interchange_format import split_congress_year
+from css_data_interchange_format import split_year
 from test_script import csv_to_list
 
 
@@ -28,7 +28,7 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30152-3929', '20121130', 'SSCUTS1'],
                               ['GA', '30062-2748', 'nan', 'INSUTAX1']],
                              columns=['state_code', 'zip_code', 'date_in', 'group_name'])
-        split_congress_year(md_df, 'test_data')
+        split_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['GA', '30102-1056', '', ''],
                               ['GA', '30062-2748', '', 'INSUTAX1']],
                              columns=['state_code', 'zip_code', 'date_in', 'group_name'])
-        split_congress_year(md_df, 'test_data')
+        split_year(md_df, 'test_data')
 
         # Tests that undated.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', 'undated.csv'))
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30152-3929', '20121130', 'SSCUTS1'],
                               ['FL', '32448-5365', '20121231', 'SSCUTS1']],
                              columns=['state_code', 'zip_code', 'date_in', 'group_name'])
-        split_congress_year(md_df, 'test_data')
+        split_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
@@ -99,7 +99,7 @@ class MyTestCase(unittest.TestCase):
                               ['GA', '30082-1838', '19970412', 'SSCUTS2'],
                               ['GA', '30328-4628', '20091015', 'TOUR']],
                              columns=['state_code', 'zip_code', 'date_in', 'group_name'])
-        split_congress_year(md_df, 'test_data')
+        split_year(md_df, 'test_data')
 
         # Tests that 1997-1998.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_by_congress_year', '1997-1998.csv'))
