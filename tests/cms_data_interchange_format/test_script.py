@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
                 os.remove(file_path)
 
         # Metadata split by congress year, in own directory.
-        folder_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year')
+        folder_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year')
         if os.path.exists(folder_path):
             shutil.rmtree(folder_path)
 
@@ -123,7 +123,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021-2022.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2021-2022.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2021-2022.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -141,7 +141,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2021-2022")
 
         # Tests the contents of 2023-2024.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', '2023-2024.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2023-2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
@@ -153,7 +153,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2023-2024")
 
         # Tests the contents of undated.csv.
-        csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_by_congress_year', 'undated.csv')
+        csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', 'undated.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                      'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
