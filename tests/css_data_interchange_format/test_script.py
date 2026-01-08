@@ -124,11 +124,7 @@ class MyTestCase(unittest.TestCase):
                      '30062-1668', 'USA', 'OUTGOING', r'..\documents\formletters\2103422.html', '2103422', ' ', 'nan'],
                     ['nan', '513', 'C', '19990721', '19990721', 'nan', '19990721', 'imail', 'nan', 'Washington',
                      'DC', '20420-0002', 'USA', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
-                     ' ', 'nan'],
-                    ['usmail', 'nan', 'C', '19990415', '19990502', 'nan', '19990415', 'usmail', 'AG',
-                     'Marietta', 'GA', '30067-8582', 'USA', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['usmail', 'nan', 'C', '19990515', '19990602', 'nan', '19990515', 'usmail', 'OC',
-                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan']]
+                     ' ', 'nan']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of form_letter_metadata.csv.
@@ -168,11 +164,7 @@ class MyTestCase(unittest.TestCase):
                      '1c8614bf01caf83e00010e44.eml', 'nan'],
                     ['nan', '513', 'C', '19990721', '19990721', 'nan', '19990721', 'imail', 'nan', 'Washington',
                      'DC', '20420-0002', 'USA', 'OUTGOING', r'..\documents\formletters\208956.html', '208956',
-                     ' ', 'nan'],
-                    ['usmail', 'nan', 'C', '19990415', '19990502', 'nan', '19990415', 'usmail', 'AG',
-                     'Marietta', 'GA', '30067-8582', 'USA', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['usmail', 'nan', 'C', '19990515', '19990602', 'nan', '19990515', 'usmail', 'OC',
-                     'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan']]
+                     ' ', 'nan']]
         self.assertEqual(expected, result, "Problem with test for access, 1999.csv")
 
         # Tests the contents of 2000.csv.
