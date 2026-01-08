@@ -530,6 +530,8 @@ def read_metadata(path):
     # The rest of the row is repeated for each in/out document combination.
     df['in_document_name'] = df['in_document_name'].str.split(r'^')
     df = df.explode('in_document_name')
+    df['out_document_name'] = df['out_document_name'].str.split(r'^')
+    df = df.explode('out_document_name')
 
     return df
 
