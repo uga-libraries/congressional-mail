@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_1b(self):
         """Test for the metadata file 1B.out"""
-        df_1b = read_metadata_file('1B', os.path.join('test_data', 'read', '1B.out'))
+        df_1b = read_metadata_file('1B', os.path.join('test_data', 'read', 'match', '1B.out'))
 
         result = df_to_list(df_1b)
         expected = [['record_type', 'constituent_id', 'address_id', 'address_type', 'primary_flag',
@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_2a(self):
         """Test for the metadata file 2A.out"""
-        df_2a = read_metadata_file('2A', os.path.join('test_data', 'read', '2A.out'))
+        df_2a = read_metadata_file('2A', os.path.join('test_data', 'read', 'match', '2A.out'))
 
         result = df_to_list(df_2a)
         expected = [['record_type', 'constituent_id', 'correspondence_id', 'correspondence_type', 'staff',
@@ -50,18 +50,18 @@ class MyTestCase(unittest.TestCase):
 
     def test_2b(self):
         """Test for the metadata file 2B.out"""
-        df_2b = read_metadata_file('2B', os.path.join('test_data', 'read', '2B.out'))
+        df_2b = read_metadata_file('2B', os.path.join('test_data', 'read', 'match', '2B.out'))
 
         result = df_to_list(df_2b)
         expected = [['record_type', 'constituent_id', 'correspondence_id', 'correspondence_code', 'position'],
                     ['2B', '1', '1001', '15001', 'CON'],
                     ['2B', '2', '2002', '15002', 'PRO'],
-                    ['2B', '3', '3003', '15003', 'PRO']]
+                    ['2B', '3', '3003', '15003', 'NEU']]
         self.assertEqual(expected, result, "Problem with test for 2B")
 
     def test_2c(self):
         """Test for the metadata file 2C.out"""
-        df_2c = read_metadata_file('2C', os.path.join('test_data', 'read', '2C.out'))
+        df_2c = read_metadata_file('2C', os.path.join('test_data', 'read', 'match', '2C.out'))
 
         result = df_to_list(df_2c)
         expected = [['record_type', 'constituent_id', 'correspondence_id', '2C_sequence_number',
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_2d(self):
         """Test for the metadata file 2D.out"""
-        df_2d = read_metadata_file('2D', os.path.join('test_data', 'read', '2D.out'))
+        df_2d = read_metadata_file('2D', os.path.join('test_data', 'read', 'match', '2D.out'))
 
         result = df_to_list(df_2d)
         expected = [['record_type', 'constituent_id', 'correspondence_id', '2D_sequence_number', 'text_type',
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_8a(self):
         """Test for the metadata file 8A.out"""
-        df_8a = read_metadata_file('8A', os.path.join('test_data', 'read', '8A.out'))
+        df_8a = read_metadata_file('8A', os.path.join('test_data', 'read', 'match', '8A.out'))
 
         result = df_to_list(df_8a)
         expected = [['record_type', 'code_type', 'code', 'code_description', 'inactive_flag'],
