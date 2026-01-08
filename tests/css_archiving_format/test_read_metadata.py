@@ -55,6 +55,46 @@ class MyTestCase(unittest.TestCase):
                      'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank']]
         self.assertEqual(expected, result, "Problem with test for correct - blanks")
 
+    def test_correct_multiple_in(self):
+        """Test for when the DAT file can be read in its entirety and has in_document_name with multiple files"""
+        md_df = read_metadata(os.path.join('test_data', 'read_metadata', 'correct_multiple_in.dat'))
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
+                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
+                     'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
+                     r'..\documents\BlobExport\objects\fileA100.txt', 'blank', 'r100', 'General', 'Email', '20240111',
+                     'formA', 'blank', 'replyA1', 'blank'],
+                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
+                     'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
+                     r'..\documents\BlobExport\objects\fileA200.txt', 'blank', 'r100', 'General', 'Email', '20240111',
+                     'formA', 'blank', 'replyA1', 'blank'],
+                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
+                     'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
+                     r'..\documents\BlobExport\objects\fileA300.txt', 'blank', 'r100', 'General', 'Email', '20240111',
+                     'formA', 'blank', 'replyA1', 'blank'],
+                    ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
+                     'blank', 'B city', 'WY', '23456', 'US', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
+                     r'..\documents\BlobExport\objects\fileB100.txt', 'blank', 'r200', 'Case', 'Email', '20240212',
+                     'formB', 'blank', 'replyB200', 'blank'],
+                    ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
+                     'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
+                     r'..\documents\BlobExport\objects\FileC1.txt', 'blank', 'r300', 'General', 'Email', '20240313',
+                     'formC', 'blank', 'replyC2', 'blank'],
+                    ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
+                     'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
+                     r'..\documents\BlobExport\objects\FileC2.txt', 'blank', 'r300', 'General', 'Email', '20240313',
+                     'formC', 'blank', 'replyC2', 'blank'],
+                    ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
+                     'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
+                     r'..\documents\BlobExport\objects\FileC3.txt', 'blank', 'r300', 'General', 'Email', '20240313',
+                     'formC', 'blank', 'replyC2', 'blank']]
+        self.assertEqual(expected, result, "Problem with test for correct_multiple_in")
+
     def test_parser_error(self):
         """Test for when the DAT file has content with tabs, resulting in a ParserError
         It should also print ParserWarning: Skipping line 4: expected 32 fields, saw 34"""
