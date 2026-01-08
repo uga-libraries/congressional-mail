@@ -375,15 +375,15 @@ def read_metadata(paths):
     df_2d = remove_pii(df_2d)
     df_8a = remove_pii(df_8a)
 
-    # Combine the dataframes using ID columns.
-    # If an id is only in one table, the data is still included and has blanks for columns from the other table.
+    # Combine the dataframes using ID columns. If the ID is not in 2A (which describes each letter)
+    # it is not included in the merged dataframe, to reduce the number of very incomplete rows.
     # Must drop constituent_id_x to continue merging to avoid a pandas MergeError from duplicate column names.
-    df = df_1b.merge(df_2a, on='constituent_id', how='outer')
-    df = df.merge(df_2b, on='correspondence_id', how='outer')
-    df = df.merge(df_2c, on='correspondence_id', how='outer')
+    df = df_2a.merge(df_1b, on='constituent_id', how='left')
+    df = df.merge(df_2b, on='correspondence_id', how='left')
+    df = df.merge(df_2c, on='correspondence_id', how='left')
     df.drop(['constituent_id_x'], axis=1, inplace=True)
-    df = df.merge(df_2d, on='correspondence_id', how='outer')
-    df = df.merge(df_8a, left_on='correspondence_code', right_on='code', how='outer')
+    df = df.merge(df_2d, on='correspondence_id', how='left')
+    df = df.merge(df_8a, left_on='correspondence_code', right_on='code', how='left')
 
     # Remove ID columns only used for merging.
     # Columns needed for appraisal are retained until after metadata rows for appraisal are identified.

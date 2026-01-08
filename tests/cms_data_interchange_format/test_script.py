@@ -78,21 +78,21 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the appraisal_check_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK', 'note text 1',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK', 'note text 1',
                      'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for access, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category']]
@@ -101,75 +101,93 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
                      'COR', '11111', 'LEGAL CASE', 'Y'],
-                    ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
                      'COR', '22222', 'MINWAGE', 'Y'],
-                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
-                     'COR', '33333', 'RIGHTS', 'Y']]
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU',  'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
         csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2021.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
                      'COR', '11111', 'LEGAL CASE', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, 2021")
 
         # Tests the contents of 2022.csv.
         csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2022.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
                      'COR', '22222', 'MINWAGE', 'Y'],
-                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, 2022")
 
-        # Tests the contents of 2023-2024.csv.
+        # Tests the contents of 2023.csv.
         csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', '2023.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
-                     'COR', '33333', 'RIGHTS', 'Y']]
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, 2023")
 
         # Tests the contents of undated.csv.
         csv_path = os.path.join('test_data', 'script', 'correspondence_metadata_by_year', 'undated.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK',
-                     'BLANK', 'EMAIL', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, undated")
 
@@ -205,66 +223,66 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the appraisal check log.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
                      'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
                      'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', 'out-custom\\100X.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', 'out-custom\\100X.txt', 'BLANK',
                      'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category'],
-                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK', '20220220', 'EMAIL', 'Caseyville', 'Georgia',
+                     '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
                      'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y', 'Recommendation'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
-                     'EMAIL', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
+                    ['EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
-                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK',
-                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
+                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
 
         # Tests the contents of the metadata_formatting_errors_date_out.csv.
         csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_date_out.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR', '22222',
-                     'MINWAGE', 'Y'],
-                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK',
-                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'COR', '33333',
+                    ['EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR',
+                     '22222', 'MINWAGE', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'COR', '33333',
                      'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_date_out.csv")
 
         # Tests the contents of the metadata_formatting_errors_state.csv.
         csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['Caseyville', 'Georgia', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR', '22222',
-                     'MINWAGE', 'Y']]
+                    ['EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR',
+                     '22222', 'MINWAGE', 'Y']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_state.csv")
 
         # Tests the contents of the topics_report.csv.
@@ -343,38 +361,38 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the appraisal check log.
         csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
                      'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['City One', 'GA', '30001', 'USA', 'LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK',
-                     '20210110', 'LETTER', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
                      'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK',
-                     '20230330', 'EMAIL', '33333', 'PRO', '1', 'main', 'out-custom\\1002.txt', 'BLANK',
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', 'out-custom\\1002.txt', 'BLANK',
                      'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
         csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
-        expected = [['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
-                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
-                    'Appraisal_Category'],
-                    ['Caseyville', 'GA', '30002', 'USA', 'EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK',
-                     '20220220', 'EMAIL', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
+                     'Appraisal_Category'],
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
                      'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y', 'Recommendation'],
-                    ['City One', 'GA', '30001', 'USA', 'EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
-                     'EMAIL', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
-                    ['City Three', 'GA', '30003', 'USA', 'EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK',
-                     '20220330', 'EMAIL', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
+                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
 
