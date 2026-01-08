@@ -480,12 +480,11 @@ def read_metadata(paths):
     df_2d = df_2d.drop(['record_type', 'person_id', '2d_sequence_number', 'date', 'time', 'user_id'],
                        axis=1, errors='ignore')
 
-    # Combine the dataframes using ID columns.
-    # If an id is only in one table, the data is still included and has blanks for columns from the other table.
-    # TODO need error handling if the id is blank?
-    df = df_1b.merge(df_2a, on='person_id', how='outer')
-    df = df.merge(df_2c, on='communication_id', how='outer')
-    df = df.merge(df_2d, on='communication_id', how='outer')
+    # Combine the dataframes using ID columns. If the ID is not in 2A (which describes each letter)
+    # it is not included in the merged dataframe, to reduce the number of very incomplete rows.
+    df = df_2a.merge(df_1b, on='person_id', how='left')
+    df = df.merge(df_2c, on='communication_id', how='left')
+    df = df.merge(df_2d, on='communication_id', how='left')
 
     # Remove ID columns only used for merging.
     df = df.drop(['person_id_x', 'person_id_y', 'communication_id'], axis=1, errors='ignore')
