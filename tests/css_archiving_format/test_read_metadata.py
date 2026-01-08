@@ -27,13 +27,14 @@ class MyTestCase(unittest.TestCase):
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
-                     'blank', 'A city', 'AL', '12345', 'blank', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
-                     'fileA100', 'blank', 'r100', 'General', 'Email', '20240111', 'formA', 'blank', 'replyA100',
-                     'blank'],
-                    ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
-                     'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
-                     'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank']]
+                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank',
+                     'blank', 'blank', 'A city', 'AL', '12345', 'blank', 'a100', 'General', 'Email', '20240101',
+                     'A1', 'blank', 'fileA100.doc', 'blank', 'r100', 'General', 'Email', '20240111', 'T1', 'note',
+                     'formA.doc', 'replyA100'],
+                    ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7',
+                     'blank', 'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202',
+                     'B1^B2', 'Note', 'fileB200.doc', 'blank', 'r200', 'Case', 'Email', '20240212', 'T2', 'blank',
+                     'formB.doc', 'replyB200']]
         self.assertEqual(expected, result, "Problem with test for correct")
 
     def test_correct_blanks(self):
@@ -46,13 +47,14 @@ class MyTestCase(unittest.TestCase):
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
-                     'blank', 'A city', 'AL', '12345', 'blank', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
-                     'fileA100', 'blank', 'r100', 'General', 'Email', '20240111', 'formA', 'blank', 'replyA100',
-                     'blank'],
-                    ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
-                     'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
-                     'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank']]
+                    ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank',
+                     'blank', 'blank', 'A city', 'AL', '12345', 'blank', 'a100', 'General', 'Email', '20240101',
+                     'A1', 'blank', 'fileA100.doc', 'blank', 'r100', 'General', 'Email', '20240111', 'T1', 'note',
+                     'formA.doc', 'replyA100'],
+                    ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7',
+                     'blank', 'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202',
+                     'B1^B2', 'Note', 'fileB200.doc', 'blank', 'r200', 'Case', 'Email', '20240212', 'T2', 'blank',
+                     'formB.doc', 'replyB200']]
         self.assertEqual(expected, result, "Problem with test for correct - blanks")
 
     def test_correct_multiple_in(self):
@@ -68,31 +70,31 @@ class MyTestCase(unittest.TestCase):
                     ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
                      'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
                      r'..\documents\BlobExport\objects\fileA100.txt', 'blank', 'r100', 'General', 'Email', '20240111',
-                     'formA', 'blank', 'replyA1', 'blank'],
+                     'T1', 'blank', 'formA.doc', 'replyA1'],
                     ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
                      'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
                      r'..\documents\BlobExport\objects\fileA200.txt', 'blank', 'r100', 'General', 'Email', '20240111',
-                     'formA', 'blank', 'replyA1', 'blank'],
+                     'T1', 'blank', 'formA.doc', 'replyA1'],
                     ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
                      'blank', 'A city', 'AL', '12345', 'US', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
                      r'..\documents\BlobExport\objects\fileA300.txt', 'blank', 'r100', 'General', 'Email', '20240111',
-                     'formA', 'blank', 'replyA1', 'blank'],
+                     'T1', 'blank', 'formA.doc', 'replyA1'],
                     ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
                      'blank', 'B city', 'WY', '23456', 'US', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
                      r'..\documents\BlobExport\objects\fileB100.txt', 'blank', 'r200', 'Case', 'Email', '20240212',
-                     'formB', 'blank', 'replyB200', 'blank'],
+                     'T2', 'note', 'formB.doc', 'replyB200'],
                     ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
                      'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
                      r'..\documents\BlobExport\objects\FileC1.txt', 'blank', 'r300', 'General', 'Email', '20240313',
-                     'formC', 'blank', 'replyC2', 'blank'],
+                     'T3', 'blank', 'formC.doc', 'replyC2'],
                     ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
                      'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
                      r'..\documents\BlobExport\objects\FileC2.txt', 'blank', 'r300', 'General', 'Email', '20240313',
-                     'formC', 'blank', 'replyC2', 'blank'],
+                     'T3', 'blank', 'formC.doc', 'replyC2'],
                     ['Ms.', 'CeCe', 'C.', 'Cleese', 'blank', 'blank', 'blank', 'blank', '789 C St', 'Apt C', 'blank',
                      'blank', 'C city', 'CA', '78911', 'US', 'c300', 'General', 'Email', '20240303', 'C1', 'Note',
                      r'..\documents\BlobExport\objects\FileC3.txt', 'blank', 'r300', 'General', 'Email', '20240313',
-                     'formC', 'blank', 'replyC2', 'blank']]
+                     'T3', 'blank', 'formC.doc', 'replyC2']]
         self.assertEqual(expected, result, "Problem with test for correct_multiple_in")
 
     def test_correct_multiple_out(self):
@@ -137,7 +139,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_parser_error(self):
         """Test for when the DAT file has content with tabs, resulting in a ParserError
-        It should also print ParserWarning: Skipping line 4: expected 32 fields, saw 34"""
+        It should also print ParserWarning: Skipping line 4: expected 32 fields, saw 36"""
         md_df = read_metadata(os.path.join('test_data', 'read_metadata', 'parser_error.dat'))
 
         # Tests the values in the returned dataframe are correct.
@@ -148,15 +150,16 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Ms.', 'Anna', 'A.', 'Anderson', 'blank', 'MD', 'blank', 'blank', '123 A St', 'blank', 'blank',
                      'blank', 'A city', 'AL', '12345', 'blank', 'a100', 'General', 'Email', '20240101', 'A1', 'blank',
-                     'fileA100', 'blank', 'r100', 'General', 'Email', '20240111', 'formA', 'blank', 'replyA100',
-                     'blank'],
+                     'fileA100.txt', 'blank', 'r100', 'General', 'Email', '20240111', 'T1', 'blank', 'formA.txt',
+                     'replyA100'],
                     ['Mr.', 'Bill', 'B.', 'Blue', 'blank', 'blank', 'blank', 'blank', '456 B St', 'Apt 7', 'blank',
                      'blank', 'B city', 'WY', '23456', 'blank', 'b200', 'Case', 'Email', '20240202', 'B1^B2', 'Note',
-                     'fileB200', 'blank', 'r200', 'Case', 'Email', '20240212', 'formB', 'blank', 'replyB200', 'blank'],
+                     'fileB200.txt', 'blank', 'r200', 'Case', 'Email', '20240212', 'T2', 'blank', 'formB.txt',
+                     'replyB200'],
                     ['Ms.', 'Debbie', 'D.', 'Dunning', 'blank', 'blank', 'blank', 'blank', '789 D St', 'blank',
                      'blank', 'blank', 'D city', 'DE', '45678', 'blank', 'd400', 'General', 'Email', '20240404', 'D1',
-                     'blank', 'fileD400', 'blank', 'r400', 'General', 'Email', '20240414', 'formD', 'blank',
-                     'replyD400', 'blank']]
+                     'blank', 'fileD400.txt', 'blank', 'r400', 'General', 'Email', '20240414', 'T4', 'note',
+                     'formD.txt', 'replyD400']]
         self.assertEqual(expected, result, "Problem with test for ParserError")
 
 
