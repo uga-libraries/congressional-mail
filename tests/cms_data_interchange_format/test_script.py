@@ -119,7 +119,16 @@ class MyTestCase(unittest.TestCase):
                      'COR', '33333', 'RIGHTS', 'Y'],
                     ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
                      'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
-                     'COR', '33333', 'RIGHTS', 'Y']]
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU',  'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
@@ -158,7 +167,16 @@ class MyTestCase(unittest.TestCase):
                      'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
                      'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
-                     'COR', '33333', 'RIGHTS', 'Y']]
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, 2023")
 
         # Tests the contents of undated.csv.
