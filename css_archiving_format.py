@@ -526,6 +526,11 @@ def read_metadata(path):
     # Removes blank rows, which are present in some of the data exports.
     df.dropna(how='all', inplace=True)
 
+    # Splits rows with multiple documents (in and/or out) so they can be matched to the files in the export.
+    # The rest of the row is repeated for each in/out document combination.
+    df['in_document_name'] = df['in_document_name'].str.split(r'^')
+    df = df.explode('in_document_name')
+
     return df
 
 
