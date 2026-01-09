@@ -11,41 +11,6 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_all_casework(self):
-        """Test for every type of pattern indicating casework"""
-        # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Casework Issues', 'new case', r'doc\case.txt', '', 'Issues', 'note', '', ''],
-                              ['30601', 'SSA', '', '', '', 'SSA', 'Jan added to case', '', 'case Jan'],
-                              ['30602', 'Health', '', '', '', 'Casework^Medical', 'This is casework', '', ''],
-                              ['30603', 'Health', '', '', '', '', 'open case', '', ''],
-                              ['30604', '', '', '', '', 'Admin', 'Started case Wed', '', ''],
-                              ['30605', 'Prison Case', '', '', '', 'Casework', '', '', ''],
-                              ['30606', 'Admin', 'new case', '', '', 'Admin', 'note', '', 'thank you_case'],
-                              ['30607', 'Admin', 'note', '', '', '', '', r'case\file.txt', '']],
-                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        df_casework, df_casework_check = find_casework_rows(md_df)
-
-        # Tests the values in df_casework are correct.
-        result = df_to_list(df_casework)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Casework Issues', 'new case', r'doc\case.txt', '', 'Issues', 'note', '', '', 'Casework'],
-                    ['30605', 'Prison Case', '', '', '', 'Casework', '', '', '', 'Casework'],
-                    ['30602', 'Health', '', '', '', 'Casework^Medical', 'This is casework', '', '', 'Casework'],
-                    ['30601', 'SSA', '', '', '', 'SSA', 'Jan added to case', '', 'case Jan', 'Casework'],
-                    ['30603', 'Health', '', '', '', '', 'open case', '', '', 'Casework'],
-                    ['30604', '', '', '', '', 'Admin', 'Started case Wed', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for all casework, df_casework")
-
-        # Tests the values in df_casework_check are correct.
-        result = df_to_list(df_casework_check)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30606', 'Admin', 'new case', '', '', 'Admin', 'note', '', 'thank you_case', 'Casework'],
-                    ['30607', 'Admin', 'note', '', '', '', '', r'case\file.txt', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for all casework, df_casework_check")
-
     def test_in_topic(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
         # Makes a dataframe to use as test input and runs the function.

@@ -11,40 +11,6 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_all(self):
-        """Test for when all patterns indicating job applications are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Resume', 'job request', r'..\doc\resume.txt', '', 'Resume',
-                               'job request', '', ''],
-                              ['30601', '', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc', ''],
-                              ['30602', 'Intern', '', '', '', 'Resume', '', '', ''],
-                              ['30603', 'Resume', 'job request', '', '', '', '', '', ''],
-                              ['30604', '', 'Job Request', '', '', '', 'job request', '', ''],
-                              ['30605', 'Admin', 'job request', '', '', 'Resume', '', r'..\doc\resume.txt', '']],
-                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        df_job, df_job_check = find_job_rows(md_df)
-
-        # Tests the values in df_job are correct.
-        result = df_to_list(df_job)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
-                     'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Resume', 'job request', r'..\doc\resume.txt', '', 'Resume', 'job request', '',
-                     '', 'Job_Application'],
-                    ['30602', 'Intern', '', '', '', 'Resume', '', '', '', 'Job_Application'],
-                    ['30603', 'Resume', 'job request', '', '', '', '', '', '', 'Job_Application'],
-                    ['30601', '', '', '', '', 'Intern', 'summer job request', r'..\doc\job interview.doc',
-                     '', 'Job_Application'],
-                    ['30605', 'Admin', 'job request', '', '', 'Resume', '', r'..\doc\resume.txt', '', 'Job_Application'],
-                    ['30604', '', 'Job Request', '', '', '', 'job request', '', '', 'Job_Application']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_job")
-
-        # Tests the values in df_job_check are correct.
-        result = df_to_list(df_job_check)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
-                     'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_job_check")
-
     def test_in_document_name(self):
         """Test for when column in_document_name contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.

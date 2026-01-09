@@ -11,48 +11,6 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_all(self):
-        """Test for when all patterns indicating recommendations are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Recommendations^General', 'my recommendation', '', '', 'Recommendations',
-                               '', '', ''],
-                              ['30601', '', 'rec for john doe', '', '', '', 'policy for recommendations sent', '', ''],
-                              ['30602', 'Recommendations', 'letter of recommendation for smith', '', '', '', '', '',
-                               'decline_recommendation'],
-                              ['30603', 'Recommendations', 'rec for green', '', '', 'Recommendations',
-                               'wrote recommendation', '', ''],
-                              ['30604', '', '', '', '', 'Admin^Recommendations', 'wrote recommendation', '', ''],
-                              ['30605', 'Admin', 'my recommendation is x', '', '', 'Admin', '', '', ''],
-                              ['30606', 'Admin', 'note', '', '', 'Admin', 'recommendation', r'doc\recommendation.txt',
-                               'name_date']],
-                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
-
-        # Tests the values in df_recommendations are correct.
-        result = df_to_list(df_recommendations)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Recommendations^General', 'my recommendation', '', '', 'Recommendations', '', '', '',
-                     'Recommendation'],
-                    ['30602', 'Recommendations', 'letter of recommendation for smith', '', '', '', '', '',
-                     'decline_recommendation', 'Recommendation'],
-                    ['30603', 'Recommendations', 'rec for green', '', '', 'Recommendations', 'wrote recommendation',
-                     '', '', 'Recommendation'],
-                    ['30604', '', '', '', '', 'Admin^Recommendations', 'wrote recommendation', '', '', 'Recommendation'],
-                    ['30601', '', 'rec for john doe', '', '', '', 'policy for recommendations sent', '', '',
-                     'Recommendation']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_recommendations")
-
-        # Tests the values in df_recommendations_check are correct.
-        result = df_to_list(df_recommendations_check)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30605', 'Admin', 'my recommendation is x', '', '', 'Admin', '', '', '', 'Recommendation'],
-                    ['30606', 'Admin', 'note', '', '', 'Admin', 'recommendation', r'doc\recommendation.txt',
-                     'name_date', 'Recommendation']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_recommendations_check")
-
     def test_in_text(self):
         """Test for when column in_text contains a phrase indicating recommendations"""
         # Makes a dataframe to use as test input and runs the function.

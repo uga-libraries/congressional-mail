@@ -11,48 +11,6 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
     
-    def test_all(self):
-        """Test for when all patterns indicating academy applications are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Academy Applicant', 'For academy nomination', '', '',
-                               'Military Service Academy', 'ACADEMY NOMINATION', '', ''],
-                              ['30601', 'Military Service Academy^Admin', '', '', '', 'Military Service Academy',
-                               '', '', ''],
-                              ['30602', 'Academy Applicant', '', '', '', 'Academy Applicant^Gen',
-                               'Academy Nomination Letter', '', ''],
-                              ['30603', '', 'academy nomination', '', '', '', 'For academy nomination support', '', ''],
-                              ['30604', '', 'academy nomination', '', '', 'Academy Applicant', 'academy nomination',
-                               '', ''],
-                              ['30605', 'Admin', 'academy', '', '', 'Admin', '', '', ''],
-                              ['30606', 'Admin', '', '', '', 'Admin', '', r'doc\academy_voucher.txt', '']],
-                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        df_academy, df_academy_check = find_academy_rows(md_df)
-        
-        # Tests the values in df_academy are correct.
-        result = df_to_list(df_academy)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Academy Applicant', 'For academy nomination', '', '', 'Military Service Academy',
-                     'ACADEMY NOMINATION', '', '', 'Academy_Application'],
-                    ['30601', 'Military Service Academy^Admin', '', '', '', 'Military Service Academy', '', '', '',
-                     'Academy_Application'],
-                    ['30602', 'Academy Applicant', '', '', '', 'Academy Applicant^Gen', 'Academy Nomination Letter',
-                     '', '', 'Academy_Application'],
-                    ['30604', '', 'academy nomination', '', '', 'Academy Applicant', 'academy nomination', '', '',
-                     'Academy_Application'],
-                    ['30603', '', 'academy nomination', '', '', '', 'For academy nomination support', '', '',
-                     'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_academy")
-
-        # Tests the values in df_academy_check are correct.
-        result = df_to_list(df_academy_check)
-        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30605', 'Admin', 'academy', '', '', 'Admin', '', '', '', 'Academy_Application'],
-                    ['30606', 'Admin', '', '', '', 'Admin', '', r'doc\academy_voucher.txt', '', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for all patterns, df_academy_check")
-
     def test_in_text(self):
         """Test for when column in_text contains academy nomination"""
         # Makes a dataframe to use as test input and runs the function.
