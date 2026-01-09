@@ -411,6 +411,8 @@ def find_casework_rows(df):
     df = df[~out_text]
 
     # Any column includes a phrase that indicates casework.
+    # We will delete even if the phrase indicates it is not a case or casework
+    # because the fact they considered it might be a case suggests it includes sensitive personal information.
     case_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened', 'case issue',
                  'case work', 'casework', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
