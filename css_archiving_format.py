@@ -353,9 +353,25 @@ def find_academy_rows(df):
     df_out_text = df[out_text]
     df = df[~out_text]
 
+    # Column in_document_name includes one of the keywords (case-insensitive).
+    in_doc = df['in_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
+    # Column out_document_name includes one of the keywords (case-insensitive).
+    out_doc = df['out_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_out_doc = df[out_doc]
+    df = df[~out_doc]
+
+    # Column out_fillin includes one of the keywords (case-insensitive).
+    out_fillin = df['out_fillin'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_out_fillin = df[out_fillin]
+    df = df[~out_fillin]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fillin],
+                           axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
