@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
                               ['30601', '', '', 'path/academy_app.doc', '', '', '', '', ''],
                               ['30602', '', '', 'academy-application.doc', '', '', '', '', ''],
                               ['30603', '', '', 'path/sports_academy.doc', '', '', '', '', ''],
-                              ['30604', 'Misc', '', '', '', '', '', '', ''],
+                              ['30604', '', '', '', '', '', '', '', ''],
                               ['30605', '', '', 'academy nom.doc', '', '', '', '', ''],
                               ['30606', '', '', 'path/academy_nom.doc', '', '', '', '', ''],
                               ['30607', '', '', 'academy_nomination.doc', '', '', '', '', '']],
@@ -48,14 +48,14 @@ class MyTestCase(unittest.TestCase):
     def test_in_text(self):
         """Test for when column in_text contains one of the keywords"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Military', 'For Academy Application', '', '', 'Mil', '', '', ''],
-                              ['30601', 'Admin', 'academy_application', '', '', '', 'note', '', ''],
-                              ['30602', 'Admin', 'academy-applications', '', '', '', 'note', '', ''],
-                              ['30603', 'Economy', '', '', '', 'Economy', '', '', ''],
-                              ['30604', 'Arts', 'Arts academy', '', '', 'Arts', '', '', ''],
-                              ['30605', 'Admin', 'Academy Nom Notification', '', '', '', 'note', '', ''],
-                              ['30606', 'Admin', 'academy_nom 2025', '', '', '', 'note', '', ''],
-                              ['30607', 'Admin', 'academy-nominations', '', '', '', 'note', '', '']],
+        md_df = pd.DataFrame([['30600', '', 'For Academy Application', '', '', '', '', '', ''],
+                              ['30601', '', 'academy_application', '', '', '', '', '', ''],
+                              ['30602', '', 'academy-applications', '', '', '', '', '', ''],
+                              ['30603', '', '', '', '', '', '', '', ''],
+                              ['30604', '', 'Arts academy', '', '', '', '', '', ''],
+                              ['30605', '', 'Academy Nom Notification', '', '', '', '', '', ''],
+                              ['30606', '', 'academy_nom 2025', '', '', '', '', '', ''],
+                              ['30607', '', 'academy-nominations', '', '', '', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                                       'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
         df_academy, df_academy_check = find_academy_rows(md_df)
@@ -64,26 +64,26 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_academy)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Military', 'For Academy Application', '', '', 'Mil', '', '', '', 'Academy_Application'],
-                    ['30601', 'Admin', 'academy_application', '', '', '', 'note', '', '', 'Academy_Application'],
-                    ['30602', 'Admin', 'academy-applications', '', '', '', 'note', '', '', 'Academy_Application'],
-                    ['30605', 'Admin', 'Academy Nom Notification', '', '', '', 'note', '', '', 'Academy_Application'],
-                    ['30606', 'Admin', 'academy_nom 2025', '', '', '', 'note', '', '', 'Academy_Application'],
-                    ['30607', 'Admin', 'academy-nominations', '', '', '', 'note', '', '', 'Academy_Application']]
+                    ['30600', '', 'For Academy Application', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30601', '', 'academy_application', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30602', '', 'academy-applications', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30605', '', 'Academy Nom Notification', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30606', '', 'academy_nom 2025', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30607', '', 'academy-nominations', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30604', 'Arts', 'Arts academy', '', '', 'Arts', '', '', '', 'Academy_Application']]
+                    ['30604', '', 'Arts academy', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_academy_check")
 
     def test_in_topic(self):
         """Test for when column in_topic contains one of the topics indicating academy applications"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Science Academy', '', '', '', 'Water', '', '', ''],
-                              ['30601', 'military service academy', '', '', '', 'Admin', '', '', ''],
+        md_df = pd.DataFrame([['30600', 'Science Academy', '', '', '', '', '', '', ''],
+                              ['30601', 'military service academy', '', '', '', '', '', '', ''],
                               ['30602', 'Military^Academy Applicant', '', '', '', '', '', '', ''],
                               ['30603', 'Arts', '', '', '', '', '', '', ''],
                               ['30604', 'MILITARY SERVICE ACADEMY^ADMIN', '', '', '', '', '', '', '']],
@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_academy)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30601', 'military service academy', '', '', '', 'Admin', '', '', '', 'Academy_Application'],
+                    ['30601', 'military service academy', '', '', '', '', '', '', '', 'Academy_Application'],
                     ['30602', 'Military^Academy Applicant', '', '', '', '', '', '', '', 'Academy_Application'],
                     ['30604', 'MILITARY SERVICE ACADEMY^ADMIN', '', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_academy")
@@ -104,13 +104,13 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Science Academy', '', '', '', 'Water', '', '', '', 'Academy_Application']]
+                    ['30600', 'Science Academy', '', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_academy_check")
 
     def test_none(self):
         """Test for when no patterns indicating academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Arts', 'Note', 'Arts', 'Note'],
+        md_df = pd.DataFrame([['30600', 'Arts', '', 'Arts', ''],
                               ['30601', 'Water', '', '', '', '', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                                       'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
@@ -131,7 +131,7 @@ class MyTestCase(unittest.TestCase):
     def test_out_document_name(self):
         """Test for when column out_document_name contains one of the keywords"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Misc', '', '', '', '', '', '', ''],
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', ''],
                               ['30601', '', '', '', '', '', '', 'path/academy application info.pdf', ''],
                               ['30602', '', '', '', '', '', '', 'path/academy nomination info.pdf', ''],
                               ['30603', '', '', '', '', '', '', 'space academy', ''],
@@ -166,7 +166,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when column out_fillin contains one of the keywords"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', 'academy application info'],
-                              ['30601', '', '', '', '', 'Misc', '', '', ''],
+                              ['30601', '', '', '', '', '', '', '', ''],
                               ['30602', '', '', '', '', '', '', '', 'academy nomination info'],
                               ['30603', '', '', '', '', '', '', '', 'ACADEMY_APPS'],
                               ['30604', '', '', '', '', '', '', '', 'academy_info'],
@@ -200,13 +200,13 @@ class MyTestCase(unittest.TestCase):
         """Test for when column out_text contains one of the keywords"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', '', '', '', '', '', 'for academy applications', '', ''],
-                              ['30601', '', 'note', '', '', '', 'Academy_Application info', '', ''],
-                              ['30602', 'Military', '', '', '', '', 'ACADEMY-APP', '', ''],
-                              ['30603', 'Arts', 'Note', '', '', 'Arts', 'Academy Note', '', ''],
-                              ['30604', 'Science', '', '', '', 'Science', 'Intl Sci Academy', '', ''],
-                              ['30605', '', 'note', '', '', '', 'for academy nomination', '', ''],
-                              ['30606', '', 'note', '', '', '', 'Academy-Nomination acceptance', '', ''],
-                              ['30607', '', 'note', '', '', '', 'ACADEMY-NOM-YES', '', '']],
+                              ['30601', '', '', '', '', '', 'Academy_Application info', '', ''],
+                              ['30602', '', '', '', '', '', 'ACADEMY-APP', '', ''],
+                              ['30603', '', '', '', '', '', 'Academy Note', '', ''],
+                              ['30604', '', '', '', '', '', 'Intl Sci Academy', '', ''],
+                              ['30605', '', '', '', '', '', 'for academy nomination', '', ''],
+                              ['30606', '', '', '', '', '', 'Academy-Nomination acceptance', '', ''],
+                              ['30607', '', '', '', '', '', 'ACADEMY-NOM-YES', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                                       'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
         df_academy, df_academy_check = find_academy_rows(md_df)
@@ -216,27 +216,27 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', '', '', 'for academy applications', '', '', 'Academy_Application'],
-                    ['30601', '', 'note', '', '', '', 'Academy_Application info', '', '', 'Academy_Application'],
-                    ['30602', 'Military', '', '', '', '', 'ACADEMY-APP', '', '', 'Academy_Application'],
-                    ['30605', '', 'note', '', '', '', 'for academy nomination', '', '', 'Academy_Application'],
-                    ['30606', '', 'note', '', '', '', 'Academy-Nomination acceptance', '', '', 'Academy_Application'],
-                    ['30607', '', 'note', '', '', '', 'ACADEMY-NOM-YES', '', '', 'Academy_Application']]
+                    ['30601', '', '', '', '', '', 'Academy_Application info', '', '', 'Academy_Application'],
+                    ['30602', '', '', '', '', '', 'ACADEMY-APP', '', '', 'Academy_Application'],
+                    ['30605', '', '', '', '', '', 'for academy nomination', '', '', 'Academy_Application'],
+                    ['30606', '', '', '', '', '', 'Academy-Nomination acceptance', '', '', 'Academy_Application'],
+                    ['30607', '', '', '', '', '', 'ACADEMY-NOM-YES', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30603', 'Arts', 'Note', '', '', 'Arts', 'Academy Note', '', '', 'Academy_Application'],
-                    ['30604', 'Science', '', '', '', 'Science', 'Intl Sci Academy', '', '', 'Academy_Application']]
+                    ['30603', '', '', '', '', '', 'Academy Note', '', '', 'Academy_Application'],
+                    ['30604', '', '', '', '', '', 'Intl Sci Academy', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_academy_check")
 
     def test_out_topic(self):
         """Test for when column out_topic contains one of the topics indicating academy applications"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', 'Transportation', '', '', '', 'Academy', '', '', ''],
-                              ['30601', 'General', '', '', '', 'General^military service academy', '', '', ''],
-                              ['30602', 'General', '', '', '', 'Science Academy', 'Note', '', ''],
+        md_df = pd.DataFrame([['30600', '', '', '', '', 'Academy', '', '', ''],
+                              ['30601', '', '', '', '', 'General^military service academy', '', '', ''],
+                              ['30602', '', '', '', '', 'Science Academy', '', '', ''],
                               ['30603', '', '', '', '', 'Academy APPLICANT^Military', '', '', ''],
                               ['30604', '', '', '', '', 'Academy Applicant', '', '', '']],
                              columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
@@ -247,8 +247,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_academy)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30601', 'General', '', '', '', 'General^military service academy', '', '', '',
-                     'Academy_Application'],
+                    ['30601', '', '', '', '', 'General^military service academy', '', '', '', 'Academy_Application'],
                     ['30603', '', '', '', '', 'Academy APPLICANT^Military', '', '', '', 'Academy_Application'],
                     ['30604', '', '', '', '', 'Academy Applicant', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_academy")
@@ -257,8 +256,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'Transportation', '', '', '', 'Academy', '', '', '', 'Academy_Application'],
-                    ['30602', 'General', '', '', '', 'Science Academy', 'Note', '', '', 'Academy_Application']]
+                    ['30600', '', '', '', '', 'Academy', '', '', '', 'Academy_Application'],
+                    ['30602', '', '', '', '', 'Science Academy', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_academy_check")
 
 
