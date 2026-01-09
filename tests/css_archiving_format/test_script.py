@@ -116,12 +116,18 @@ class MyTestCase(unittest.TestCase):
                     ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', 20210111,
                      'A', r'..\documents\BlobExport\indivletters\000001.txt'],
+                    ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', 20210111,
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
                     ['B city', 'WY', 23456, 'BLANK', 'b200', 'General', 'Email', 20230202, 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', 20230212,
                      'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
                     ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
                      'A', r'..\documents\BlobExport\formletters\A.txt'],
+                    ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
+                     'A', r'..\documents\BlobExport\indivletters\000003.txt'],
                     ['F city', 'FL', 10234, 'BLANK', 'f600', 'General', 'Email', 20230202, 'B1',
                      r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', 20230212,
                      'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
@@ -135,6 +141,9 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
                      r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', 20210111,
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
+                    ['A city', 'AL', 12345, 'BLANK', 'a100', 'General', 'Email', 20210101, 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', 20210111,
                      'A', r'..\documents\BlobExport\indivletters\000001.txt']]
         self.assertEqual(expected, result, "Problem with test for access, 2021.csv")
 
@@ -160,7 +169,10 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_document_name'],
                     ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
-                     'A', r'..\documents\BlobExport\formletters\A.txt']]
+                     'A', r'..\documents\BlobExport\formletters\A.txt'],
+                    ['C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'r300', 'General', 'Email', 20240313,
+                     'A', r'..\documents\BlobExport\indivletters\000003.txt']]
         self.assertEqual(expected, result, "Problem with test for access, 2024.csv")
 
         # Tests that no undated.csv was made.
@@ -172,8 +184,10 @@ class MyTestCase(unittest.TestCase):
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
         expected = [os.path.join(by_topic, 'A', 'to_constituents', '000001.txt'),
+                    os.path.join(by_topic, 'A', 'to_constituents', '000003.txt'),
                     os.path.join(by_topic, 'A', 'to_constituents', 'A.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '111111.txt'),
+                    os.path.join(by_topic, 'A1', 'from_constituents', '111111_add.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '333333.txt'),
                     os.path.join(by_topic, 'B1', 'from_constituents', '222222.txt'),
                     os.path.join(by_topic, 'B1', 'to_constituents', '000002.txt'),

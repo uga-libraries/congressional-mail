@@ -1,3 +1,3 @@
 prefix	first	middle	last	suffix	appellation	title	org	addr1	addr2	addr3	addr4	city	state	zip	country	in_id	in_type	in_method	in_date	in_topic	in_text	in_document_name	in_fillin	out_id	out_type	out_method	out_date	out_topic	out_text	out_document_name	out_fillin
-Ms.	Anna	A.	Anderson		MD			123 A St				A city	AL	12345		a100	General	Email	20240101	A1		fileA100		r100	General	Email	20240111	formA		replyA100	
-Mr.	Bill	B.	Blue					456 B St	Apt 7			B city	WY	23456		b200	Case	Email	20240202	B1^B2	Note	fileB200		r200	Case	Email	20240212	formB		replyB200	
+Ms.	Anna	A.	Anderson		MD			123 A St				A city	AL	12345		a100	General	Email	20240101	A1		fileA100.doc		r100	General	Email	20240111	T1	note	formA.doc	replyA100
+Mr.	Bill	B.	Blue					456 B St	Apt 7			B city	WY	23456		b200	Case	Email	20240202	B1^B2	Note	fileB200.doc		r200	Case	Email	20240212	T2		formB.doc	replyB200
