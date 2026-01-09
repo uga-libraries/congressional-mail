@@ -340,13 +340,16 @@ def find_academy_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
-    # Column in_text includes "academy nomination" (case-insensitive).
-    in_text = df['in_text'].str.contains('academy nomination', case=False, na=False)
+    # Keywords used for all other columns.
+    keywords_list = ['academy app', 'academy_app', 'academy-app', 'academy nom', 'academy_nom', 'academy-nom']
+
+    # Column in_text includes one of the keywords (case-insensitive).
+    in_text = df['in_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
 
-    # Column out_text includes "academy nomination" (case-insensitive).
-    out_text = df['out_text'].str.contains('academy nomination', case=False, na=False)
+    # Column out_text includes one of the keywords (case-insensitive).
+    out_text = df['out_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_out_text = df[out_text]
     df = df[~out_text]
 
