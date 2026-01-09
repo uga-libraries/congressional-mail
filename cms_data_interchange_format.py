@@ -302,7 +302,7 @@ def find_casework_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column correspondence_text includes one or more keywords that indicate casework.
-    keywords_list = ['case file', 'case has', 'case open', 'casework', 'forwarded to me', 'open case']
+    keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
