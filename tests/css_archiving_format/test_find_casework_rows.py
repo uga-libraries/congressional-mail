@@ -11,6 +11,82 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
+    def test_in_document_name(self):
+        """Test for when the column in_document_name contains one of the keywords"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', r'path\added to case.txt', '', '', '', '', '', ''],
+                              ['30601', '', '', '', r'path\already open.txt', '', '', '', '', '', ''],
+                              ['30602', '', '', '', r'path\case closed.txt', '', '', '', '', '', ''],
+                              ['30603', '', '', '', r'path\case for.txt', '', '', '', '', '', ''],
+                              ['30604', '', '', '', r'path\case has been opened.txt', '', '', '', '', '', ''],
+                              ['30605', '', '', '', '', '', '', '', '', '', ''],
+                              ['30606', '', '', '', r'path\check for case.txt', '', '', '', '', '', ''],
+                              ['30607', '', '', '', r'path\case issue.txt', '', '', '', '', '', ''],
+                              ['30608', '', '', '', r'path\case work.txt', '', '', '', '', '', ''],
+                              ['30609', '', '', '', r'path\casework.txt', '', '', '', '', '', ''],
+                              ['30610', '', '', '', r'path\closed case.txt', '', '', '', '', '', ''],
+                              ['30611', '', '', '', r'path\open case.txt', '', '', '', '', '', ''],
+                              ['30612', '', '', '', r'path\started case.txt', '', '', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30600', '', '', '', r'path\added to case.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30601', '', '', '', r'path\already open.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30602', '', '', '', r'path\case closed.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30603', '', '', '', r'path\case for.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30604', '', '', '', r'path\case has been opened.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30607', '', '', '', r'path\case issue.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30608', '', '', '', r'path\case work.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30609', '', '', '', r'path\casework.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30610', '', '', '', r'path\closed case.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30611', '', '', '', r'path\open case.txt', '', '', '', '', '', '', 'Casework'],
+                    ['30612', '', '', '', r'path\started case.txt', '', '', '', '', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for in_document_name, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30606', '', '', '', r'path\check for case.txt', '', '', '', '', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for in_document_name, df_casework_check")
+
+    def test_in_text(self):
+        """Test for when the column NAME contains one of the keywords"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', '', '', ''],
+                              ['30601', '', '', '', '', '', '', '', '', '', ''],
+                              ['30602', '', '', '', '', '', '', '', '', '', ''],
+                              ['30603', '', '', '', '', '', '', '', '', '', ''],
+                              ['30604', '', '', '', '', '', '', '', '', '', ''],
+                              ['30605', '', '', '', '', '', '', '', '', '', ''],
+                              ['30606', '', '', '', '', '', '', '', '', '', ''],
+                              ['30607', '', '', '', '', '', '', '', '', '', ''],
+                              ['30608', '', '', '', '', '', '', '', '', '', ''],
+                              ['30609', '', '', '', '', '', '', '', '', '', ''],
+                              ['30610', '', '', '', '', '', '', '', '', '', ''],
+                              ['30611', '', '', '', '', '', '', '', '', '', ''],
+                              ['30612', '', '', '', '', '', '', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework_check")
+
     def test_in_topic(self):
         """Test for when the column in_topic contains a topic that indicates casework"""
         # Makes a dataframe to use as test input and runs the function.
@@ -92,6 +168,116 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none (no patterns matched), df_casework_check")
+
+    def test_out_document_name(self):
+        """Test for when the column out_document_name contains one of the keywords"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', '', '', ''],
+                              ['30601', '', '', '', '', '', '', '', '', r'path\added to case.txt', ''],
+                              ['30602', '', '', '', '', '', '', '', '', r'path\already open.txt', ''],
+                              ['30603', '', '', '', '', '', '', '', '', r'path\case closed.txt', ''],
+                              ['30604', '', '', '', '', '', '', '', '', r'path\case for.txt', ''],
+                              ['30605', '', '', '', '', '', '', '', '', r'path\case has been opened.txt', ''],
+                              ['30606', '', '', '', '', '', '', '', '', r'path\check for case.txt', ''],
+                              ['30607', '', '', '', '', '', '', '', '', r'path\case issue.txt', ''],
+                              ['30608', '', '', '', '', '', '', '', '', r'path\case work.txt', ''],
+                              ['30609', '', '', '', '', '', '', '', '', r'path\casework.txt', ''],
+                              ['30610', '', '', '', '', '', '', '', '', r'path\closed case.txt', ''],
+                              ['30611', '', '', '', '', '', '', '', '', r'path\open case.txt', ''],
+                              ['30612', '', '', '', '', '', '', '', '', r'path\started case.txt', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30601', '', '', '', '', '', '', '', '', r'path\added to case.txt', '', 'Casework'],
+                    ['30602', '', '', '', '', '', '', '', '', r'path\already open.txt', '', 'Casework'],
+                    ['30603', '', '', '', '', '', '', '', '', r'path\case closed.txt', '', 'Casework'],
+                    ['30604', '', '', '', '', '', '', '', '', r'path\case for.txt', '', 'Casework'],
+                    ['30605', '', '', '', '', '', '', '', '', r'path\case has been opened.txt', '', 'Casework'],
+                    ['30607', '', '', '', '', '', '', '', '', r'path\case issue.txt', '', 'Casework'],
+                    ['30608', '', '', '', '', '', '', '', '', r'path\case work.txt', '', 'Casework'],
+                    ['30609', '', '', '', '', '', '', '', '', r'path\casework.txt', '', 'Casework'],
+                    ['30610', '', '', '', '', '', '', '', '', r'path\closed case.txt', '', 'Casework'],
+                    ['30611', '', '', '', '', '', '', '', '', r'path\open case.txt', '', 'Casework'],
+                    ['30612', '', '', '', '', '', '', '', '', r'path\started case.txt', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30606', '', '', '', '', '', '', '', '', r'path\check for case.txt', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for out_document_name, df_casework_check")
+
+    def test_out_fillin(self):
+        """Test for when the column NAME contains one of the keywords"""
+        # TODO
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', '', '', ''],
+                              ['30601', '', '', '', '', '', '', '', '', '', ''],
+                              ['30602', '', '', '', '', '', '', '', '', '', ''],
+                              ['30603', '', '', '', '', '', '', '', '', '', ''],
+                              ['30604', '', '', '', '', '', '', '', '', '', ''],
+                              ['30605', '', '', '', '', '', '', '', '', '', ''],
+                              ['30606', '', '', '', '', '', '', '', '', '', ''],
+                              ['30607', '', '', '', '', '', '', '', '', '', ''],
+                              ['30608', '', '', '', '', '', '', '', '', '', ''],
+                              ['30609', '', '', '', '', '', '', '', '', '', ''],
+                              ['30610', '', '', '', '', '', '', '', '', '', ''],
+                              ['30611', '', '', '', '', '', '', '', '', '', ''],
+                              ['30612', '', '', '', '', '', '', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework_check")
+
+    def test_out_text(self):
+        """Test for when the column NAME contains one of the keywords"""
+        # TODO
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', '', '', ''],
+                              ['30601', '', '', '', '', '', '', '', '', '', ''],
+                              ['30602', '', '', '', '', '', '', '', '', '', ''],
+                              ['30603', '', '', '', '', '', '', '', '', '', ''],
+                              ['30604', '', '', '', '', '', '', '', '', '', ''],
+                              ['30605', '', '', '', '', '', '', '', '', '', ''],
+                              ['30606', '', '', '', '', '', '', '', '', '', ''],
+                              ['30607', '', '', '', '', '', '', '', '', '', ''],
+                              ['30608', '', '', '', '', '', '', '', '', '', ''],
+                              ['30609', '', '', '', '', '', '', '', '', '', ''],
+                              ['30610', '', '', '', '', '', '', '', '', '', ''],
+                              ['30611', '', '', '', '', '', '', '', '', '', ''],
+                              ['30612', '', '', '', '', '', '', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for COLUMN, df_casework_check")
 
     def test_out_text_exact(self):
         """Test for when the column out_text is equal to a keyword that indicates casework"""
