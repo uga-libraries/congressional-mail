@@ -425,6 +425,14 @@ def find_casework_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
+    # Column in_type is CASE.
+    df_in_type = df[df['in_type'] == 'CASE']
+    df = df[df['in_type'] != 'CASE']
+
+    # Column out_type is CASE.
+    df_out_type = df[df['out_type'] == 'CASE']
+    df = df[df['out_type'] != 'CASE']
+
     # Column out_text exactly matches a keyword that indicates casework.
     # These would get too many false positives if added to the keywords list.
     exact_list = ['case', 'case!']
@@ -463,8 +471,8 @@ def find_casework_rows(df):
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_in_topic, df_out_topic, df_out_text_exact, df_in_text, df_out_text,
-                             df_in_doc, df_out_doc, df_outfill], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_in_topic, df_out_topic, df_in_type, df_out_type, df_out_text_exact,
+                             df_in_text, df_out_text, df_in_doc, df_out_doc, df_outfill], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
