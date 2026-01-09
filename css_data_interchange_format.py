@@ -306,7 +306,7 @@ def find_casework_rows(df):
     df = df[~group]
 
     # Column communication_document_name includes one or more keywords that indicate casework.
-    keywords_list = ['casework', 'initialssacase', 'open sixth district cases']
+    keywords_list = ['casework', 'case work', 'initialssacase', 'open sixth district cases']
     doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_doc_name = df[doc_name]
     df = df[~doc_name]
