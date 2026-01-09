@@ -254,7 +254,7 @@ class MyTestCase(unittest.TestCase):
                      'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
                     ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
-                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
+                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case work file',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
 
@@ -392,7 +392,7 @@ class MyTestCase(unittest.TestCase):
                      'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
                     ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
-                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case file',
+                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case work file',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
 

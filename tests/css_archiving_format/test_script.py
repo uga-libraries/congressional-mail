@@ -242,7 +242,7 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
                      '345 C St', 'C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'Misc',
-                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
+                     'Maybe case work', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
                      'Email', '2024-03-13', 'B1^B2', 'BLANK', r'..\documents\BlobExport\indivletters\000003.txt',
                      'BLANK', 'Casework'],
                     ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK',
@@ -292,7 +292,7 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
                      '345 C St', 'C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'Misc',
-                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
+                     'Maybe case work', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
                      'Email', '2024-03-13', 'B1^B2', 'BLANK', r'..\documents\BlobExport\indivletters\000003.txt', 
                      'BLANK']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_out_date.csv")
@@ -418,7 +418,7 @@ class MyTestCase(unittest.TestCase):
                      'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
                      '345 C St', 'C city', 'CO', 34567, 'BLANK', 'c300', 'General', 'Letter', 20240303, 'Misc',
-                     'Maybe casework', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
+                     'Maybe case work', r'..\documents\BlobExport\objects\333333.txt', 'BLANK', 'r300', 'General',
                      'Email', '2024-03-13', 'B1^B2', 'BLANK', r'..\documents\BlobExport\indivletters\000003.txt',
                      'BLANK', 'Casework'],
                     ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK',

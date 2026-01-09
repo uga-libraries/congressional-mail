@@ -391,10 +391,12 @@ def find_appraisal_rows(df, output_dir):
 
 def find_casework_rows(df):
     """Find metadata rows with topics or text that indicate they are casework and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    Once a row matches one pattern, it is not considered for other patterns.
+    We will delete even if the phrase indicates it is not a case or casework
+    because the fact they considered it might be a case suggests it includes sensitive personal information."""
 
     # Column in_topic includes one or more of the topics that indicate casework.
-    topics_list = ['Casework', 'Prison Case']
+    topics_list = ['case work', 'casework', 'prison case']
     in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
@@ -405,14 +407,14 @@ def find_casework_rows(df):
     df = df[~out_topic]
 
     # Column out_text is equal to a keyword that indicates casework.
-    keyword_list = ['case', 'case!']
+    keyword_list = ['case', 'case!', 'case work', 'casework']
     out_text = df['out_text'].str.lower().isin(keyword_list)
     df_out_text = df[out_text]
     df = df[~out_text]
 
     # Any column includes a phrase that indicates casework.
     case_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened', 'case issue',
-                 'case work', 'casew', 'closed case', 'open case', 'started case']
+                 'case work', 'casework', 'closed case', 'open case', 'started case']
     case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
     df_phrase = df.loc[case_phrase.any(axis=1)]
     df = df.loc[~case_phrase.any(axis=1)]

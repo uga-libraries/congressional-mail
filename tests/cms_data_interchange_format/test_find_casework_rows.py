@@ -19,7 +19,8 @@ class MyTestCase(unittest.TestCase):
                            ['file_4.doc', 'CASEWORK', 'x'],
                            ['file_5.doc', 'Forwarded to me for a response', 'x'],
                            ['file_6.doc', 'Add to open case', 'x'],
-                           ['file_7.doc', 'Potential case', 'x']],
+                           ['file_7.doc', 'Potential case', 'x'],
+                           ['file_8.doc', 'Maybe not case work', 'x']],
                           columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -31,7 +32,8 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'Case Open', 'x', 'Casework'],
                     ['file_4.doc', 'CASEWORK', 'x', 'Casework'],
                     ['file_5.doc', 'Forwarded to me for a response', 'x', 'Casework'],
-                    ['file_6.doc', 'Add to open case', 'x', 'Casework']]
+                    ['file_6.doc', 'Add to open case', 'x', 'Casework'],
+                    ['file_8.doc', 'Maybe not case work', 'x', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_casework")
 
         # Tests the values in df_casework_check are correct.
