@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
     def test_both(self):
         """Test for when both patterns indicating casework are present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'Admin', 'doc\\Casework - Initial Reply.doc', '', ''],
+        df = pd.DataFrame([['20250401', 'Admin', 'doc\\Case Work - Initial Reply.doc', '', ''],
                            ['20250402', 'case12', 'doc\\doc.txt', '', ''],
                            ['20250403', 'CASE 1', '', '', ''],
                            ['20250404', 'Admin', 'doc\\initialssacase.doc', '', ''],
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250402', 'case12', 'doc\\doc.txt', '', '', 'Casework'],
                     ['20250403', 'CASE 1', '', '', '', 'Casework'],
-                    ['20250401', 'Admin', 'doc\\Casework - Initial Reply.doc', '', '', 'Casework'],
+                    ['20250401', 'Admin', 'doc\\Case Work - Initial Reply.doc', '', '', 'Casework'],
                     ['20250404', 'Admin', 'doc\\initialssacase.doc', '', '', 'Casework'],
                     ['20250405', 'Admin', 'doc\\Close Favorably - Casework.doc', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for both, df_casework")
@@ -42,7 +42,7 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function.
         df = pd.DataFrame([['20250401', 'Admin', 'doc\\Buck Letter - Casework.doc', '', ''],
                            ['20250402', 'Admin', 'doc\\Casework - Initial Reply.doc', '', ''],
-                           ['20250403', 'Admin', 'doc\\Close Favorably - Casework.doc', '', ''],
+                           ['20250403', 'Admin', 'doc\\Close Favorably - Case work.doc', '', ''],
                            ['20250404', 'Admin', 'doc\\Initial Reply - Casework.doc', '', ''],
                            ['20250405', 'Admin', 'doc\\Interim - Casework.doc', '', ''],
                            ['20250406', 'Admin', 'doc\\Open Sixth District Casework.doc', '', ''],
@@ -59,7 +59,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250401', 'Admin', 'doc\\Buck Letter - Casework.doc', '', '', 'Casework'],
                     ['20250402', 'Admin', 'doc\\Casework - Initial Reply.doc', '', '', 'Casework'],
-                    ['20250403', 'Admin', 'doc\\Close Favorably - Casework.doc', '', '', 'Casework'],
+                    ['20250403', 'Admin', 'doc\\Close Favorably - Case work.doc', '', '', 'Casework'],
                     ['20250404', 'Admin', 'doc\\Initial Reply - Casework.doc', '', '', 'Casework'],
                     ['20250405', 'Admin', 'doc\\Interim - Casework.doc', '', '', 'Casework'],
                     ['20250406', 'Admin', 'doc\\Open Sixth District Casework.doc', '', '', 'Casework'],
@@ -78,7 +78,7 @@ class MyTestCase(unittest.TestCase):
     def test_group_name(self):
         """Test for when the column group_name indicates casework is present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'case12', 'doc\\doc.txt', '', ''],
+        df = pd.DataFrame([['20250401', 'casework12', 'doc\\doc.txt', '', ''],
                            ['20250402', 'CASE 1', '', '', ''],
                            ['20250403', 'legal case concern', '', '', ''],
                            ['20250404', 'Smith Case', '', '', '']],
@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20250401', 'case12', 'doc\\doc.txt', '', '', 'Casework'],
+                    ['20250401', 'casework12', 'doc\\doc.txt', '', '', 'Casework'],
                     ['20250402', 'CASE 1', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for group_name, df_casework")
 
