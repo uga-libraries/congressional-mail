@@ -47,6 +47,31 @@ class MyTestCase(unittest.TestCase):
                     ['30607', 'KEEP CASE', '', '', '', '', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_casework_check")
 
+    def test_in_type(self):
+        """Test for when the column in_type is equal to CASE"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', 'CASE', '', '', '', '', '', '', '', '', ''],
+                              ['30601', 'GENERAL', '', '', '', '', '', '', '', '', ''],
+                              ['30602', '', '', '', '', '', '', '', '', '', ''],
+                              ['30603', 'CASE', '', '', '', '', '', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30600', 'CASE', '', '', '', '', '', '', '', '', '', 'Casework'],
+                    ['30603', 'CASE', '', '', '', '', '', '', '', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for in_type, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for in_type, df_casework_check")
+
     def test_none(self):
         """Test for when there are no indicators of casework"""
         # Makes a dataframe to use as test input and runs the function.
@@ -124,6 +149,31 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_casework_check")
+
+    def test_out_type(self):
+        """Test for when the column out_type is equal to CASE"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', 'CASE', '', '', '', ''],
+                              ['30601', '', '', '', '', '', 'GENERAL', '', '', '', ''],
+                              ['30602', '', '', '', '', '', '', '', '', '', ''],
+                              ['30603', '', '', '', '', '', 'CASE', '', '', '', '']],
+                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_casework, df_casework_check = find_casework_rows(md_df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30600', '', '', '', '', '', 'CASE', '', '', '', '', 'Casework'],
+                    ['30603', '', '', '', '', '', 'CASE', '', '', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for out_type, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for out_type, df_casework_check")
 
     def test_phase(self):
         """Test for when a column contains a phrase that indicates casework"""
