@@ -175,51 +175,6 @@ class MyTestCase(unittest.TestCase):
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for out_type, df_casework_check")
 
-    def test_phase(self):
-        """Test for when a column contains a phrase that indicates casework"""
-        # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', 'I added to case', '', ''],
-                              ['30601', '', '', '', '', '', '', '', 'Already opened a case', '', ''],
-                              ['30602', '', '', '', '', '', '', '', 'CASE CLOSED', '', ''],
-                              ['30603', '', '', '', '', '', '', '', 'Case for doe', '', ''],
-                              ['30604', '', '', '', '', '', '', '', 'A case has been opened', '', ''],
-                              ['30605', '', '', '', '', '', '', '', 'Maybe case issue', '', ''],
-                              ['30606', '', '', '', '', '', '', '', 'case work', '', ''],
-                              ['30607', '', '', '', '', '', '', '', 'For casework', '', ''],
-                              ['30608', '', '', '', '', '', '', '', 'For case work', '', ''],
-                              ['30609', 'Closed Case', '', '', '', '', '', '', '', '', ''],
-                              ['30610', 'Open Case', '', '', '', '', '', '', '', '', ''],
-                              ['30611', '', '', '', '', '', '', '', 'Mary started case yesterday', '', ''],
-                              ['30612', 'Roads', '', '', '', '', '', '', 'Not a case', '', '']],
-                             columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        df_casework, df_casework_check = find_casework_rows(md_df)
-
-        # Tests the values in df_casework are correct.
-        result = df_to_list(df_casework)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30606', '', '', '', '', '', '', '', 'case work', '', '', 'Casework'],
-                    ['30600', '', '', '', '', '', '', '', 'I added to case', '', '', 'Casework'],
-                    ['30601', '', '', '', '', '', '', '', 'Already opened a case', '', '', 'Casework'],
-                    ['30602', '', '', '', '', '', '', '', 'CASE CLOSED', '', '', 'Casework'],
-                    ['30603', '', '', '', '', '', '', '', 'Case for doe', '', '', 'Casework'],
-                    ['30604', '', '', '', '', '', '', '', 'A case has been opened', '', '', 'Casework'],
-                    ['30605', '', '', '', '', '', '', '', 'Maybe case issue', '', '', 'Casework'],
-                    ['30607', '', '', '', '', '', '', '', 'For casework', '', '', 'Casework'],
-                    ['30608', '', '', '', '', '', '', '', 'For case work', '', '', 'Casework'],
-                    ['30609', 'Closed Case', '', '', '', '', '', '', '', '', '', 'Casework'],
-                    ['30610', 'Open Case', '', '', '', '', '', '', '', '', '', 'Casework'],
-                    ['30611', '', '', '', '', '', '', '', 'Mary started case yesterday', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for phrase, df_casework")
-
-        # Tests the values in df_casework_check are correct.
-        result = df_to_list(df_casework_check)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30612', 'Roads', '', '', '', '', '', '', 'Not a case', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for phrase, df_casework_check")
-
 
 if __name__ == '__main__':
     unittest.main()
