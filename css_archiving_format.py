@@ -561,9 +561,25 @@ def find_recommendation_rows(df):
     df_out_text = df[out_text]
     df = df[~out_text]
 
+    # Column in_document_name includes a phrase (case_insensitive) that indicates a recommendation.
+    in_doc = df['in_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
+    # Column out_document_name includes a phrase (case_insensitive) that indicates a recommendation.
+    out_doc = df['out_doc'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_out_doc = df[out_doc]
+    df = df[~out_doc]
+
+    # Column out_fillin includes a phrase (case_insensitive) that indicates a recommendation.
+    out_fill = df['out_fill'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_out_fill = df[out_fill]
+    df = df[~out_fill]
+
     # Makes a single dataframe with all rows that indicate recommendations
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc,
+                                   df_out_fill], axis=0, ignore_index=True)
     df_recommendation['Appraisal_Category'] = 'Recommendation'
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
