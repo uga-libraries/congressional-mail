@@ -518,9 +518,15 @@ def find_job_rows(df):
     df_out_doc = df[out_doc]
     df = df[~out_doc]
 
+    # Column out_fillin includes text that indicates job applications (case-insensitive).
+    fill_list = ['intern', 'job interview', 'job request', 'resume']
+    out_fill = df['out_fillin'].str.contains('|'.join(fill_list), case=False, na=False)
+    df_out_fill = df[out_fill]
+    df = df[~out_fill]
+
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc],
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fill],
                        axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
