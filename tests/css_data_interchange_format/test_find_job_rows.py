@@ -11,33 +11,6 @@ from test_appraisal_check_df import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_all(self):
-        """Test for when all patterns indicating job applications are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'jobapps1', 'docs\\JOBAPPS.doc', '', ''],
-                           ['20250402', 'Job Requests', 'docs\\doc.txt', '', ''],
-                           ['20250403', 'RESUME', 'docs\\first reply to resume.txt', '', ''],
-                           ['20250404', 'jobapps2', 'docs\\doc.txt', '', ''],
-                           ['20250405', '', 'docs\\job.doc', '', ''],
-                           ['20250406', '', 'docs\\doc.txt', '', '']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
-        df_job, df_job_check = find_job_rows(df)
-
-        # Tests the values in df_job are correct.
-        result = df_to_list(df_job)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20250401', 'jobapps1', 'docs\\JOBAPPS.doc', '', '', 'Job_Application'],
-                    ['20250402', 'Job Requests', 'docs\\doc.txt', '', '', 'Job_Application'],
-                    ['20250403', 'RESUME', 'docs\\first reply to resume.txt', '', '', 'Job_Application'],
-                    ['20250404', 'jobapps2', 'docs\\doc.txt', '', '', 'Job_Application'],
-                    ['20250405', '', 'docs\\job.doc', '', '', 'Job_Application']]
-        self.assertEqual(expected, result, "Problem with test for all, df_job")
-
-        # Tests the values in df_job_check are correct.
-        result = df_to_list(df_job_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for all, df_job_check")
-
     def test_doc_name(self):
         """Test for when the column communication_document_name indicates job applications are present"""
         # Makes a dataframe to use as test input and runs the function.

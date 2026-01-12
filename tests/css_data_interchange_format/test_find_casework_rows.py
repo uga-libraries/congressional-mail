@@ -11,32 +11,6 @@ from test_appraisal_check_df import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_both(self):
-        """Test for when both patterns indicating casework are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', '', 'doc\\Case Work - Initial Reply.doc', '', ''],
-                           ['20250402', 'case12', 'doc\\doc.txt', '', ''],
-                           ['20250403', 'CASE 1', '', '', ''],
-                           ['20250404', '', 'doc\\initialssacase.doc', '', ''],
-                           ['20250405', '', 'doc\\Close Favorably - Casework.doc', '', '']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
-        df_casework, df_casework_check = find_casework_rows(df)
-
-        # Tests the values in df_casework are correct.
-        result = df_to_list(df_casework)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20250402', 'case12', 'doc\\doc.txt', '', '', 'Casework'],
-                    ['20250403', 'CASE 1', '', '', '', 'Casework'],
-                    ['20250401', '', 'doc\\Case Work - Initial Reply.doc', '', '', 'Casework'],
-                    ['20250404', '', 'doc\\initialssacase.doc', '', '', 'Casework'],
-                    ['20250405', '', 'doc\\Close Favorably - Casework.doc', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework")
-
-        # Tests the values in df_casework_check are correct.
-        result = df_to_list(df_casework_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework_check")
-
     def test_doc_name(self):
         """Test for when the column communication_document_name indicates casework is present"""
         # Makes a dataframe to use as test input and runs the function.

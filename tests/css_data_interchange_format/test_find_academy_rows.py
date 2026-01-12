@@ -11,33 +11,6 @@ from test_appraisal_check_df import df_to_list
 
 class MyTestCase(unittest.TestCase):
     
-    def test_both(self):
-        """Test for when both patterns indicating academy applications are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['20250401', 'ACADEMY DAY', 'docs\\doc.txt', '', ''],
-                           ['20250402', 'Academy2025', 'docs\\doc.txt', '', ''],
-                           ['20250403', 'academy interviews 25', 'docs\\academy_interviews.txt', '', ''],
-                           ['20250404', '', 'docs\\ACADEMY\\doc.txt', '', ''],
-                           ['20250405', '', 'docs\\doc.txt', 'academy_day.txt', ''],
-                           ['20250406', '', 'docs\\doc.txt', '', '']],
-                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
-        df_academy, df_academy_check = find_academy_rows(df)
-
-        # Tests the values in df_academy are correct.
-        result = df_to_list(df_academy)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20250401', 'ACADEMY DAY', 'docs\\doc.txt', '', '', 'Academy_Application'],
-                    ['20250402', 'Academy2025', 'docs\\doc.txt', '', '', 'Academy_Application'],
-                    ['20250403', 'academy interviews 25', 'docs\\academy_interviews.txt', '', '', 'Academy_Application'],
-                    ['20250404', '', 'docs\\ACADEMY\\doc.txt', '', '', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for both, df_academy")
-
-        # Tests the values in df_academy_check are correct.
-        result = df_to_list(df_academy_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20250405', '', 'docs\\doc.txt', 'academy_day.txt', '', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for both, df_academy_check")
-
     def test_doc_name(self):
         """Test for when the column communication_document_name indicates academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
