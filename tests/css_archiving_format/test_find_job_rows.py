@@ -155,6 +155,36 @@ class MyTestCase(unittest.TestCase):
                     ['30604', '', '', '', '', '', '', r'..\doc\jobs\file.doc', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_job_check")
 
+    def test_out_fillin(self):
+        """Test for when column out_fillin contains a word or phrase indicating job applications"""
+        # Makes a dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['30600', '', '', '', '', '', '', '', 'internship'],
+                              ['30601', '', '', '', '', '', '', '', 'second job interview'],
+                              ['30602', '', '', '', '', '', '', '', 'send job request form'],
+                              ['30603', '', '', '', '', '', '', '', ''],
+                              ['30604', '', '', '', '', '', '', '', 'check of job'],
+                              ['30605', '', '', '', '', '', '', '', 'RESUME']],
+                             columns=['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
+                                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
+        df_job, df_job_check = find_job_rows(md_df)
+
+        # Tests the values in df_job are correct.
+        result = df_to_list(df_job)
+        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
+                     'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30600', '', '', '', '', '', '', '', 'internship', 'Job_Application'],
+                    ['30601', '', '', '', '', '', '', '', 'second job interview', 'Job_Application'],
+                    ['30602', '', '', '', '', '', '', '', 'send job request form', 'Job_Application'],
+                    ['30605', '', '', '', '', '', '', '', 'RESUME', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for out_fillin, df_job")
+
+        # Tests the values in df_job_check are correct.
+        result = df_to_list(df_job_check)
+        expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
+                     'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30604', '', '', '', '', '', '', '', 'check of job', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for out_fillin, df_job_check")
+
     def test_out_text(self):
         """Test for when column out_text contains a word or phrase indicating job applications"""
         # Makes a dataframe to use as test input and runs the function.
