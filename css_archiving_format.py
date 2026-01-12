@@ -567,12 +567,12 @@ def find_recommendation_rows(df):
     df = df[~in_doc]
 
     # Column out_document_name includes a phrase (case_insensitive) that indicates a recommendation.
-    out_doc = df['out_doc'].str.contains('|'.join(phrase_list), case=False, na=False)
+    out_doc = df['out_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_out_doc = df[out_doc]
     df = df[~out_doc]
 
     # Column out_fillin includes a phrase (case_insensitive) that indicates a recommendation.
-    out_fill = df['out_fill'].str.contains('|'.join(phrase_list), case=False, na=False)
+    out_fill = df['out_fillin'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_out_fill = df[out_fill]
     df = df[~out_fill]
 
