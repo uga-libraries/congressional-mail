@@ -13,76 +13,82 @@ class MyTestCase(unittest.TestCase):
     def test_code_desc(self):
         """Test for when the column code_description indicates academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['', '', 'ACAD - Academy Nominations'],
-                           ['', '', 'acad - academy nominations'],
-                           ['', '', 'WEBACAD - Web Form Academy Nominations'],
-                           ['', '', 'webacad - web form academy nominations'],
-                           ['', '', 'academy nomination'],
-                           ['', '', 'academy awards']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
+        df = pd.DataFrame([['30600', '', '', 'ACAD - Academy Nominations'],
+                           ['30601', '', '', 'acad - academy nominations'],
+                           ['30602', '', '', 'WEBACAD - Web Form Academy Nominations'],
+                           ['30603', '', '', 'webacad - web form academy nominations'],
+                           ['30604', '', '', 'academy nomination'],
+                           ['30605', '', '', 'academy awards']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_academy, df_academy_check = find_academy_rows(df)
 
         # Tests the values in df_academy are correct.
         result = df_to_list(df_academy)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', '', 'ACAD - Academy Nominations', 'Academy_Application'],
-                    ['', '', 'acad - academy nominations', 'Academy_Application'],
-                    ['', '', 'WEBACAD - Web Form Academy Nominations', 'Academy_Application'],
-                    ['', '', 'webacad - web form academy nominations', 'Academy_Application'],
-                    ['', '', 'academy nomination', 'Academy_Application']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', '', '', 'ACAD - Academy Nominations', 'Academy_Application'],
+                    ['30601', '', '', 'acad - academy nominations', 'Academy_Application'],
+                    ['30602', '', '', 'WEBACAD - Web Form Academy Nominations', 'Academy_Application'],
+                    ['30603', '', '', 'webacad - web form academy nominations', 'Academy_Application'],
+                    ['30604', '', '', 'academy nomination', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', '', 'academy awards', 'Academy_Application']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30605', '', '', 'academy awards', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc df_academy_check")
 
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['', 'Sports Academy', ''],
-                           ['', 'academy appointment request', ''],
-                           ['', 'HELP WITH ACADEMY ISSUE', ''],
-                           ['', 'academy vouchers', ''],
-                           ['', 'Academy Nominations', ''],
-                           ['', 'Military Academy - Application', '']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
+        df = pd.DataFrame([['30600', '', 'Sports Academy', ''],
+                           ['30601', '', 'academy appointment request', ''],
+                           ['30602', '', 'HELP WITH ACADEMY ISSUE', ''],
+                           ['30603', '', 'academy vouchers', ''],
+                           ['30604', '', 'Academy Nominations', ''],
+                           ['30605', '', 'Military Academy - Application', '']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_academy, df_academy_check = find_academy_rows(df)
 
         # Tests the values in df_academy are correct.
         result = df_to_list(df_academy)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', 'academy appointment request', '', 'Academy_Application'],
-                    ['', 'HELP WITH ACADEMY ISSUE', '', 'Academy_Application'],
-                    ['', 'Academy Nominations', '', 'Academy_Application'],
-                    ['', 'Military Academy - Application', '', 'Academy_Application']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30601', '', 'academy appointment request', '', 'Academy_Application'],
+                    ['30602', '', 'HELP WITH ACADEMY ISSUE', '', 'Academy_Application'],
+                    ['30604', '', 'Academy Nominations', '', 'Academy_Application'],
+                    ['30605', '', 'Military Academy - Application', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', 'Sports Academy', '', 'Academy_Application'],
-                    ['', 'academy vouchers', '', 'Academy_Application']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', '', 'Sports Academy', '', 'Academy_Application'],
+                    ['30603', '', 'academy vouchers', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy_check")
 
     def test_none(self):
         """Test for when no rows have academy applications"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['file.doc', 'one', 'a'],
-                           ['file.doc', 'two', 'b'],
-                           ['file.doc', 'three', 'c']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
+        df = pd.DataFrame([['30600', 'file.doc', 'one', 'a'],
+                           ['30601', 'file.doc', 'two', 'b'],
+                           ['30602', 'file.doc', 'three', 'c']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_academy, df_academy_check = find_academy_rows(df)
 
         # Tests the values in df_academy are correct.
         result = df_to_list(df_academy)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_academy_check")
 
 

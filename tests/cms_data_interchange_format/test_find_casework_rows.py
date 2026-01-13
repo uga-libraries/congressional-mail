@@ -13,52 +13,56 @@ class MyTestCase(unittest.TestCase):
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates casework is present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['', 'New case file', ''],
-                           ['', 'case has been closed', ''],
-                           ['', 'Case Open', ''],
-                           ['', 'CASEWORK', ''],
-                           ['', 'Forwarded to me for a response', ''],
-                           ['', 'Add to open case', ''],
-                           ['', 'Potential case', ''],
-                           ['', 'Maybe not case work', '']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
+        df = pd.DataFrame([['30600', '', 'New case file', ''],
+                           ['30601', '', 'case has been closed', ''],
+                           ['30602', '', 'Case Open', ''],
+                           ['30603', '', 'CASEWORK', ''],
+                           ['30604', '', 'Forwarded to me for a response', ''],
+                           ['30605', '', 'Add to open case', ''],
+                           ['30606', '', 'Potential case', ''],
+                           ['30607', '', 'Maybe not case work', '']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', 'New case file', '', 'Casework'],
-                    ['', 'case has been closed', '', 'Casework'],
-                    ['', 'Case Open', '', 'Casework'],
-                    ['', 'CASEWORK', '', 'Casework'],
-                    ['', 'Forwarded to me for a response', '', 'Casework'],
-                    ['', 'Add to open case', '', 'Casework'],
-                    ['', 'Maybe not case work', '', 'Casework']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', '', 'New case file', '', 'Casework'],
+                    ['30601', '', 'case has been closed', '', 'Casework'],
+                    ['30602', '', 'Case Open', '', 'Casework'],
+                    ['30603', '', 'CASEWORK', '', 'Casework'],
+                    ['30604', '', 'Forwarded to me for a response', '', 'Casework'],
+                    ['30605', '', 'Add to open case', '', 'Casework'],
+                    ['30607', '', 'Maybe not case work', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['', 'Potential case', '', 'Casework']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30606', '', 'Potential case', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_casework_check")
 
     def test_none(self):
         """Test for when no rows have casework"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['file_1.doc', 'one', 'a'],
-                           ['file_2.doc', 'two', 'b'],
-                           ['file_3.doc', 'three', 'c']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
+        df = pd.DataFrame([['30600', 'file_1.doc', 'one', 'a'],
+                           ['30601', 'file_2.doc', 'two', 'b'],
+                           ['30602', 'file_3.doc', 'three', 'c']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_casework_check")
 
 
