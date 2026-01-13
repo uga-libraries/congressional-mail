@@ -368,13 +368,21 @@ def find_recommendation_rows(df):
     """Find metadata rows with topics or text that indicate they are recommendations and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
+    # Column group_name includes one or more keywords that indicate recommendations.
+    group_list = ['intern', 'page', 'recommendation']
+    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
+    df_group = df[group].copy()
+    df = df[~group]
+
     # Column communication_document_name includes one or more keywords that indicate recommendations.
     keywords_list = ['intern rec', 'page rec']
     doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_rec = df[doc_name].copy()
+    df_doc_name = df[doc_name].copy()
     df = df[~doc_name]
 
-    # Adds a column for the appraisal category (needed for the file deletion log).
+    # Makes a single dataframe with all rows that indicate recommendations
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_rec = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
     df_rec['Appraisal_Category'] = 'Recommendation'
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
