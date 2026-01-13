@@ -380,9 +380,14 @@ def find_recommendation_rows(df):
     df_doc_name = df[doc_name].copy()
     df = df[~doc_name]
 
+    # Column text includes one or more keywords that indicate recommendations.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text].copy()
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate recommendations
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_rec = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_rec = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_rec['Appraisal_Category'] = 'Recommendation'
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could

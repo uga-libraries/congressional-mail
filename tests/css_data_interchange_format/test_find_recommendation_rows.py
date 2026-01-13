@@ -83,6 +83,33 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_rec_check")
         
-        
+    def test_text(self):
+        """Test for when the column text indicates recommendations are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', '', 'intern recommendation'],
+                           ['20250402', '', '', '', 'donor page rec'],
+                           ['20250403', '', '', '', 'check for recommendation'],
+                           ['20250404', '', '', '', ''],
+                           ['20250405', '', '', '', 'INTERN REC'],
+                           ['20250406', '', '', '', 'policy recommendation']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_rec, df_rec_check = find_recommendation_rows(df)
+
+        # Tests the values in df_rec are correct.
+        result = df_to_list(df_rec)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', '', '', '', 'intern recommendation', 'Recommendation'],
+                    ['20250402', '', '', '', 'donor page rec', 'Recommendation'],
+                    ['20250405', '', '', '', 'INTERN REC', 'Recommendation']]
+        self.assertEqual(expected, result, "Problem with test for text, df_rec")
+
+        # Tests the values in df_rec_check are correct.
+        result = df_to_list(df_rec_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250403', '', '', '', 'check for recommendation', 'Recommendation'],
+                    ['20250406', '', '', '', 'policy recommendation', 'Recommendation']]
+        self.assertEqual(expected, result, "Problem with test for text, df_rec_check")
+
+
 if __name__ == '__main__':
     unittest.main()
