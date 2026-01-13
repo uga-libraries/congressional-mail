@@ -88,6 +88,37 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_job_check")
 
+    def test_text(self):
+        """Test for when the column communication_document_name indicates job applications are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', '', 'job.doc'],
+                           ['20250402', '', '', '', 'JOBAPPS'],
+                           ['20250403', '', '', '', 'promising job applicant'],
+                           ['20250404', '', '', '', 'First Reply to Resume'],
+                           ['20250405', '', '', '', 'Check for job'],
+                           ['20250406', '', '', '', 'Thank you for resume - hire'],
+                           ['20250407', '', '', '', 'Jobs Act.txt'],
+                           ['20250408', '', '', '', '']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_job, df_job_check = find_job_rows(df)
+
+        # Tests the values in df_job are correct.
+        result = df_to_list(df_job)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', '', '', '', 'job.doc', 'Job_Application'],
+                    ['20250402', '', '', '', 'JOBAPPS', 'Job_Application'],
+                    ['20250403', '', '', '', 'promising job applicant', 'Job_Application'],
+                    ['20250404', '', '', '', 'First Reply to Resume', 'Job_Application'],
+                    ['20250406', '', '', '', 'Thank you for resume - hire', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for text, df_job")
+
+        # Tests the values in df_job_check are correct.
+        result = df_to_list(df_job_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250405', '', '', '', 'Check for job', 'Job_Application'],
+                    ['20250407', '', '', '', 'Jobs Act.txt', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for text, df_job_check")
+
 
 if __name__ == '__main__':
     unittest.main()

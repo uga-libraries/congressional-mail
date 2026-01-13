@@ -348,9 +348,14 @@ def find_job_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes one or more keywords that indicate job applications.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_job = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
