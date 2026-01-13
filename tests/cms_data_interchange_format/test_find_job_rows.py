@@ -13,35 +13,35 @@ class MyTestCase(unittest.TestCase):
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates job applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['file_1.doc', 'Intern Assignments', 'x'],
-                           ['file_2.doc', 'good job with everything', 'x'],
-                           ['file_3.doc', 'batch intern response', 'x'],
-                           ['file_4.doc', 'INTERNSHIP', 'x'],
-                           ['file_5.doc', 'Jobs Act', 'x']],
+        df = pd.DataFrame([['', 'Intern Assignments', ''],
+                           ['', 'good job with everything', ''],
+                           ['', 'batch intern response', ''],
+                           ['', 'INTERNSHIP', ''],
+                           ['', 'Jobs Act', '']],
                           columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         df_job, df_job_check = find_job_rows(df)
 
         # Tests the values in df_job are correct.
         result = df_to_list(df_job)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_1.doc', 'Intern Assignments', 'x', 'Job_Application'],
-                    ['file_3.doc', 'batch intern response', 'x', 'Job_Application'],
-                    ['file_4.doc', 'INTERNSHIP', 'x', 'Job_Application']]
+                    ['', 'Intern Assignments', '', 'Job_Application'],
+                    ['', 'batch intern response', '', 'Job_Application'],
+                    ['', 'INTERNSHIP', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_job")
 
         # Tests the values in df_job_check are correct.
         result = df_to_list(df_job_check)
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_2.doc', 'good job with everything', 'x', 'Job_Application'],
-                    ['file_5.doc', 'Jobs Act', 'x', 'Job_Application']]
+                    ['', 'good job with everything', '', 'Job_Application'],
+                    ['', 'Jobs Act', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_job_check")
 
     def test_none(self):
         """Test for when no rows have job applications"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['file_1.doc', 'one', 'a'],
-                           ['file_2.doc', 'two', 'b'],
-                           ['file_3.doc', 'three', 'c']],
+        df = pd.DataFrame([['doc.doc', 'one', 'a'],
+                           ['doc.doc', 'two', 'b'],
+                           ['doc.doc', 'three', 'c']],
                           columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         df_job, df_job_check = find_job_rows(df)
 
