@@ -420,6 +420,7 @@ def form_letter_metadata_read(table_id, input_dir):
 
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
+    # TODO read 2B if we receive an export that includes that table (better topic information)
 
     # Read each metadata file in the paths dictionary into a separate dataframe,
     # including supplying the column headings.
