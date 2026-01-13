@@ -92,6 +92,35 @@ class MyTestCase(unittest.TestCase):
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
         self.assertEqual(expected, result, "Problem with test for none, df_casework_check")
 
+    def test_text(self):
+        """Test for when the column text indicates casework is present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', '', 'might be casework'],
+                           ['20250402', '', '', '', 'CASE99'],
+                           ['20250403', '', '', '', 'Could be Case Work.'],
+                           ['20250404', '', '', '', ''],
+                           ['20250405', '', '', '', 'check for case'],
+                           ['20250406', '', '', '', 'initialssacase'],
+                           ['20250407', '', '', '', 'Add to open sixth district cases']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_casework, df_casework_check = find_casework_rows(df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', '', '', '', 'might be casework', 'Casework'],
+                    ['20250403', '', '', '', 'Could be Case Work.', 'Casework'],
+                    ['20250406', '', '', '', 'initialssacase', 'Casework'],
+                    ['20250407', '', '', '', 'Add to open sixth district cases', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for text, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250402', '', '', '', 'CASE99', 'Casework'],
+                    ['20250405', '', '', '', 'check for case', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for text, df_casework_check")
+
 
 if __name__ == '__main__':
     unittest.main()

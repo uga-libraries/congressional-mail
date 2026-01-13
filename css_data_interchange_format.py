@@ -316,9 +316,14 @@ def find_casework_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes one or more keywords that indicate casework.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = 'Casework'
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
