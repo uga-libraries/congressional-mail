@@ -253,9 +253,14 @@ def find_academy_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes "academy".
+    text = df['text'].str.contains('academy', case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_academy = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
@@ -311,9 +316,14 @@ def find_casework_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes one or more keywords that indicate casework.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = 'Casework'
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
@@ -338,9 +348,14 @@ def find_job_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes one or more keywords that indicate job applications.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_job = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
@@ -353,13 +368,26 @@ def find_recommendation_rows(df):
     """Find metadata rows with topics or text that indicate they are recommendations and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
+    # Column group_name includes one or more keywords that indicate recommendations.
+    group_list = ['intern', 'page', 'recommendation']
+    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
+    df_group = df[group].copy()
+    df = df[~group]
+
     # Column communication_document_name includes one or more keywords that indicate recommendations.
     keywords_list = ['intern rec', 'page rec']
     doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_rec = df[doc_name].copy()
+    df_doc_name = df[doc_name].copy()
     df = df[~doc_name]
 
-    # Adds a column for the appraisal category (needed for the file deletion log).
+    # Column text includes one or more keywords that indicate recommendations.
+    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_text = df[text].copy()
+    df = df[~text]
+
+    # Makes a single dataframe with all rows that indicate recommendations
+    # and adds a column for the appraisal category (needed for the file deletion log).
+    df_rec = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_rec['Appraisal_Category'] = 'Recommendation'
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
@@ -420,6 +448,7 @@ def form_letter_metadata_read(table_id, input_dir):
 
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
+    # TODO read 2B if we receive an export that includes that table (better topic information)
 
     # Read each metadata file in the paths dictionary into a separate dataframe,
     # including supplying the column headings.
