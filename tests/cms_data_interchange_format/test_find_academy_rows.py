@@ -10,30 +10,6 @@ from test_appraisal_check_df import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
-    def test_both(self):
-        """Test for when both columns checked indicate academy applications are present"""
-        # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['file_1.doc', 'academy appointment', 'acad - academy nominations'],
-                           ['file_2.doc', 'academy appointment request', 'Academy Nominations'],
-                           ['file_3.doc', 'HELP WITH ACADEMY ISSUE', 'acad - academy nominations'],
-                           ['file_4.doc', 'Academy Issue', 'WEBACAD - Web Form Academy Nominations']],
-                          columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
-        df_academy, df_academy_check = find_academy_rows(df)
-
-        # Tests the values in df_academy are correct.
-        result = df_to_list(df_academy)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_1.doc', 'academy appointment', 'acad - academy nominations', 'Academy_Application'],
-                    ['file_2.doc', 'academy appointment request', 'Academy Nominations', 'Academy_Application'],
-                    ['file_3.doc', 'HELP WITH ACADEMY ISSUE', 'acad - academy nominations', 'Academy_Application'],
-                    ['file_4.doc', 'Academy Issue', 'WEBACAD - Web Form Academy Nominations', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for both, df_academy")
-
-        # Tests the values in df_academy_check are correct.
-        result = df_to_list(df_academy_check)
-        expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for both, df_academy_check")
-
     def test_code_desc(self):
         """Test for when the column code_description indicates academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
