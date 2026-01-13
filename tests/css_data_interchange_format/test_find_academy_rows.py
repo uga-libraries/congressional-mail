@@ -103,12 +103,12 @@ class MyTestCase(unittest.TestCase):
                     ['20250402', '', '', '', 'academy', 'Academy_Application'],
                     ['20250403', '', '', '', 'academy interviews 25', 'Academy_Application'],
                     ['20250406', '', '', '', 'BoardAcademy', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for group_name, df_academy")
+        self.assertEqual(expected, result, "Problem with test for text, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for group_name, df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for text, df_academy_check")
 
 
 if __name__ == '__main__':
