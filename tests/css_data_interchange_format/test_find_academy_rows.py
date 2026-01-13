@@ -84,6 +84,32 @@ class MyTestCase(unittest.TestCase):
                     ['20250403', 'Interviews', 'docs\\doc.txt', 'intACADEMY.txt', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for none, df_academy_check")
 
+    def test_text(self):
+        """Test for when the column text indicates academy applications are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', '', 'ACADEMY DAY'],
+                           ['20250402', '', '', '', 'academy'],
+                           ['20250403', '', '', '', 'academy interviews 25'],
+                           ['20250404', '', '', '', ''],
+                           ['20250405', '', '', '', 'keep'],
+                           ['20250406', '', '', '', 'BoardAcademy']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_academy, df_academy_check = find_academy_rows(df)
+
+        # Tests the values in df_academy are correct.
+        result = df_to_list(df_academy)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250401', '', '', '', 'ACADEMY DAY', 'Academy_Application'],
+                    ['20250402', '', '', '', 'academy', 'Academy_Application'],
+                    ['20250403', '', '', '', 'academy interviews 25', 'Academy_Application'],
+                    ['20250406', '', '', '', 'BoardAcademy', 'Academy_Application']]
+        self.assertEqual(expected, result, "Problem with test for group_name, df_academy")
+
+        # Tests the values in df_academy_check are correct.
+        result = df_to_list(df_academy_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        self.assertEqual(expected, result, "Problem with test for group_name, df_academy_check")
+
 
 if __name__ == '__main__':
     unittest.main()

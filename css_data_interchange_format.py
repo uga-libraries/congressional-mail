@@ -253,9 +253,14 @@ def find_academy_rows(df):
     df_doc_name = df[doc_name]
     df = df[~doc_name]
 
+    # Column text includes "academy".
+    text = df['text'].str.contains('academy', case=False, na=False)
+    df_text = df[text]
+    df = df[~text]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_academy = pd.concat([df_group, df_doc_name], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
