@@ -40,6 +40,35 @@ class MyTestCase(unittest.TestCase):
                     ['30605', '', '', 'academy awards', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc df_academy_check")
 
+    def test_corr_doc(self):
+        """Test for when the column correspondence_document_name indicates academy applications are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30600', 'path/academy appointment.doc', '', ''],
+                           ['30601', 'academy issue.doc', '', ''],
+                           ['30602', 'ACADEMY NOMINATION', '', ''],
+                           ['30603', 'path/check_academy.doc', '', ''],
+                           ['30604', '', '', ''],
+                           ['30605', 'path\\military academy.doc', '', '']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
+        df_academy, df_academy_check = find_academy_rows(df)
+
+        # Tests the values in df_academy are correct.
+        result = df_to_list(df_academy)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', 'path/academy appointment.doc', '', '', 'Academy_Application'],
+                    ['30601', 'academy issue.doc', '', '', 'Academy_Application'],
+                    ['30602', 'ACADEMY NOMINATION', '', '', 'Academy_Application'],
+                    ['30605', 'path\\military academy.doc', '', '', 'Academy_Application']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_academy")
+
+        # Tests the values in df_academy_check are correct.
+        result = df_to_list(df_academy_check)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30603', 'path/check_academy.doc', '', '', 'Academy_Application']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_academy_check")
+
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
@@ -60,7 +89,7 @@ class MyTestCase(unittest.TestCase):
                     ['30602', '', 'HELP WITH ACADEMY ISSUE', '', 'Academy_Application'],
                     ['30604', '', 'Academy Nominations', '', 'Academy_Application'],
                     ['30605', '', 'Military Academy - Application', '', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
@@ -68,7 +97,7 @@ class MyTestCase(unittest.TestCase):
                      'Appraisal_Category'],
                     ['30600', '', 'Sports Academy', '', 'Academy_Application'],
                     ['30603', '', 'academy vouchers', '', 'Academy_Application']]
-        self.assertEqual(expected, result, "Problem with test for COLUMN, df_academy_check")
+        self.assertEqual(expected, result, "Problem with test for corr_text, df_academy_check")
 
     def test_none(self):
         """Test for when no rows have academy applications"""

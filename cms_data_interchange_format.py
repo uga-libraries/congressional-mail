@@ -244,20 +244,25 @@ def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column correspondence_text includes one or more keywords that indicate academy applications.
-    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
-    df = df[~corr_text]
-
     # Column code_description includes "academy nomination".
     code_desc = df['code_description'].str.contains('academy nomination', case=False, na=False)
     df_code_desc = df[code_desc]
     df = df[~code_desc]
 
+    # Column correspondence_document_name includes one or more keywords that indicate academy applications.
+    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc]
+    df = df[~corr_doc]
+
+    # Column correspondence_text includes one or more keywords that indicate academy applications.
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category.
-    df_academy = pd.concat([df_corr_text, df_code_desc], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes a dataframe with rows containing "academy" to check for new patterns indicating academy applications.
