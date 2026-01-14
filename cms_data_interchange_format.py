@@ -338,19 +338,25 @@ def find_job_rows(df):
     """Find metadata rows with topics or text that indicate they are job applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column correspondence_text includes one or more keywords that indicate job applications.
+    # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['intern assignment', 'intern response', 'internship']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
+    # Column correspondence_text includes one or more keywords that indicate job applications.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Job_Application'
+    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
+    df_job = pd.concat([df_code_desc, df_corr_text], axis=0, ignore_index=True)
+    df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes a dataframe with rows containing "job" to check for new patterns indicating job applications.
     df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
-    return df_corr_text, df_job_check
+    return df_job, df_job_check
 
 
 def find_recommendation_rows(df):

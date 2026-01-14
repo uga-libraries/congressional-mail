@@ -10,6 +10,35 @@ from test_appraisal_check_df import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
+    def test_code_desc(self):
+        """Test for when the column code_description indicates job applications are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30600', '', '', 'intern assignment'],
+                           ['30601', '', '', ''],
+                           ['30602', '', '', 'INTERN RESPONSE'],
+                           ['30603', '', '', 'job_check'],
+                           ['30604', '', '', 'internship'],
+                           ['30605', '', '', 'keep']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text',
+                                   'code_description'])
+        df_job, df_job_check = find_job_rows(df)
+
+        # Tests the values in df_job are correct.
+        result = df_to_list(df_job)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', '', '', 'intern assignment', 'Job_Application'],
+                    ['30602', '', '', 'INTERN RESPONSE', 'Job_Application'],
+                    ['30604', '', '', 'internship', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for code_desc, df_job")
+
+        # Tests the values in df_job_check are correct.
+        result = df_to_list(df_job_check)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30603', '', '', 'job_check', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for code_desc, df_job_check")
+
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates job applications are present"""
         # Makes a dataframe to use as test input and runs the function.
