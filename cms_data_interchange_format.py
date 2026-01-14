@@ -354,7 +354,8 @@ def find_job_rows(df):
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
+    # Makes a single dataframe with all rows that indicate job applications
+    # and adds a column for the appraisal category.
     df_job = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
@@ -368,6 +369,13 @@ def find_recommendation_rows(df):
     """Find metadata rows with topics or text that indicate they are recommendations and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
+    # Column code_description includes one or more keywords that indicate recommendations.
+    keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
+                     'recommendation letter']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
     # Column correspondence_text includes one or more keywords that indicate recommendations.
     keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
                      'recommendation letter']
@@ -375,13 +383,15 @@ def find_recommendation_rows(df):
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Recommendation'
+    # Makes a single dataframe with all rows that indicate recommendations
+    # and adds a column for the appraisal category.
+    df_rec = pd.concat([df_code_desc, df_corr_text], axis=0, ignore_index=True)
+    df_rec['Appraisal_Category'] = 'Recommendation'
 
     # Makes a dataframe with rows containing "recommendation" to check for new patterns indicating recommendations.
-    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
-    return df_corr_text, df_recommendation_check
+    return df_rec, df_rec_check
 
 
 def read_metadata(paths):
