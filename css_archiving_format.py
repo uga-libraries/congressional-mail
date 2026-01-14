@@ -640,6 +640,18 @@ def remove_pii(df):
     return df
 
 
+def restriction_report(df, output_dir):
+    """Make report of any row with topics that require restriction if they are about individuals' situations"""
+
+    # Make a copy of the df repeating any rows with delimited topics, one row per topic, for more accurate matches.
+
+    # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    restrict = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
+                'immigrant', 'immigration', 'migrant', 'refugee']
+
+    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+
+
 def split_year(df, output_dir):
     """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
