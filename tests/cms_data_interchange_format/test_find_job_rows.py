@@ -39,6 +39,35 @@ class MyTestCase(unittest.TestCase):
                     ['30603', '', '', 'job_check', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_job_check")
 
+    def test_corr_doc(self):
+        """Test for when the column correspondence_document_name indicates job applications are present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30600', 'path\\intern assignment.txt', '', ''],
+                           ['30601', '', '', ''],
+                           ['30602', 'path\\INTERN RESPONSE.txt', '', ''],
+                           ['30603', 'path\\job_check.txt', '', ''],
+                           ['30604', 'path\\internship.txt', '', ''],
+                           ['30605', 'path\\keep.txt', '', '']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text',
+                                   'code_description'])
+        df_job, df_job_check = find_job_rows(df)
+
+        # Tests the values in df_job are correct.
+        result = df_to_list(df_job)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', 'path\\intern assignment.txt', '', '', 'Job_Application'],
+                    ['30602', 'path\\INTERN RESPONSE.txt', '', '', 'Job_Application'],
+                    ['30604', 'path\\internship.txt', '', '', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_job")
+
+        # Tests the values in df_job_check are correct.
+        result = df_to_list(df_job_check)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30603', 'path\\job_check.txt', '', '', 'Job_Application']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_job_check")
+
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates job applications are present"""
         # Makes a dataframe to use as test input and runs the function.

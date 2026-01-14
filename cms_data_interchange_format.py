@@ -344,13 +344,18 @@ def find_job_rows(df):
     df_code_desc = df[code_desc].copy()
     df = df[~code_desc]
 
+    # Column correspondence_document_name includes one or more keywords that indicate job applications.
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc].copy()
+    df = df[~corr_doc]
+
     # Column correspondence_text includes one or more keywords that indicate job applications.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
     # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
-    df_job = pd.concat([df_code_desc, df_corr_text], axis=0, ignore_index=True)
+    df_job = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes a dataframe with rows containing "job" to check for new patterns indicating job applications.
