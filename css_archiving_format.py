@@ -330,7 +330,7 @@ def find_academy_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate academy applications.
-    topics_list = ['Academy Applicant', 'Military Service Academy']
+    topics_list = ['academy applicant', 'military service academy']
     in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
@@ -340,19 +340,38 @@ def find_academy_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
-    # Column in_text includes "academy nomination" (case-insensitive).
-    in_text = df['in_text'].str.contains('academy nomination', case=False, na=False)
+    # Keywords used for all other columns.
+    keywords_list = ['academy app', 'academy_app', 'academy-app', 'academy nom', 'academy_nom', 'academy-nom']
+
+    # Column in_text includes one of the keywords (case-insensitive).
+    in_text = df['in_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
 
-    # Column out_text includes "academy nomination" (case-insensitive).
-    out_text = df['out_text'].str.contains('academy nomination', case=False, na=False)
+    # Column out_text includes one of the keywords (case-insensitive).
+    out_text = df['out_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_out_text = df[out_text]
     df = df[~out_text]
 
+    # Column in_document_name includes one of the keywords (case-insensitive).
+    in_doc = df['in_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
+    # Column out_document_name includes one of the keywords (case-insensitive).
+    out_doc = df['out_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_out_doc = df[out_doc]
+    df = df[~out_doc]
+
+    # Column out_fillin includes one of the keywords (case-insensitive).
+    out_fillin = df['out_fillin'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_out_fillin = df[out_fillin]
+    df = df[~out_fillin]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fillin],
+                           axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes another dataframe with rows containing "academy" to check for new patterns that could
@@ -406,22 +425,54 @@ def find_casework_rows(df):
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
-    # Column out_text is equal to a keyword that indicates casework.
-    keyword_list = ['case', 'case!', 'case work', 'casework']
-    out_text = df['out_text'].str.lower().isin(keyword_list)
+    # Column in_type is CASE.
+    df_in_type = df[df['in_type'] == 'CASE']
+    df = df[df['in_type'] != 'CASE']
+
+    # Column out_type is CASE.
+    df_out_type = df[df['out_type'] == 'CASE']
+    df = df[df['out_type'] != 'CASE']
+
+    # Column out_text exactly matches a keyword that indicates casework.
+    # These would get too many false positives if added to the keywords list.
+    exact_list = ['case', 'case!']
+    out_text_exact = df['out_text'].str.lower().isin(exact_list)
+    df_out_text_exact = df[out_text_exact]
+    df = df[~out_text_exact]
+
+    # Keywords used for all other columns.
+    keywords_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened',
+                     'case issue', 'case work', 'casework', 'closed case', 'open case', 'started case']
+
+    # Column in_text includes one of the keywords (case-insensitive).
+    in_text = df['in_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_in_text = df[in_text]
+    df = df[~in_text]
+
+    # Column out_text includes one of the keywords (case-insensitive).
+    out_text = df['out_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_out_text = df[out_text]
     df = df[~out_text]
 
-    # Any column includes a phrase that indicates casework.
-    case_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened', 'case issue',
-                 'case work', 'casework', 'closed case', 'open case', 'started case']
-    case_phrase = np.column_stack([df[col].str.contains('|'.join(case_list), case=False, na=False) for col in df])
-    df_phrase = df.loc[case_phrase.any(axis=1)]
-    df = df.loc[~case_phrase.any(axis=1)]
+    # Column in_document_name includes one of the keywords (case-insensitive).
+    in_doc = df['in_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
+    # Column out_document_name includes one of the keywords (case-insensitive).
+    out_doc = df['out_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_out_doc = df[out_doc]
+    df = df[~out_doc]
+
+    # Column out_fillin includes one of the keywords (case-insensitive).
+    out_fill = df['out_fillin'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_outfill = df[out_fill]
+    df = df[~out_fill]
 
     # Makes a single dataframe with all rows that indicate casework
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_in_topic, df_out_topic, df_out_text, df_phrase], axis=0, ignore_index=True)
+    df_casework = pd.concat([df_in_topic, df_out_topic, df_in_type, df_out_type, df_out_text_exact,
+                             df_in_text, df_out_text, df_in_doc, df_out_doc, df_outfill], axis=0, ignore_index=True)
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
@@ -435,7 +486,7 @@ def find_job_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes one or more of the topics that indicate job applications.
-    topics_list = ['Intern', 'Resume']
+    topics_list = ['intern', 'resume']
     in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
@@ -467,9 +518,15 @@ def find_job_rows(df):
     df_out_doc = df[out_doc]
     df = df[~out_doc]
 
+    # Column out_fillin includes text that indicates job applications (case-insensitive).
+    fill_list = ['intern', 'job interview', 'job request', 'resume']
+    out_fill = df['out_fillin'].str.contains('|'.join(fill_list), case=False, na=False)
+    df_out_fill = df[out_fill]
+    df = df[~out_fill]
+
     # Makes a single dataframe with all rows that indicate job applications
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc],
+    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fill],
                        axis=0, ignore_index=True)
     df_job['Appraisal_Category'] = 'Job_Application'
 
@@ -484,17 +541,17 @@ def find_recommendation_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('Recommendation', case=False, na=False)
+    in_topic = df['in_topic'].str.contains('recommendation', case=False, na=False)
     df_in_topic = df[in_topic]
     df = df[~in_topic]
 
     # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('Recommendation', case=False, na=False)
+    out_topic = df['out_topic'].str.contains('recommendation', case=False, na=False)
     df_out_topic = df[out_topic]
     df = df[~out_topic]
 
     # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
-    phrase_list = ['Letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
+    phrase_list = ['letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
     in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
     df_in_text = df[in_text]
     df = df[~in_text]
@@ -504,9 +561,25 @@ def find_recommendation_rows(df):
     df_out_text = df[out_text]
     df = df[~out_text]
 
+    # Column in_document_name includes a phrase (case_insensitive) that indicates a recommendation.
+    in_doc = df['in_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_in_doc = df[in_doc]
+    df = df[~in_doc]
+
+    # Column out_document_name includes a phrase (case_insensitive) that indicates a recommendation.
+    out_doc = df['out_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_out_doc = df[out_doc]
+    df = df[~out_doc]
+
+    # Column out_fillin includes a phrase (case_insensitive) that indicates a recommendation.
+    out_fill = df['out_fillin'].str.contains('|'.join(phrase_list), case=False, na=False)
+    df_out_fill = df[out_fill]
+    df = df[~out_fill]
+
     # Makes a single dataframe with all rows that indicate recommendations
     # and adds a column for the appraisal category (needed for the file deletion log).
-    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text], axis=0, ignore_index=True)
+    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc,
+                                   df_out_fill], axis=0, ignore_index=True)
     df_recommendation['Appraisal_Category'] = 'Recommendation'
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could

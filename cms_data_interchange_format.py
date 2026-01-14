@@ -244,20 +244,25 @@ def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column correspondence_text includes one or more keywords that indicate academy applications.
-    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
-    df = df[~corr_text]
-
     # Column code_description includes "academy nomination".
     code_desc = df['code_description'].str.contains('academy nomination', case=False, na=False)
     df_code_desc = df[code_desc]
     df = df[~code_desc]
 
+    # Column correspondence_document_name includes one or more keywords that indicate academy applications.
+    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc]
+    df = df[~corr_doc]
+
+    # Column correspondence_text includes one or more keywords that indicate academy applications.
+    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_text = df[corr_text]
+    df = df[~corr_text]
+
     # Makes a single dataframe with all rows that indicate academy applications
     # and adds a column for the appraisal category.
-    df_academy = pd.concat([df_corr_text, df_code_desc], axis=0, ignore_index=True)
+    df_academy = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
     df_academy['Appraisal_Category'] = 'Academy_Application'
 
     # Makes a dataframe with rows containing "academy" to check for new patterns indicating academy applications.
@@ -303,58 +308,93 @@ def find_casework_rows(df):
     We will delete even if the phrase indicates it is not a case or casework
     because the fact they considered it might be a case suggests it includes sensitive personal information."""
 
-    # Column correspondence_text includes one or more keywords that indicate casework.
+    # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
+    # Column correspondence_document_name includes one or more keywords that indicate casework.
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc].copy()
+    df = df[~corr_doc]
+
+    # Column correspondence_text includes one or more keywords that indicate casework.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Casework'
+    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
+    df_casework = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
+    df_casework['Appraisal_Category'] = 'Casework'
 
     # Makes a dataframe with rows containing "case" to check for new patterns indicating casework.
     df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
-    return df_corr_text, df_casework_check
+    return df_casework, df_casework_check
 
 
 def find_job_rows(df):
     """Find metadata rows with topics or text that indicate they are job applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column correspondence_text includes one or more keywords that indicate job applications.
+    # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['intern assignment', 'intern response', 'internship']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
+    # Column correspondence_document_name includes one or more keywords that indicate job applications.
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc].copy()
+    df = df[~corr_doc]
+
+    # Column correspondence_text includes one or more keywords that indicate job applications.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Job_Application'
+    # Makes a single dataframe with all rows that indicate job applications
+    # and adds a column for the appraisal category.
+    df_job = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
+    df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes a dataframe with rows containing "job" to check for new patterns indicating job applications.
     df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
-    return df_corr_text, df_job_check
+    return df_job, df_job_check
 
 
 def find_recommendation_rows(df):
     """Find metadata rows with topics or text that indicate they are recommendations and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column correspondence_text includes one or more keywords that indicate recommendations.
+    # Column code_description includes one or more keywords that indicate recommendations.
     keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
                      'recommendation letter']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
+    # Column correspondence_document_name includes one or more keywords that indicate recommendations.
+    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_corr_doc = df[corr_doc].copy()
+    df = df[~corr_doc]
+
+    # Column correspondence_text includes one or more keywords that indicate recommendations.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Recommendation'
+    # Makes a single dataframe with all rows that indicate recommendations
+    # and adds a column for the appraisal category.
+    df_rec = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
+    df_rec['Appraisal_Category'] = 'Recommendation'
 
     # Makes a dataframe with rows containing "recommendation" to check for new patterns indicating recommendations.
-    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
-    return df_corr_text, df_recommendation_check
+    return df_rec, df_rec_check
 
 
 def read_metadata(paths):
