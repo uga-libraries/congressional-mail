@@ -308,19 +308,25 @@ def find_casework_rows(df):
     We will delete even if the phrase indicates it is not a case or casework
     because the fact they considered it might be a case suggests it includes sensitive personal information."""
 
-    # Column correspondence_text includes one or more keywords that indicate casework.
+    # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
+    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
+    df_code_desc = df[code_desc].copy()
+    df = df[~code_desc]
+
+    # Column correspondence_text includes one or more keywords that indicate casework.
     corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
     df_corr_text = df[corr_text].copy()
     df = df[~corr_text]
 
-    # Adds a column for the appraisal category.
-    df_corr_text['Appraisal_Category'] = 'Casework'
+    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
+    df_casework = pd.concat([df_code_desc, df_corr_text], axis=0, ignore_index=True)
+    df_casework['Appraisal_Category'] = 'Casework'
 
     # Makes a dataframe with rows containing "case" to check for new patterns indicating casework.
     df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
-    return df_corr_text, df_casework_check
+    return df_casework, df_casework_check
 
 
 def find_job_rows(df):
