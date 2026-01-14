@@ -47,6 +47,43 @@ class MyTestCase(unittest.TestCase):
                     ['30609', '', '', 'case', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_casework_check")
 
+    def test_corr_doc_name(self):
+        """Test for when the column correspondence_document_name indicates casework is present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['30600', 'path\\case file.txt', '', ''],
+                           ['30601', 'path\\case has.txt', '', ''],
+                           ['30602', 'path\\Case Open.txt', '', ''],
+                           ['30603', 'path\\CASEWORK.txt', '', ''],
+                           ['30604', '', '', ''],
+                           ['30605', 'path\\case work.txt', '', ''],
+                           ['30606', 'path\\Forwarded to me.txt', '', ''],
+                           ['30607', 'path\\open case.txt', '', ''],
+                           ['30608', 'path\\potential case.txt', '', ''],
+                           ['30609', 'path\\case.txt', '', '']],
+                          columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
+        df_casework, df_casework_check = find_casework_rows(df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30600', 'path\\case file.txt', '', '', 'Casework'],
+                    ['30601', 'path\\case has.txt', '', '', 'Casework'],
+                    ['30602', 'path\\Case Open.txt', '', '', 'Casework'],
+                    ['30603', 'path\\CASEWORK.txt', '', '', 'Casework'],
+                    ['30605', 'path\\case work.txt', '', '', 'Casework'],
+                    ['30606', 'path\\Forwarded to me.txt', '', '', 'Casework'],
+                    ['30607', 'path\\open case.txt', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
+                     'Appraisal_Category'],
+                    ['30608', 'path\\potential case.txt', '', '', 'Casework'],
+                    ['30609', 'path\\case.txt', '', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for corr_doc, df_casework_check")
+
     def test_corr_text(self):
         """Test for when the column correspondence_text indicates casework is present"""
         # Makes a dataframe to use as test input and runs the function.
