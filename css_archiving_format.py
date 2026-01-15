@@ -644,9 +644,13 @@ def remove_restricted_rows(df, output_dir):
     """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
 
     # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
+    # Columns for individual topics when there is a delimiter are removed, so the row matches exactly,
+    # and duplicate rows from splitting rows based on the delimiters for the review are also removed.
     # If there is no CSV (no restrictions in this export), returns the df unchanged.
     try:
         df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'), dtype=str)
+        df_restrict = df_restrict.drop(columns=['in_topic_split', 'out_topic_split'])
+        df_restrict = df_restrict.drop_duplicates()
     except FileNotFoundError:
         return df
 
