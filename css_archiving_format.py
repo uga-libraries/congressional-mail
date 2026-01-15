@@ -658,7 +658,7 @@ def restriction_report(df, output_dir):
     # No report is made if no topics are present.
     report_df = restrict_df[restrict_df['in_topic'].isin(restrict_list) | restrict_df['out_topic'].isin(restrict_list)]
     if len(report_df.index) > 0:
-        report_df.to_csv(os.path.join(output_dir, 'restriction_review_report.csv'), index=False)
+        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 
 
 def split_year(df, output_dir):
