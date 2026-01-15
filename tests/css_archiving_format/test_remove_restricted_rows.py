@@ -11,6 +11,24 @@ from test_read_metadata import df_to_list
 
 class MyTestCase(unittest.TestCase):
 
+    def test_delimiter(self):
+        """Test for when columns in md_df have delimiters in the topic columns"""
+        # Makes dataframe to use as test input and runs the function.
+        md_df = pd.DataFrame([['Anders', '12345', 'citizen^open', r'..\objects\1.txt', 'open'],
+                              ['Blooms', '23456', 'citizen^refugee', r'..\objects\2.txt', 'open'],
+                              ['Cliver', '34567', 'court', r'..\objects\3.txt', 'immigrant^immigration'],
+                              ['Dudley', '45678', 'citizen^migrant', r'..\objects\4.txt', 'court^citizen'],
+                              ['Everly', '56789', 'open_ok', r'..\objects\5.txt', 'response']],
+                             columns=['last', 'zip', 'in_topic', 'in_document_name', 'out_topic'])
+        output_directory = os.path.join('test_data', 'remove_restricted_rows', 'delimiter')
+        md_df = remove_restricted_rows(md_df, output_directory)
+
+        # Tests the values in the returned dataframe are correct.
+        result = df_to_list(md_df)
+        expected = [['last', 'zip', 'in_topic', 'in_document_name', 'out_topic'],
+                    ['Everly', '56789', 'open_ok', r'..\objects\5.txt', 'response']]
+        self.assertEqual(expected, result, "Problem with test for type_same")
+
     def test_no_restrictions(self):
         """Test for when there is no restriction_review.csv"""
         # Makes dataframe to use as test input and runs the function.
