@@ -644,10 +644,15 @@ def restriction_report(df, output_dir):
     """Make report of any row with topics that require restriction if they are about individuals' situations"""
 
     # Make a copy of the df repeating any rows with delimited topics, one row per topic, for more accurate matches.
+    restrict_df = df.copy()
+    restrict_df['in_topic'] = restrict_df['in_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('in_topic')
+    restrict_df['out_topic'] = restrict_df['out_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('out_topic')
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
-    restrict = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
-                'immigrant', 'immigration', 'migrant', 'refugee']
+    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
+                     'immigrant', 'immigration', 'migrant', 'refugee']
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
 
