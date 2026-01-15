@@ -640,6 +640,27 @@ def remove_pii(df):
     return df
 
 
+def remove_restricted_rows(df, output_dir):
+    """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
+
+    # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
+    # If there is no CSV (no restrictions in this export), returns the df unchanged.
+    try:
+        df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'), dtype=str)
+    except FileNotFoundError:
+        return df
+
+    # Makes sure all columns in the input dataframe are strings,
+    # since earlier steps can alter the type and the types must be the same for two rows to match.
+    df = df.astype(str)
+
+    # Makes an updated dataframe with just rows in df that are not in df_restrict.
+    df_merge = df.merge(df_restrict, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
+
+    return df_update
+
+
 def restriction_report(df, output_dir):
     """Make report of any row with topics that require restriction if they are about individuals' situations"""
 
@@ -871,14 +892,15 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
         restriction_report(md_df, output_directory)
 
-    # For access, removes rows for appraisal and columns with PII from the metadata,
+    # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters and columns with PII, "
+        print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = remove_restricted_rows(md_df, output_directory)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_year(md_df, output_directory)
