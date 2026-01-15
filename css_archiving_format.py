@@ -655,8 +655,10 @@ def restriction_report(df, output_dir):
                      'immigrant', 'immigration', 'migrant', 'refugee']
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # No report is made if no topics are present.
     report_df = restrict_df[restrict_df['in_topic'].isin(restrict_list) | restrict_df['out_topic'].isin(restrict_list)]
-    report_df.to_csv(os.path.join(output_dir, 'restriction_review_report.csv'), index=False)
+    if len(report_df.index) > 0:
+        report_df.to_csv(os.path.join(output_dir, 'restriction_review_report.csv'), index=False)
 
 
 def split_year(df, output_dir):
