@@ -665,11 +665,12 @@ def restriction_report(df, output_dir):
     """Make report of any row with topics that require restriction if they are about individuals' situations"""
 
     # Make a copy of the df repeating any rows with delimited topics, one row per topic, for more accurate matches.
+    # The original topic columns are retained so it can be matched to md_df for making the redacted access copy.
     restrict_df = df.copy()
-    restrict_df['in_topic'] = restrict_df['in_topic'].str.split(r'^')
-    restrict_df = restrict_df.explode('in_topic')
-    restrict_df['out_topic'] = restrict_df['out_topic'].str.split(r'^')
-    restrict_df = restrict_df.explode('out_topic')
+    restrict_df['in_topic_split'] = restrict_df['in_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('in_topic_split')
+    restrict_df['out_topic_split'] = restrict_df['out_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('out_topic_split')
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
     restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
@@ -677,7 +678,8 @@ def restriction_report(df, output_dir):
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
     # No report is made if no topics are present.
-    report_df = restrict_df[restrict_df['in_topic'].isin(restrict_list) | restrict_df['out_topic'].isin(restrict_list)]
+    report_df = restrict_df[restrict_df['in_topic_split'].isin(restrict_list) |
+                            restrict_df['out_topic_split'].isin(restrict_list)]
     if len(report_df.index) > 0:
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 

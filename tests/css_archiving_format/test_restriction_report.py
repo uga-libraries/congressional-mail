@@ -32,12 +32,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'citizen', 'Restrict one'],
-                    [30603, 'crime', 'Restrict three'],
-                    [30603, 'court', 'Restrict three'],
-                    [30603, 'criminal justice', 'Restrict three'],
-                    [30605, 'court', 'Restrict']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'citizen^safe', 'Restrict one', 'citizen', 'Restrict one'],
+                    [30603, 'crime^court^criminal justice', 'Restrict three', 'crime', 'Restrict three'],
+                    [30603, 'crime^court^criminal justice', 'Restrict three', 'court', 'Restrict three'],
+                    [30603, 'crime^court^criminal justice', 'Restrict three', 'criminal justice', 'Restrict three'],
+                    [30605, 'court', 'Restrict', 'court', 'Restrict']]
         self.assertEqual(expected, result, "Problem with test for delimiter_in")
 
     def test_delimiter_in_out(self):
@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'Safe', np.nan],
                               ['30601', 'Safe^ok', 'ok^Safe'],
                               ['30602', 'immigrant^safe', 'safe^immigration'],
-                              ['30603', 'migrant^citizen^immigration', 'criminal justice^immigration'],
+                              ['30603', 'migrant^citizen^immigration', 'court^immigration'],
                               ['30604', 'Safe', 'basketball court'],
                               ['30605', 'citizen', 'refugee^court']],
                              columns=['zip', 'in_topic', 'out_topic'])
@@ -54,18 +54,18 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'immigrant', 'safe'],
-                    [30602, 'immigrant', 'immigration'],
-                    [30602, 'safe', 'immigration'],
-                    [30603, 'migrant', 'criminal justice'],
-                    [30603, 'migrant', 'immigration'],
-                    [30603, 'citizen', 'criminal justice'],
-                    [30603, 'citizen', 'immigration'],
-                    [30603, 'immigration', 'criminal justice'],
-                    [30603, 'immigration', 'immigration'],
-                    [30605, 'citizen', 'refugee'],
-                    [30605, 'citizen', 'court']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'immigrant^safe', 'safe^immigration', 'immigrant', 'safe'],
+                    [30602, 'immigrant^safe', 'safe^immigration', 'immigrant', 'immigration'],
+                    [30602, 'immigrant^safe', 'safe^immigration', 'safe', 'immigration'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'migrant', 'court'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'migrant', 'immigration'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'citizen', 'court'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'citizen', 'immigration'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'immigration', 'court'],
+                    [30603, 'migrant^citizen^immigration', 'court^immigration', 'immigration', 'immigration'],
+                    [30605, 'citizen', 'refugee^court', 'citizen', 'refugee'],
+                    [30605, 'citizen', 'refugee^court', 'citizen', 'court']]
         self.assertEqual(expected, result, "Problem with test for delimiter_in_out")
 
     def test_delimiter_out(self):
@@ -82,12 +82,12 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'Restrict one', 'citizenship'],
-                    [30603, 'Restrict three', 'citizen'],
-                    [30603, 'Restrict three', 'immigration'],
-                    [30603, 'Restrict three', 'refugee'],
-                    [30605, 'Restrict', 'immigrant']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'Restrict one', 'citizenship^safe', 'Restrict one', 'citizenship'],
+                    [30603, 'Restrict three', 'citizen^immigration^refugee', 'Restrict three', 'citizen'],
+                    [30603, 'Restrict three', 'citizen^immigration^refugee', 'Restrict three', 'immigration'],
+                    [30603, 'Restrict three', 'citizen^immigration^refugee', 'Restrict three', 'refugee'],
+                    [30605, 'Restrict', 'immigrant', 'Restrict', 'immigrant']]
         self.assertEqual(expected, result, "Problem with test for delimiter_out")
 
     def test_none(self):
@@ -118,10 +118,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'citizen', 'Restrict'],
-                    [30603, 'crime', 'Restrict'],
-                    [30605, 'court', 'Restrict']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'citizen', 'Restrict', 'citizen', 'Restrict'],
+                    [30603, 'crime', 'Restrict', 'crime', 'Restrict'],
+                    [30605, 'court', 'Restrict', 'court', 'Restrict']]
         self.assertEqual(expected, result, "Problem with test for restrict_in")
 
     def test_restrict_in_out(self):
@@ -138,10 +138,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'immigrant', 'immigration'],
-                    [30603, 'migrant', 'migrant'],
-                    [30605, 'citizen', 'refugee']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'immigrant', 'immigration', 'immigrant', 'immigration'],
+                    [30603, 'migrant', 'migrant', 'migrant', 'migrant'],
+                    [30605, 'citizen', 'refugee', 'citizen', 'refugee']]
         self.assertEqual(expected, result, "Problem with test for restrict_in_out")
 
     def test_restrict_out(self):
@@ -158,10 +158,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
-        expected = [['zip', 'in_topic', 'out_topic'],
-                    [30602, 'Restrict', 'citizenship'],
-                    [30603, 'Restrict', 'criminal justice'],
-                    [30605, 'Restrict', 'immigrant']]
+        expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
+                    [30602, 'Restrict', 'citizenship', 'Restrict', 'citizenship'],
+                    [30603, 'Restrict', 'criminal justice', 'Restrict', 'criminal justice'],
+                    [30605, 'Restrict', 'immigrant', 'Restrict', 'immigrant']]
         self.assertEqual(expected, result, "Problem with test for restrict_out")
 
 
