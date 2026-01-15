@@ -861,11 +861,15 @@ if __name__ == '__main__':
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
-    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
+    # Restricted letters would not be included in the access copy.
+    # The metadata file is not changed in this mode.
     elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
-        print("It will delete letters due to appraisal but not change the metadata file.")
+        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+              "but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
