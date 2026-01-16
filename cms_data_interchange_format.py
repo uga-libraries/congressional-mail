@@ -627,6 +627,7 @@ if __name__ == '__main__':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and columns with PII from the metadata,
     # makes a copy of the data split by calendar year,
