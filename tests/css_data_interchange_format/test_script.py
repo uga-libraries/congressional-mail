@@ -446,10 +446,10 @@ class MyTestCase(unittest.TestCase):
                      'document_type', 'communication_document_name', 'communication_document_id',
                      'file_location', 'file_name'],
                     ['usmail', 'BLANK', 'X', '20010101', '20010102', 'BLANK', '20010103', 'usmail', 'court',
-                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\1.doc', '1.doc',
+                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\1.txt', '1.txt',
                      'BLANK', 'BLANK'],
                     ['usmail', 'BLANK', 'X', '20020101', '20020102', 'BLANK', '20020103', 'usmail', 'refugee',
-                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\4.doc', '4.doc',
+                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\4.txt', '4.txt',
                      'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
