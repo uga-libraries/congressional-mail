@@ -556,6 +556,28 @@ def remove_pii(df):
     return df
 
 
+def remove_restricted_rows(df, output_dir):
+    """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
+
+    # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
+    # If there is no CSV (no restrictions in this export), returns the df unchanged.
+    try:
+        df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'))
+    except FileNotFoundError:
+        return df
+
+    # Makes sure all columns in the input dataframe are strings, since the types must be the same for rows to match.
+    # Must use astype for df_restrict rather than reading with dtype=str for the blanks to match exactly.
+    df = df.astype(str)
+    df_restrict = df_restrict.astype(str)
+
+    # Makes an updated dataframe with just rows in df that are not in df_restrict.
+    df_merge = df.merge(df_restrict, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
+
+    return df_update
+
+
 def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
