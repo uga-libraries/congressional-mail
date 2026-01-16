@@ -778,12 +778,11 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
         restriction_report(md_df, output_directory)
 
-    # For access, removes rows for appraisal and columns with PII from the metadata,
-    # makes a copy of the data split by calendar year,
-    # and makes a copy of the letters from constituents organized by topic.
+    # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
+    # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters and columns with PII, "
+        print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
