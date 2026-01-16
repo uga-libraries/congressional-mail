@@ -1,8 +1,3 @@
-"""
-Tests for the function check_metadata_usability(),
-which tests the usability of the metadata and generates a report of the results.
-To simplify testing, column values are numbers when the cell content formatting isn't important for the test.
-"""
 import numpy as np
 import os
 import pandas as pd

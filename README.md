@@ -35,6 +35,8 @@ appraisal
 
 ### Testing
 
+To keep the expected test results manageable, most tests only use a small subset of the metadata fields.
+
 ## Workflow
 
 ## Author

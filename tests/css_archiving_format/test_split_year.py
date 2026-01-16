@@ -1,7 +1,3 @@
-"""
-Tests for the function split_year(), which makes one CSV for letters received in each calendar year.
-To simplify input, tests use dataframes with only some of the columns present in a real css/cms export
-"""
 import numpy as np
 import os
 import pandas as pd

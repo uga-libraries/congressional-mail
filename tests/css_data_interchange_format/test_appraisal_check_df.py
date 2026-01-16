@@ -1,7 +1,3 @@
-"""
-Tests for the function appraisal_check_df, which makes a df of all rows to check for possible appraisal.
-To simplify testing, a small subset of the metadata columns are used.
-"""
 import pandas as pd
 import unittest
 from css_data_interchange_format import appraisal_check_df

@@ -1,9 +1,3 @@
-"""
-Tests for the function delete_appraisal_letters(),
-which deletes letters received from constituents and individual casework letters sent back by the office
-because they are one of the types of letters not retained for appraisal reasons.
-To simplify input, the test uses dataframes with only a few of the columns present in a real export.
-"""
 from datetime import date
 import os
 import pandas as pd

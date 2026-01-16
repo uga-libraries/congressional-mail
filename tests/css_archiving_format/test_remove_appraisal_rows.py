@@ -1,7 +1,3 @@
-"""
-Test for the function remove_appraisals_rows(), which removes metadata rows for letters deleted during appraisal.
-To simplify input, the test uses dataframes with only a few of the columns present in a real export.
-"""
 import pandas as pd
 import unittest
 from css_archiving_format import remove_appraisal_rows

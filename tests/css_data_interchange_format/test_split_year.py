@@ -1,11 +1,6 @@
-"""
-Tests for the function split_year(), which makes one CSV for letters received in each calendar year.
-To simplify input, tests use dataframes with only some of the columns present in a real export
-"""
 import os
-import shutil
-
 import pandas as pd
+import shutil
 import unittest
 from css_data_interchange_format import split_year
 from test_script import csv_to_list

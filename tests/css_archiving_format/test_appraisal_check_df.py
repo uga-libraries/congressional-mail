@@ -1,7 +1,3 @@
-"""
-Tests for the function appraisal_check_df, which makes a df of all rows to check for possible appraisal.
-Tests for check df for the four categories of appraisal are part of the "find_category_rows" tests.
-"""
 import pandas as pd
 import unittest
 from css_archiving_format import appraisal_check_df

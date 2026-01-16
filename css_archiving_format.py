@@ -12,7 +12,6 @@ access: remove metadata rows for appraisal and restrictions and columns for PII,
 import csv
 from datetime import date, datetime
 import hashlib
-import numpy as np
 import os
 import pandas as pd
 import re

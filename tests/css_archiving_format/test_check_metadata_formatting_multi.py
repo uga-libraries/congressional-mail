@@ -1,10 +1,3 @@
-"""
-Tests for the function check_metadata_formatting_multi(),
-which finds all rows in a column that don't match any of the expected formatting patterns,
-saves them to a csv and returns the count.
-There is a separate function for a single pattern.
-To simplify testing, only a few columns are used.
-"""
 import numpy as np
 import os
 import pandas as pd
