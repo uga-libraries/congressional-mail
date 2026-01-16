@@ -48,8 +48,9 @@ class MyTestCase(unittest.TestCase):
                      'metadata_formatting_errors_state.csv', 'metadata_formatting_errors_zip.csv',
                      'metadata_formatting_errors_in_date.csv', 'metadata_formatting_errors_in_doc.csv',
                      'metadata_formatting_errors_out_date.csv', 'metadata_formatting_errors_out_doc.csv',
-                     'topics_report.csv', 'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
-                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
+                     'restriction_review.csv', 'topics_report.csv', 'topics_sort_file_not_found.csv',
+                     'usability_report_matching.csv', 'usability_report_matching_details.csv',
+                     'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -393,7 +394,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the printed statement.
         result = printed.stdout
         expected = ("\nThe script is running in appraisal mode.\n"
-                    "It will delete letters due to appraisal but not change the metadata file.\n")
+                    "It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+                    "but not change the metadata file.\n")
         self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
         # Tests the contents of the appraisal check log.
@@ -468,6 +470,35 @@ class MyTestCase(unittest.TestCase):
         expected = ['archiving_correspondence.dat', 'B.txt', 'D.txt', 'F.txt', '000007.txt',
                     '222222.txt', '666666.txt', '777777.txt']
         self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+
+        # Tests the contents of restriction_review.csv
+        result = csv_to_list(os.path.join('test_data', 'script', 'restriction_review.csv'))
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1',
+                     'addr2', 'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method',
+                     'in_date', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
+                     'in_topic_split', 'out_topic_split'],
+                    ['Mx.', 'Harry', 'H.', 'Hills', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '111 H St', 'BLANK',
+                     'BLANK', 'BLANK', 'H city', 'HI', 11111, 'BLANK', 'h100', 'General', 'Email', 20210101,
+                     'refugee', 'note', r'..\documents\BlobExport\objects\888888.txt', 'fill', 'r800', 'General',
+                     'Email', 20210111, 'BLANK', 'note', r'..\documents\BlobExport\formletters\H.txt', 'fill',
+                     'refugee', 'BLANK'],
+                    ['Mx.', 'Ionia', 'I.', 'Invern', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '222 I St', 'BLANK',
+                     'BLANK', 'BLANK', 'I city', 'IA', 22222, 'BLANK', 'i100', 'General', 'Email', 20210101,
+                     'Admin', 'note', r'..\documents\BlobExport\objects\999999.txt', 'fill', 'r900', 'General',
+                     'Email', 20210111, 'citizenship', 'note', r'..\documents\BlobExport\formletters\I.txt',
+                     'fill', 'Admin', 'citizenship'],
+                    ['Mx.', 'Janey', 'J.', 'James', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '333 J St', 'BLANK',
+                     'BLANK', 'BLANK', 'J city', 'GA', 33333, 'BLANK', 'j100', 'General', 'Email', 20210101,
+                     'immigrant', 'note', r'..\documents\BlobExport\objects\101010.txt', 'fill', 'r110', 'General',
+                     'Email', 20210111, 'citizen^citizenship', 'note', r'..\documents\BlobExport\formletters\J.txt',
+                     'fill', 'immigrant', 'citizen'],
+                    ['Mx.', 'Janey', 'J.', 'James', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '333 J St', 'BLANK',
+                     'BLANK', 'BLANK', 'J city', 'GA', 33333, 'BLANK', 'j100', 'General', 'Email', 20210101,
+                     'immigrant', 'note', r'..\documents\BlobExport\objects\101010.txt', 'fill', 'r110', 'General',
+                     'Email', 20210111, 'citizen^citizenship', 'note', r'..\documents\BlobExport\formletters\J.txt',
+                     'fill', 'immigrant', 'citizenship']]
+        self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
         # Tests the other script mode outputs were not made.
         output_directory = os.path.join('test_data', 'script')
