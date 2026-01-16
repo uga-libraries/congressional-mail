@@ -1,6 +1,3 @@
-"""
-Tests for the function read_metadata(), which combines all metadata into a dataframe.
-"""
 import os
 import unittest
 from cms_data_interchange_format import read_metadata

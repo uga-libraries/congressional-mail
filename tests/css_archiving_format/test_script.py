@@ -1,6 +1,3 @@
-"""
-Tests for the script css_archiving_format.py
-"""
 from datetime import date
 import os
 import pandas as pd

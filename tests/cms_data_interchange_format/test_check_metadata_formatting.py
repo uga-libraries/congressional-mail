@@ -1,12 +1,3 @@
-"""
-Tests for the function check_metadata_formatting(),
-which finds all rows in a column that don't match the expected formatting,
-saves them to a csv and returns the count.
-
-All column tests include correct cells, formatting errors, and blank cells.
-To simplify testing, only the columns with expected formatting are included and
-columns that are not part of a test are blank.
-"""
 import numpy as np
 import os
 import pandas as pd

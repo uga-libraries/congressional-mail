@@ -1,7 +1,3 @@
-"""
-Tests for the function topics_sort(), which organizes a copy of the incoming and outgoing letters by topic.
-To simplify input, tests use dataframes with only some of the columns present in a real export.
-"""
 import os
 import pandas as pd
 import shutil

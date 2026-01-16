@@ -1,7 +1,3 @@
-"""
-Test for the function remove_restricted_rows(), which removes metadata rows for letters deleted during appraisal.
-To simplify input, the test uses dataframes with only a few of the columns present in a real export.
-"""
 import os
 import pandas as pd
 import unittest

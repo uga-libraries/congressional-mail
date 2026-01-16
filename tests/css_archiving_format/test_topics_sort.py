@@ -1,6 +1,3 @@
-"""
-Tests for the function topics_sort(), which organizes a copy of the letters by topic.
-"""
 import os
 import pandas as pd
 import shutil

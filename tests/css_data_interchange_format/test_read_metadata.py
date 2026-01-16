@@ -1,6 +1,3 @@
-"""
-Test for the function read_metadata(), which combines all metadata into a dataframe.
-"""
 import os
 import unittest
 from css_data_interchange_format import read_metadata

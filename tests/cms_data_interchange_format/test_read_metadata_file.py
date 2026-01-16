@@ -1,6 +1,3 @@
-"""
-Test for the function read_metadata_file(), which reads the metadata from one file into a dataframe.
-"""
 import os
 import unittest
 from cms_data_interchange_format import read_metadata_file

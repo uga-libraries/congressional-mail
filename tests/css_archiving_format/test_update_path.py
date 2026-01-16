@@ -1,6 +1,3 @@
-"""
-Tests for the function update_path(), which converts the path in the metadata to the file path in the export.
-"""
 import unittest
 from css_archiving_format import update_path
 

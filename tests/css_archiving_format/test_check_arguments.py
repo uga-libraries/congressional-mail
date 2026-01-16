@@ -1,7 +1,3 @@
-"""
-Tests for the function check_arguments(), which verifies the required arguments are present and valid.
-For input, tests use a list with argument values. In production, this would be the contents of sys_argv.
-"""
 import os
 import unittest
 from css_archiving_format import check_arguments

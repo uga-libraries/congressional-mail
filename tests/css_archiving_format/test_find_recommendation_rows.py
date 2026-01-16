@@ -1,8 +1,3 @@
-"""
-Tests for the function find_recommendation_rows(),
-which finds metadata rows with topics or text that indicate they are job applications and returns as a df.
-To simplify input, tests use dataframes with only some of the columns present in a real export.
-"""
 import pandas as pd
 import unittest
 from css_archiving_format import find_recommendation_rows

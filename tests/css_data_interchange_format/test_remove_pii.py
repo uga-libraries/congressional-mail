@@ -1,7 +1,3 @@
-"""
-Tests for the function remove_pii(), which removes columns that contain personally identifiable information.
-To simplify input, the content is just numbers instead of reasonable data for the column types.
-"""
 import pandas as pd
 import unittest
 from css_data_interchange_format import remove_pii

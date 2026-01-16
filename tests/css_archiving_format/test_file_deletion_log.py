@@ -1,7 +1,3 @@
-"""
-Tests for the function file_deletion_log(),
-which makes or updates the file deletion log, so data is saved as soon as a file is deleted.
-"""
 from datetime import date
 import os
 import unittest

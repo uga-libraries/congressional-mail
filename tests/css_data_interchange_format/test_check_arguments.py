@@ -1,7 +1,3 @@
-"""
-Tests for the function get_paths, which gets the paths to all metadata files
-in a folder provided as the script argument.
-"""
 import os
 import unittest
 from css_data_interchange_format import check_arguments

@@ -1,7 +1,3 @@
-"""
-Tests for the function find_casework_rows(), which finds metadata rows that are or might be casework
-To simplify testing, a small subset of the columns from an export are used
-"""
 import pandas as pd
 import unittest
 from cms_data_interchange_format import find_casework_rows

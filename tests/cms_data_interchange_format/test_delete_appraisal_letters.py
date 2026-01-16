@@ -1,7 +1,3 @@
-"""
-Tests for the function delete_appraisal_letters(), which deletes letters for appraisal reaassertEqual(expected, resultns.
-To simplify input, the test uses dataframes with only a few of the columns present in a real export.
-"""
 from datetime import date
 import numpy as np
 import os

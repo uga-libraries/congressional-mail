@@ -1,7 +1,3 @@
-"""
-Tests for the function topics_report(), which makes a report of the number of times each topic is used.
-To simplify testing, md_df has only a few of the columns that are in a normal export.
-"""
 import numpy as np
 import os
 import pandas as pd

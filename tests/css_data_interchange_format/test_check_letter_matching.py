@@ -1,7 +1,3 @@
-"""
-Test for the function check_letter_matching(), which compares the letters in the metadata to the input directory.
-To simplify testing, only a few columns are used for the dataframe.
-"""
 import numpy as np
 import os
 import pandas as pd

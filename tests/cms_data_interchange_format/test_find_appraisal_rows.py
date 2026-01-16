@@ -1,8 +1,3 @@
-"""
-Tests for the function find_appraisal_rows(),
-which metadata rows for all the categories for appraisal, return df and log results
-To simplify input, tests use dataframes with a few the columns present in a real export.
-"""
 import os
 import pandas as pd
 import unittest
