@@ -487,6 +487,20 @@ def remove_pii(df):
     return df
 
 
+def restriction_report(df, output_dir):
+    """Make report of any row with a topic that require restriction if they are about individuals' situations"""
+
+    # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
+                     'immigrant', 'immigration', 'migrant', 'refugee']
+
+    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # No report is made if no topics are present.
+    report_df = df[df['code_description'].isin(restrict_list)]
+    if len(report_df.index) > 0:
+        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+
+
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
@@ -608,21 +622,25 @@ if __name__ == '__main__':
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
-    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
+    # Restricted letters would not be included in the access copy.
+    # The metadata file is not changed in this mode.
     elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
-        print("It will delete letters due to appraisal but not change the metadata file.")
+        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+              "but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+        restriction_report(md_df, output_directory)
 
-    # For access, removes rows for appraisal and columns with PII from the metadata,
-    # makes a copy of the data split by calendar year,
-    # and makes a copy of the letters from constituents organized by topic.
+    # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
+    # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters and columns with PII, "
+        print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
+        md_df = css_dif.remove_restricted_rows(md_df, output_directory)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         css_dif.split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
