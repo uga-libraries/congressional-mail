@@ -7,7 +7,7 @@ accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
-        and make a copy of incoming and outgoing correspondence in folders by topi
+        and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
 from datetime import date, datetime
