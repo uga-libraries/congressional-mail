@@ -45,6 +45,13 @@ while maintaining the directory structure and start the metadata.csv file.
 4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
 
 ### Access
+Delete any rows from restriction_review.csv (made in Appraisal mode) that express opinions about the topic,
+and only leaves rows where someone is requesting assistance with their own situation.
+Anything left in restriction_review.csv will not be part of the access copy.
+Requests for assistance on these topics are likely to include highly sensitive information 
+and are being restricted from access until we make a determination of if they should be retained 
+or restricted for 75 years.
+
 Run the script in "access" mode to make anonymized versions of the metadata that can be shared with researchers
 and a copy of all unrestricted letters with topical metadata, reorganized by topic, for class use.
 
