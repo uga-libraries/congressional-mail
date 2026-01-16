@@ -37,8 +37,8 @@ class MyTestCase(unittest.TestCase):
         # Metadata file and logs in the output directory.
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
                      'metadata_formatting_errors_date_out.csv', 'metadata_formatting_errors_state.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'topics_report.csv',
-                     'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
+                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'restriction_review.csv',
+                     'topics_report.csv', 'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
                      'usability_report_matching_details.csv', 'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
@@ -413,6 +413,21 @@ class MyTestCase(unittest.TestCase):
         expected = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out', '8A.out',
                     '1.txt', 'case_name.txt', '1001.txt', '1002.txt']
         self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+
+        # Tests the contents of restriction_review.csv
+        csv_path = os.path.join('test_data', 'script', 'restriction_review.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_6', '20230616', '20230617', 'BLANK', '20230617', 'EMAIL', 'City Six', 'GA',
+                     '30006', 'USA', '66666', 'CON', '1', 'main', 'out-custom\\6006.txt', 'BLANK', 'COR', '66666',
+                     'immigration', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230717', '20230718', 'BLANK', '20230718', 'EMAIL', 'City Svn', 'GA',
+                     '30007', 'USA', '77777', 'NEU', '1', 'main', 'out-custom\\7007.txt', 'BLANK', 'COR', '77777',
+                     'citizenship', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
