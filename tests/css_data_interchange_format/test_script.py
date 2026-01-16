@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the print statement.
         result = output.stdout
-        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted letters '
+        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted or restricted letters '
                     'and columns with PII, make copies of the metadata split by calendar year, '
                     'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
