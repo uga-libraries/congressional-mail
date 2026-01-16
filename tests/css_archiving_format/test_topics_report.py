@@ -36,14 +36,14 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
         expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
-                    ['BLANK', 2, 0, 2],
-                    ['Baseball', 1, 0, 1],
-                    ['Chess', 1, 1, 2],
-                    ['Food', 0, 1, 1],
-                    ['Pets', 0, 2, 2],
-                    ['Puppies', 2, 0, 2],
-                    ['Sports', 0, 3, 3],
-                    ['Water', 3, 2, 5]]
+                    ['BLANK', '2', '0', '2'],
+                    ['Baseball', '1', '0', '1'],
+                    ['Chess', '1', '1', '2'],
+                    ['Food', '0', '1', '1'],
+                    ['Pets', '0', '2', '2'],
+                    ['Puppies', '2', '0', '2'],
+                    ['Sports', '0', '3', '3'],
+                    ['Water', '3', '2', '5']]
         self.assertEqual(expected, result, "Problem with test for all")
 
     def test_blanks(self):
@@ -59,8 +59,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
         expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
-                    ['BLANK', 3, 2, 5],
-                    ['Water', 1, 2, 3]]
+                    ['BLANK', '3', '2', '5'],
+                    ['Water', '1', '2', '3']]
         self.assertEqual(expected, result, "Problem with test for blanks")
 
     def test_shared(self):
@@ -80,11 +80,11 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
         expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
-                    ['Baseball', 1, 1, 2],
-                    ['Pets', 1, 3, 4],
-                    ['Puppies', 3, 1, 4],
-                    ['Sports', 1, 1, 2],
-                    ['Water', 2, 2, 4]]
+                    ['Baseball', '1', '1', '2'],
+                    ['Pets', '1', '3', '4'],
+                    ['Puppies', '3', '1', '4'],
+                    ['Sports', '1', '1', '2'],
+                    ['Water', '2', '2', '4']]
         self.assertEqual(expected, result, "Problem with test for shared")
 
     def test_unique(self):
@@ -99,10 +99,10 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the file deletion log.
         result = csv_to_list(os.path.join('test_data', 'topics_report.csv'))
         expected = [['Topic', 'In_Topic_Count', 'Out_Topic_Count', 'Total'],
-                    ['Chess', 1, 0, 1],
-                    ['Ecology', 0, 1, 1],
-                    ['Sports', 0, 2, 2],
-                    ['Water', 2, 0, 2]]
+                    ['Chess', '1', '0', '1'],
+                    ['Ecology', '0', '1', '1'],
+                    ['Sports', '0', '2', '2'],
+                    ['Water', '2', '0', '2']]
         self.assertEqual(expected, result, "Problem with test for unique")
 
 

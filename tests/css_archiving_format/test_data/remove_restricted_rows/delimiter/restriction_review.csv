@@ -1,0 +1,10 @@
+last,zip,in_topic,in_document_name,out_topic,in_topic_split,out_topic_split
+Anders,12345,citizen^open,..\objects\1.txt,open,citizen,open
+Blooms,23456,citizen^refugee,..\objects\2.txt,open,citizen,open
+Blooms,23456,citizen^refugee,..\objects\2.txt,open,refugee,open
+Cliver,34567,court,..\objects\3.txt,immigrant^immigration,court,immigrant
+Cliver,34567,court,..\objects\3.txt,immigrant^immigration,court,migration
+Dudley,45678,citizen^migrant,..\objects\4.txt,court^citizen,citizen,court
+Dudley,45678,citizen^migrant,..\objects\4.txt,court^citizen,citizen,citizen
+Dudley,45678,citizen^migrant,..\objects\4.txt,court^citizen,migrant,court
+Dudley,45678,citizen^migrant,..\objects\4.txt,court^citizen,migrant,citizen
