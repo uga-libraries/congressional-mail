@@ -1,9 +1,7 @@
 # Congressional Mail (CSS/CMS)
 
 ## Overview
-Providing basic access to metadata from congressional correspondent system exports.
-Tables are combined if there is more than one, columns with personally identifiable information are removed, 
-and the data is saved into one spreadsheet (Access_Copy.csv), as well as one CSV per Congress Year.
+Providing basic access to congressional correspondent system exports. DRAFT
 
 ## Getting Started
 
