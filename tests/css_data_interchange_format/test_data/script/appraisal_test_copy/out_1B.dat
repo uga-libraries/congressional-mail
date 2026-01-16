@@ -5,3 +5,5 @@
 1B	7000004	2000005	HO	Y	Y	 	 	Suite 6B	400 Hill Rd	 	 	Atlanta	GA	30327-4346	C023	Fulton	USA	GA11	    		 	 		
 1B	100000009	100000005	HO	Y	Y	 	 	123 Shady Ln	 	 	 	Marietta	GA	30067-8581	C058	Cobb	USA	GA11	 	 		
 1B	300000001	300000000	BU	Y	Y	 	Department of Veterans Affairs	810 Vermont Avenue NW	 	 	 	Washington	DC	20420-0002	C000	District of Columbia	USA	DC01	
+1B	1111111	9000005	HO	Y	Y	 	 	Suite 1	100 St	 	 	Atlanta	GA	30327	C1	Fulton	USA	GA1	    		 	 		
+1B	4444444	9000006	HO	Y	Y	 	 	Suite 4	400 St	 	 	Atlanta	GA	30327	C4	Fulton	USA	GA4	    		 	 		

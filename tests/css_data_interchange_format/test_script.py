@@ -35,8 +35,9 @@ class MyTestCase(unittest.TestCase):
         filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
                      f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'form_letter_metadata.csv',
                      'metadata_formatting_errors_state_code.csv', 'metadata_formatting_errors_update_date.csv',
-                     'topics_report.csv', 'topics_sort_file_not_found.csv', 'usability_report_matching.csv',
-                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
+                     'restriction_review.csv', 'topics_report.csv', 'topics_sort_file_not_found.csv',
+                     'usability_report_matching.csv', 'usability_report_matching_details.csv',
+                     'usability_report_metadata.csv']
         for filename in filenames:
             file_path = os.path.join('test_data', 'script', filename)
             if os.path.exists(file_path):
@@ -386,7 +387,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the print statement.
         result = output.stdout
         expected = ('\nThe script is running in appraisal mode.\n'
-                    'It will delete letters due to appraisal but not change the metadata file.\n')
+                    'It will delete letters due to appraisal and make a report of metadata to review for restrictions,'
+                    'but not change the metadata file.\n')
         self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
         # Tests the contents of the appraisal check log.
@@ -445,6 +447,21 @@ class MyTestCase(unittest.TestCase):
         expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat',
                     '2103422.html', '30046.doc', 'legal_case.html']
         self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+
+        # Tests the contents of restriction_review.csv.
+        csv_path = os.path.join('test_data', 'script', 'restriction_review.csv')
+        result = csv_to_list(csv_path)
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
+                    ['usmail', 'BLANK', 'X', '20010101', '20010102', 'BLANK', '20010103', 'usmail', 'court',
+                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\1.doc', '1.doc',
+                     'BLANK', 'BLANK'],
+                    ['usmail', 'BLANK', 'X', '20020101', '20020102', 'BLANK', '20020103', 'usmail', 'refugee',
+                     'Atlanta', 'GA', '30327', 'USA', 'INCOMING', '..\\documents\\objects\\4.doc', '4.doc',
+                     'BLANK', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
