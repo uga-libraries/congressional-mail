@@ -79,9 +79,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [os.path.join(input_directory, 'documents', 'objects', '800000.txt'),
-                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError'],
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     [os.path.join(input_directory, 'documents', 'objects', '900000.txt'),
-                     'nan', 'nan', 'nan', 'nan', 'Cannot delete: FileNotFoundError']]
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
         self.assertEqual(expected, result, "Problem with test for file not found, file deletion log")
 
         # Tests that no files have been deleted.
@@ -106,9 +106,9 @@ class MyTestCase(unittest.TestCase):
         log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    ['..\\letters\\100001.txt', 'nan', 'nan', 'nan', 'nan',
+                    ['..\\letters\\100001.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Cannot determine file path: new path pattern in metadata'],
-                    ['..\\letters\\200002.txt', 'nan', 'nan', 'nan', 'nan',
+                    ['..\\letters\\200002.txt', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
                      'Cannot determine file path: new path pattern in metadata']]
         self.assertEqual(expected, result, "Problem with test for no deletion - form, file deletion log")
 

@@ -42,7 +42,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '2', '29%'],
                     ['Metadata_Only', '4', '57%'],
                     ['Metadata_Blank', '1', '14%'],
-                    ['Directory_Only', '3', 'nan']]
+                    ['Directory_Only', '3', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for all, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -80,7 +80,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '5', '62%'],
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '3', '38%'],
-                    ['Directory_Only', '0', 'nan']]
+                    ['Directory_Only', '0', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for blanks, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -104,7 +104,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '2', '100%'],
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
-                    ['Directory_Only', '3', 'nan']]
+                    ['Directory_Only', '3', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for directory_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -138,7 +138,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '5', '100%'],
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
-                    ['Directory_Only', '0', 'nan']]
+                    ['Directory_Only', '0', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for duplicates, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -165,7 +165,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '5', '100%'],
                     ['Metadata_Only', '0', '0%'],
                     ['Metadata_Blank', '0', '0%'],
-                    ['Directory_Only', '0', 'nan']]
+                    ['Directory_Only', '0', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for match, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
@@ -195,7 +195,7 @@ class MyTestCase(unittest.TestCase):
                     ['Match', '5', '62%'],
                     ['Metadata_Only', '3', '38%'],
                     ['Metadata_Blank', '0', '0%'],
-                    ['Directory_Only', '0', 'nan']]
+                    ['Directory_Only', '0', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for metadata_only, summary")
 
         # Tests the values in usability_report_matching_details.csv are correct.
