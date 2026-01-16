@@ -4,8 +4,9 @@ Required arguments: input_directory (path to the folder with the export) and scr
 
 Script modes
 accession: produce usability and appraisal reports; export not changed
-appraisal: delete letters due to appraisal; metadata not changed
-access: remove metadata rows for appraisal and columns for PII, make copy of metadata split by calendar year,
+appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
+access: remove metadata rows for appraisal and restrictions and columns for PII,
+        make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 """
 import csv
@@ -640,6 +641,55 @@ def remove_pii(df):
     return df
 
 
+def remove_restricted_rows(df, output_dir):
+    """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
+
+    # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
+    # Columns for individual topics when there is a delimiter are removed, so the row matches exactly,
+    # and duplicate rows from splitting rows based on the delimiters for the review are also removed.
+    # If there is no CSV (no restrictions in this export), returns the df unchanged.
+    try:
+        df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'))
+        df_restrict = df_restrict.drop(columns=['in_topic_split', 'out_topic_split'])
+        df_restrict = df_restrict.drop_duplicates()
+    except FileNotFoundError:
+        return df
+
+    # Makes sure all columns in the input dataframe are strings, since the types must be the same for rows to match.
+    # Must use astype for df_restrict rather than reading with dtype=str for the blanks to match exactly.
+    df = df.astype(str)
+    df_restrict = df_restrict.astype(str)
+
+    # Makes an updated dataframe with just rows in df that are not in df_restrict.
+    df_merge = df.merge(df_restrict, how='left', indicator=True)
+    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
+
+    return df_update
+
+
+def restriction_report(df, output_dir):
+    """Make report of any row with topics that require restriction if they are about individuals' situations"""
+
+    # Make a copy of the df repeating any rows with delimited topics, one row per topic, for more accurate matches.
+    # The original topic columns are retained so it can be matched to md_df for making the redacted access copy.
+    restrict_df = df.copy()
+    restrict_df['in_topic_split'] = restrict_df['in_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('in_topic_split')
+    restrict_df['out_topic_split'] = restrict_df['out_topic'].str.split(r'^')
+    restrict_df = restrict_df.explode('out_topic_split')
+
+    # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
+                     'immigrant', 'immigration', 'migrant', 'refugee']
+
+    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # No report is made if no topics are present.
+    report_df = restrict_df[restrict_df['in_topic_split'].isin(restrict_list) |
+                            restrict_df['out_topic_split'].isin(restrict_list)]
+    if len(report_df.index) > 0:
+        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+
+
 def split_year(df, output_dir):
     """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
@@ -840,20 +890,25 @@ if __name__ == '__main__':
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
-    # For appraisal, deletes letters due to appraisal. The metadata file is not changed in this mode.
+    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
+    # Restricted letters would not be included in the access copy.
+    # The metadata file is not changed in this mode.
     elif script_mode == 'appraisal':
         print("\nThe script is running in appraisal mode.")
-        print("It will delete letters due to appraisal but not change the metadata file.")
+        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+              "but not change the metadata file.")
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+        restriction_report(md_df, output_directory)
 
-    # For access, removes rows for appraisal and columns with PII from the metadata,
+    # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
-        print("It will remove rows for deleted letters and columns with PII, "
+        print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = remove_restricted_rows(md_df, output_directory)
         md_df = remove_pii(md_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_year(md_df, output_directory)

@@ -36,23 +36,26 @@ Processing typically does not take place until after the collection can open.
 If time allows, we may process at the time of accessioning to streamline the work and future validation process.
 
 ### Preservation
-This workflow and script still needs to be developed.
 The preservation version has letters deleted for appraisal and the entire metadata file.
-The script "preservation" mode will split the export into folders to keep AIP size reasonable
-and make the metadata.csv file.
-Then the general_aip.py script can be run to produce the AIPs and they may be ingested into ARCHive.
+1. Run aip_prep.py to split a copy of the export into folders to keep AIP size reasonable 
+while maintaining the directory structure and start the metadata.csv file.
+2. Add the department, collection, and AIP ids to the metadata.csv.
+3. Run general_aip.py script to produce the AIPs, and follow that workflow for QC.
+4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
 
 ### Access
-This workflow needs to be further developed.
 Run the script in "access" mode to make anonymized versions of the metadata that can be shared with researchers
-and a copy of all incoming letters with topical metadata, reorganized by topic, for class use.
-Package these into DIPs with the form letters and documentation (TBD) according to the standard born-digital workflow.
+and a copy of all unrestricted letters with topical metadata, reorganized by topic, for class use.
 
-For the letters organized by topic, we have had one already where there were no rows with both a topic and path,
-in which case manually delete the empty Correspoondence_by_Topic folder.
-Exports may also have subfolders by topic, which can be moved into the Correspondence_by_Topic folder 
-after the script does its sorting.
-To facilitate quicker and more focused access, each topic folder should be a separate DIP.
+Package the script output into DIPs according to the standard born-digital workflow:
+* Form letters and metadata 
+* Letters by topic: each topic folder is a separate DIP
+* Redacted metadata: single CSV and CSV by calendar year 
+ 
+Include an explanation of the export and how it has been altered during processing in each DIP
+and summarize that information in the finding aid as a processing note. 
+
+Delete any topic folders that do not provide meaningful access, such as dates or numerical codes.
 
 For CMS Data Interchange Format, include Table 8C for the form letter metadata.
 If we every receive 8D, merge fields, potentially merge that with 8C.

@@ -42,9 +42,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_document_name.csv'))
         expected = [['zip', 'in_document_name'],
-                    [30602, 'root\\documents\\BlobExport\\foldera\\filea.txt'],
-                    [30606, 'dir\\..\\documents\\BlobExport\\folder1\\file1.txt'],
-                    [30607, 'fileb.txt']]
+                    ['30602', 'root\\documents\\BlobExport\\foldera\\filea.txt'],
+                    ['30606', 'dir\\..\\documents\\BlobExport\\folder1\\file1.txt'],
+                    ['30607', 'fileb.txt']]
         self.assertEqual(expected, result, "Problem with test for blob, report")
 
     def test_dos(self):
@@ -66,8 +66,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
-                    [30602, 'root\\\\smith-atlanta\\dos\\public\\foldera\\filea.txt'],
-                    [30606, 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
+                    ['30602', 'root\\\\smith-atlanta\\dos\\public\\foldera\\filea.txt'],
+                    ['30606', 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
         self.assertEqual(expected, result, "Problem with test for dos, report")
 
     def test_e(self):
@@ -86,7 +86,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
-                    [30602, 'root\\e:\\emailobj\\200202\\416120451.txt']]
+                    ['30602', 'root\\e:\\emailobj\\200202\\416120451.txt']]
         self.assertEqual(expected, result, "Problem with test for e, report")
 
     def test_column_blank(self):
@@ -162,10 +162,10 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
         expected = [['zip', 'out_document_name'],
-                    [30601, '..\\documents\\folder1\\file1.txt'],
-                    [30602, '..\\documents\\file2.txt'],
-                    [30603, '\\public\\file1.txt'],
-                    [30604, 'file2.txt']]
+                    ['30601', '..\\documents\\folder1\\file1.txt'],
+                    ['30602', '..\\documents\\file2.txt'],
+                    ['30603', '\\public\\file1.txt'],
+                    ['30604', 'file2.txt']]
         self.assertEqual(expected, result, "Problem with test for only, report")
 
 

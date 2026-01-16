@@ -29,10 +29,12 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'GEN', 'Academy Applicant', 'Nomination', '', '', 'GEN', '', '', '', ''],
                               ['30601', 'GEN', 'Misc', 'Note', '', '', 'GEN', 'Misc', 'Note', '', ''],
                               ['30602', 'GEN', 'Casework', '', '', '', 'GEN', '', '', '', ''],
-                              ['30603', 'GEN', 'Admin', '', '', '', 'GEN', 'Recommendations', 'wrote recommendation',
+                              ['30603', 'GEN', 'Admin', '', '', '', 'GEN', 'Recommendations',
+                               'wrote recommendation', '', ''],
+                              ['30604', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN',
+                               '', '', '', ''],
+                              ['30605', 'GEN', 'Intern', '', r'..\doc\resume.txt', '', 'GEN', '', 'job request',
                                '', ''],
-                              ['30604', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN', '', '', '', ''],
-                              ['30605', 'GEN', 'Intern', '', r'..\doc\resume.txt', '', 'GEN', '', 'job request', '', ''],
                               ['30606', 'GEN', 'Congratulations', '', '', '', 'GEN', '', 'Good job', '', ''],
                               ['30607', 'GEN', 'Legislation', '', '', '', 'GEN', '', 'Recommendation noted', '', ''],
                               ['30608', 'GEN', 'Arts', 'International Academy', '', '', 'GEN', '', '', '', ''],
@@ -60,15 +62,15 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30600, 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Academy_Application'],
-                    [30602, 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
+                    ['30602', 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework'],
-                    [30603, 'GEN', 'Admin', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Recommendations',
+                    ['30603', 'GEN', 'Admin', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Recommendations',
                      'wrote recommendation', 'BLANK', 'BLANK', 'Recommendation'],
-                    [30604, 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
+                    ['30604', 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'BLANK', 'BLANK', 'BLANK', 'Casework'],
-                    [30605, 'GEN', 'Intern', 'BLANK', r'..\doc\resume.txt', 'BLANK', 'GEN', 'BLANK',
+                    ['30605', 'GEN', 'Intern', 'BLANK', r'..\doc\resume.txt', 'BLANK', 'GEN', 'BLANK',
                      'job request', 'BLANK', 'BLANK', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal delete log")
 
@@ -76,13 +78,13 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30608, 'GEN', 'Arts', 'International Academy', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30608', 'GEN', 'Arts', 'International Academy', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Academy_Application'],
-                    [30609, 'GEN', 'Legal', 'Case against Napster', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30609', 'GEN', 'Legal', 'Case against Napster', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Casework'],
-                    [30606, 'GEN', 'Congratulations', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Good job',
+                    ['30606', 'GEN', 'Congratulations', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Good job',
                      'BLANK', 'BLANK', 'Job_Application'],
-                    [30607, 'GEN', 'Legislation', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Recommendation noted',
+                    ['30607', 'GEN', 'Legislation', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Recommendation noted',
                      'BLANK', 'BLANK', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
@@ -92,8 +94,10 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['30600', 'GEN', 'Academy Applicant', 'Nomination', '', '', 'GEN', '', '', '', ''],
                               ['30601', 'GEN', 'Casework', '', '', '', 'GEN', '', '', '', ''],
                               ['30602', 'GEN', 'Misc', 'Note', '', '', 'GEN', 'Misc', 'Note', '', ''],
-                              ['30603', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN', '', '', '', ''],
-                              ['30604', 'GEN', 'Intern', '', '', '', 'GEN', 'job request', '', r'..\doc\resume.txt', ''],
+                              ['30603', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN',
+                               '', '', '', ''],
+                              ['30604', 'GEN', 'Intern', '', '', '', 'GEN', 'job request', '',
+                               r'..\doc\resume.txt', ''],
                               ['30605', 'GEN', 'Judicial', 'Napster case', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
@@ -116,13 +120,13 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30600, 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Academy_Application'],
-                    [30601, 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
+                    ['30601', 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework'],
-                    [30603, 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
+                    ['30603', 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'BLANK', 'BLANK', 'BLANK', 'Casework'],
-                    [30604, 'GEN', 'Intern', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'job request', 'BLANK',
+                    ['30604', 'GEN', 'Intern', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'job request', 'BLANK',
                      r'..\doc\resume.txt', 'BLANK', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for three categories, appraisal delete log")
 
@@ -130,7 +134,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30605, 'GEN', 'Judicial', 'Napster case', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30605', 'GEN', 'Judicial', 'Napster case', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
@@ -162,11 +166,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30600, 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Academy_Application'],
-                    [30601, 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
+                    ['30601', 'GEN', 'Casework', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework'],
-                    [30603, 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
+                    ['30603', 'GEN', 'Social Security', 'Casework candidate', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'BLANK', 'BLANK', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for two categories, appraisal delete log")
 
@@ -174,9 +178,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30604, 'GEN', 'Culture', 'Academy Awards', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30604', 'GEN', 'Culture', 'Academy Awards', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Academy_Application'],
-                    [30605, 'GEN', 'Farming', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30605', 'GEN', 'Farming', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      r'..\doc\case\file.doc', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
@@ -205,11 +209,11 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30600, 'GEN', 'Casework Issues', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Casework', 'BLANK',
+                    ['30600', 'GEN', 'Casework Issues', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Casework', 'BLANK',
                      'BLANK', 'BLANK', 'Casework'],
-                    [30601, 'GEN', 'Health^Casework', 'Note', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
+                    ['30601', 'GEN', 'Health^Casework', 'Note', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK', 'BLANK',
                      'BLANK', 'Casework'],
-                    [30603, 'GEN', 'Social Security', 'Open Case', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                    ['30603', 'GEN', 'Social Security', 'Open Case', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for one category, appraisal delete log")
 
@@ -217,7 +221,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30604, 'GEN', 'Admin', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'For Casey', 'BLANK',
+                    ['30604', 'GEN', 'Admin', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'For Casey', 'BLANK',
                      'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
@@ -251,11 +255,11 @@ class MyTestCase(unittest.TestCase):
     def test_multiple(self):
         """Test for when there are rows that match multiple categories for appraisal"""
         md_df = pd.DataFrame([['30600', 'GEN', 'Casework^Academy Applicant', '', '', '', 'GEN', '', '', '', ''],
-                              ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', '', '', 'GEN', '', 'rec for doe',
-                               '', ''],
+                              ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', '', '', 'GEN', '',
+                               'rec for doe', '', ''],
                               ['30602', 'GEN', 'Legal Case', '', '', '', 'GEN', 'Congrats', 'Good job', '', ''],
-                              ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', '', 'GEN', 'Admin', 'recommendation',
-                               '', '']],
+                              ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', '', 'GEN', 'Admin',
+                               'recommendation', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
@@ -274,9 +278,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30600, 'GEN', 'Casework^Academy Applicant', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK',
+                    ['30600', 'GEN', 'Casework^Academy Applicant', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'BLANK', 'BLANK', 'BLANK', 'Academy_Application|Casework'],
-                    [30601, 'GEN', 'Academy Applicant', 'Maybe casework', 'BLANK', 'BLANK', 'GEN', 'BLANK',
+                    ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'rec for doe', 'BLANK', 'BLANK', 'Academy_Application|Casework|Recommendation']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal delete log")
 
@@ -284,13 +288,13 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    [30602, 'GEN', 'Legal Case', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Congrats', 'Good job', 'BLANK',
+                    ['30602', 'GEN', 'Legal Case', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Congrats', 'Good job', 'BLANK',
                      'BLANK', 'Casework'],
-                    [30603, 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
+                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
                      'BLANK', 'BLANK', 'Casework'],
-                    [30602, 'GEN', 'Legal Case', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Congrats', 'Good job',
+                    ['30602', 'GEN', 'Legal Case', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Congrats', 'Good job',
                      'BLANK', 'BLANK', 'Job_Application'],
-                    [30603, 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
+                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
                      'BLANK', 'BLANK', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal check log")
 

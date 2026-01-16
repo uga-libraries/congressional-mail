@@ -7,3 +7,5 @@
 1B	300000001	300000000	BU	Y	Y	 	Department of Veterans Affairs	810 Vermont Avenue NW	 	 	 	Washington	DC	20420-0002	C000	District of Columbia	USA	DC01	
 1B	1234567	500000005	HO	Y	Y	 	 	999 Elm St	 	 	 	Marietta	GA	30067-8582	C058	Cobb	USA	GA11
 1B	0000000	500000005	HO	Y	Y	 	 	111 Ash Ave	 	 	 	Marietta	GA	30067-8583	C058	Cobb	USA	GA11	 	 		
+1B	1111111	9000005	HO	Y	Y	 	 	Suite 1	100 St	 	 	Atlanta	GA	30327	C1	Fulton	USA	GA1	    		 	 		
+1B	4444444	9000006	HO	Y	Y	 	 	Suite 4	400 St	 	 	Atlanta	GA	30327	C4	Fulton	USA	GA4	    		 	 		

@@ -102,10 +102,10 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_communication_document_name.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', 'nan', '7'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'documents\\objects\\2.txt'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', 'nan', 'objects\\3.txt'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', 'nan', '4.txt']]
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '7'],
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'documents\\objects\\2.txt'],
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'objects\\3.txt'],
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '4.txt']]
         self.assertEqual(expected, result, "Problem with test for communication_document_name, report")
 
     def test_date_in(self):
@@ -127,9 +127,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_date_in.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', 'nan', '2005', 'nan', 'nan', 'nan', 'nan'],
-                    ['nan', 'nan', '2005-01-02', 'nan', 'nan', 'nan', 'nan'],
-                    ['nan', 'nan', 'January 2005', 'nan', 'nan', 'nan', 'nan']]
+                    ['BLANK', 'BLANK', '2005', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['BLANK', 'BLANK', '2005-01-02', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['BLANK', 'BLANK', 'January 2005', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for date_in, report")
 
     def test_date_out(self):
@@ -151,8 +151,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_date_out.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', 'nan', 'nan', '2025/12/01', 'nan', 'nan', 'nan'],
-                    ['nan', 'nan', 'nan', '2025-12-01', 'nan', 'nan', 'nan']]
+                    ['BLANK', 'BLANK', 'BLANK', '2025/12/01', 'BLANK', 'BLANK', 'BLANK'],
+                    ['BLANK', 'BLANK', 'BLANK', '2025-12-01', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for date_out, report")
 
     def test_reminder_date(self):
@@ -174,7 +174,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_reminder_date.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', 'nan', 'nan', 'nan', '2023', 'nan', 'nan']]
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', '2023', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for reminder_date, report")
 
     def test_state_code(self):
@@ -196,9 +196,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_state_code.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['ga', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['Georgia', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['X', 'nan', 'nan', 'nan', 'nan', 'nan', 'nan']]
+                    ['ga', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Georgia', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['X', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for state_code, report")
 
     def test_update_date(self):
@@ -220,8 +220,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_update_date.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', '202101212', 'nan'],
-                    ['nan', 'nan', 'nan', 'nan', 'nan', 'no date', 'nan']]
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '202101212', 'BLANK'],
+                    ['BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'no date', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for update_date, report")
 
     def test_zip_code(self):
@@ -243,9 +243,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_zip_code.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'date_out', 'reminder_date', 'update_date',
                      'communication_document_name'],
-                    ['nan', '30601 1234', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['nan', '3060', 'nan', 'nan', 'nan', 'nan', 'nan'],
-                    ['nan', 'XXXXX', 'nan', 'nan', 'nan', 'nan', 'nan']]
+                    ['BLANK', '30601 1234', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['BLANK', '3060', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['BLANK', 'XXXXX', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for zip_code, report")
 
 

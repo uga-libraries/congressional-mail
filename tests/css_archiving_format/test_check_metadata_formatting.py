@@ -26,8 +26,13 @@ class MyTestCase(unittest.TestCase):
     def test_in_date(self):
         """Test for the in_date column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['30601', np.nan], ['30602', '20001212.0600'], ['30603', '20001212'], ['30604', '2000'],
-                           ['30605', '2000-12-12'], ['30606', 'Dec 12, 2000'], ['30606', 'rcvd 20001212']],
+        df = pd.DataFrame([['30601', np.nan],
+                           ['30602', '20001212.0600'],
+                           ['30603', '20001212'],
+                           ['30604', '2000'],
+                           ['30605', '2000-12-12'],
+                           ['30606', 'Dec 12, 2000'],
+                           ['30606', 'rcvd 20001212']],
                           columns=['zip', 'in_date'])
         in_date_mismatch = check_metadata_formatting('in_date', df, 'test_data')
 
@@ -36,15 +41,24 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_date.csv'))
-        expected = [['zip', 'in_date'], [30602, '20001212.0600'], [30604, '2000'], [30605, '2000-12-12'],
-                    [30606, 'Dec 12, 2000'], [30606, 'rcvd 20001212']]
+        expected = [['zip', 'in_date'],
+                    ['30602', '20001212.0600'],
+                    ['30604', '2000'],
+                    ['30605', '2000-12-12'],
+                    ['30606', 'Dec 12, 2000'],
+                    ['30606', 'rcvd 20001212']]
         self.assertEqual(expected, result, "Problem with test for in_date, report")
 
     def test_out_date(self):
         """Test for the out_date column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['30601', np.nan], ['30602', '20001212.0600'], ['30603', '20001212'], ['30604', '2000'],
-                           ['30605', '2000-12-12'], ['30606', 'Dec 12, 2000'], ['30606', 'rcvd 20001212']],
+        df = pd.DataFrame([['30601', np.nan],
+                           ['30602', '20001212.0600'],
+                           ['30603', '20001212'],
+                           ['30604', '2000'],
+                           ['30605', '2000-12-12'],
+                           ['30606', 'Dec 12, 2000'],
+                           ['30606', 'rcvd 20001212']],
                           columns=['zip', 'out_date'])
         out_date_mismatch = check_metadata_formatting('out_date', df, 'test_data')
 
@@ -53,15 +67,24 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_date.csv'))
-        expected = [['zip', 'out_date'], [30602, '20001212.0600'], [30604, '2000'], [30605, '2000-12-12'],
-                    [30606, 'Dec 12, 2000'], [30606, 'rcvd 20001212']]
+        expected = [['zip', 'out_date'],
+                    ['30602', '20001212.0600'],
+                    ['30604', '2000'],
+                    ['30605', '2000-12-12'],
+                    ['30606', 'Dec 12, 2000'],
+                    ['30606', 'rcvd 20001212']]
         self.assertEqual(expected, result, "Problem with test for out_date, report")
 
     def test_state(self):
         """Test for the state column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['GA', '30601'], [np.nan, '30602'], ['ga', '30603'],
-                           ['GEORGIA', '30604'], ['AL', '30605'], ['NDK', '30606'], ['D.C.', '30607']],
+        df = pd.DataFrame([['GA', '30601'],
+                           [np.nan, '30602'],
+                           ['ga', '30603'],
+                           ['GEORGIA', '30604'],
+                           ['AL', '30605'],
+                           ['NDK', '30606'],
+                           ['D.C.', '30607']],
                           columns=['state', 'zip'])
         state_mismatch = check_metadata_formatting('state', df, 'test_data')
 
@@ -70,14 +93,24 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_state.csv'))
-        expected = [['state', 'zip'], ['ga', 30603], ['GEORGIA', 30604], ['NDK', 30606]]
+        expected = [['state', 'zip'],
+                    ['ga', '30603'],
+                    ['GEORGIA', '30604'],
+                    ['NDK', '30606']]
         self.assertEqual(expected, result, "Problem with test for state, report")
 
     def test_zip(self):
         """Test for the zip column, including correct cells, formatting errors, and blanks"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['GA', '30601'], ['MS', '306024444'], ['GA', '30603-0001'], ['TX', 'no zip'],
-                           ['GA', np.nan], ['DC', 'no zip'], ['GA', np.nan], ['MO', '3060'], ['GA', '30603-XXXX']],
+        df = pd.DataFrame([['GA', '30601'],
+                           ['MS', '306024444'],
+                           ['GA', '30603-0001'],
+                           ['TX', 'no zip'],
+                           ['GA', np.nan],
+                           ['DC', 'no zip'],
+                           ['GA', np.nan],
+                           ['MO', '3060'],
+                           ['GA', '30603-XXXX']],
                           columns=['state', 'zip'])
         zip_mismatch = check_metadata_formatting('zip', df, 'test_data')
 
@@ -86,13 +119,20 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in the report are correct.
         result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_zip.csv'))
-        expected = [['state', 'zip'], ['MS', '306024444'], ['TX', 'no zip'], ['DC', 'no zip'], ['MO', '3060']]
+        expected = [['state', 'zip'],
+                    ['MS', '306024444'],
+                    ['TX', 'no zip'],
+                    ['DC', 'no zip'],
+                    ['MO', '3060']]
         self.assertEqual(expected, result, "Problem with test for zip, report")
 
     def test_column_blank(self):
         """Test for a column that is entirely blank, which would be the same for any column"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([[np.nan, '30601'], [np.nan, '38602'], [np.nan, '30603-0001'], [np.nan, '76621']],
+        df = pd.DataFrame([[np.nan, '30601'],
+                           [np.nan, '38602'],
+                           [np.nan, '30603-0001'],
+                           [np.nan, '76621']],
                           columns=['state', 'zip'])
         state_mismatch = check_metadata_formatting('state', df, 'test_data')
 
@@ -107,7 +147,10 @@ class MyTestCase(unittest.TestCase):
     def test_column_missing(self):
         """Test for a column that is missing, which would be the same for any column"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['GA', '30601'], ['MS', '38602'], ['GA', '30603-0001'], ['TX', '76621']],
+        df = pd.DataFrame([['GA', '30601'],
+                           ['MS', '38602'],
+                           ['GA', '30603-0001'],
+                           ['TX', '76621']],
                           columns=['state', 'zip'])
         out_date_mismatch = check_metadata_formatting('out_date', df, 'test_data')
 
@@ -122,7 +165,10 @@ class MyTestCase(unittest.TestCase):
     def test_no_errors(self):
         """Test for the column has no formatting errors, which would be the same for any column"""
         # Makes a dataframe to use as test input and runs the function.
-        df = pd.DataFrame([['GA', '30601'], ['MS', '38602'], ['GA', '30603-0001'], ['TX', '76621']],
+        df = pd.DataFrame([['GA', '30601'],
+                           ['MS', '38602'],
+                           ['GA', '30603-0001'],
+                           ['TX', '76621']],
                           columns=['state', 'zip'])
         zip_mismatch = check_metadata_formatting('zip', df, 'test_data')
 

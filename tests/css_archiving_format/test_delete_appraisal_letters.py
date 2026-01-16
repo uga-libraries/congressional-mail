@@ -56,9 +56,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\objects\111111.txt'.replace('..', input_directory),
-                     0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\objects\222222.txt'.replace('..', input_directory),
-                     0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'],]
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'],]
         self.assertEqual(expected, result, "Problem with test for in_document_name, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
@@ -88,9 +88,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\objects\111111.txt'.replace('..', input_directory),
-                     0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\objects\222222.txt'.replace('..', input_directory),
-                     0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'], ]
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Academy_Application'], ]
         self.assertEqual(expected, result, "Problem with test for in_skip, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
@@ -118,9 +118,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\letter\111111.txt'.replace('..', input_directory),
-                     0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\letter\333333.txt'.replace('..', input_directory),
-                     0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework'], ]
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
@@ -152,9 +152,9 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(log_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\letter\111111.txt'.replace('..', input_directory),
-                     0.2, today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
+                     '0.2', today, today, '45F12DDF78B657FA2DC1B0A2A0FB3ADD', 'Academy_Application'],
                     [r'..\documents\letter\333333.txt'.replace('..', input_directory),
-                     0.7, today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework'], ]
+                     '0.7', today, today, '2CAA9E5BD685EFE4C9FCC9473375A86B', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_skip, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.

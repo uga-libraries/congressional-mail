@@ -1,0 +1,4 @@
+zip_code,date_in,response_type,group_name
+30001,19990101,imail,court
+30003,19990303,usmail,migrant
+30004,19990404,usmail,refugee
