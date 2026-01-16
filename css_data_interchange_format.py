@@ -787,6 +787,7 @@ if __name__ == '__main__':
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = remove_restricted_rows(md_df, output_directory)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_year(md_df, output_directory)
