@@ -36,11 +36,12 @@ Processing typically does not take place until after the collection can open.
 If time allows, we may process at the time of accessioning to streamline the work and future validation process.
 
 ### Preservation
-This workflow and script still needs to be developed.
 The preservation version has letters deleted for appraisal and the entire metadata file.
-The script "preservation" mode will split the export into folders to keep AIP size reasonable
-and make the metadata.csv file.
-Then the general_aip.py script can be run to produce the AIPs and they may be ingested into ARCHive.
+1. Run aip_prep.py to split a copy of the export into folders to keep AIP size reasonable 
+while maintaining the directory structure and start the metadata.csv file.
+2. Add the department, collection, and AIP ids to the metadata.csv.
+3. Run general_aip.py script to produce the AIPs, and follow that workflow for QC.
+4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
 
 ### Access
 This workflow needs to be further developed.
