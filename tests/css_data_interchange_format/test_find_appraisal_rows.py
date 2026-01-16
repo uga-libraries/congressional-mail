@@ -87,17 +87,17 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20240606', 'Admin', 'nan', 'legal_case.txt', 'x', 'Casework'],
-                    ['20240404', 'Arts', 'nan', 'artist recommendation.txt', 'x', 'Recommendation']]
+                    ['20240606', 'Admin', 'BLANK', 'legal_case.txt', 'x', 'Casework'],
+                    ['20240404', 'Arts', 'BLANK', 'artist recommendation.txt', 'x', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20240101', 'Admin', r'..\documents\objects\academy.txt', 'academy.txt', 'x', 'Academy_Application'],
-                    ['20240202', 'Case1', 'nan', 'nan', 'x', 'Casework'],
+                    ['20240202', 'Case1', 'BLANK', 'BLANK', 'x', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x', 'Job_Application'],
-                    ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', 'nan', 'x', 'Recommendation']]
+                    ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', 'BLANK', 'x', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_delete_log.csv")
 
     def test_one(self):
@@ -130,8 +130,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
-                    ['20240101', 'CASE1', 'nan', 'nan', 'x', 'Casework'],
-                    ['20240202', 'case 2', 'nan', 'nan', 'x', 'Casework'],
+                    ['20240101', 'CASE1', 'BLANK', 'BLANK', 'x', 'Casework'],
+                    ['20240202', 'case 2', 'BLANK', 'BLANK', 'x', 'Casework'],
                     ['20240404', 'Case3', r'..\documents\casework\3.txt', '3.txt', 'x', 'Casework'],
                     ['20240506', 'Econ', r'..\documents\casework\3.txt', '3.txt', 'x', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for one, appraisal_delete_log.csv")

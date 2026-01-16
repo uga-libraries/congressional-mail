@@ -1,0 +1,3 @@
+communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,city,state_code,zip_code,country,document_type,communication_document_name,communication_document_id,file_location,file_name
+usmail,,X,20010101,20010102,,20010103,usmail,court,Atlanta,GA,30327,USA,INCOMING,..\documents\objects\1.txt,1.txt,,
+usmail,,X,20020101,20020102,,20020103,usmail,refugee,Atlanta,GA,30327,USA,INCOMING,..\documents\objects\4.txt,4.txt,,

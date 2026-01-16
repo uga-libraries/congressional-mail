@@ -29,8 +29,8 @@ class MyTestCase(unittest.TestCase):
         # Tests that undated.csv has the correct values.
         result = csv_to_list(os.path.join('test_data', 'correspondence_metadata_by_year', 'undated.csv'))
         expected = [['state_code', 'zip_code', 'date_in', 'group_name'],
-                    ['GA', '30102-1056', 'nan', 'nan'],
-                    ['GA', '30062-2748', 'nan', 'INSUTAX1']]
+                    ['GA', '30102-1056', 'BLANK', 'BLANK'],
+                    ['GA', '30062-2748', 'BLANK', 'INSUTAX1']]
         self.assertEqual(expected, result, "Problem with test for blank years, undated.csv")
 
     def test_multiple_years(self):

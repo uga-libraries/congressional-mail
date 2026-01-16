@@ -7,3 +7,5 @@
 2C	10000004	9160001	INCOMING	..\documents\objects\4007000.eml		1c8614bf01caf83e00010e44.eml
 2C	300000001	9160002	OUTGOING	..\documents\formletters\legal_case.html	legal_case.html	 	
 2C	10000004	42400001	OUTGOING	..\documents\formletters\2103422.html	2103422.html	 	
+2C	1111111	1222222	INCOMING	..\documents\objects\1.txt	1.txt
+2C	4444444	4555555	INCOMING	..\documents\objects\4.txt	4.txt

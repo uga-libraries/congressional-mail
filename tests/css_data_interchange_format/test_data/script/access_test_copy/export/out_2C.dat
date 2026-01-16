@@ -9,3 +9,5 @@
 2C	10000004	42400001	OUTGOING	..\documents\formletters\2103422.html	2103422	 	
 2C	90000000	02400000	OUTGOING	..\documents\formletters\2103423.html	2103423	 	
 2C	90000001	02400001	OUTGOING	..\documents\formletters\2103424.html	2103424	 	
+2C	1111111	1222222	INCOMING	..\documents\objects\1.txt	1.txt
+2C	4444444	4555555	INCOMING	..\documents\objects\4.txt	4.txt
