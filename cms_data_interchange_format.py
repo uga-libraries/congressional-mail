@@ -487,6 +487,20 @@ def remove_pii(df):
     return df
 
 
+def restriction_report(df, output_dir):
+    """Make report of any row with a topic that require restriction if they are about individuals' situations"""
+
+    # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
+                     'immigrant', 'immigration', 'migrant', 'refugee']
+
+    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # No report is made if no topics are present.
+    report_df = df[df['code_description'].isin(restrict_list)]
+    if len(report_df.index) > 0:
+        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+
+
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
