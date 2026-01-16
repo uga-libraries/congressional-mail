@@ -25,9 +25,10 @@ so the number of metadata rows matched, unmatched, and blank will be fewer than 
 2. Refine the script to catch new patterns, but some errors are acceptable given the scale.
 3. Update the function update_path() for transforming the metadata path into the directory path, if needed.
 4. Run the script in "accession" mode again to check your changes. It takes a long time to recopy an export if there are mistakes with deletion (next step).
-5. Run the script in "appraisal" mode to delete letters flagged for appraisal. The metadata is not changed.
-6. Delete any folders that are labeled casework and document those deleted files (probably with accessioning script).
-7. Delete any metadata files that are just for casework.
+5. Review the topics report and update the restrictions list in restriction_report() with additional highly sensitive topics.
+6. Run the script in "appraisal" mode to delete letters flagged for appraisal. The metadata is not changed.
+7. Delete any folders that are labeled casework and document those deleted files (probably with accessioning script).
+8. Delete any metadata files that are just for casework.
 
 Continue with the standard accessioning workflow to complete the accession.
 
@@ -44,6 +45,13 @@ while maintaining the directory structure and start the metadata.csv file.
 4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
 
 ### Access
+Delete any rows from restriction_review.csv (made in Appraisal mode) that express opinions about the topic,
+and only leaves rows where someone is requesting assistance with their own situation.
+Anything left in restriction_review.csv will not be part of the access copy.
+Requests for assistance on these topics are likely to include highly sensitive information 
+and are being restricted from access until we make a determination of if they should be retained 
+or restricted for 75 years.
+
 Run the script in "access" mode to make anonymized versions of the metadata that can be shared with researchers
 and a copy of all unrestricted letters with topical metadata, reorganized by topic, for class use.
 
