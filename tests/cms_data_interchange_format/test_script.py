@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
                      'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
                      'Appraisal_Category'],
                     ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
-                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK', 'note text 1',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK', 'note_text1',
                      'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for access, appraisal_check_log.csv")
 
