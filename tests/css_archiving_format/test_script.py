@@ -38,31 +38,21 @@ def make_dir_list(dir_path):
 class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
-        """Remove script outputs, if they were made"""
-        # For access mode, the output directory is test_data/script/Access,
-        # so the restriction_review.csv needed for testing does not get deleted.
-        filenames = ['archiving_correspondence_redacted.csv', 'appraisal_check_log.csv',
-                     'appraisal_delete_log.csv', 'topics_sort_file_not_found.csv']
-        for filename in filenames:
-            file_path = os.path.join('test_data', 'script', 'Access', filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        folders = ['correspondence_metadata_by_year', 'Correspondence_by_Topic']
-        for folder in folders:
-            folder_path = os.path.join('test_data', 'script', 'Access', folder)
-            if os.path.exists(folder_path):
-                shutil.rmtree(folder_path)
-
-        # For accession and appraisal mode, delete the copied test data and script outputs.
+        """Remove script outputs and copies of test data, if they were made"""
+        # These same folder name is used for the copied input, regardless of mode, to simplify deletion.
         folder_path = os.path.join('test_data', 'script', 'Output_Dir')
         if os.path.exists(folder_path):
             shutil.rmtree(folder_path)
 
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
+        # Makes a copy of the test data in the repo, to simplify deleting script outputs.
+        shutil.copytree(os.path.join('test_data', 'script', 'Access'),
+                        os.path.join('test_data', 'script', 'Output_Dir'))
+
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'Access', 'Constituent_Mail_Export')
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir', 'Constituent_Mail_Export')
         printed = subprocess.run(f"python {script_path} {input_directory} access",
                                  shell=True, capture_output=True, text=True)
 
@@ -74,7 +64,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'Access', 'appraisal_check_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'Output_Dir', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
@@ -83,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, appraisal check log")
 
         # Tests the contents of the appraisal delete log.
-        csv_path = os.path.join('test_data', 'script', 'Access', 'appraisal_delete_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'Output_Dir', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
         expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                      'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
@@ -102,7 +92,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, appraisal delete log")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
-        csv_path = os.path.join('test_data', 'script', 'Access', 'archiving_correspondence_redacted.csv')
+        csv_path = os.path.join('test_data', 'script', 'Output_Dir', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
@@ -128,7 +118,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
-        csv_path = os.path.join('test_data', 'script', 'Access', 'correspondence_metadata_by_year', '2021.csv')
+        csv_path = os.path.join('test_data', 'script', 'Output_Dir', 'correspondence_metadata_by_year', '2021.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -142,7 +132,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2021.csv")
 
         # Tests the contents of 2023.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Access', 'correspondence_metadata_by_year', '2023.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir', 'correspondence_metadata_by_year', '2023.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -156,7 +146,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2023.csv")
 
         # Tests the contents of 2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Access', 'correspondence_metadata_by_year', '2024.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir', 'correspondence_metadata_by_year', '2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -170,12 +160,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2024.csv")
 
         # Tests that no undated.csv was made.
-        result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'Access'
+        result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir'
                                              'correspondence_metadata_by_year', 'undated.csv'))
         self.assertEqual(False, result, "Problem with test for access, undated.csv")
 
         # Tests that Correspondence_by_Topic has the expected files.
-        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Access', 'Correspondence_by_Topic')
+        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
         expected = [os.path.join(by_topic, 'A', 'to_constituents', '000001.txt'),
                     os.path.join(by_topic, 'A', 'to_constituents', '000003.txt'),
@@ -190,7 +180,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of topics_sort_file_not_found.csv
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Access', 'topics_sort_file_not_found.csv')
+        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'Output_Dir', 'topics_sort_file_not_found.csv')
         result = csv_to_list(csv_path)
         expected = [['B1', r'..\documents\BlobExport\objects\xxxxxx.txt'],
                     ['B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
@@ -198,7 +188,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
-        # Makes a copy of the test data in the repo, since the script alters the data.
+        # Makes a copy of the test data in the repo, to simplify deleting script outputs.
         shutil.copytree(os.path.join('test_data', 'script', 'Accession'),
                         os.path.join('test_data', 'script', 'Output_Dir'))
 
