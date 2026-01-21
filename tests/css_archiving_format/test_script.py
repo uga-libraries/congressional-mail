@@ -63,46 +63,12 @@ class MyTestCase(unittest.TestCase):
                     "of the letters to and from constituents organized by topic\n")
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
-        # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal check log")
-
-        # Tests the contents of the appraisal delete log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['Ms.', 'Diane', 'D.', 'Dudly', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '456 D St', 'BLANK', 'BLANK', 
-                     'BLANK', 'D city', 'DE', '45678', 'BLANK', 'd100', 'General', 'Email', '20210101', 'Resumes',
-                     'BLANK', r'..\documents\BlobExport\objects\444444.txt', 'BLANK', 'r400', 'General', 'Email',
-                     '20210111', 'D', 'academy nomination', r'..\documents\BlobExport\indivletters\000004.txt', 'BLANK',
-                     'Academy_Application|Job_Application'],
-                    ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK', 
-                     'BLANK', 'E city', 'ME', '56789', 'BLANK', 'e100', 'General', 'Email', '20210101',
-                     'Casework Issues', 'BLANK', r'..\documents\BlobExport\objects\555555.txt', 'BLANK', 'r500',
-                     'General', 'Email', '20210111', 'E', 'BLANK', r'..\documents\BlobExport\formletters\B.txt',
-                     'BLANK', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal delete log")
-
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
                      'out_topic', 'out_document_name'],
-                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
-                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
-                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
-                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
-                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', '20210111',
-                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
                     ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
                      'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
@@ -114,7 +80,13 @@ class MyTestCase(unittest.TestCase):
                      'A', r'..\documents\BlobExport\indivletters\000003.txt'],
                     ['F city', 'FL', '10234', 'BLANK', 'f600', 'General', 'Email', '20230202', 'B1',
                      r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', '20230212',
-                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
+                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
@@ -437,6 +409,26 @@ class MyTestCase(unittest.TestCase):
                      'fill', 'immigrant', 'citizenship']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
+    def test_error_access_no_delete(self):
+        """Test for when the script exits due to a missing appraisal_delete_log."""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
+        input_directory = os.path.join('test_data', 'script', 'Incomplete')
+
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path} {input_directory} access",
+                           shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path} {input_directory} access", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = ("\r\nThe script is running in access mode.\r\n"
+                    "It will remove rows for deleted or restricted letters and columns with PII, "
+                    "make copies of the metadata split by calendar year, "
+                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
+        self.assertEqual(expected, result, "Problem with test for error access, no delete")
+
     def test_error_appraisal_no_delete(self):
         """Test for when the script exits due to a missing appraisal_delete_log."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
@@ -454,7 +446,7 @@ class MyTestCase(unittest.TestCase):
                     "It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
                     "but not change the metadata file.\r\n"
                     "No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.\r\n")
-        self.assertEqual(expected, result, "Problem with test for error argument, printed error")
+        self.assertEqual(expected, result, "Problem with test for error appraisal, no delete")
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
@@ -470,6 +462,6 @@ class MyTestCase(unittest.TestCase):
         expected = "Missing required arguments, input_directory and script_mode\r\n"
         self.assertEqual(expected, result, "Problem with test for error argument, printed error")
 
-        
+
 if __name__ == '__main__':
     unittest.main()
