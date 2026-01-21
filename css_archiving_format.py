@@ -918,7 +918,7 @@ if __name__ == '__main__':
         try:
             appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
-            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, output_directory)
