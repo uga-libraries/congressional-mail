@@ -1,0 +1,4 @@
+zip,in_type,in_topic,in_text,in_document_name,in_fillin,out_type,out_topic,out_text,out_document_name,out_fillin,Appraisal_Category
+30601,CASE,sunshine,in_note,sunshine.txt,in_fill,CASE,sun,out_note,formA.txt,out_fill,Casework
+30602,CASE,rainbows,in_note,bow.txt,in_fill,CASE,bow,out_note,formB.txt,out_fill,Casework
+30603,GEN,academy-app,in_note,123.txt,in_fill,GEN,academy,out_note,yes.txt,out_fill,Academy Application
