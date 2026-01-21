@@ -388,7 +388,7 @@ class MyTestCase(unittest.TestCase):
     def test_correct_appraisal(self):
         """Test for when the script runs correctly and is in appraisal mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'Appraisal_copy'),
+        shutil.copytree(os.path.join('test_data', 'script', 'Appraisal'),
                         os.path.join('test_data', 'script', 'Output_Dir'))
 
         # Runs the script.
