@@ -874,8 +874,6 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # The rest of the script is dependent on the mode.
-
     # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
     # The export is not changed in this mode.
     if script_mode == 'accession':
