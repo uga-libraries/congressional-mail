@@ -874,17 +874,14 @@ if __name__ == '__main__':
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
 
-    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
-    # This is used in most of the modes.
-    appraisal_df = find_appraisal_rows(md_df, output_directory)
-
     # The rest of the script is dependent on the mode.
 
-    # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
+    # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
         print("It will produce usability and appraisal reports and not change the export.")
+        appraisal_df = find_appraisal_rows(md_df, output_directory)
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
