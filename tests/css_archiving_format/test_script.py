@@ -52,7 +52,7 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'Constituent_Mail_Export')
+        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'constituent_mail_export')
         printed = subprocess.run(f"python {script_path} {input_directory} access",
                                  shell=True, capture_output=True, text=True)
 
@@ -194,7 +194,7 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'output_dir', 'Constituent_Mail_Export')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
         printed = subprocess.run(f"python {script_path} {input_directory} accession",
                                  shell=True, capture_output=True, text=True)
 
@@ -370,7 +370,7 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'output_dir', 'Constituent_Mail_Export')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
         printed = subprocess.run(f"python {script_path} {input_directory} appraisal",
                                  shell=True, capture_output=True, text=True)
 
