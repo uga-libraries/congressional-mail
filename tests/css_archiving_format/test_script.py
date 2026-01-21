@@ -437,20 +437,6 @@ class MyTestCase(unittest.TestCase):
                      'fill', 'immigrant', 'citizenship']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
-    def test_error_argument(self):
-        """Test for when the script exits due to an argument error."""
-        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-
-        # Runs the script and tests that it exits.
-        with self.assertRaises(subprocess.CalledProcessError):
-            subprocess.run(f"python {script_path}", shell=True, check=True, stdout=subprocess.PIPE)
-
-        # Runs the script and tests that it prints the correct error.
-        output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
-        result = output.stdout.decode('utf-8')
-        expected = "Missing required arguments, input_directory and script_mode\r\n"
-        self.assertEqual(expected, result, "Problem with test for error argument, printed error")
-
     def test_error_appraisal_no_delete(self):
         """Test for when the script exits due to a missing appraisal_delete_log."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
@@ -470,6 +456,20 @@ class MyTestCase(unittest.TestCase):
                     "No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error argument, printed error")
 
+    def test_error_argument(self):
+        """Test for when the script exits due to an argument error."""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
 
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path}", shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path}", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = "Missing required arguments, input_directory and script_mode\r\n"
+        self.assertEqual(expected, result, "Problem with test for error argument, printed error")
+
+        
 if __name__ == '__main__':
     unittest.main()
