@@ -589,6 +589,15 @@ def find_recommendation_rows(df):
     return df_recommendation, df_recommendation_check
 
 
+def read_csv(path):
+    """Read a CSV produced by a previous mode of this script into a dataframe"""
+    try:
+        df = pd.read_csv(path, dtype=str, on_bad_lines='warn')
+        return df
+    except FileNotFoundError:
+        raise FileNotFoundError
+
+
 def read_metadata(path):
     """Read the metadata file into a dataframe"""
     try:
