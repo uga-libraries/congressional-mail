@@ -454,7 +454,7 @@ class MyTestCase(unittest.TestCase):
     def test_error_appraisal_no_delete(self):
         """Test for when the script exits due to a missing appraisal_delete_log."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join('test_data', 'script', 'Incomplete_Export')
+        input_directory = os.path.join('test_data', 'script', 'Incomplete')
 
         # Runs the script and tests that it exits.
         with self.assertRaises(subprocess.CalledProcessError):
