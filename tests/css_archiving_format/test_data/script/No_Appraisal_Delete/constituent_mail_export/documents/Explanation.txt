@@ -1,0 +1,1 @@
+Used for tests if the appraisal_delete_log.csv is missing.
