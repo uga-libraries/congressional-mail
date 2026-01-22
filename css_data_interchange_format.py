@@ -777,9 +777,9 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
-        md_df.drop(['text'], axis=1, inplace=True)
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
+        md_df.drop(['text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_year(md_df, output_directory)
