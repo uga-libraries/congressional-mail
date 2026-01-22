@@ -225,7 +225,6 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     # For every row in df_appraisal, deletes any letter in the communication_document_name column except form letters.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
     # Form letters are retained.
-    df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
         name = row.communication_document_name
         if name != '' and name != 'nan' and 'formletters' not in name:
