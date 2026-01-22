@@ -527,11 +527,6 @@ def read_metadata(paths):
 def remove_appraisal_rows(df, df_appraisal):
     """Remove metadata rows for letters deleted during appraisal and return the updated df"""
 
-    # Makes sure all columns in both dataframes are strings,
-    # since earlier steps can alter the type and the types must be the same for two rows to match.
-    df = df.astype(str)
-    df_appraisal.astype(str)
-
     # Makes an updated dataframe with just rows in df that are not in df_appraisal.
     df_merge = df.merge(df_appraisal, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
@@ -565,11 +560,6 @@ def remove_restricted_rows(df, output_dir):
         df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'))
     except FileNotFoundError:
         return df
-
-    # Makes sure all columns in the input dataframe are strings, since the types must be the same for rows to match.
-    # Must use astype for df_restrict rather than reading with dtype=str for the blanks to match exactly.
-    df = df.astype(str)
-    df_restrict = df_restrict.astype(str)
 
     # Makes an updated dataframe with just rows in df that are not in df_restrict.
     df_merge = df.merge(df_restrict, how='left', indicator=True)
