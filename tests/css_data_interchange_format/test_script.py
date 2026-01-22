@@ -47,6 +47,11 @@ class MyTestCase(unittest.TestCase):
             if os.path.exists(test_path):
                 shutil.rmtree(test_path)
 
+        # Once all tests are updated, the only thing to delete is output_dir
+        output_dir = os.path.join('test_data', 'script', 'output_dir')
+        if os.path.exists(output_dir):
+            shutil.rmtree(output_dir)
+
     def test_access(self):
         """Test for when the script runs correctly in access mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
@@ -220,9 +225,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode."""
+        # Makes copy of test data for easier deletion of script output.
+        shutil.copytree(os.path.join('test_data', 'script', 'accession'),
+                        os.path.join('test_data', 'script', 'output_dir'))
+
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script', 'accession_test')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
         output = subprocess.run(f"python {script_path} {input_directory} accession",
                                 shell=True, capture_output=True, text=True)
 
@@ -233,7 +242,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, printed statement")
 
         # Tests the contents of the appraisal_check_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -245,7 +254,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -269,7 +278,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, appraisal_delete_log.csv")
 
         # Tests the contents of the metadata_formatting_errors_update_date.csv.
-        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_update_date.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'metadata_formatting_errors_update_date.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -284,7 +293,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_update_date.csv")
 
         # Tests the contents of the metadata_formatting_errors_state_code.csv.
-        csv_path = os.path.join('test_data', 'script', 'metadata_formatting_errors_state_code.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'metadata_formatting_errors_state_code.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -305,7 +314,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
 
         # Tests the contents of the topics_report.csv.
-        csv_path = os.path.join('test_data', 'script', 'topics_report.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_report.csv')
         result = csv_to_list(csv_path)
         expected = [['Topic', 'Topic_Count'],
                     ['BLANK', '4'],
@@ -315,7 +324,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, topics_report.csv")
 
         # Tests the contents of the usability_report_matching.csv.
-        csv_path = os.path.join('test_data', 'script', 'usability_report_matching.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'usability_report_matching.csv')
         result = csv_to_list(csv_path)
         expected = [['Category', 'Row/File_Count', 'Row_Percent'],
                     ['Match', '6', '67%'],
@@ -325,18 +334,18 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for accession, usability_report_matching.csv")
 
         # Tests the contents of the usability_report_matching_details.csv.
-        csv_path = os.path.join('test_data', 'script', 'usability_report_matching_details.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'usability_report_matching_details.csv')
         result = csv_to_list(csv_path)
         result.sort()
         expected = [['Category', 'Path'],
-                    ['Directory Only', r'test_data\script\accession_test\documents\indivletters\casework_999999.doc'],
-                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\airline act2.doc'],
-                    ['Metadata Only', r'test_data\script\accession_test\documents\formletters\busintax.doc'],
-                    ['Metadata Only', r'test_data\script\accession_test\documents\indivletters\00002.doc']]
+                    ['Directory Only', os.path.join(input_directory, 'documents', 'indivletters', 'casework_999999.doc')],
+                    ['Metadata Only', os.path.join(input_directory, 'documents', 'formletters', 'airline act2.doc')],
+                    ['Metadata Only', os.path.join(input_directory, 'documents', 'formletters', 'busintax.doc')],
+                    ['Metadata Only', os.path.join(input_directory, 'documents', 'indivletters', '00002.doc')]]
         self.assertEqual(expected, result, "Problem with test for accession, usability_report_matching_details.csv")
 
         # Tests the contents of the usability_report_metadata.csv.
-        csv_path = os.path.join('test_data', 'script', 'usability_report_metadata.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'usability_report_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['Column_Name', 'Present', 'Blank_Count', 'Blank_Percent', 'Formatting_Errors'],
                     ['city', 'True', '0', '0.0', 'uncheckable'],
