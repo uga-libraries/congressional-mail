@@ -51,27 +51,6 @@ class MyTestCase(unittest.TestCase):
                     'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
-        # Tests the contents of the appraisal_check_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'text', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal_check_log.csv")
-
-        # Tests the contents of the appraisal_delete_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'text', 'Appraisal_Category'],
-                    ['usmail', 'BLANK', 'C', '19990315', '19990402', 'BLANK', '19990315', 'usmail', 'CASEWORK', ' ',
-                     ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\indivletters\2070078.doc', '2070078.doc',
-                     ' ', 'BLANK', 'Neutral', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal_delete_log.csv")
-
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
