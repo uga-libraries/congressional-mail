@@ -170,7 +170,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, undated.csv")
 
         # Tests that Correspondence_by_Topic has the expected files.
-        by_topic = os.path.join(os.getcwd(), 'test_data', 'output_dir', 'access_test', 'Correspondence_by_Topic')
+        by_topic = os.path.join('test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
         expected = [os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
                     os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
