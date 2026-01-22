@@ -1,2 +1,0 @@
-Used for tests if script outputs (appraisal_delete_log.csv and restriction_review.csv) are missing.
-It only needs a DAT file to get far enough in the script for this test.
