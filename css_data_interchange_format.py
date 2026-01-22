@@ -773,6 +773,7 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
+        md_df.drop(['text'], axis=1, inplace=True)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
         restriction_report(md_df, output_directory)
 
@@ -783,6 +784,7 @@ if __name__ == '__main__':
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
+        md_df.drop(['text'], axis=1, inplace=True)
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, output_directory)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
