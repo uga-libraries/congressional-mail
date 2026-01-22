@@ -16,7 +16,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log
+from css_archiving_format import file_deletion_log, read_csv
 
 
 def appraisal_check_df(df, keyword, category):
@@ -769,6 +769,11 @@ if __name__ == '__main__':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
               "but not change the metadata file.")
+        try:
+            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            sys.exit(1)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
         restriction_report(md_df, output_directory)
 
