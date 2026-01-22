@@ -8,6 +8,10 @@ appraisal: delete letters due to appraisal and make report of possible restricti
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
+
+For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
+For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
+This allows the archivist to review and edit these documents without needing to update the script.
 """
 import csv
 from datetime import date, datetime
