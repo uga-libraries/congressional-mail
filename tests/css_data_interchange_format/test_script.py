@@ -371,12 +371,12 @@ class MyTestCase(unittest.TestCase):
     def test_appraisal(self):
         """Test for when the script runs correctly in appraisal mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'appraisal_test_copy'),
-                        os.path.join('test_data', 'script', 'appraisal_test'))
+        shutil.copytree(os.path.join('test_data', 'script', 'appraisal'),
+                        os.path.join('test_data', 'script', 'output_dir'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script', 'appraisal_test')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
         output = subprocess.run(f"python {script_path} {input_directory} appraisal",
                                 shell=True, capture_output=True, text=True)
 
@@ -388,7 +388,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
         # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'appraisal_check_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -400,7 +400,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for appraisal check log")
 
         # Tests the contents of the appraisal delete log.
-        csv_path = os.path.join('test_data', 'script', 'appraisal_delete_log.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
@@ -425,7 +425,7 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
-        csv_path = os.path.join('test_data', 'script', f"file_deletion_log_{today}.csv")
+        csv_path = os.path.join('test_data', 'script', 'output_dir', f"file_deletion_log_{today}.csv")
         result = csv_to_list(csv_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
                     [r'..\documents\indivletters\casework_12345.doc'.replace('..', input_directory),
@@ -445,7 +445,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
 
         # Tests the contents of restriction_review.csv.
-        csv_path = os.path.join('test_data', 'script', 'restriction_review.csv')
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'restriction_review.csv')
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
