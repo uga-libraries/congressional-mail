@@ -551,15 +551,8 @@ def remove_pii(df):
     return df
 
 
-def remove_restricted_rows(df, output_dir):
+def remove_restricted_rows(df, df_restrict):
     """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
-
-    # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
-    # If there is no CSV (no restrictions in this export), returns the df unchanged.
-    try:
-        df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'))
-    except FileNotFoundError:
-        return df
 
     # Makes an updated dataframe with just rows in df that are not in df_restrict.
     df_merge = df.merge(df_restrict, how='left', indicator=True)
@@ -786,7 +779,7 @@ if __name__ == '__main__':
             sys.exit(1)
         md_df.drop(['text'], axis=1, inplace=True)
         md_df = remove_appraisal_rows(md_df, appraisal_df)
-        md_df = remove_restricted_rows(md_df, output_directory)
+        md_df = remove_restricted_rows(md_df, restrict_df)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_year(md_df, output_directory)
