@@ -423,8 +423,28 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
+    def test_error_access_no_delete(self):
+        """Test for when there is no appraisal_delete_log.csv in access mode"""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
+        input_path = os.path.join('test_data', 'script', 'no_delete', 'constituent_mail_export')
+
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path} {input_path} access",
+                           shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path} {input_path} access", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = ("\r\nThe script is running in access mode.\r\n"
+                    "It will remove rows for deleted or restricted letters and columns with PII, "
+                    "make copies of the metadata split by calendar year, "
+                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
+        self.assertEqual(expected, result, "Problem with test for error access, no_delete")
+
     def test_error_appraisal_no_delete(self):
-        """Test for when there is no appraisal_delete_log.csv"""
+        """Test for when there is no appraisal_delete_log.csv in appraisal mode"""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_data_interchange_format.py')
         input_path = os.path.join('test_data', 'script', 'no_delete', 'constituent_mail_export')
 
