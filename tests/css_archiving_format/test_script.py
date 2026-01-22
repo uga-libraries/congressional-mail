@@ -429,6 +429,26 @@ class MyTestCase(unittest.TestCase):
                     "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no delete")
 
+    def test_error_access_no_restriction(self):
+        """Test for when the script exits due to a missing restriction_review.csv."""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
+        input_directory = os.path.join('test_data', 'script', 'No_Restriction_Review', 'constituent_mail_export')
+
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path} {input_directory} access",
+                           shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path} {input_directory} access", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = ("\r\nThe script is running in access mode.\r\n"
+                    "It will remove rows for deleted or restricted letters and columns with PII, "
+                    "make copies of the metadata split by calendar year, "
+                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "No restriction_review.csv in the output directory. Cannot do access without it.\r\n")
+        self.assertEqual(expected, result, "Problem with test for error access, no restriction")
+
     def test_error_appraisal_no_delete(self):
         """Test for when the script exits due to a missing appraisal_delete_log."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
