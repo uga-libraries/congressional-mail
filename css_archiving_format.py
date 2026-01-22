@@ -652,11 +652,6 @@ def remove_restricted_rows(df, df_restrict):
     df_restrict = df_restrict.drop(columns=['in_topic_split', 'out_topic_split'])
     df_restrict = df_restrict.drop_duplicates()
 
-    # Makes sure all columns in the input dataframe are strings, since the types must be the same for rows to match.
-    # Must use astype for df_restrict rather than reading with dtype=str for the blanks to match exactly.
-    df = df.astype(str)
-    df_restrict = df_restrict.astype(str)
-
     # Makes an updated dataframe with just rows in df that are not in df_restrict.
     df_merge = df.merge(df_restrict, how='left', indicator=True)
     df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge'])
