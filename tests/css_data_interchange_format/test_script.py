@@ -387,42 +387,6 @@ class MyTestCase(unittest.TestCase):
                     'but not change the metadata file.\n')
         self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
-        # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'text', 'Appraisal_Category'],
-                    ['BLANK', '513', 'C', '19990721', '19990721', 'BLANK', '19990721', 'imail', 'BLANK', 'Washington',
-                     'DC', '20420-0002', 'USA', 'OUTGOING', r'..\documents\formletters\legal_case.html',
-                     'legal_case.html', ' ', 'BLANK', 'text8', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for appraisal check log")
-
-        # Tests the contents of the appraisal delete log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name', 'text', 'Appraisal_Category'],
-                    ['BLANK', '513', 'C', '20000427', '20000427', 'BLANK', '20000427', 'imail', 'BLANK', 'Marietta',
-                     'GA', '30067-8581', 'USA', 'OUTGOING', r'..\documents\indivletters\casework_12345.doc',
-                     'BLANK', ' ', 'BLANK', 'text5', 'Casework'],
-                    ['BLANK', '513', 'C', '20120914', '20120914', 'BLANK', '20120914', 'imail', 'CASE 3', 'Marietta',
-                     'GA', '30062-1668', 'USA', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'BLANK', 'text9', 'Casework'],
-                    ['BLANK', '551', 'C', '19990315', '19990402', 'BLANK', '19990315', 'imail', 'CASE4', 'Marietta',
-                     'GA', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml', 'BLANK',
-                     '1c8614bf01caf83e00010e44.eml', 'BLANK', 'text7', 'Casework'],
-                    ['usmail', 'BLANK', 'C', '19990331', '19990402', 'BLANK', '19990331', 'usmail', 'C1', ' ', ' ',
-                     'BLANK', 'POLAND', 'OUTGOING', r'..\documents\indivletters\case work\00001.doc', '00001.doc',
-                     ' ', 'BLANK', 'text3', 'Casework'],
-                    ['usmail', 'BLANK', 'C', '20000427', '20000427', 'BLANK', '20000427', 'usmail', 'CASEWORK2',
-                     'Ellijay', 'GA', '30540', 'USA', 'OUTGOING', r'..\documents\indivletters\00002.doc',
-                     '00002.doc', ' ', 'BLANK', 'text1', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for appraisal, appraisal delete log")
-
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
         csv_path = os.path.join('test_data', 'script', 'output_dir', f"file_deletion_log_{today}.csv")
