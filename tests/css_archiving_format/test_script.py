@@ -69,6 +69,12 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
                      'out_topic', 'out_document_name'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
                     ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'r200', 'General', 'Email', '20230212',
                      'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt'],
@@ -80,13 +86,7 @@ class MyTestCase(unittest.TestCase):
                      'A', r'..\documents\BlobExport\indivletters\000003.txt'],
                     ['F city', 'FL', '10234', 'BLANK', 'f600', 'General', 'Email', '20230202', 'B1',
                      r'..\documents\BlobExport\objects\xxxxxx.txt', 'r600', 'General', 'Email', '20230212',
-                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt'],
-                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
-                     r'..\documents\BlobExport\objects\111111.txt', 'r100', 'General', 'Email', '20210111',
-                     'A', r'..\documents\BlobExport\indivletters\000001.txt'],
-                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
-                     r'..\documents\BlobExport\objects\111111_add.txt', 'r100', 'General', 'Email', '20210111',
-                     'A', r'..\documents\BlobExport\indivletters\000001.txt']]
+                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
