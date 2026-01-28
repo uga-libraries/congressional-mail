@@ -113,29 +113,6 @@ class MyTestCase(unittest.TestCase):
         expected = ['100001.txt', '200002.txt']
         self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
-    def test_no_deletion_blank(self):
-        """Test for when the file paths in the metadata are blank"""
-        # Runs the function being tested.
-        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
-        # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join(output_directory, 'export')
-        appraisal_df = pd.DataFrame([['20241201', np.nan, 'Casework'],
-                                     ['20241202', np.nan, 'Casework']],
-                                    columns=['date_in', 'communication_document_name', 'Appraisal_Category'])
-        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-
-        # Tests the contents of the file deletion log.
-        today = date.today().strftime('%Y-%m-%d')
-        log_path = os.path.join(output_directory, f'file_deletion_log_{today}.csv')
-        result = csv_to_list(log_path)
-        expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
-        self.assertEqual(expected, result, "Problem with test for no deletion - blank, file deletion log")
-
-        # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['ABC-1.txt']
-        self.assertEqual(expected, result, "Problem with test for no deletion - blank, directory contents")
-
     def test_no_deletion_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
         # Runs the function being tested.

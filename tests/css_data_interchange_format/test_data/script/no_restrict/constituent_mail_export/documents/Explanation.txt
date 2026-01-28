@@ -1,0 +1,2 @@
+Used for testing when there is no restriction_review.csv.
+It just requires the metadata and appraisal_delete_log.csv be present, not a full export.
