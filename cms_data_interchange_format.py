@@ -642,8 +642,13 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
+        try:
+            restrict_df = read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+        except FileNotFoundError:
+            print("No restriction_review.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
         md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
-        md_df = css_dif.remove_restricted_rows(md_df, output_directory)
+        md_df = css_dif.remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         css_dif.split_year(md_df, output_directory)
