@@ -630,7 +630,7 @@ def topics_sort(df, input_dir, output_dir):
 
     # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
     out_df = topics_sort_df(df, 'OUT')
-    topic_list = out_df['group_name'].unique()
+    topic_list = out_df['group_name'].unique().tolist()
     for topic in topic_list:
         doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
@@ -672,10 +672,11 @@ def topics_sort_delete_empty(topic_path):
 
 def topics_sort_df(df, letter_type):
     """Make a dataframe with any row that has values in topic and document_name for that letter type"""
+
     # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
     doc_type = (letter_type, f'AT_{letter_type}')
-    topic_df = df[(df['document_type'].str.startswith(doc_type)) & (df['group_name'] != 'nan') &
-                  (df['communication_document_name'] != 'nan')]
+    topic_df = df[df['document_type'].str.startswith(doc_type, na=False)]
+    topic_df = topic_df.dropna(subset=['group_name', 'communication_document_name'])
 
     # Removes any duplicate combinations of topic (group) and document_name.
     topic_df = topic_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
@@ -684,6 +685,7 @@ def topics_sort_df(df, letter_type):
 
 def topics_sort_folder(topic, output_dir, type_folder_name):
     """Make a folder named with the topic and return the path to that folder"""
+
     # Replaces characters that Windows does not permit in a folder name with an underscore.
     for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
         topic = topic.replace(character, '_')
