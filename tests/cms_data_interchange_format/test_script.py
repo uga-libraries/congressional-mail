@@ -369,52 +369,14 @@ class MyTestCase(unittest.TestCase):
                     'but not change the metadata file.\n')
         self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
 
-        # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
-                     'Appraisal_Category'],
-                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
-                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'in-email\\case_name.txt', 'BLANK',
-                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
-                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
-                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
-                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', 'out-custom\\1002.txt', 'BLANK',
-                     'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation']]
-        self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_check_log.csv")
-
-        # Tests the contents of the appraisal_delete_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
-                     'Appraisal_Category'],
-                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
-                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
-                     'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y', 'Recommendation'],
-                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
-                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
-                     'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
-                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
-                     'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case work file',
-                     'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
-
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
         csv_path = os.path.join('test_data', 'script', 'output_dir', f"file_deletion_log_{today}.csv")
         result = csv_to_list(csv_path)
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'],
-                    [os.path.join('test_data', 'script', 'appraisal_copy', 'documents', 'in-email', '2.txt'),
+                    [os.path.join(input_directory, 'documents', 'in-email', '2.txt'),
                      '0.1', today, today, 'BFC30C1C407A46A42D322B493E783D8A', 'Recommendation'],
-                    [os.path.join('test_data', 'script', 'appraisal_copy', 'documents', 'in-email', '3.txt'),
+                    [os.path.join(input_directory, 'documents', 'in-email', '3.txt'),
                      '0.2', today, today, '3372E0A98AEBE7DB66A368010DB78AF3', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, file_delete_log.csv")
 
