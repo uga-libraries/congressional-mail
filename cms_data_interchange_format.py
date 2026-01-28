@@ -637,8 +637,14 @@ if __name__ == '__main__':
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
+        try:
+            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
         md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
         md_df = css_dif.remove_restricted_rows(md_df, output_directory)
+        md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         css_dif.split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
