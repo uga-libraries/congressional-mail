@@ -439,6 +439,25 @@ class MyTestCase(unittest.TestCase):
                      'citizenship', 'Y']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
+    def test_error_appraisal_no_delete(self):
+        """Test for when there is no appraisal_delete_log.csv in appraisal mode"""
+        script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
+        input_path = os.path.join('test_data', 'script', 'no_delete', 'constituent_mail_export')
+
+        # Runs the script and tests that it exits.
+        with self.assertRaises(subprocess.CalledProcessError):
+            subprocess.run(f"python {script_path} {input_path} appraisal",
+                           shell=True, check=True, stdout=subprocess.PIPE)
+
+        # Runs the script and tests that it prints the correct error.
+        output = subprocess.run(f"python {script_path} {input_path} appraisal", shell=True, stdout=subprocess.PIPE)
+        result = output.stdout.decode('utf-8')
+        expected = ("\r\nThe script is running in appraisal mode.\r\n"
+                    "It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+                    "but not change the metadata file.\r\n"
+                    "No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.\r\n")
+        self.assertEqual(expected, result, "Problem with test for error appraisal, no_delete")
+
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
         script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
