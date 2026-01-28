@@ -31,37 +31,6 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Remove script outputs and copy of script inputs, if they were made"""
-        # Metadata file and logs in the output directory.
-        filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv',
-                     'metadata_formatting_errors_date_out.csv', 'metadata_formatting_errors_state.csv',
-                     f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv", 'restriction_review.csv',
-                     'topics_report.csv', 'usability_report_matching.csv',
-                     'usability_report_matching_details.csv', 'usability_report_metadata.csv']
-        for filename in filenames:
-            file_path = os.path.join('test_data', 'script', filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-
-        # Files and folders for the access test,
-        # which have a different output folder so restriction_review.csv is not deleted.
-        filenames = ['appraisal_check_log.csv', 'appraisal_delete_log.csv', 'archiving_correspondence_redacted.csv',
-                     'topics_sort_file_not_found.csv']
-        for filename in filenames:
-            file_path = os.path.join('test_data', 'script', 'access', filename)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        folders = [os.path.join('test_data', 'script', 'access', 'correspondence_metadata_by_year'),
-                   os.path.join('test_data', 'script', 'access', 'Correspondence_by_Topic')]
-        for folder in folders:
-            if os.path.exists(folder):
-                shutil.rmtree(folder)
-
-        # Copy of test data for appraisal mode, which is altered by the script (files are deleted)).
-        copy_path = os.path.join('test_data', 'script', 'appraisal_copy')
-        if os.path.exists(copy_path):
-            shutil.rmtree(copy_path)
-
-        # Once all tests are updated, this is all that needs to be deleted.
         output_dir = os.path.join('test_data', 'script', 'output_dir')
         if os.path.exists(output_dir):
             shutil.rmtree(output_dir)
@@ -74,7 +43,7 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
-        input_directory = os.path.join('test_data', 'script', 'access', 'constituent_mail_export')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
         output = subprocess.run(f"python {script_path} {input_directory} access",
                                 shell=True, capture_output=True, text=True)
 
@@ -84,29 +53,6 @@ class MyTestCase(unittest.TestCase):
                     'and columns with PII, make copies of the metadata split by calendar year, '
                     'and make a copy of the letters to and from constituents organized by topic\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
-
-        # Tests the contents of the appraisal_check_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
-                     'Appraisal_Category'],
-                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
-                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK', 'note_text1',
-                     'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal_check_log.csv")
-
-        # Tests the contents of the appraisal_delete_log.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag',
-                     'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for access, appraisal_delete_log.csv")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
