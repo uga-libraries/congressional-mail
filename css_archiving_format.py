@@ -799,7 +799,7 @@ def topics_sort_df(df, letter_type):
     # Initial df, with any row that has some value in topic and document_name
     topic_column = f'{letter_type}_topic'
     doc_column = f'{letter_type}_document_name'
-    topic_df = df[(df[topic_column] != 'nan') & (df[doc_column] != 'nan')]
+    topic_df = df.dropna(subset=[topic_column, doc_column]).copy()
 
     # If there is more than one topic or document_name in a row (divided by ^),
     # splits them to their own row, repeating the related topic or document_name for each row.
