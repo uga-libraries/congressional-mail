@@ -8,6 +8,10 @@ appraisal: delete letters due to appraisal and make report of possible restricti
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
+
+For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
+For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
+This allows the archivist to review and edit these documents without needing to update the script.
 """
 import csv
 from datetime import date
@@ -16,7 +20,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log
+from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
 def appraisal_check_df(df, keyword, category):
@@ -525,21 +529,6 @@ def read_metadata(paths):
     return df
 
 
-def remove_appraisal_rows(df, df_appraisal):
-    """Remove metadata rows for letters deleted during appraisal and return the updated df"""
-
-    # Makes sure all columns in both dataframes are strings,
-    # since earlier steps can alter the type and the types must be the same for two rows to match.
-    df = df.astype(str)
-    df_appraisal.astype(str)
-
-    # Makes an updated dataframe with just rows in df that are not in df_appraisal.
-    df_merge = df.merge(df_appraisal, how='left', indicator=True)
-    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
-
-    return df_update
-
-
 def remove_pii(df):
     """Remove columns with personally identifiable information (name and address) if they are present"""
 
@@ -557,20 +546,8 @@ def remove_pii(df):
     return df
 
 
-def remove_restricted_rows(df, output_dir):
+def remove_restricted_rows(df, df_restrict):
     """Remove metadata rows for restricted letters (in preservation but not access copy) and return the updated df"""
-
-    # Read restriction_review.csv into a dataframe, for the rows that need to be removed.
-    # If there is no CSV (no restrictions in this export), returns the df unchanged.
-    try:
-        df_restrict = pd.read_csv(os.path.join(output_dir, 'restriction_review.csv'))
-    except FileNotFoundError:
-        return df
-
-    # Makes sure all columns in the input dataframe are strings, since the types must be the same for rows to match.
-    # Must use astype for df_restrict rather than reading with dtype=str for the blanks to match exactly.
-    df = df.astype(str)
-    df_restrict = df_restrict.astype(str)
 
     # Makes an updated dataframe with just rows in df that are not in df_restrict.
     df_merge = df.merge(df_restrict, how='left', indicator=True)
@@ -648,7 +625,7 @@ def topics_sort(df, input_dir, output_dir):
 
     # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
     out_df = topics_sort_df(df, 'OUT')
-    topic_list = out_df['group_name'].unique()
+    topic_list = out_df['group_name'].unique().tolist()
     for topic in topic_list:
         doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
@@ -690,10 +667,11 @@ def topics_sort_delete_empty(topic_path):
 
 def topics_sort_df(df, letter_type):
     """Make a dataframe with any row that has values in topic and document_name for that letter type"""
+
     # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
     doc_type = (letter_type, f'AT_{letter_type}')
-    topic_df = df[(df['document_type'].str.startswith(doc_type)) & (df['group_name'] != 'nan') &
-                  (df['communication_document_name'] != 'nan')]
+    topic_df = df[df['document_type'].str.startswith(doc_type, na=False)]
+    topic_df = topic_df.dropna(subset=['group_name', 'communication_document_name'])
 
     # Removes any duplicate combinations of topic (group) and document_name.
     topic_df = topic_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
@@ -702,6 +680,7 @@ def topics_sort_df(df, letter_type):
 
 def topics_sort_folder(topic, output_dir, type_folder_name):
     """Make a folder named with the topic and return the path to that folder"""
+
     # Replaces characters that Windows does not permit in a folder name with an underscore.
     for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
         topic = topic.replace(character, '_')
@@ -750,21 +729,14 @@ if __name__ == '__main__':
     # Columns with PII must be removed now to save memory, given the size of the data.
     md_df = read_metadata(metadata_paths_dict)
 
-    # Makes a dataframe and a csv of metadata rows that indicate appraisal.
-    # This is used in most of the modes.
-    appraisal_df = find_appraisal_rows(md_df, output_directory)
-
-    # Removes the column 'text', now that identifying rows for appraisal is complete,
-    # which is the only column currently likely to contain PII that is needed for more comprehensive appraisal.
-    md_df.drop(['text'], axis=1, inplace=True)
-
-    # The rest of the script is dependent on the mode.
-
-    # For accession, generates reports about the usability of the export and what will be deleted for appraisal.
+    # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
+    # The column 'text' is removed after appraisal_df is made because it has PII but is used to evaluate for appraisal.
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
         print("It will produce usability and appraisal reports and not change the export.")
+        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        md_df.drop(['text'], axis=1, inplace=True)
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
@@ -776,6 +748,12 @@ if __name__ == '__main__':
         print("\nThe script is running in appraisal mode.")
         print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
               "but not change the metadata file.")
+        try:
+            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            sys.exit(1)
+        md_df.drop(['text'], axis=1, inplace=True)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
         restriction_report(md_df, output_directory)
 
@@ -786,8 +764,19 @@ if __name__ == '__main__':
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
+        try:
+            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
+        try:
+            restrict_df = read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+        except FileNotFoundError:
+            print("No restriction_review.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
         md_df = remove_appraisal_rows(md_df, appraisal_df)
-        md_df = remove_restricted_rows(md_df, output_directory)
+        md_df = remove_restricted_rows(md_df, restrict_df)
+        md_df.drop(['text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_year(md_df, output_directory)

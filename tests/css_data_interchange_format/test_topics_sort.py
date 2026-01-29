@@ -1,3 +1,4 @@
+import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -50,13 +51,13 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when some rows have no topic and/or no document and should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'nan', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', 'nan'],
+        df = make_df([['30600', np.nan, 'INCOMING', r'..\documents\ima\file1.txt'],
+                      ['30601', 'dogs', 'INCOMING', np.nan],
                       ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'nan', 'AT_IN2', 'nan'],
-                      ['30604', 'nan', 'OUTGOING', 'nan'],
-                      ['30605', 'dogs', 'AT_OUT2', 'nan'],
-                      ['30606', 'nan', 'AT_OUT2', r'..\documents\indivletters\toA.txt'],
+                      ['30603', np.nan, 'AT_IN2', np.nan],
+                      ['30604', np.nan, 'OUTGOING', np.nan],
+                      ['30605', 'dogs', 'AT_OUT2', np.nan],
+                      ['30606', np.nan, 'AT_OUT2', r'..\documents\indivletters\toA.txt'],
                       ['30607', 'farm', 'AT_OUT2', r'..\documents\indivletters\toB.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 

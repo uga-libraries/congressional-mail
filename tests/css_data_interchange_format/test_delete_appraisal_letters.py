@@ -23,7 +23,7 @@ class MyTestCase(unittest.TestCase):
                  os.path.join(test_dir, 'file_not_found', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'new_pattern', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'no_deletion_blank', f'file_deletion_log_{today}.csv'),
-                 os.path.join(test_dir, 'no_deletion_empty_string', f'file_deletion_log_{today}.csv'),
+                 os.path.join(test_dir, 'no_deletion_empty', f'file_deletion_log_{today}.csv'),
                  os.path.join(test_dir, 'no_deletion_form', f'file_deletion_log_{today}.csv')]
         for path in paths:
             if os.path.exists(path):
@@ -114,9 +114,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
     def test_no_deletion_blank(self):
-        """Test for when the file paths in the metadata are blank"""
+        """Test for when the file paths in the metadata are blank (nan)"""
         # Runs the function being tested.
-        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_blank')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty')
         # Makes variables needed as function input and runs the function being tested.
         input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', np.nan, 'Casework'],
@@ -139,7 +139,7 @@ class MyTestCase(unittest.TestCase):
     def test_no_deletion_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
         # Runs the function being tested.
-        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty_string')
+        output_directory = os.path.join('test_data', 'delete_appraisal_letters', 'no_deletion_empty')
         # Makes variables needed as function input and runs the function being tested.
         input_directory = os.path.join(output_directory, 'export')
         appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],

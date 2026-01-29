@@ -1,0 +1,2 @@
+Used for testing when there is not appraisal_delete_log.csv.
+It just requires the metadata be present, not a full export.

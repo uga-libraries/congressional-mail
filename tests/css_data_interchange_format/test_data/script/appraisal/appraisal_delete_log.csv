@@ -1,0 +1,6 @@
+communication_type,approved_by,status,date_in,date_out,reminder_date,update_date,response_type,group_name,city,state_code,zip_code,country,document_type,communication_document_name,communication_document_id,file_location,file_name,text,Appraisal_Category
+,513,C,20000427,20000427,,20000427,imail,,Marietta,GA,30067-8581,USA,OUTGOING,..\documents\indivletters\casework_12345.doc,, ,,text5,Casework
+,513,C,20120914,20120914,,20120914,imail,CASE 3,Marietta,GA,30062-1668,USA,OUTGOING,..\documents\formletters\2103422.html,2103422.html, ,,text9,Casework
+,551,C,19990315,19990402,,19990315,imail,CASE4,Marietta,GA,30062-1668,USA,INCOMING,..\documents\objects\4007000.eml,,1c8614bf01caf83e00010e44.eml,,text7,Casework
+usmail,,C,19990331,19990402,,19990331,usmail,C1, , ,,POLAND,OUTGOING,..\documents\indivletters\case work\00001.doc,00001.doc, ,,text3,Casework
+usmail,,C,20000427,20000427,,20000427,usmail,CASEWORK2,Ellijay,GA,30540,USA,OUTGOING,..\documents\indivletters\00002.doc,00002.doc, ,,text1,Casework

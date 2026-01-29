@@ -21,6 +21,10 @@ Note: the letter matching report removes duplicates before attempting to match (
 so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
 
 ### Appraisal
+
+Requires appraisal_delete_log.csv, created in accession mode.
+This CSV may be manually edited (remove rows to not delete, add rows from appraisal_check_log.csv to delete).
+
 1. Check the appraisal reports made during review for errors (based on file names) in what will be deleted or not deleted. Double check no form letters are being deleted.
 2. Refine the script to catch new patterns, but some errors are acceptable given the scale.
 3. Update the function update_path() for transforming the metadata path into the directory path, if needed.
@@ -45,6 +49,10 @@ while maintaining the directory structure and start the metadata.csv file.
 4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
 
 ### Access
+
+Requires appraisal_delete_log.csv, created in accession mode and potentially edited during appraisal.
+Requires restriction_review.csv, created in appraisal mode.
+
 Delete any rows from restriction_review.csv (made in Appraisal mode) that express opinions about the topic,
 and only leaves rows where someone is requesting assistance with their own situation.
 Anything left in restriction_review.csv will not be part of the access copy.

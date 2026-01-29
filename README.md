@@ -39,6 +39,10 @@ To keep the expected test results manageable, most tests only use a small subset
 
 ## Workflow
 
+appraisal_delete_log.csv (created in accession mode) must be in the output_directory before running appraisal or access modes.
+restriction_review.csv (created in appraisal mode) must be in the output_directory before running access mode.
+The output_directory is the parent folder of input_directory
+
 ## Author
 
 ## Acknowledgements

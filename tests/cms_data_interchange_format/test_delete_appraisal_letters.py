@@ -112,9 +112,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for error_new, directory contents")
 
     def test_skip_blank(self):
-        """Test for when the file paths in the metadata are blank"""
+        """Test for when the file paths in the metadata are blank (nan)"""
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join('test_data', 'delete_appraisal_letters', 'skip_blank')
+        input_directory = os.path.join('test_data', 'delete_appraisal_letters', 'skip_empty')
         output_directory = os.path.dirname(input_directory)
         appraisal_df = pd.DataFrame([['20241201', np.nan, 'Casework'],
                                      ['20241202', np.nan, 'Academy_Application']],
@@ -136,7 +136,7 @@ class MyTestCase(unittest.TestCase):
     def test_skip_empty_string(self):
         """Test for when the file paths in the metadata are empty strings"""
         # Makes variables needed as function input and runs the function being tested.
-        input_directory = os.path.join('test_data', 'delete_appraisal_letters', 'skip_empty_string')
+        input_directory = os.path.join('test_data', 'delete_appraisal_letters', 'skip_empty')
         output_directory = os.path.dirname(input_directory)
         appraisal_df = pd.DataFrame([['20241201', '', 'Casework'],
                                      ['20241202', '', 'Academy_Application']],
