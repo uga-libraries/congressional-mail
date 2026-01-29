@@ -1,3 +1,4 @@
+import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -43,14 +44,14 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when some rows have no topic and/or no document and should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'nan', r'..\documents\BlobExport\objects\file3.txt',
-                       'nan', r'..\documents\BlobExport\responses\answer1.txt'],
+        df = make_df([['30600', np.nan, r'..\documents\BlobExport\objects\file3.txt',
+                       np.nan, r'..\documents\BlobExport\responses\answer1.txt'],
                       ['30601', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
                        'Agriculture', r'..\documents\BlobExport\responses\ag.txt'],
                       ['30602', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\file2.txt',
                        'Peanuts', r'..\documents\BlobExport\responses\ag.txt'],
-                      ['30603', 'Agriculture^Peanuts', 'nan', 'Peanuts', 'nan'],
-                      ['30604', 'nan', 'nan', 'nan', 'nan']])
+                      ['30603', 'Agriculture^Peanuts', np.nan, 'Peanuts', np.nan],
+                      ['30604', np.nan, np.nan, np.nan, np.nan]])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
