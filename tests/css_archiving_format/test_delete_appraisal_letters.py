@@ -1,4 +1,5 @@
 from datetime import date
+import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -72,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         appraisal_df = pd.DataFrame([['Abe', r'..\documents\BlobExport\objects\111111.txt', '', 'Academy_Application'],
                                      ['Blue', r'..\documents\BlobExport\objects\222222.txt', '', 'Academy_Application'],
                                      ['Cooper', '', r'..\documents\BlobExport\formletters\test.txt', 'Casework'],
-                                     ['Dane', 'nan', r'..\documents\BlobExport\formletters\test.txt', 'Casework']],
+                                     ['Dane', np.nan, r'..\documents\BlobExport\formletters\test.txt', 'Casework']],
                                     columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
@@ -136,7 +137,7 @@ class MyTestCase(unittest.TestCase):
                                      ['Coop', '', '', 'Casework'],
                                      ['Dudley', '', r'\\office-dc\dos\public\letter\111111.txt', 'Academy_Application'],
                                      ['Evans', '', r'\\office-atl\dos\public\letter\333333.txt', 'Casework'],
-                                     ['Fay', '', 'nan', 'Casework']],
+                                     ['Fay', '', np.nan, 'Casework']],
                                     columns=['last', 'in_document_name', 'out_document_name', 'Appraisal_Category'])
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
