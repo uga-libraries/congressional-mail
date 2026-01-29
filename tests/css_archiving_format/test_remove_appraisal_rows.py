@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import unittest
 from css_archiving_format import remove_appraisal_rows
@@ -7,16 +8,15 @@ from test_read_metadata import df_to_list
 class MyTestCase(unittest.TestCase):
 
     def test_function(self):
-        """Test for when columns in md_df have the same datatype and value as appraisal_df"""
         # Makes dataframes to use as test input and runs the function.
         md_df = pd.DataFrame([['Anderson', '', '12345', 'Casework', r'..\objects\111111.txt'],
                               ['Blue', '', '23456', 'Issue', r'..\objects\222222.txt'],
-                              ['Clive', '', '34567', 'Casework', ''],
+                              ['Clive', np.nan, '34567', 'Casework', ''],
                               ['Dudley', '', '45678', 'Issue', ''],
                               ['Evans', '', '56789', 'Casework', r'..\objects\333333.txt']],
                              columns=['last', 'title', 'zip', 'in_type', 'in_document_name'])
         appraisal_df = pd.DataFrame([['Anderson', '', '12345', 'Casework', r'..\objects\111111.txt', 'Casework'],
-                                    ['Clive', '', '34567', 'Casework', '', 'Casework'],
+                                    ['Clive', np.nan, '34567', 'Casework', '', 'Casework'],
                                     ['Evans', '', '56789', 'Casework', r'..\objects\333333.txt', 'Casework']],
                                     columns=['last', 'title', 'zip', 'in_type', 'in_document_name', 'Appraisal_Category'])
         md_df = remove_appraisal_rows(md_df, appraisal_df)
