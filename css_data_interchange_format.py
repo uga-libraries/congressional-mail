@@ -20,7 +20,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log, read_csv
+from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
 def appraisal_check_df(df, keyword, category):
@@ -526,16 +526,6 @@ def read_metadata(paths):
     df.dropna(how='all', inplace=True)
 
     return df
-
-
-def remove_appraisal_rows(df, df_appraisal):
-    """Remove metadata rows for letters deleted during appraisal and return the updated df"""
-
-    # Makes an updated dataframe with just rows in df that are not in df_appraisal.
-    df_merge = df.merge(df_appraisal, how='left', indicator=True)
-    df_update = df_merge[df_merge['_merge'] == 'left_only'].drop(columns=['_merge', 'Appraisal_Category'])
-
-    return df_update
 
 
 def remove_pii(df):

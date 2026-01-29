@@ -20,7 +20,7 @@ import pandas as pd
 import shutil
 import sys
 import css_data_interchange_format as css_dif
-from css_archiving_format import file_deletion_log, read_csv
+from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
 def appraisal_check_df(df, keyword, category):
@@ -651,7 +651,7 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
-        md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
+        md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = css_dif.remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
