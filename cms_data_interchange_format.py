@@ -378,30 +378,13 @@ def find_recommendation_rows(df):
     """Find metadata rows with keywords that indicate they might be recommendations
     and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
 
-    # Column code_description includes one or more keywords that indicate recommendations.
-    keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
-                     'recommendation letter']
-    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_code_desc = df[code_desc].copy()
-    df = df[~code_desc]
+    # Makes df with more certainty.
+    keyword_string = 'intern rec|page rec|rec for|recommendation'
+    df_rec, df_unmatched = df_search(df, keyword_string, 'Recommendation')
 
-    # Column correspondence_document_name includes one or more keywords that indicate recommendations.
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc].copy()
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate recommendations.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate recommendations
-    # and adds a column for the appraisal category.
-    df_rec = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_rec['Appraisal_Category'] = 'Recommendation'
-
-    # Makes a dataframe with rows containing "recommendation" to check for new patterns indicating recommendations.
-    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
+    # TODO update term now that df_recommendation is searching for recommendation.
+    df_rec_check, df_unmatched = df_search(df_unmatched, 'recommendation', 'Recommendation')
 
     return df_rec, df_rec_check
 
