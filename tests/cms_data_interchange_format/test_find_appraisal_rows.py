@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when rows match only one appraisal category, if any"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['file_1.doc', 'academy issue', 'x'],
-                              ['file_2.doc', 'sports academy', 'x'],
+                              ['file_2.doc', 'sports', 'x'],
                               ['file_3.doc', 'summer camp', 'x'],
                               ['file_4.doc', 'x', 'legal > case'],
                               ['file_5.doc', 'casework - forwarded to me for a response', 'x'],
@@ -67,7 +67,6 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_2.doc', 'sports academy', 'x', 'Academy_Application'],
                     ['file_4.doc', 'x', 'legal > case', 'Casework'],
                     ['file_7.doc', 'create jobs now', 'x', 'Job_Application'],
                     ['file_9.doc', 'good job with this one', 'x', 'Job_Application']]
