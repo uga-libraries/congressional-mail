@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
                               ['30605', 'GEN', 'Intern', '', r'..\doc\resume.txt', '', 'GEN', '', 'job request',
                                '', ''],
                               ['30606', 'GEN', 'Congratulations', '', '', '', 'GEN', '', 'Good job', '', ''],
-                              ['30607', 'GEN', 'Legislation', '', '', '', 'GEN', '', 'Recommendation noted', '', ''],
+                              ['30607', 'GEN', 'Legislation', '', '', '', 'GEN', '', 'Idea noted', '', ''],
                               ['30608', 'GEN', 'Arts', 'International Acad', '', '', 'GEN', '', '', '', ''],
                               ['30609', 'GEN', 'Legal', 'Case against Napster', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
@@ -75,9 +75,7 @@ class MyTestCase(unittest.TestCase):
                     ['30609', 'GEN', 'Legal', 'Case against Napster', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      'BLANK', 'BLANK', 'Casework'],
                     ['30606', 'GEN', 'Congratulations', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Good job',
-                     'BLANK', 'BLANK', 'Job_Application'],
-                    ['30607', 'GEN', 'Legislation', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'Recommendation noted',
-                     'BLANK', 'BLANK', 'Recommendation']]
+                     'BLANK', 'BLANK', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for four categories, appraisal check log")
 
     def test_three(self):
@@ -261,7 +259,10 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'GEN', 'Casework^Academy Applicant', '', '', '', 'GEN', '', '', '', '',
                      'Academy_Application|Casework'],
                     ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', '', '', 'GEN', '', 'rec for doe', '', '',
-                     'Academy_Application|Casework|Recommendation']]
+                     'Academy_Application|Casework|Recommendation'],
+                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', '', 'GEN', 'Admin', 'recommendation', '', '',
+                     'Recommendation']
+        ]
         self.assertEqual(expected, result, "Problem with test for multiple categories, df")
 
         # Tests the values in the appraisal delete log are correct.
@@ -271,7 +272,9 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'GEN', 'Casework^Academy Applicant', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK',
                      'BLANK', 'BLANK', 'BLANK', 'Academy_Application|Casework'],
                     ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', 'BLANK', 'BLANK', 'GEN', 'BLANK',
-                     'rec for doe', 'BLANK', 'BLANK', 'Academy_Application|Casework|Recommendation']]
+                     'rec for doe', 'BLANK', 'BLANK', 'Academy_Application|Casework|Recommendation'],
+                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
+                     'BLANK', 'BLANK', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal delete log")
 
         # Tests the values in the appraisal check log are correct.
@@ -283,9 +286,7 @@ class MyTestCase(unittest.TestCase):
                     ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
                      'BLANK', 'BLANK', 'Casework'],
                     ['30602', 'GEN', 'Legal Case', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'Congrats', 'Good job',
-                     'BLANK', 'BLANK', 'Job_Application'],
-                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', 'BLANK', 'GEN', 'Admin', 'recommendation',
-                     'BLANK', 'BLANK', 'Recommendation']]
+                     'BLANK', 'BLANK', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal check log")
 
 
