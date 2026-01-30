@@ -531,7 +531,7 @@ def find_recommendation_rows(df):
 
     # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
     # TODO update term now that df_recommendation is searching for recommendation.
-    df_recommendation_check = df_search(df, 'recommendation', 'Recommendation')
+    df_recommendation_check, df_unmatched = df_search(df_unmatched, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
