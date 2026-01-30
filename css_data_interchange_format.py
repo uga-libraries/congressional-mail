@@ -377,31 +377,13 @@ def find_recommendation_rows(df):
     """Find metadata rows with keywords that indicate they might be recommendations
     and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
 
-    # Column group_name includes one or more keywords that indicate recommendations.
-    group_list = ['intern', 'page', 'recommendation']
-    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
-    df_group = df[group].copy()
-    df = df[~group]
+    # Makes df with more certainty.
+    keyword_string = 'intern rec|page rec|rec for|recommendation'
+    df_rec, df_unmatched = df_search(df, keyword_string, 'Recommendation')
 
-    # Column communication_document_name includes one or more keywords that indicate recommendations.
-    keywords_list = ['intern rec', 'page rec']
-    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_doc_name = df[doc_name].copy()
-    df = df[~doc_name]
-
-    # Column text includes one or more keywords that indicate recommendations.
-    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_text = df[text].copy()
-    df = df[~text]
-
-    # Makes a single dataframe with all rows that indicate recommendations
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_rec = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
-    df_rec['Appraisal_Category'] = 'Recommendation'
-
-    # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
-    # indicate recommendations.
-    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
+    # TODO update term now that df_recommendation is searching for recommendation.
+    df_rec_check, df_unmatched = df_search(df_unmatched, 'recommendation', 'Recommendation')
 
     return df_rec, df_rec_check
 
