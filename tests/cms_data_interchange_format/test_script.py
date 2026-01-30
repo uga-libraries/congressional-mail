@@ -193,10 +193,7 @@ class MyTestCase(unittest.TestCase):
                      'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
                     ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
                      'GA', '30001', 'USA', '11111', 'CON', '1', 'main', 'out-custom\\1001.txt', 'BLANK',
-                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework'],
-                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
-                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', 'out-custom\\100X.txt', 'BLANK',
-                     'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation']]
+                     'note text 1', 'COR', '11111', 'LEGAL CASE', 'Y', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_check_log.csv")
 
         # Tests the contents of the appraisal_delete_log.csv.
@@ -213,6 +210,9 @@ class MyTestCase(unittest.TestCase):
                     ['EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK', '20220330', 'EMAIL', 'City Three',
                      'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'CASEWORK',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', 'out-custom\\100X.txt', 'BLANK',
+                     'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation'],
                     ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
                      'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case work file',
                      'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
