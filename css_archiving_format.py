@@ -290,7 +290,11 @@ def df_search(df, keywords, category):
     # Adds a column with the appraisal category.
     df_match['Appraisal_Category'] = category
 
-    return df_match
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
 
 
 def file_deletion_log(log_path, file_path, note):
@@ -325,57 +329,15 @@ def file_deletion_log(log_path, file_path, note):
 
 
 def find_academy_rows(df):
-    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be academy applications
+    and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
 
-    # Column in_topic includes one or more of the topics that indicate academy applications.
-    topics_list = ['academy applicant', 'military service academy']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_in_topic = df[in_topic]
-    df = df[~in_topic]
+    # Makes df with more certainty.
+    df_academy, df_unmatched = df_search(df, 'academy', 'Academy_Application')
 
-    # Column out_topic includes one or more of the topics that indicate academy applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_out_topic = df[out_topic]
-    df = df[~out_topic]
-
-    # Keywords used for all other columns.
-    keywords_list = ['academy app', 'academy_app', 'academy-app', 'academy nom', 'academy_nom', 'academy-nom']
-
-    # Column in_text includes one of the keywords (case-insensitive).
-    in_text = df['in_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_in_text = df[in_text]
-    df = df[~in_text]
-
-    # Column out_text includes one of the keywords (case-insensitive).
-    out_text = df['out_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_out_text = df[out_text]
-    df = df[~out_text]
-
-    # Column in_document_name includes one of the keywords (case-insensitive).
-    in_doc = df['in_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_in_doc = df[in_doc]
-    df = df[~in_doc]
-
-    # Column out_document_name includes one of the keywords (case-insensitive).
-    out_doc = df['out_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_out_doc = df[out_doc]
-    df = df[~out_doc]
-
-    # Column out_fillin includes one of the keywords (case-insensitive).
-    out_fillin = df['out_fillin'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_out_fillin = df[out_fillin]
-    df = df[~out_fillin]
-
-    # Makes a single dataframe with all rows that indicate academy applications
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_academy = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fillin],
-                           axis=0, ignore_index=True)
-    df_academy['Appraisal_Category'] = 'Academy_Application'
-
-    # Makes another dataframe with rows containing "academy" to check for new patterns that could
-    # indicate academy applications.
-    df_academy_check = df_search(df, 'academy', 'Academy_Application')
+    # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
+    # TODO update term now that df_academy is simplified to searching for just academy.
+    df_academy_check, df_unmatched = df_search(df_unmatched, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
 
