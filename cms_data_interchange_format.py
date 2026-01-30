@@ -375,8 +375,8 @@ def find_job_rows(df):
 
 
 def find_recommendation_rows(df):
-    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be recommendations
+    and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
 
     # Column code_description includes one or more keywords that indicate recommendations.
     keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
