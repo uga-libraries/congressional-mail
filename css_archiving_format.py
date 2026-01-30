@@ -522,8 +522,7 @@ def find_job_rows(df):
 
 def find_recommendation_rows(df):
     """Find metadata rows with keywords that indicate they might be recommendations
-    and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)
-    Once a row matches one pattern, it is not considered for other patterns."""
+    and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
 
     # Makes df with more certainty.
     keyword_string = 'intern rec|page rec|rec for|recommendation'
