@@ -245,33 +245,37 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
+def df_search(df, keywords, category):
+    """Returns a df with all rows that contain any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['correspondence_document_name', 'correspondence_text', 'code_description']
+
+    # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
+    # Keyword matches are case-insensitive and will not match blanks.
+    match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
 def find_academy_rows(df):
-    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be academy applications
+    and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
 
-    # Column code_description includes "academy nomination".
-    code_desc = df['code_description'].str.contains('academy nomination', case=False, na=False)
-    df_code_desc = df[code_desc]
-    df = df[~code_desc]
+    # Makes df with more certainty.
+    df_academy, df_unmatched = df_search(df, 'academy', 'Academy_Application')
 
-    # Column correspondence_document_name includes one or more keywords that indicate academy applications.
-    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc]
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate academy applications.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate academy applications
-    # and adds a column for the appraisal category.
-    df_academy = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_academy['Appraisal_Category'] = 'Academy_Application'
-
-    # Makes a dataframe with rows containing "academy" to check for new patterns indicating academy applications.
-    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
+    # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
+    # TODO update term now that df_academy is simplified to searching for just academy.
+    df_academy_check, df_unmatched = df_search(df_unmatched, 'academy', 'Academy_Application')
 
     return df_academy, df_academy_check
 
