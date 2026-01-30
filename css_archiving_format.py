@@ -358,7 +358,7 @@ def find_academy_rows(df):
     # Makes df with more certainty.
     df_academy, df_unmatched = df_search(df, 'academy', 'Academy_Application')
 
-    # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
+    # Makes df with less certainty, only searching rows that are not in df_academy, to look for new keywords.
     # TODO update term now that df_academy is simplified to searching for just academy.
     df_academy_check, df_unmatched = df_search(df_unmatched, 'academy', 'Academy_Application')
 
@@ -526,12 +526,12 @@ def find_recommendation_rows(df):
     Once a row matches one pattern, it is not considered for other patterns."""
 
     # Makes df with more certainty.
-    keywords = 'intern rec|page rec|rec for|recommendation'
-    df_recommendation, df_unmatched = df_search(df, keywords, 'Recommendation')
+    keyword_string = 'intern rec|page rec|rec for|recommendation'
+    df_recommendation, df_unmatched = df_search(df, keyword_string, 'Recommendation')
 
-    # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
-    # indicate recommendations.
-    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
+    # TODO update term now that df_recommendation is searching for recommendation.
+    df_recommendation_check = df_search(df, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
