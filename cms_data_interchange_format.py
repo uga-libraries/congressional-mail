@@ -245,6 +245,27 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
+def df_search(df, keywords, category):
+    """Returns a df with all rows that contain any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['correspondence_document_name', 'correspondence_text', 'code_description']
+
+    # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
+    # Keyword matches are case-insensitive and will not match blanks.
+    match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
 def find_academy_rows(df):
     """Find metadata rows with topics or text that indicate they are academy applications and return as a df
     Once a row matches one pattern, it is not considered for other patterns."""
