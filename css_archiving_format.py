@@ -525,47 +525,9 @@ def find_recommendation_rows(df):
     and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)
     Once a row matches one pattern, it is not considered for other patterns."""
 
-    # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('recommendation', case=False, na=False)
-    df_in_topic = df[in_topic]
-    df = df[~in_topic]
-
-    # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('recommendation', case=False, na=False)
-    df_out_topic = df[out_topic]
-    df = df[~out_topic]
-
-    # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
-    phrase_list = ['letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
-    in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_in_text = df[in_text]
-    df = df[~in_text]
-
-    # Column out_text includes a phrase (case_insensitive) that indicates a recommendation.
-    out_text = df['out_text'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_text = df[out_text]
-    df = df[~out_text]
-
-    # Column in_document_name includes a phrase (case_insensitive) that indicates a recommendation.
-    in_doc = df['in_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_in_doc = df[in_doc]
-    df = df[~in_doc]
-
-    # Column out_document_name includes a phrase (case_insensitive) that indicates a recommendation.
-    out_doc = df['out_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_doc = df[out_doc]
-    df = df[~out_doc]
-
-    # Column out_fillin includes a phrase (case_insensitive) that indicates a recommendation.
-    out_fill = df['out_fillin'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_fill = df[out_fill]
-    df = df[~out_fill]
-
-    # Makes a single dataframe with all rows that indicate recommendations
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc,
-                                   df_out_fill], axis=0, ignore_index=True)
-    df_recommendation['Appraisal_Category'] = 'Recommendation'
+    # Makes df with more certainty.
+    keywords = 'intern rec|page rec|rec for|recommendation'
+    df_recommendation, df_unmatched = df_search(df, keywords, 'Recommendation')
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
     # indicate recommendations.
