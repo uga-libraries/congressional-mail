@@ -24,6 +24,29 @@ import sys
 import time
 
 
+def appraisal_check_df(df, keyword, category):
+    """Returns a df with all rows that contain the specified keyword in any of the columns
+    likely to indicate appraisal is needed, with a new column for the appraisal category"""
+
+    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
+    in_topic = df['in_topic'].str.contains(keyword, case=False, na=False)
+    in_doc = df['in_document_name'].str.contains(keyword, case=False, na=False)
+    in_fillin = df['in_fillin'].str.contains(keyword, case=False, na=False)
+    in_text = df['in_text'].str.contains(keyword, case=False, na=False)
+    out_topic = df['out_topic'].str.contains(keyword, case=False, na=False)
+    out_doc = df['out_document_name'].str.contains(keyword, case=False, na=False)
+    out_fillin = df['out_fillin'].str.contains(keyword, case=False, na=False)
+    out_text = df['out_text'].str.contains(keyword, case=False, na=False)
+
+    # Makes a dataframe with all rows containing the keyword in at least one of the columns.
+    df_check = df[in_topic | in_doc | in_fillin | in_text | out_topic | out_doc | out_fillin | out_text].copy()
+
+    # Adds a column with the appraisal category.
+    df_check['Appraisal_Category'] = category
+
+    return df_check
+
+
 def check_arguments(arg_list):
     """Verify the required script arguments are present and valid and get the path to the metadata file"""
 
@@ -437,7 +460,7 @@ def find_casework_rows(df):
     df_casework['Appraisal_Category'] = "Casework"
 
     # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
-    df_casework_check = df_search(df, 'case', 'Casework')
+    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
 
     return df_casework, df_casework_check
 
@@ -492,7 +515,7 @@ def find_job_rows(df):
     df_job['Appraisal_Category'] = 'Job_Application'
 
     # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
-    df_job_check = df_search(df, 'job', 'Job_Application')
+    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
 
     return df_job, df_job_check
 
@@ -545,7 +568,7 @@ def find_recommendation_rows(df):
 
     # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
     # indicate recommendations.
-    df_recommendation_check = df_search(df, 'recommendation', 'Recommendation')
+    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
