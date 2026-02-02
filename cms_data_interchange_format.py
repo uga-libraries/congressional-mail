@@ -344,8 +344,8 @@ def find_casework_rows(df):
 
 
 def find_job_rows(df):
-    """Find metadata rows with topics or text that indicate they are job applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be job applications
+    and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
     # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['intern assignment', 'intern response', 'internship']
