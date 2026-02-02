@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
                               ['file_2.doc', 'x', 'y'],
                               ['file_3.doc', 'internship recommendation letter', 'x'],
                               ['file_4.doc', 'internship recommendation letter closed case file', 'x'],
-                              ['file_5.doc', 'recommendation.doc', 'case > recommendation']],
+                              ['file_5.doc', 'rec.doc', 'case > rec']],
                              columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -103,8 +103,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Casework'],
-                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Recommendation']]
+                    ['file_5.doc', 'rec.doc', 'case > rec', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
