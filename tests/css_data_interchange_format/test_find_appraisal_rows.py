@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         md_df = pd.DataFrame([['20240101', 'Admin', r'..\documents\objects\academy.txt', 'academy.txt', 'x'],
                               ['20240202', 'Case1', '', '', 'x'],
                               ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x'],
-                              ['20240404', 'Arts', '', 'artist recommendation.txt', 'x'],
+                              ['20240404', 'Arts', '', 'artist jobs.txt', 'x'],
                               ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', '', 'x'],
                               ['20240606', 'Admin',  '', 'legal_case.txt', 'x']],
                              columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
@@ -82,7 +82,7 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20240606', 'Admin', 'BLANK', 'legal_case.txt', 'x', 'Casework'],
-                    ['20240404', 'Arts', 'BLANK', 'artist recommendation.txt', 'x', 'Recommendation']]
+                    ['20240404', 'Arts', 'BLANK', 'artist jobs.txt', 'x', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.

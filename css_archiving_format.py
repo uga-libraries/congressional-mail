@@ -358,7 +358,7 @@ def find_academy_rows(df):
     # Makes df with more certainty.
     df_academy, df_unmatched = df_search(df, 'academy', 'Academy_Application')
 
-    # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
+    # Makes df with less certainty, only searching rows that are not in df_academy, to look for new keywords.
     # TODO update term now that df_academy is simplified to searching for just academy.
     df_academy_check, df_unmatched = df_search(df_unmatched, 'academy', 'Academy_Application')
 
@@ -521,54 +521,16 @@ def find_job_rows(df):
 
 
 def find_recommendation_rows(df):
-    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be recommendations
+    and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
 
-    # Column in_topic includes Recommendations.
-    in_topic = df['in_topic'].str.contains('recommendation', case=False, na=False)
-    df_in_topic = df[in_topic]
-    df = df[~in_topic]
+    # Makes df with more certainty.
+    keyword_string = 'intern rec|page rec|rec for|recommendation'
+    df_recommendation, df_unmatched = df_search(df, keyword_string, 'Recommendation')
 
-    # Column out_topic includes Recommendations.
-    out_topic = df['out_topic'].str.contains('recommendation', case=False, na=False)
-    df_out_topic = df[out_topic]
-    df = df[~out_topic]
-
-    # Column in_text includes a phrase (case_insensitive) that indicates a recommendation.
-    phrase_list = ['letter of recommendation', 'policy for recommendation', 'rec for', 'wrote recommendation']
-    in_text = df['in_text'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_in_text = df[in_text]
-    df = df[~in_text]
-
-    # Column out_text includes a phrase (case_insensitive) that indicates a recommendation.
-    out_text = df['out_text'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_text = df[out_text]
-    df = df[~out_text]
-
-    # Column in_document_name includes a phrase (case_insensitive) that indicates a recommendation.
-    in_doc = df['in_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_in_doc = df[in_doc]
-    df = df[~in_doc]
-
-    # Column out_document_name includes a phrase (case_insensitive) that indicates a recommendation.
-    out_doc = df['out_document_name'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_doc = df[out_doc]
-    df = df[~out_doc]
-
-    # Column out_fillin includes a phrase (case_insensitive) that indicates a recommendation.
-    out_fill = df['out_fillin'].str.contains('|'.join(phrase_list), case=False, na=False)
-    df_out_fill = df[out_fill]
-    df = df[~out_fill]
-
-    # Makes a single dataframe with all rows that indicate recommendations
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_recommendation = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc,
-                                   df_out_fill], axis=0, ignore_index=True)
-    df_recommendation['Appraisal_Category'] = 'Recommendation'
-
-    # Makes another dataframe with rows containing "recommendation" to check for new patterns that could
-    # indicate recommendations.
-    df_recommendation_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
+    # TODO update term now that df_recommendation is searching for recommendation.
+    df_recommendation_check, df_unmatched = df_search(df_unmatched, 'recommendation', 'Recommendation')
 
     return df_recommendation, df_recommendation_check
 
