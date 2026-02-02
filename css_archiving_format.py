@@ -470,7 +470,7 @@ def find_job_rows(df):
     and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
     # Makes df with more certainty.
-    keyword_string = 'intern |intern assignment|intern response|internship|interview|job app|job request|job.doc|jobapp|resume'
+    keyword_string = 'intern |internship|interview|job app|job request|job.doc|jobapp|resume'
     df_job, df_unmatched = df_search(df, keyword_string, 'Job_Application'
                                      )
     # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
