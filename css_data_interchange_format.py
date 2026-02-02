@@ -345,30 +345,11 @@ def find_job_rows(df):
     """Find metadata rows with keywords that indicate they might be job applications
     and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
-    # Column group_name includes one or more of the groups that indicate job applications.
-    group_list = ['jobapp', 'job request', 'resume']
-    group = df['group_name'].str.contains('|'.join(group_list), case=False, na=False)
-    df_group = df[group]
-    df = df[~group]
-
-    # Column communication_document_name includes one or more keywords that indicate job applications.
-    keywords_list = ['job.doc', 'jobapp', 'job applicant', 'reply to resume', 'thank you for resume']
-    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_doc_name = df[doc_name]
-    df = df[~doc_name]
-
-    # Column text includes one or more keywords that indicate job applications.
-    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_text = df[text]
-    df = df[~text]
-
-    # Makes a single dataframe with all rows that indicate job applications
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
-    df_job['Appraisal_Category'] = 'Job_Application'
-
-    # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
-    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
+    # Makes df with more certainty.
+    keyword_string = 'intern |internship|interview|job app|job request|job.doc|jobapp|resume'
+    df_job, df_unmatched = df_search(df, keyword_string, 'Job_Application')
+    # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
+    df_job_check, df_unmatched = df_search(df_unmatched, 'job', 'Job_Application')
 
     return df_job, df_job_check
 
