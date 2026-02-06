@@ -26,7 +26,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '\\Form\\Thanks.doc', '', '', '', '', '', ''],
                 ['30606', '', '', '', np.nan, '', '', '', '', '', ''],
                 ['30607', '', '', '', 'case closed', '', '', '', '', '', ''],
-                ['30608', '', '', '', '\\doc\\case file.doc', '', '', '', '', '', '']]
+                ['30608', '', '', '', '\\doc\\case file.doc', '', '', '', '', '', ''],
+                ['30609', '', '', '', 'case', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -34,6 +35,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', 'case', '', '', '', '', '', '', 'Casework'],
                     ['30600', '', '', '', 'ADDED TO CASE LOG', '', '', '', '', '', '', 'Casework'],
                     ['30601', '', '', '', '\\Form\\Already Open', '', '', '', '', '', '', 'Casework'],
                     ['30607', '', '', '', 'case closed', '', '', '', '', '', '', 'Casework'],
@@ -59,7 +61,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', 'thanks', '', '', '', '', ''],
                 ['30606', '', '', '', '', np.nan, '', '', '', '', ''],
                 ['30607', '', '', '', '', 'open sixth district cases', '', '', '', '', ''],
-                ['30608', '', '', '', '', 'jv prison case help', '', '', '', '', '']]
+                ['30608', '', '', '', '', 'jv prison case help', '', '', '', '', ''],
+                ['30609', '', '', '', '', 'CASE', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -67,6 +70,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', '', 'CASE', '', '', '', '', '', 'Casework'],
                     ['30600', '', '', '', '', 'INITIALSSACASE RESPOND', '', '', '', '', '', 'Casework'],
                     ['30601', '', '', '', '', 'Still Open Case', '', '', '', '', '', 'Casework'],
                     ['30607', '', '', '', '', 'open sixth district cases', '', '', '', '', '', 'Casework'],
@@ -92,7 +96,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', 'thanks', '', '', '', '', '', '', ''],
                 ['30606', '', '', np.nan, '', '', '', '', '', '', ''],
                 ['30607', '', '', 'case issue', '', '', '', '', '', '', ''],
-                ['30608', '', '', 'is case open still?', '', '', '', '', '', '', '']]
+                ['30608', '', '', 'is case open still?', '', '', '', '', '', '', ''],
+                ['30609', '', '', 'Case', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -100,6 +105,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', 'Case', '', '', '', '', '', '', '', 'Casework'],
                     ['30600', '', '', 'CASE FOR JD', '', '', '', '', '', '', '', 'Casework'],
                     ['30601', '', '', 'Check Case Has', '', '', '', '', '', '', '', 'Casework'],
                     ['30607', '', '', 'case issue', '', '', '', '', '', '', '', 'Casework'],
@@ -125,7 +131,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', 'Admin', '', '', '', '', '', '', '', ''],
                 ['30606', '', np.nan, '', '', '', '', '', '', '', ''],
                 ['30607', '', 'closed case', '', '', '', '', '', '', '', ''],
-                ['30608', '', 'dc forwarded to me for reply', '', '', '', '', '', '', '', '']]
+                ['30608', '', 'dc forwarded to me for reply', '', '', '', '', '', '', '', ''],
+                ['30609', '', 'case', '', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -133,6 +140,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', 'case', '', '', '', '', '', '', '', '', 'Casework'],
                     ['30600', '', 'CASE WORK TODO', '', '', '', '', '', '', '', '', 'Casework'],
                     ['30601', '', 'Urgent Casework', '', '', '', '', '', '', '', '', 'Casework'],
                     ['30607', '', 'closed case', '', '', '', '', '', '', '', '', 'Casework'],
@@ -154,7 +162,7 @@ class MyTestCase(unittest.TestCase):
         rows = [['30600', 'text', '', np.nan, '', 'text', '', '', '', '', ''],
                 ['30601', 'text', '', np.nan, '', '', '', '', '', '', ''],
                 ['30602', 'text', '', np.nan, '', np.nan, '', '', '', '', ''],
-                ['30603', 'text', '', np.nan, '', '', '', '', '', '', '']]
+                ['30603-case', 'text', '', np.nan, '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -181,7 +189,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', '', '', '\\form\\thanks.txt', ''],
                 ['30606', '', '', '', '', '', '', '', '', np.nan, ''],
                 ['30607', '', '', '', '', '', '', '', '', 'already open', ''],
-                ['30608', '', '', '', '', '', '', '', '', '\\form\\case closed.txt', '']]
+                ['30608', '', '', '', '', '', '', '', '', '\\form\\case closed.txt', ''],
+                ['30609', '', '', '', '', '', '', '', '', 'case!', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -189,6 +198,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', '', '', '', '', '', 'case!', '', 'Casework'],
                     ['30600', '', '', '', '', '', '', '', '', 'STARTED CASE LOG', '', 'Casework'],
                     ['30601', '', '', '', '', '', '', '', '', '\\Doc\\Added To Case.txt', '', 'Casework'],
                     ['30607', '', '', '', '', '', '', '', '', 'already open', '', 'Casework'],
@@ -214,7 +224,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', '', '', '', 'Thanks'],
                 ['30606', '', '', '', '', '', '', '', '', '', np.nan],
                 ['30607', '', '', '', '', '', '', '', '', '', 'case has'],
-                ['30608', '', '', '', '', '', '', '', '', '', 'potential case issue - review']]
+                ['30608', '', '', '', '', '', '', '', '', '', 'potential case issue - review'],
+                ['30609', '', '', '', '', '', '', '', '', '', 'CASE!']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -222,6 +233,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', '', '', '', '', '', '', 'CASE!', 'Casework'],
                     ['30600', '', '', '', '', '', '', '', '', '', 'CASE FILE_ABC', 'Casework'],
                     ['30601', '', '', '', '', '', '', '', '', '', 'New Case For', 'Casework'],
                     ['30607', '', '', '', '', '', '', '', '', '', 'case has', 'Casework'],
@@ -247,7 +259,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', '', 'thanks', '', ''],
                 ['30606', '', '', '', '', '', '', '', np.nan, '', ''],
                 ['30607', '', '', '', '', '', '', '', 'casework', '', ''],
-                ['30608', '', '', '', '', '', '', '', 'I closed case.', '', '']]
+                ['30608', '', '', '', '', '', '', '', 'I closed case.', '', ''],
+                ['30609', '', '', '', '', '', '', '', 'Case!', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -255,6 +268,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', '', '', '', '', 'Case!', '', '', 'Casework'],
                     ['30600', '', '', '', '', '', '', '', 'CASE OPEN ABC', '', '', 'Casework'],
                     ['30601', '', '', '', '', '', '', '', 'New Case Work', '', '', 'Casework'],
                     ['30607', '', '', '', '', '', '', '', 'casework', '', '', 'Casework'],
@@ -280,7 +294,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', 'Thanks', '', '', ''],
                 ['30606', '', '', '', '', '', '', np.nan, '', '', ''],
                 ['30607', '', '', '', '', '', '', 'open case', '', '', ''],
-                ['30608', '', '', '', '', '', '', 'admin^open sixth district cases^help', '', '', '']]
+                ['30608', '', '', '', '', '', '', 'admin^open sixth district cases^help', '', '', ''],
+                ['30609', '', '', '', '', '', '', 'case!', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -288,6 +303,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30609', '', '', '', '', '', '', 'case!', '', '', '', 'Casework'],
                     ['30600', '', '', '', '', '', '', 'FORWARDED TO ME^ADMIN', '', '', '', 'Casework'],
                     ['30601', '', '', '', '', '', '', 'Admin^InitialSSACase', '', '', '', 'Casework'],
                     ['30607', '', '', '', '', '', '', 'open case', '', '', '', 'Casework'],
