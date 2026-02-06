@@ -18,8 +18,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250206', '', '', 'case!', ''],
                 ['20250207', '', '', '', 'CASE!']]
         df = make_df(rows)
-        keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
-        df_match, df_no_match = df_search_exact(df, keyword_list, 'Casework')
+        exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+        df_match, df_no_match = df_search_exact(df, exact_list, 'Casework')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -49,8 +49,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250206', '', 'Case!', '', 'Case!'],
                 ['20250207', '', '', '', '']]
         df = make_df(rows)
-        keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
-        df_match, df_no_match = df_search_exact(df, keyword_list, 'Casework')
+        exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+        df_match, df_no_match = df_search_exact(df, exact_list, 'Casework')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -76,8 +76,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250202', '', '', '', ''],
                 ['20250203', 'x', 'x', 'x', 'x']]
         df = make_df(rows)
-        keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
-        df_match, df_no_match = df_search_exact(df, keyword_list, 'Casework')
+        exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+        df_match, df_no_match = df_search_exact(df, exact_list, 'Casework')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -102,8 +102,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250205', np.nan, np.nan, np.nan, np.nan],
                 ['20250206', '', '', '', 'ENCASED']]
         df = make_df(rows)
-        keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
-        df_match, df_no_match = df_search_exact(df, keyword_list, 'Casework')
+        exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+        df_match, df_no_match = df_search_exact(df, exact_list, 'Casework')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
