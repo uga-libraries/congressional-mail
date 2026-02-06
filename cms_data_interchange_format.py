@@ -336,28 +336,18 @@ def find_casework_rows(df):
     """Find metadata rows with keywords that indicate they might be casework
     and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
-    # Column code_description includes one or more keywords that indicate casework.
-    keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
-    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_code_desc = df[code_desc].copy()
-    df = df[~code_desc]
+    # Makes df with more certainty, combining exact column matches and partial matches.
+    keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+    df_casework_exact, df_unmatched = df_search_exact(df, keyword_list, 'Casework')
+    keyword_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
+                    'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
+                    'open case', 'open sixth district cases', 'prison case', 'started case']
+    keyword_string = '|'.join(keyword_list)
+    df_casework_partial, df_unmatched = df_search(df_unmatched, keyword_string, 'Casework')
+    df_casework = pd.concat([df_casework_exact, df_casework_partial], ignore_index=True)
 
-    # Column correspondence_document_name includes one or more keywords that indicate casework.
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc].copy()
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate casework.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
-    df_casework = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_casework['Appraisal_Category'] = 'Casework'
-
-    # Makes a dataframe with rows containing "case" to check for new patterns indicating casework.
-    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+    # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
+    df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
 
     return df_casework, df_casework_check
 
