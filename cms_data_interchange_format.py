@@ -312,10 +312,8 @@ def find_appraisal_rows(df, output_dir):
 
 
 def find_casework_rows(df):
-    """Find metadata rows with topics or text that indicate they are casework and return as a df
-    Once a row matches one pattern, it is not considered for other patterns.
-    We will delete even if the phrase indicates it is not a case or casework
-    because the fact they considered it might be a case suggests it includes sensitive personal information."""
+    """Find metadata rows with keywords that indicate they might be casework
+    and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
     # Column code_description includes one or more keywords that indicate casework.
     keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
