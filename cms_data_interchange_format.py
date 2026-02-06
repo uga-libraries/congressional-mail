@@ -23,24 +23,6 @@ import css_data_interchange_format as css_dif
 from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
-def appraisal_check_df(df, keyword, category):
-    """Returns a df with all rows that contain the specified keyword in any of the columns
-    likely to indicate appraisal is needed, with a new column for the appraisal category"""
-
-    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
-    doc_name = df['correspondence_document_name'].str.contains(keyword, case=False, na=False)
-    text = df['correspondence_text'].str.contains(keyword, case=False, na=False)
-    code = df['code_description'].str.contains(keyword, case=False, na=False)
-
-    # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[doc_name | text | code].copy()
-
-    # Adds a column with the appraisal category.
-    df_check['Appraisal_Category'] = category
-
-    return df_check
-
-
 def check_arguments(arg_list):
     """Verify the required script arguments are present and valid and get the paths to the metadata files"""
 
@@ -245,33 +227,61 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
+def df_search(df, keywords_list, category):
+    """Returns a df with all rows that contain any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['correspondence_document_name', 'correspondence_text', 'code_description']
+
+    # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
+    # Keyword matches are case-insensitive and will not match blanks.
+    keywords = '|'.join(keywords_list)
+    match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
+def df_search_exact(df, keywords_list, category):
+    """Returns a df with all rows that exactly match any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['correspondence_document_name', 'correspondence_text', 'code_description']
+
+    # Makes a dataframe with any row that only contains one of the keywords, including matching case,
+    # in at least one of the columns searched.
+    match = df[columns_list].isin(keywords_list).any(axis=1)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
 def find_academy_rows(df):
-    """Find metadata rows with topics or text that indicate they are academy applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be academy applications
+    and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
 
-    # Column code_description includes "academy nomination".
-    code_desc = df['code_description'].str.contains('academy nomination', case=False, na=False)
-    df_code_desc = df[code_desc]
-    df = df[~code_desc]
+    # Makes df with more certainty.
+    keywords_list = ['academy']
+    df_academy, df_unmatched = df_search(df, keywords_list, 'Academy_Application')
 
-    # Column correspondence_document_name includes one or more keywords that indicate academy applications.
-    keywords_list = ['academy appointment', 'academy issue', 'academy nomination', 'military academy']
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc]
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate academy applications.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text]
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate academy applications
-    # and adds a column for the appraisal category.
-    df_academy = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_academy['Appraisal_Category'] = 'Academy_Application'
-
-    # Makes a dataframe with rows containing "academy" to check for new patterns indicating academy applications.
-    df_academy_check = appraisal_check_df(df, 'academy', 'Academy_Application')
+    # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
+    # TODO update term now that df_academy is simplified to searching for just academy.
+    check_list = ['academy']
+    df_academy_check, df_unmatched = df_search(df_unmatched, check_list, 'Academy_Application')
 
     return df_academy, df_academy_check
 
@@ -308,96 +318,54 @@ def find_appraisal_rows(df, output_dir):
 
 
 def find_casework_rows(df):
-    """Find metadata rows with topics or text that indicate they are casework and return as a df
-    Once a row matches one pattern, it is not considered for other patterns.
-    We will delete even if the phrase indicates it is not a case or casework
-    because the fact they considered it might be a case suggests it includes sensitive personal information."""
+    """Find metadata rows with keywords that indicate they might be casework
+    and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
-    # Column code_description includes one or more keywords that indicate casework.
-    keywords_list = ['case file', 'case has', 'case open', 'casework', 'case work', 'forwarded to me', 'open case']
-    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_code_desc = df[code_desc].copy()
-    df = df[~code_desc]
+    # Makes df with more certainty, combining exact column matches and partial matches.
+    exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+    df_casework_exact, df_unmatched = df_search_exact(df, exact_list, 'Casework')
 
-    # Column correspondence_document_name includes one or more keywords that indicate casework.
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc].copy()
-    df = df[~corr_doc]
+    keywords_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
+                     'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
+                     'open case', 'open sixth district cases', 'prison case', 'started case']
+    df_casework_partial, df_unmatched = df_search(df_unmatched, keywords_list, 'Casework')
 
-    # Column correspondence_text includes one or more keywords that indicate casework.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
-    df = df[~corr_text]
+    df_casework = pd.concat([df_casework_exact, df_casework_partial], ignore_index=True)
 
-    # Makes a single dataframe with all rows that indicate casework and adds a column for the appraisal category.
-    df_casework = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_casework['Appraisal_Category'] = 'Casework'
-
-    # Makes a dataframe with rows containing "case" to check for new patterns indicating casework.
-    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+    # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
+    check_list = ['case']
+    df_casework_check, df_unmatched = df_search(df_unmatched, check_list, 'Casework')
 
     return df_casework, df_casework_check
 
 
 def find_job_rows(df):
-    """Find metadata rows with topics or text that indicate they are job applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be job applications
+    and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
-    # Column code_description includes one or more keywords that indicate casework.
-    keywords_list = ['intern assignment', 'intern response', 'internship']
-    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_code_desc = df[code_desc].copy()
-    df = df[~code_desc]
+    # Makes df with more certainty.
+    keywords_list = ['intern ', 'internship', 'interview', 'job app', 'job request', 'job.doc', 'jobapp', 'resume']
+    df_job, df_unmatched = df_search(df, keywords_list, 'Job_Application')
 
-    # Column correspondence_document_name includes one or more keywords that indicate job applications.
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc].copy()
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate job applications.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate job applications
-    # and adds a column for the appraisal category.
-    df_job = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_job['Appraisal_Category'] = 'Job_Application'
-
-    # Makes a dataframe with rows containing "job" to check for new patterns indicating job applications.
-    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
+    # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
+    check_list = ['job']
+    df_job_check, df_unmatched = df_search(df_unmatched, check_list, 'Job_Application')
 
     return df_job, df_job_check
 
 
 def find_recommendation_rows(df):
-    """Find metadata rows with topics or text that indicate they are recommendations and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be recommendations
+    and return as two dfs, one with more certainty (df_rec) and one with less (df_rec_check)"""
 
-    # Column code_description includes one or more keywords that indicate recommendations.
-    keywords_list = ['generic recommendation', 'letter of recommendation', 'letters of recommendation',
-                     'recommendation letter']
-    code_desc = df['code_description'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_code_desc = df[code_desc].copy()
-    df = df[~code_desc]
+    # Makes df with more certainty.
+    keywords_list = ['intern rec', 'page rec', 'rec for', 'recommendation']
+    df_rec, df_unmatched = df_search(df, keywords_list, 'Recommendation')
 
-    # Column correspondence_document_name includes one or more keywords that indicate recommendations.
-    corr_doc = df['correspondence_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_doc = df[corr_doc].copy()
-    df = df[~corr_doc]
-
-    # Column correspondence_text includes one or more keywords that indicate recommendations.
-    corr_text = df['correspondence_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_corr_text = df[corr_text].copy()
-    df = df[~corr_text]
-
-    # Makes a single dataframe with all rows that indicate recommendations
-    # and adds a column for the appraisal category.
-    df_rec = pd.concat([df_code_desc, df_corr_doc, df_corr_text], axis=0, ignore_index=True)
-    df_rec['Appraisal_Category'] = 'Recommendation'
-
-    # Makes a dataframe with rows containing "recommendation" to check for new patterns indicating recommendations.
-    df_rec_check = appraisal_check_df(df, 'recommendation', 'Recommendation')
+    # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
+    # TODO update term now that df_recommendation is searching for recommendation.
+    check_list = ['recommendation']
+    df_rec_check, df_unmatched = df_search(df_unmatched, check_list, 'Recommendation')
 
     return df_rec, df_rec_check
 

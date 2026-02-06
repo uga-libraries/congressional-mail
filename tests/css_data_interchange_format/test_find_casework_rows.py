@@ -1,7 +1,7 @@
 import pandas as pd
 import unittest
 from css_data_interchange_format import find_casework_rows
-from test_appraisal_check_df import df_to_list
+from test_read_metadata import df_to_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -19,13 +19,15 @@ class MyTestCase(unittest.TestCase):
                            ['20250408', '', 'doc\\initialssacase.doc', '', ''],
                            ['20250409', '', 'doc\\Open Sixth District Cases.doc', '', ''],
                            ['20250410', '', 'doc\\Antitrust Case.doc', '', ''],
-                           ['20250411', '', 'doc\\doc.txt', '', '']],
+                           ['20250411', '', 'doc\\doc.txt', '', ''],
+                           ['20250412', '', 'case', '', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250412', '', 'case', '', '', 'Casework'],
                     ['20250401', '', 'doc\\Buck Letter - Casework.doc', '', '', 'Casework'],
                     ['20250402', '', 'doc\\Casework - Initial Reply.doc', '', '', 'Casework'],
                     ['20250403', '', 'doc\\Close Favorably - Case work.doc', '', '', 'Casework'],
@@ -34,14 +36,53 @@ class MyTestCase(unittest.TestCase):
                     ['20250406', '', 'doc\\Open Sixth District Casework.doc', '', '', 'Casework'],
                     ['20250408', '', 'doc\\initialssacase.doc', '', '', 'Casework'],
                     ['20250409', '', 'doc\\Open Sixth District Cases.doc', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250407', '', 'doc\\Napster Case.doc', '', '', 'Casework'],
                     ['20250410', '', 'doc\\Antitrust Case.doc', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_casework_check")
+
+    def test_file_name(self):
+        """Test for when the column file_name indicates casework is present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', 'Buck Letter - Casework.doc', ''],
+                           ['20250402', '', '', 'Casework - Initial Reply.doc', ''],
+                           ['20250403', '', '', 'Close Favorably - Case work.doc', ''],
+                           ['20250404', '', '', 'Initial Reply - Casework.doc', ''],
+                           ['20250405', '', '', 'Interim - Casework.doc', ''],
+                           ['20250406', '', '', 'Open Sixth District Casework.doc', ''],
+                           ['20250407', '', '', 'Napster Case.doc', ''],
+                           ['20250408', '', '', 'initialssacase.doc', ''],
+                           ['20250409', '', '', 'Open Sixth District Cases.doc', ''],
+                           ['20250410', '', '', 'Antitrust Case.doc', ''],
+                           ['20250411', '', '', 'doc.txt', ''],
+                           ['20250412', '', '', 'case', '']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_casework, df_casework_check = find_casework_rows(df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250412', '', '', 'case', '', 'Casework'],
+                    ['20250401', '', '', 'Buck Letter - Casework.doc', '', 'Casework'],
+                    ['20250402', '', '', 'Casework - Initial Reply.doc', '', 'Casework'],
+                    ['20250403', '', '', 'Close Favorably - Case work.doc', '', 'Casework'],
+                    ['20250404', '', '', 'Initial Reply - Casework.doc', '', 'Casework'],
+                    ['20250405', '', '', 'Interim - Casework.doc', '', 'Casework'],
+                    ['20250406', '', '', 'Open Sixth District Casework.doc', '', 'Casework'],
+                    ['20250408', '', '', 'initialssacase.doc', '', 'Casework'],
+                    ['20250409', '', '', 'Open Sixth District Cases.doc', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for file_name, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250407', '', '', 'Napster Case.doc', '', 'Casework'],
+                    ['20250410', '', '', 'Antitrust Case.doc', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for file_name, df_casework_check")
 
     def test_group_name(self):
         """Test for when the column group_name indicates casework is present"""
@@ -49,7 +90,8 @@ class MyTestCase(unittest.TestCase):
         df = pd.DataFrame([['20250401', 'casework12', '', '', ''],
                            ['20250402', 'CASE 1', '', '', ''],
                            ['20250403', 'legal case concern', '', '', ''],
-                           ['20250404', 'Smith Case', '', '', '']],
+                           ['20250404', 'Smith Case', '', '', ''],
+                           ['20250405', 'case!', '', '', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -57,7 +99,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250401', 'casework12', '', '', '', 'Casework'],
-                    ['20250402', 'CASE 1', '', '', '', 'Casework']]
+                    ['20250402', 'CASE 1', '', '', '', 'Casework'],
+                    ['20250405', 'case!', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for group_name, df_casework")
 
         # Tests the values in df_casework_check are correct.
@@ -73,7 +116,7 @@ class MyTestCase(unittest.TestCase):
         df = pd.DataFrame([['20250401', '', '', '', ''],
                            ['20250402', '', 'doc\\doc.txt', '', ''],
                            ['20250403', '', 'doc\\doc.txt', 'doc.txt', ''],
-                           ['20250404', '', '', 'doc.txt', '']],
+                           ['20250404-case', '', '', 'doc.txt', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -96,13 +139,15 @@ class MyTestCase(unittest.TestCase):
                            ['20250404', '', '', '', ''],
                            ['20250405', '', '', '', 'check for case'],
                            ['20250406', '', '', '', 'initialssacase'],
-                           ['20250407', '', '', '', 'Add to open sixth district cases']],
+                           ['20250407', '', '', '', 'Add to open sixth district cases'],
+                           ['20250408', '', '', '', 'CASE']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', '', '', 'CASE', 'Casework'],
                     ['20250401', '', '', '', 'might be casework', 'Casework'],
                     ['20250403', '', '', '', 'Could be Case Work.', 'Casework'],
                     ['20250406', '', '', '', 'initialssacase', 'Casework'],

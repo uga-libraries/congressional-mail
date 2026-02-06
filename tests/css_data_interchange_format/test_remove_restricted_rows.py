@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import unittest
 from css_data_interchange_format import remove_restricted_rows
-from test_find_casework_rows import df_to_list
+from test_read_metadata import df_to_list
 
 
 class MyTestCase(unittest.TestCase):

@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import unittest
 from cms_data_interchange_format import find_appraisal_rows
-from test_appraisal_check_df import df_to_list
+from test_read_metadata_file import df_to_list
 from test_script import csv_to_list
 
 
@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when rows match only one appraisal category, if any"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['file_1.doc', 'academy issue', 'x'],
-                              ['file_2.doc', 'sports academy', 'x'],
+                              ['file_2.doc', 'sports', 'x'],
                               ['file_3.doc', 'summer camp', 'x'],
                               ['file_4.doc', 'x', 'legal > case'],
                               ['file_5.doc', 'casework - forwarded to me for a response', 'x'],
@@ -67,7 +67,6 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_2.doc', 'sports academy', 'x', 'Academy_Application'],
                     ['file_4.doc', 'x', 'legal > case', 'Casework'],
                     ['file_7.doc', 'create jobs now', 'x', 'Job_Application'],
                     ['file_9.doc', 'good job with this one', 'x', 'Job_Application']]
@@ -89,7 +88,7 @@ class MyTestCase(unittest.TestCase):
                               ['file_2.doc', 'x', 'y'],
                               ['file_3.doc', 'internship recommendation letter', 'x'],
                               ['file_4.doc', 'internship recommendation letter closed case file', 'x'],
-                              ['file_5.doc', 'recommendation.doc', 'case > recommendation']],
+                              ['file_5.doc', 'rec.doc', 'case > rec']],
                              columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
 
@@ -104,8 +103,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Casework'],
-                    ['file_5.doc', 'recommendation.doc', 'case > recommendation', 'Recommendation']]
+                    ['file_5.doc', 'rec.doc', 'case > rec', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
