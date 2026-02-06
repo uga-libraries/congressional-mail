@@ -396,69 +396,30 @@ def find_casework_rows(df):
     """Find metadata rows with keywords that indicate they might be casework
     and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
-    # Column in_topic includes one or more of the topics that indicate casework.
-    topics_list = ['case work', 'casework', 'prison case']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_in_topic = df[in_topic]
-    df = df[~in_topic]
+    # Makes df with more certainty.
+    keyword_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
+                    'case open', 'case work', 'casework', 'closed case', 'open case', 'open sixth district cases',
+                    'prison case', 'started case']
+    keyword_string = '|'.join(keyword_list)
+    df_casework, df_unmatched = df_search(df, keyword_string, 'Case')
 
-    # Column out_topic includes one or more of the topics that indicate casework.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_out_topic = df[out_topic]
-    df = df[~out_topic]
+    # # Column in_type is CASE.
+    # df_in_type = df[df['in_type'] == 'CASE']
+    # df = df[df['in_type'] != 'CASE']
+    #
+    # # Column out_type is CASE.
+    # df_out_type = df[df['out_type'] == 'CASE']
+    # df = df[df['out_type'] != 'CASE']
+    #
+    # # Column out_text exactly matches a keyword that indicates casework.
+    # # These would get too many false positives if added to the keywords list.
+    # exact_list = ['case', 'case!']
+    # out_text_exact = df['out_text'].str.lower().isin(exact_list)
+    # df_out_text_exact = df[out_text_exact]
+    # df = df[~out_text_exact]
 
-    # Column in_type is CASE.
-    df_in_type = df[df['in_type'] == 'CASE']
-    df = df[df['in_type'] != 'CASE']
-
-    # Column out_type is CASE.
-    df_out_type = df[df['out_type'] == 'CASE']
-    df = df[df['out_type'] != 'CASE']
-
-    # Column out_text exactly matches a keyword that indicates casework.
-    # These would get too many false positives if added to the keywords list.
-    exact_list = ['case', 'case!']
-    out_text_exact = df['out_text'].str.lower().isin(exact_list)
-    df_out_text_exact = df[out_text_exact]
-    df = df[~out_text_exact]
-
-    # Keywords used for all other columns.
-    keywords_list = ['added to case', 'already open', 'case closed', 'case for', 'case has been opened',
-                     'case issue', 'case work', 'casework', 'closed case', 'open case', 'started case']
-
-    # Column in_text includes one of the keywords (case-insensitive).
-    in_text = df['in_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_in_text = df[in_text]
-    df = df[~in_text]
-
-    # Column out_text includes one of the keywords (case-insensitive).
-    out_text = df['out_text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_out_text = df[out_text]
-    df = df[~out_text]
-
-    # Column in_document_name includes one of the keywords (case-insensitive).
-    in_doc = df['in_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_in_doc = df[in_doc]
-    df = df[~in_doc]
-
-    # Column out_document_name includes one of the keywords (case-insensitive).
-    out_doc = df['out_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_out_doc = df[out_doc]
-    df = df[~out_doc]
-
-    # Column out_fillin includes one of the keywords (case-insensitive).
-    out_fill = df['out_fillin'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_outfill = df[out_fill]
-    df = df[~out_fill]
-
-    # Makes a single dataframe with all rows that indicate casework
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_in_topic, df_out_topic, df_in_type, df_out_type, df_out_text_exact,
-                             df_in_text, df_out_text, df_in_doc, df_out_doc, df_outfill], axis=0, ignore_index=True)
-    df_casework['Appraisal_Category'] = "Casework"
-
-    # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
-    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+    # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
+    df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
 
     return df_casework, df_casework_check
 
@@ -470,6 +431,7 @@ def find_job_rows(df):
     # Makes df with more certainty.
     keyword_string = 'intern |internship|interview|job app|job request|job.doc|jobapp|resume'
     df_job, df_unmatched = df_search(df, keyword_string, 'Job_Application')
+
     # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
     df_job_check, df_unmatched = df_search(df_unmatched, 'job', 'Job_Application')
 
