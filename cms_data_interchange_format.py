@@ -245,7 +245,7 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
-def df_search(df, keywords, category):
+def df_search(df, keywords_list, category):
     """Returns a df with all rows that contain any of the keywords indicating this category of appraisal"""
 
     # Columns to search, which are the ones that reasonably might indicate appraisal.
@@ -253,6 +253,7 @@ def df_search(df, keywords, category):
 
     # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
     # Keyword matches are case-insensitive and will not match blanks.
+    keywords = '|'.join(keywords_list)
     match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
     df_match = df[match].copy()
 
@@ -292,11 +293,13 @@ def find_academy_rows(df):
     and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
 
     # Makes df with more certainty.
-    df_academy, df_unmatched = df_search(df, 'academy', 'Academy_Application')
+    keywords_list = ['academy']
+    df_academy, df_unmatched = df_search(df, keywords_list, 'Academy_Application')
 
     # Makes df with less certainty, only searching rows that are not in df_academy, to find for new patterns.
     # TODO update term now that df_academy is simplified to searching for just academy.
-    df_academy_check, df_unmatched = df_search(df_unmatched, 'academy', 'Academy_Application')
+    check_list = ['academy']
+    df_academy_check, df_unmatched = df_search(df_unmatched, check_list, 'Academy_Application')
 
     return df_academy, df_academy_check
 
@@ -337,17 +340,19 @@ def find_casework_rows(df):
     and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
     # Makes df with more certainty, combining exact column matches and partial matches.
-    keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
-    df_casework_exact, df_unmatched = df_search_exact(df, keyword_list, 'Casework')
-    keyword_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
-                    'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
-                    'open case', 'open sixth district cases', 'prison case', 'started case']
-    keyword_string = '|'.join(keyword_list)
-    df_casework_partial, df_unmatched = df_search(df_unmatched, keyword_string, 'Casework')
+    exact_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+    df_casework_exact, df_unmatched = df_search_exact(df, exact_list, 'Casework')
+
+    keywords_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
+                     'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
+                     'open case', 'open sixth district cases', 'prison case', 'started case']
+    df_casework_partial, df_unmatched = df_search(df_unmatched, keywords_list, 'Casework')
+
     df_casework = pd.concat([df_casework_exact, df_casework_partial], ignore_index=True)
 
     # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
-    df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
+    check_list = ['case']
+    df_casework_check, df_unmatched = df_search(df_unmatched, check_list, 'Casework')
 
     return df_casework, df_casework_check
 
@@ -357,25 +362,28 @@ def find_job_rows(df):
     and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
     # Makes df with more certainty.
-    keyword_string = 'intern |internship|interview|job app|job request|job.doc|jobapp|resume'
-    df_job, df_unmatched = df_search(df, keyword_string, 'Job_Application')
+    keywords_list = ['intern ', 'internship', 'interview', 'job app', 'job request', 'job.doc', 'jobapp', 'resume']
+    df_job, df_unmatched = df_search(df, keywords_list, 'Job_Application')
+
     # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
-    df_job_check, df_unmatched = df_search(df_unmatched, 'job', 'Job_Application')
+    check_list = ['job']
+    df_job_check, df_unmatched = df_search(df_unmatched, check_list, 'Job_Application')
 
     return df_job, df_job_check
 
 
 def find_recommendation_rows(df):
     """Find metadata rows with keywords that indicate they might be recommendations
-    and return as two dfs, one with more certainty (df_recommendation) and one with less (df_recommendation_check)"""
+    and return as two dfs, one with more certainty (df_rec) and one with less (df_rec_check)"""
 
     # Makes df with more certainty.
-    keyword_string = 'intern rec|page rec|rec for|recommendation'
-    df_rec, df_unmatched = df_search(df, keyword_string, 'Recommendation')
+    keywords_list = ['intern rec', 'page rec', 'rec for', 'recommendation']
+    df_rec, df_unmatched = df_search(df, keywords_list, 'Recommendation')
 
     # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
     # TODO update term now that df_recommendation is searching for recommendation.
-    df_rec_check, df_unmatched = df_search(df_unmatched, 'recommendation', 'Recommendation')
+    check_list = ['recommendation']
+    df_rec_check, df_unmatched = df_search(df_unmatched, check_list, 'Recommendation')
 
     return df_rec, df_rec_check
 
