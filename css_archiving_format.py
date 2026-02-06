@@ -398,8 +398,8 @@ def find_casework_rows(df):
 
     # Makes df with more certainty.
     keyword_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
-                    'case open', 'case work', 'casework', 'closed case', 'open case', 'open sixth district cases',
-                    'prison case', 'started case']
+                    'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
+                    'open case', 'open sixth district cases', 'prison case', 'started case']
     keyword_string = '|'.join(keyword_list)
     df_casework, df_unmatched = df_search(df, keyword_string, 'Case')
 
