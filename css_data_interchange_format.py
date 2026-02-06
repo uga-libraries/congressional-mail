@@ -311,8 +311,8 @@ def find_appraisal_rows(df, output_dir):
 
 
 def find_casework_rows(df):
-    """Find metadata rows with topics or text that indicate they are casework and return as a df
-     Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be casework
+    and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
     # Column group_name starts with "case", if any.
     group = df['group_name'].str.lower().str.startswith('case', na=False)
