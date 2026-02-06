@@ -305,9 +305,31 @@ def df_search(df, keywords, category):
     columns_list = ['in_topic', 'in_document_name', 'in_fillin', 'in_text',
                     'out_topic', 'out_document_name', 'out_fillin', 'out_text']
 
-    # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
+    # Makes a dataframe with any row containing one of the keywords in at least one of the columns searched.
     # Keyword matches are case-insensitive and will not match blanks.
     match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
+def df_search_exact(df, keywords_list, category):
+    """Returns a df with all rows that exactly match any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['in_type', 'in_topic', 'in_document_name', 'in_fillin', 'in_text',
+                    'out_type', 'out_topic', 'out_document_name', 'out_fillin', 'out_text']
+
+    # Makes a dataframe with any row that only contains one of the keywords, including matching case,
+    # in at least one of the columns searched.
+    match = df[columns_list].isin(keywords_list).any(axis=1)
     df_match = df[match].copy()
 
     # Adds a column with the appraisal category.
