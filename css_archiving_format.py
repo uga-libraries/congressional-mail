@@ -466,56 +466,14 @@ def find_casework_rows(df):
 
 
 def find_job_rows(df):
-    """Find metadata rows with topics or text that indicate they are job applications and return as a df
-    Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be job applications
+    and return as a two dfs, one with more certain (df_job) and one with less (df_job_check)"""
 
-    # Column in_topic includes one or more of the topics that indicate job applications.
-    topics_list = ['intern', 'resume']
-    in_topic = df['in_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_in_topic = df[in_topic]
-    df = df[~in_topic]
-
-    # Column out_topic includes one or more of the topics that indicate job applications.
-    out_topic = df['out_topic'].str.contains('|'.join(topics_list), case=False, na=False)
-    df_out_topic = df[out_topic]
-    df = df[~out_topic]
-
-    # Column in_text includes "job request" (case-insensitive).
-    word_list = ['job request', 'resume']
-    in_text = df['in_text'].str.contains('|'.join(word_list), case=False, na=False)
-    df_in_text = df[in_text]
-    df = df[~in_text]
-
-    # Column out_text includes "job request" (case-insensitive).
-    out_text = df['out_text'].str.contains('|'.join(word_list), case=False, na=False)
-    df_out_text = df[out_text]
-    df = df[~out_text]
-
-    # Column in_document_name includes text that indicates job applications (case-insensitive).
-    names_list = ['job interview', 'resume']
-    in_doc = df['in_document_name'].str.contains('|'.join(names_list), case=False, na=False)
-    df_in_doc = df[in_doc]
-    df = df[~in_doc]
-
-    # Column out_document_name includes text that indicates job applications (case-insensitive).
-    out_doc = df['out_document_name'].str.contains('|'.join(names_list), case=False, na=False)
-    df_out_doc = df[out_doc]
-    df = df[~out_doc]
-
-    # Column out_fillin includes text that indicates job applications (case-insensitive).
-    fill_list = ['intern', 'job interview', 'job request', 'resume']
-    out_fill = df['out_fillin'].str.contains('|'.join(fill_list), case=False, na=False)
-    df_out_fill = df[out_fill]
-    df = df[~out_fill]
-
-    # Makes a single dataframe with all rows that indicate job applications
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_job = pd.concat([df_in_topic, df_out_topic, df_in_text, df_out_text, df_in_doc, df_out_doc, df_out_fill],
-                       axis=0, ignore_index=True)
-    df_job['Appraisal_Category'] = 'Job_Application'
-
-    # Makes another dataframe with rows containing "job" to check for new patterns that could indicate job applications.
-    df_job_check = appraisal_check_df(df, 'job', 'Job_Application')
+    # Makes df with more certainty.
+    keyword_string = 'intern |internship|interview|job app|job request|job.doc|jobapp|resume'
+    df_job, df_unmatched = df_search(df, keyword_string, 'Job_Application')
+    # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
+    df_job_check, df_unmatched = df_search(df_unmatched, 'job', 'Job_Application')
 
     return df_job, df_job_check
 
