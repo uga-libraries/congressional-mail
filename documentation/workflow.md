@@ -17,6 +17,9 @@ During the initial review, determine if the export meets acceptance guidelines.
 5. Review the usability reports and determine if the donation is accepted.
 6. If accepted, move on to appraisal. If not accepted, stop the accession and discuss with the collecting archivist.
 
+The appraisal reports are only searching columns we believe have any probability of showing a restriction, like topics and file paths.
+It results in too many false positives to search other columns, due to columns like names and addresses that would never show a restriction. 
+
 Note: the letter matching report removes duplicates before attempting to match (response letters often repeat).
 so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
 
