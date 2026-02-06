@@ -36,14 +36,53 @@ class MyTestCase(unittest.TestCase):
                     ['20250406', '', 'doc\\Open Sixth District Casework.doc', '', '', 'Casework'],
                     ['20250408', '', 'doc\\initialssacase.doc', '', '', 'Casework'],
                     ['20250409', '', 'doc\\Open Sixth District Cases.doc', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_casework")
 
         # Tests the values in df_casework_check are correct.
         result = df_to_list(df_casework_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250407', '', 'doc\\Napster Case.doc', '', '', 'Casework'],
                     ['20250410', '', 'doc\\Antitrust Case.doc', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for both, df_casework_check")
+        self.assertEqual(expected, result, "Problem with test for doc_name, df_casework_check")
+
+    def test_file_name(self):
+        """Test for when the column file_name indicates casework is present"""
+        # Makes a dataframe to use as test input and runs the function.
+        df = pd.DataFrame([['20250401', '', '', 'Buck Letter - Casework.doc', ''],
+                           ['20250402', '', '', 'Casework - Initial Reply.doc', ''],
+                           ['20250403', '', '', 'Close Favorably - Case work.doc', ''],
+                           ['20250404', '', '', 'Initial Reply - Casework.doc', ''],
+                           ['20250405', '', '', 'Interim - Casework.doc', ''],
+                           ['20250406', '', '', 'Open Sixth District Casework.doc', ''],
+                           ['20250407', '', '', 'Napster Case.doc', ''],
+                           ['20250408', '', '', 'initialssacase.doc', ''],
+                           ['20250409', '', '', 'Open Sixth District Cases.doc', ''],
+                           ['20250410', '', '', 'Antitrust Case.doc', ''],
+                           ['20250411', '', '', 'doc.txt', ''],
+                           ['20250412', '', '', 'case', '']],
+                          columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
+        df_casework, df_casework_check = find_casework_rows(df)
+
+        # Tests the values in df_casework are correct.
+        result = df_to_list(df_casework)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250412', '', '', 'case', '', 'Casework'],
+                    ['20250401', '', '', 'Buck Letter - Casework.doc', '', 'Casework'],
+                    ['20250402', '', '', 'Casework - Initial Reply.doc', '', 'Casework'],
+                    ['20250403', '', '', 'Close Favorably - Case work.doc', '', 'Casework'],
+                    ['20250404', '', '', 'Initial Reply - Casework.doc', '', 'Casework'],
+                    ['20250405', '', '', 'Interim - Casework.doc', '', 'Casework'],
+                    ['20250406', '', '', 'Open Sixth District Casework.doc', '', 'Casework'],
+                    ['20250408', '', '', 'initialssacase.doc', '', 'Casework'],
+                    ['20250409', '', '', 'Open Sixth District Cases.doc', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for file_name, df_casework")
+
+        # Tests the values in df_casework_check are correct.
+        result = df_to_list(df_casework_check)
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250407', '', '', 'Napster Case.doc', '', 'Casework'],
+                    ['20250410', '', '', 'Antitrust Case.doc', '', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for file_name, df_casework_check")
 
     def test_group_name(self):
         """Test for when the column group_name indicates casework is present"""
