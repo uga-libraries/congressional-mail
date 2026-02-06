@@ -360,8 +360,7 @@ def find_academy_rows(df):
     df_academy, df_unmatched = df_search(df, keywords_list, 'Academy_Application')
 
     # Makes df with less certainty, only searching rows that are not in df_academy, to look for new keywords.
-    # TODO update term now that df_academy is simplified to searching for just academy.
-    check_list = ['academy']
+    check_list = ['acad']
     df_academy_check, df_unmatched = df_search(df_unmatched, check_list, 'Academy_Application')
 
     return df_academy, df_academy_check

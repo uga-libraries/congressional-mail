@@ -19,7 +19,9 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', 'path\\academy_nom.doc', '', '', '', '', ''],
                 ['30607', '', '', 'academy', '', '', '', '', ''],
                 ['30608', '', '', np.nan, '', '', '', '', ''],
-                ['30609', '', '', 'no_match.doc', '', '', '', '', '']]
+                ['30609', '', '', 'no_match.doc', '', '', '', '', ''],
+                ['30610', '', '', 'acad_dinner.doc', '', '', '', '', ''],
+                ['30611', '', '', 'academies.doc', '', '', '', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -39,7 +41,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30610', '', '', 'acad_dinner.doc', '', '', '', '', '', 'Academy_Application'],
+                    ['30611', '', '', 'academies.doc', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_document_name, df_academy_check")
 
     def test_in_text(self):
@@ -52,7 +56,9 @@ class MyTestCase(unittest.TestCase):
                 ['30604', '', 'Arts academy', '', '', '', '', '', ''],
                 ['30605', '', 'academy', '', '', '', '', '', ''],
                 ['30606', '', 'no_match', '', '', '', '', '', ''],
-                ['30607', '', 'ACADEMY', '', '', '', '', '', '']]
+                ['30607', '', 'ACADEMY', '', '', '', '', '', ''],
+                ['30608', '', 'ACAD_DINNER', '', '', '', '', '', ''],
+                ['30609', '', 'ACADEMIES', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -70,7 +76,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30608', '', 'ACAD_DINNER', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30609', '', 'ACADEMIES', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_academy_check")
 
     def test_in_topic(self):
@@ -82,7 +90,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', 'Arts', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', '', '', '', '', ''],
                 ['30605', 'ACADEMY^ADMIN', '', '', '', '', '', '', ''],
-                ['30606', np.nan, '', '', '', '', '', '', '']]
+                ['30606', np.nan, '', '', '', '', '', '', ''],
+                ['30607', 'Acad_Dinner', '', '', '', '', '', '', ''],
+                ['30608', 'Academies', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -99,13 +109,15 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', 'Acad_Dinner', '', '', '', '', '', '', '', 'Academy_Application'],
+                    ['30608', 'Academies', '', '', '', '', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_academy_check")
 
     def test_none(self):
         """Test for when no patterns indicating academy applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        rows = [['30600', 'Arts', np.nan, 'Arts', '', '', '', '', ''],
+        rows = [['30600-acad', 'Arts', np.nan, 'Arts', '', '', '', '', ''],
                 ['30601', 'Water', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
@@ -132,7 +144,9 @@ class MyTestCase(unittest.TestCase):
                 ['30604', '', '', '', '', '', '', np.nan, ''],
                 ['30605', '', '', '', '', '', '', 'academy_noms.pdf', ''],
                 ['30606', '', '', '', '', '', '', 'academy', ''],
-                ['30607', '', '', '', '', '', '', 'ACADEMY-NOM.doc', '']]
+                ['30607', '', '', '', '', '', '', 'ACADEMY-NOM.doc', ''],
+                ['30608', '', '', '', '', '', '', 'path\\acad_dinner.doc', ''],
+                ['30609', '', '', '', '', '', '', 'path\\academies.doc', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -150,7 +164,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30608', '', '', '', '', '', '', 'path\\acad_dinner.doc', '', 'Academy_Application'],
+                    ['30609', '', '', '', '', '', '', 'path\\academies.doc', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_academy_check")
 
     def test_out_fillin(self):
@@ -163,7 +179,9 @@ class MyTestCase(unittest.TestCase):
                 ['30604', '', '', '', '', '', '', '', np.nan],
                 ['30605', '', '', '', '', '', '', '', 'NEW_ACADEMY_NOMS'],
                 ['30606', '', '', '', '', '', '', '', 'academy'],
-                ['30607', '', '', '', '', '', '', '', 'Nominations for academy']]
+                ['30607', '', '', '', '', '', '', '', 'Nominations for academy'],
+                ['30608', '', '', '', '', '', '', '', 'acad_dinner'],
+                ['30609', '', '', '', '', '', '', '', 'academies']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -181,7 +199,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30608', '', '', '', '', '', '', '', 'acad_dinner', 'Academy_Application'],
+                    ['30609', '', '', '', '', '', '', '', 'academies', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_fillin, df_academy_check")
 
     def test_out_text(self):
@@ -194,7 +214,9 @@ class MyTestCase(unittest.TestCase):
                 ['30604', '', '', '', '', '', 'Intl Sci Academy', '', ''],
                 ['30605', '', '', '', '', '', 'academy', '', ''],
                 ['30606', '', '', '', '', '', '', '', ''],
-                ['30607', '', '', '', '', '', np.nan, '', '']]
+                ['30607', '', '', '', '', '', np.nan, '', ''],
+                ['30608', '', '', '', '', '', 'acad_dinner', '', ''],
+                ['30609', '', '', '', '', '', 'academies', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -212,7 +234,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30608', '', '', '', '', '', 'acad_dinner', '', '', 'Academy_Application'],
+                    ['30609', '', '', '', '', '', 'academies', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_academy_check")
 
     def test_out_topic(self):
@@ -224,7 +248,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', 'Military', '', '', ''],
                 ['30604', '', '', '', '', '', '', '', ''],
                 ['30605', '', '', '', '', 'academy', '', '', ''],
-                ['30606', '', '', '', '', np.nan, '', '', '']]
+                ['30606', '', '', '', '', np.nan, '', '', ''],
+                ['30607', '', '', '', '', 'acad_dinner', '', '', ''],
+                ['30608', '', '', '', '', 'academies', '', '', '']]
         md_df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(md_df)
 
@@ -241,7 +267,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', '', 'acad_dinner', '', '', '', 'Academy_Application'],
+                    ['30608', '', '', '', '', 'academies', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_academy_check")
 
 
