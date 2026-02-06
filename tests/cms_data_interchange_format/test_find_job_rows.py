@@ -18,7 +18,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', 'DC Intern Orientation'],
                 ['30606', '', '', 'NEW JOB APP'],
                 ['30607', '', '', np.nan],
-                ['30608', '', '', 'Admin']]
+                ['30608', '', '', 'Admin'],
+                ['30609', '', '', 'Application']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -37,7 +38,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
                     ['30600', '', '', 'JOB', 'Job_Application'],
-                    ['30601', '', '', 'Job^Admin', 'Job_Application']]
+                    ['30601', '', '', 'Job^Admin', 'Job_Application'],
+                    ['30609', '', '', 'Application', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_job_check")
 
     def test_corr_doc(self):
@@ -51,7 +53,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '\\doc\\Job.DOC.PDF', '', ''],
                 ['30606', '\\doc\\RESUME', '', ''],
                 ['30607', np.nan, '', ''],
-                ['30608', '\\doc\\text.pdf', '', '']]
+                ['30608', '\\doc\\text.pdf', '', ''],
+                ['30609', '\\doc\\hired.pdf', '', '']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -70,7 +73,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
                     ['30600', '\\doc\\job.txt', '', '', 'Job_Application'],
-                    ['30601', 'job', '', '', 'Job_Application']]
+                    ['30601', 'job', '', '', 'Job_Application'],
+                    ['30609', '\\doc\\hired.pdf', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_job_check")
 
     def test_corr_text(self):
@@ -84,7 +88,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', 'New Intern Orientation', ''],
                 ['30606', '', 'CHECK JOB APP', ''],
                 ['30607', '', np.nan, ''],
-                ['30608', '', 'good', '']]
+                ['30608', '', 'good', ''],
+                ['30609', '', 'INTERN', '']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -103,7 +108,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
                     ['30600', '', 'good job', '', 'Job_Application'],
-                    ['30601', '', 'jobless numbers down', '', 'Job_Application']]
+                    ['30601', '', 'jobless numbers down', '', 'Job_Application'],
+                    ['30609', '', 'INTERN', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_job_check")
 
     def test_none(self):
