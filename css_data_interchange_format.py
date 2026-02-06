@@ -265,6 +265,27 @@ def df_search(df, keywords, category):
     return df_match, df_no_match
 
 
+def df_search_exact(df, keywords_list, category):
+    """Returns a df with all rows that exactly match any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['communication_document_name', 'file_name', 'group_name', 'text']
+
+    # Makes a dataframe with any row that only contains one of the keywords, including matching case,
+    # in at least one of the columns searched.
+    match = df[columns_list].isin(keywords_list).any(axis=1)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
 def find_academy_rows(df):
     """Find metadata rows with keywords that indicate they might be academy applications
     and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
@@ -311,32 +332,27 @@ def find_appraisal_rows(df, output_dir):
 
 
 def find_casework_rows(df):
-    """Find metadata rows with topics or text that indicate they are casework and return as a df
-     Once a row matches one pattern, it is not considered for other patterns."""
+    """Find metadata rows with keywords that indicate they might be casework
+    and return as a two dfs, one with more certain (df_casework) and one with less (df_casework_check)"""
 
-    # Column group_name starts with "case", if any.
+    # Makes df with more certainty, combining group starts with "case", exact column matches and partial matches.
     group = df['group_name'].str.lower().str.startswith('case', na=False)
-    df_group = df[group]
-    df = df[~group]
+    df_group_startswith = df[group]
+    df_group_startswith['Appraisal_Category'] = 'Casework'
+    df_unmatched = df[~group]
 
-    # Column communication_document_name includes one or more keywords that indicate casework.
-    keywords_list = ['casework', 'case work', 'initialssacase', 'open sixth district cases']
-    doc_name = df['communication_document_name'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_doc_name = df[doc_name]
-    df = df[~doc_name]
+    keyword_list = ['CASE', 'Case', 'case', 'CASE!', 'Case!', 'case!']
+    df_casework_exact, df_unmatched = df_search_exact(df_unmatched, keyword_list, 'Casework')
 
-    # Column text includes one or more keywords that indicate casework.
-    text = df['text'].str.contains('|'.join(keywords_list), case=False, na=False)
-    df_text = df[text]
-    df = df[~text]
+    keyword_list = ['added to case', 'already open', 'case closed', 'case file', 'case for', 'case has', 'case issue',
+                    'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
+                    'open case', 'open sixth district cases', 'prison case', 'started case']
+    keyword_string = '|'.join(keyword_list)
+    df_casework_partial, df_unmatched = df_search(df_unmatched, keyword_string, 'Casework')
+    df_casework = pd.concat([df_group_startswith, df_casework_exact, df_casework_partial], ignore_index=True)
 
-    # Makes a single dataframe with all rows that indicate casework
-    # and adds a column for the appraisal category (needed for the file deletion log).
-    df_casework = pd.concat([df_group, df_doc_name, df_text], axis=0, ignore_index=True)
-    df_casework['Appraisal_Category'] = 'Casework'
-
-    # Makes another dataframe with rows containing "case" to check for new patterns that could indicate casework.
-    df_casework_check = appraisal_check_df(df, 'case', 'Casework')
+    # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
+    df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
 
     return df_casework, df_casework_check
 

@@ -24,6 +24,8 @@ so the number of metadata rows matched, unmatched, and blank will be fewer than 
 
 Requires appraisal_delete_log.csv, created in accession mode.
 This CSV may be manually edited (remove rows to not delete, add rows from appraisal_check_log.csv to delete).
+For casework, delete even if the phrase indicates it is not a case or casework, 
+because the fact they considered it suggests it includes sensitive personal information. 
 
 1. Check the appraisal reports made during review for errors (based on file names) in what will be deleted or not deleted. Double check no form letters are being deleted.
 2. Refine the script to catch new patterns, but some errors are acceptable given the scale.
