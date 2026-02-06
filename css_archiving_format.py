@@ -401,7 +401,7 @@ def find_casework_rows(df):
                     'case open', 'case work', 'casework', 'closed case', 'forwarded to me', 'initialssacase',
                     'open case', 'open sixth district cases', 'prison case', 'started case']
     keyword_string = '|'.join(keyword_list)
-    df_casework, df_unmatched = df_search(df, keyword_string, 'Case')
+    df_casework, df_unmatched = df_search(df, keyword_string, 'Casework')
 
     # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
     df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
