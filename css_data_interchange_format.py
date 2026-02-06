@@ -265,6 +265,27 @@ def df_search(df, keywords, category):
     return df_match, df_no_match
 
 
+def df_search_exact(df, keywords_list, category):
+    """Returns a df with all rows that exactly match any of the keywords indicating this category of appraisal"""
+
+    # Columns to search, which are the ones that reasonably might indicate appraisal.
+    columns_list = ['communication_document_name', 'file_name', 'group_name', 'text']
+
+    # Makes a dataframe with any row that only contains one of the keywords, including matching case,
+    # in at least one of the columns searched.
+    match = df[columns_list].isin(keywords_list).any(axis=1)
+    df_match = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_match['Appraisal_Category'] = category
+
+    # Makes a second df without the matches.
+    # This is used to skip matched rows when doing additional searches, like for the check_df.
+    df_no_match = df[~match].copy()
+
+    return df_match, df_no_match
+
+
 def find_academy_rows(df):
     """Find metadata rows with keywords that indicate they might be academy applications
     and return as two dfs, one with more certainty (df_academy) and one with less (df_academy_check)"""
