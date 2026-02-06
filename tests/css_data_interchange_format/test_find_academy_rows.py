@@ -3,7 +3,7 @@ import pandas as pd
 import unittest
 from css_data_interchange_format import find_academy_rows
 from test_df_search import make_df
-from test_appraisal_check_df import df_to_list
+from test_read_metadata import df_to_list
 
 
 class MyTestCase(unittest.TestCase):

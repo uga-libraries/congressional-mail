@@ -1,7 +1,7 @@
 import pandas as pd
 import unittest
 from cms_data_interchange_format import find_casework_rows
-from test_appraisal_check_df import df_to_list
+from test_read_metadata_file import df_to_list
 
 
 class MyTestCase(unittest.TestCase):
