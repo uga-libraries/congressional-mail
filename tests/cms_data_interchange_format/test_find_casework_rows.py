@@ -19,7 +19,8 @@ class MyTestCase(unittest.TestCase):
                            ['30607', '', '', 'Add to open case'],
                            ['30608', '', '', 'Potential case'],
                            ['30609', '', '', 'case_01'],
-                           ['30610', '', '', 'case']],
+                           ['30610', '', '', 'case'],
+                           ['30611', '', '', 'issue']],
                           columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -42,7 +43,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
                     ['30608', '', '', 'Potential case', 'Casework'],
-                    ['30609', '', '', 'case_01', 'Casework']]
+                    ['30609', '', '', 'case_01', 'Casework'],
+                    ['30611', '', '', 'issue', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_casework_check")
 
     def test_corr_doc_name(self):
@@ -58,7 +60,8 @@ class MyTestCase(unittest.TestCase):
                            ['30607', 'path\\open case.txt', '', ''],
                            ['30608', 'path\\potential case.txt', '', ''],
                            ['30609', 'path\\case.txt', '', ''],
-                           ['30610', 'CASE', '', '']],
+                           ['30610', 'CASE', '', ''],
+                           ['30611', 'path\\Water_Issue.txt', '', '']],
                           columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -81,7 +84,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
                     ['30608', 'path\\potential case.txt', '', '', 'Casework'],
-                    ['30609', 'path\\case.txt', '', '', 'Casework']]
+                    ['30609', 'path\\case.txt', '', '', 'Casework'],
+                    ['30611', 'path\\Water_Issue.txt', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_casework_check")
 
     def test_corr_text(self):
@@ -95,7 +99,8 @@ class MyTestCase(unittest.TestCase):
                            ['30605', '', 'Add to open case', ''],
                            ['30606', '', 'Potential case', ''],
                            ['30607', '', 'Maybe not case work', ''],
-                           ['30608', '', 'Case!', '']],
+                           ['30608', '', 'Case!', ''],
+                           ['30609', '', 'ISSUE ABC', '']],
                           columns=['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -117,7 +122,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
-                    ['30606', '', 'Potential case', '', 'Casework']]
+                    ['30606', '', 'Potential case', '', 'Casework'],
+                    ['30609', '', 'ISSUE ABC', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_casework_check")
 
     def test_none(self):

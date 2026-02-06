@@ -332,7 +332,7 @@ def find_casework_rows(df):
     df_casework = pd.concat([df_casework_exact, df_casework_partial], ignore_index=True)
 
     # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
-    check_list = ['case']
+    check_list = ['case', 'issue']
     df_casework_check, df_unmatched = df_search(df_unmatched, check_list, 'Casework')
 
     return df_casework, df_casework_check
