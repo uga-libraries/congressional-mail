@@ -19,13 +19,15 @@ class MyTestCase(unittest.TestCase):
                            ['20250408', '', 'doc\\initialssacase.doc', '', ''],
                            ['20250409', '', 'doc\\Open Sixth District Cases.doc', '', ''],
                            ['20250410', '', 'doc\\Antitrust Case.doc', '', ''],
-                           ['20250411', '', 'doc\\doc.txt', '', '']],
+                           ['20250411', '', 'doc\\doc.txt', '', ''],
+                           ['20250412', '', 'case', '', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250412', '', 'case', '', '', 'Casework'],
                     ['20250401', '', 'doc\\Buck Letter - Casework.doc', '', '', 'Casework'],
                     ['20250402', '', 'doc\\Casework - Initial Reply.doc', '', '', 'Casework'],
                     ['20250403', '', 'doc\\Close Favorably - Case work.doc', '', '', 'Casework'],
@@ -49,7 +51,8 @@ class MyTestCase(unittest.TestCase):
         df = pd.DataFrame([['20250401', 'casework12', '', '', ''],
                            ['20250402', 'CASE 1', '', '', ''],
                            ['20250403', 'legal case concern', '', '', ''],
-                           ['20250404', 'Smith Case', '', '', '']],
+                           ['20250404', 'Smith Case', '', '', ''],
+                           ['20250405', 'case!', '', '', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -57,7 +60,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250401', 'casework12', '', '', '', 'Casework'],
-                    ['20250402', 'CASE 1', '', '', '', 'Casework']]
+                    ['20250402', 'CASE 1', '', '', '', 'Casework'],
+                    ['20250405', 'case!', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for group_name, df_casework")
 
         # Tests the values in df_casework_check are correct.
@@ -73,7 +77,7 @@ class MyTestCase(unittest.TestCase):
         df = pd.DataFrame([['20250401', '', '', '', ''],
                            ['20250402', '', 'doc\\doc.txt', '', ''],
                            ['20250403', '', 'doc\\doc.txt', 'doc.txt', ''],
-                           ['20250404', '', '', 'doc.txt', '']],
+                           ['20250404-case', '', '', 'doc.txt', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
@@ -96,13 +100,15 @@ class MyTestCase(unittest.TestCase):
                            ['20250404', '', '', '', ''],
                            ['20250405', '', '', '', 'check for case'],
                            ['20250406', '', '', '', 'initialssacase'],
-                           ['20250407', '', '', '', 'Add to open sixth district cases']],
+                           ['20250407', '', '', '', 'Add to open sixth district cases'],
+                           ['20250408', '', '', '', 'CASE']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_casework, df_casework_check = find_casework_rows(df)
 
         # Tests the values in df_casework are correct.
         result = df_to_list(df_casework)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', '', '', 'CASE', 'Casework'],
                     ['20250401', '', '', '', 'might be casework', 'Casework'],
                     ['20250403', '', '', '', 'Could be Case Work.', 'Casework'],
                     ['20250406', '', '', '', 'initialssacase', 'Casework'],
