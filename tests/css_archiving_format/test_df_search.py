@@ -22,7 +22,7 @@ class MyTestCase(unittest.TestCase):
                 ['30601', '', '', '', '', '', '', '', 'text'],
                 ['30602-one', '', '', np.nan, '', '', np.nan, '', '']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one', 'one_cat')
+        df_match, df_no_match = df_search(df, ['one'], 'one_cat')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -54,7 +54,7 @@ class MyTestCase(unittest.TestCase):
                 ['30609', '', '', '', '', '', '', 'path\\One.doc', ''],
                 ['30610', '', '', '', '', '', '', '', 'fill one']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one', 'one_cat')
+        df_match, df_no_match = df_search(df, ['one'], 'one_cat')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -90,7 +90,7 @@ class MyTestCase(unittest.TestCase):
                 ['30605', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
                 ['30606', 'one', 'one', 'one', 'one', 'one', 'one', 'one', 'one']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one', 'one_cat')
+        df_match, df_no_match = df_search(df, ['one'], 'one_cat')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -118,7 +118,7 @@ class MyTestCase(unittest.TestCase):
                 ['30601-onetwo', '', '', '', '', '', '', '', 'text'],
                 ['30602-three', '', '', np.nan, '', '', np.nan, '', '']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one|two|three', 'cats')
+        df_match, df_no_match = df_search(df, ['one', 'two', 'three'], 'cats')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -150,7 +150,7 @@ class MyTestCase(unittest.TestCase):
                 ['30609', '', '', '', '', '', '', 'path\\Three.doc', ''],
                 ['30610', '', '', '', '', '', '', '', 'fill one two']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one|two|three', 'cats')
+        df_match, df_no_match = df_search(df, ['one', 'two', 'three'], 'cats')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
@@ -186,7 +186,7 @@ class MyTestCase(unittest.TestCase):
                 ['30605', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
                 ['30606', 'one', 'two', 'three', 'one two three', 'one', 'two', 'three', 'one']]
         df = make_df(rows)
-        df_match, df_no_match = df_search(df, 'one|two|three', 'cats')
+        df_match, df_no_match = df_search(df, ['one', 'two', 'three'], 'cats')
 
         # Tests the values in df_match are correct.
         result = df_to_list(df_match)
