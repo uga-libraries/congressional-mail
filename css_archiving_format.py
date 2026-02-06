@@ -403,21 +403,6 @@ def find_casework_rows(df):
     keyword_string = '|'.join(keyword_list)
     df_casework, df_unmatched = df_search(df, keyword_string, 'Case')
 
-    # # Column in_type is CASE.
-    # df_in_type = df[df['in_type'] == 'CASE']
-    # df = df[df['in_type'] != 'CASE']
-    #
-    # # Column out_type is CASE.
-    # df_out_type = df[df['out_type'] == 'CASE']
-    # df = df[df['out_type'] != 'CASE']
-    #
-    # # Column out_text exactly matches a keyword that indicates casework.
-    # # These would get too many false positives if added to the keywords list.
-    # exact_list = ['case', 'case!']
-    # out_text_exact = df['out_text'].str.lower().isin(exact_list)
-    # df_out_text_exact = df[out_text_exact]
-    # df = df[~out_text_exact]
-
     # Makes df with less certainty, only searching rows that are not in df_casework, to look for new keywords.
     df_casework_check, df_unmatched = df_search(df_unmatched, 'case', 'Casework')
 
