@@ -23,25 +23,6 @@ import sys
 from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
-def appraisal_check_df(df, keyword, category):
-    """Returns a df with all rows that contain the specified keyword in any of the columns
-    likely to indicate appraisal is needed, with a new column for the appraisal category"""
-
-    # Makes a series for each column with if each row contain the keyword (case-insensitive), excluding blanks.
-    group_name = df['group_name'].str.contains(keyword, case=False, na=False)
-    doc_name = df['communication_document_name'].str.contains(keyword, case=False, na=False)
-    file_name = df['file_name'].str.contains(keyword, case=False, na=False)
-    text = df['text'].str.contains(keyword, case=False, na=False)
-
-    # Makes a dataframe with all rows containing the keyword in at least one of the columns.
-    df_check = df[group_name | doc_name | file_name | text].copy()
-
-    # Adds a column with the appraisal category.
-    df_check['Appraisal_Category'] = category
-
-    return df_check
-
-
 def check_arguments(arg_list):
     """Verify the required script arguments are present and valid and get the paths to the metadata files"""
 
