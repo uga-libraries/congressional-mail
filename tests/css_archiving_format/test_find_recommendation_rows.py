@@ -16,7 +16,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', 'path\\REC FOR JD.doc', '', '', '', '', ''],
                 ['30605', '', '', 'recommendation', '', '', '', '', ''],
-                ['30606', '', '', np.nan, '', '', '', '', '']]
+                ['30606', '', '', np.nan, '', '', '', '', ''],
+                ['30607', '', '', 'path\\rec.doc', '', '', '', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -33,7 +34,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', 'path\\rec.doc', '', '', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for in_document_name, df_recommendations_check")
 
     def test_in_fillin(self):
@@ -45,7 +47,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', 'URGENT REC FOR JD', '', '', '', ''],
                 ['30605', '', '', '', 'recommendation', '', '', '', ''],
-                ['30606', '', '', '', np.nan, '', '', '', '']]
+                ['30606', '', '', '', np.nan, '', '', '', ''],
+                ['30607', '', '', '', 'rec23', '', '', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -62,7 +65,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', 'rec23', '', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for in_fillin, df_recommendations_check")
 
     def test_in_text(self):
@@ -74,7 +78,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', 'URGENT REC FOR JD', '', '', '', '', '', ''],
                 ['30605', '', 'recommendation', '', '', '', '', '', ''],
-                ['30606', '', np.nan, '', '', '', '', '', '']]
+                ['30606', '', np.nan, '', '', '', '', '', ''],
+                ['30607', '', 'REC', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -91,7 +96,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', 'REC', '', '', '', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_recommendations_check")
 
     def test_in_topic(self):
@@ -103,7 +109,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', 'URGENT REC FOR X', '', '', '', '', '', '', ''],
                 ['30605', 'recommendation', '', '', '', '', '', '', ''],
-                ['30606', np.nan, '', '', '', '', '', '', '']]
+                ['30606', np.nan, '', '', '', '', '', '', ''],
+                ['30607', 'Rec25', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -120,7 +127,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', 'Rec25', '', '', '', '', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_recommendations_check")
 
     def test_none(self):
@@ -152,7 +160,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', '', '', '', 'path\\REC FOR JD.doc', ''],
                 ['30605', '', '', '', '', '', '', 'recommendation', ''],
-                ['30606', '', '', '', '', '', '', np.nan, '']]
+                ['30606', '', '', '', '', '', '', np.nan, ''],
+                ['30607', '', '', '', '', '', '', 'rec.txt', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -169,7 +178,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', '', '', '', 'rec.txt', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_recommendations_check")
 
     def test_out_fillin(self):
@@ -181,7 +191,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', '', '', '', '', 'URGENT REC FOR JD'],
                 ['30605', '', '', '', '', '', '', '', 'recommendation'],
-                ['30606', '', '', '', '', '', '', '', np.nan]]
+                ['30606', '', '', '', '', '', '', '', np.nan],
+                ['30607', '', '', '', '', '', '', '', 'rec']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -198,7 +209,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', '', '', '', '', 'rec', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for out_fillin, df_recommendations_check")
 
     def test_out_text(self):
@@ -210,7 +222,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', '', '', 'URGENT REC FOR JD', '', ''],
                 ['30605', '', '', '', '', '', 'recommendation', '', ''],
-                ['30606', '', '', '', '', '', np.nan, '', '']]
+                ['30606', '', '', '', '', '', np.nan, '', ''],
+                ['30607', '', '', '', '', '', 'rec', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -227,7 +240,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', '', '', 'rec', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_recommendations_check")
 
     def test_out_topic(self):
@@ -239,7 +253,8 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', '', '', '', '', '', ''],
                 ['30604', '', '', '', '', 'URGENT REC FOR X', '', '', ''],
                 ['30605', '', '', '', '', 'recommendation', '', '', ''],
-                ['30606', '', '', '', '', np.nan, '', '', '']]
+                ['30606', '', '', '', '', np.nan, '', '', ''],
+                ['30607', '', '', '', '', 'rec', '', '', '']]
         md_df = make_df(rows)
         df_recommendations, df_recommendations_check = find_recommendation_rows(md_df)
 
@@ -256,7 +271,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendations_check)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
+                     'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30607', '', '', '', '', 'rec', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_recommendations_check")
 
 

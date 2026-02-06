@@ -439,8 +439,7 @@ def find_recommendation_rows(df):
     df_recommendation, df_unmatched = df_search(df, keywords_list, 'Recommendation')
 
     # Makes df with less certainty, only searching rows that are not in df_recommendation, to look for new keywords.
-    # TODO update term now that df_recommendation is searching for recommendation.
-    check_list = ['recommendation']
+    check_list = ['rec']
     df_recommendation_check, df_unmatched = df_search(df_unmatched, check_list, 'Recommendation')
 
     return df_recommendation, df_recommendation_check
