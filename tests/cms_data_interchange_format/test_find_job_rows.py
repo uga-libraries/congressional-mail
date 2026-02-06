@@ -43,8 +43,8 @@ class MyTestCase(unittest.TestCase):
     def test_corr_doc(self):
         """Test for when the column correspondence_document_name indicates job applications are present"""
         # Makes a dataframe to use as test input and runs the function.
-        rows = [['30600', 'job_doc', '', ''],
-                ['30601', 'job_doc2', '', ''],
+        rows = [['30600', '\\doc\\job.txt', '', ''],
+                ['30601', 'job', '', ''],
                 ['30602', '', '', ''],
                 ['30603', 'job request', '', ''],
                 ['30604', 'jobapp.txt', '', ''],
@@ -69,8 +69,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
                      'Appraisal_Category'],
-                    ['30600', 'job_doc', '', '', 'Job_Application'],
-                    ['30601', 'job_doc2', '', '', 'Job_Application']]
+                    ['30600', '\\doc\\job.txt', '', '', 'Job_Application'],
+                    ['30601', 'job', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_job_check")
 
     def test_corr_text(self):

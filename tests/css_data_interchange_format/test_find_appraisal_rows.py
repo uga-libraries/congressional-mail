@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
                               ['20240202', 'Case1', '', '', 'x'],
                               ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x'],
                               ['20240404', 'Arts', '', 'artist jobs.txt', 'x'],
-                              ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', '', 'x'],
+                              ['20240505', 'Admin', r'..\documents\objects\page rec.txt', '', 'x'],
                               ['20240606', 'Admin',  '', 'legal_case.txt', 'x']],
                              columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         appraisal_df = find_appraisal_rows(md_df, 'test_data')
@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
                     ['20240101', 'Admin', r'..\documents\objects\academy.txt', 'academy.txt', 'Academy_Application'],
                     ['20240202', 'Case1', '', '', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'Job_Application'],
-                    ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', '', 'Recommendation']]
+                    ['20240505', 'Admin', r'..\documents\objects\page rec.txt', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_df")
 
         # Tests the values in appraisal_check_log.csv are correct.
@@ -91,7 +91,7 @@ class MyTestCase(unittest.TestCase):
                     ['20240101', 'Admin', r'..\documents\objects\academy.txt', 'academy.txt', 'x', 'Academy_Application'],
                     ['20240202', 'Case1', 'BLANK', 'BLANK', 'x', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x', 'Job_Application'],
-                    ['20240505', 'Admin', r'..\documents\objects\intern rec.txt', 'BLANK', 'x', 'Recommendation']]
+                    ['20240505', 'Admin', r'..\documents\objects\page rec.txt', 'BLANK', 'x', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_delete_log.csv")
 
     def test_one(self):
