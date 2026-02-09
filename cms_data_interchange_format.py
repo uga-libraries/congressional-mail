@@ -476,7 +476,7 @@ def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
     in_df = topics_sort_df(df, 'attachments|in-email')
     topic_list = in_df['code_description'].unique()
     for topic in topic_list:
@@ -486,7 +486,7 @@ def topics_sort(df, input_dir, output_dir):
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         css_dif.topics_sort_delete_empty(topic_path)
 
-    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
+    # Sorts a copy of correspondence to constituents (in folders forms or out-custom) by topic.
     out_df = topics_sort_df(df, 'forms|out-custom')
     topic_list = out_df['code_description'].unique()
     for topic in topic_list:
