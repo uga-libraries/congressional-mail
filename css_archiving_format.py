@@ -285,7 +285,7 @@ def df_search(df, keywords_list, category):
     # Makes a dataframe with any row containing one of the keywords in at least one of the columns searched.
     # Keyword matches are case-insensitive and will not match blanks.
     keywords = '|'.join(keywords_list)
-    match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    match = df[columns_list].astype(str).agg('|'.join, axis=1).str.contains(keywords, case=False, na=False)
     df_match = df[match].copy()
 
     # Adds a column with the appraisal category.
@@ -424,7 +424,7 @@ def find_job_rows(df):
     df_job, df_unmatched = df_search(df, keywords_list, 'Job_Application')
 
     # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
-    check_list = ['job']
+    check_list = ['application', 'hire', 'intern', 'job']
     df_job_check, df_unmatched = df_search(df_unmatched, check_list, 'Job_Application')
 
     return df_job, df_job_check
