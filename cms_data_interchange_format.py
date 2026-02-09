@@ -477,7 +477,7 @@ def topics_sort(df, input_dir, output_dir):
     os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
 
     # Sorts a copy of correspondence from constituents ("in" letters) by topic.
-    in_df = topics_sort_df(df, 'in-email')
+    in_df = topics_sort_df(df, 'attachments|in-email')
     topic_list = in_df['code_description'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
