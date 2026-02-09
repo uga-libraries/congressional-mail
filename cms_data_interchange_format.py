@@ -236,7 +236,7 @@ def df_search(df, keywords_list, category):
     # Makes a dataframe with any row containing one of the keywords in at lease one of the columns searched.
     # Keyword matches are case-insensitive and will not match blanks.
     keywords = '|'.join(keywords_list)
-    match = df[columns_list].astype(str).agg(' '.join, axis=1).str.contains(keywords, case=False, na=False)
+    match = df[columns_list].astype(str).agg('|'.join, axis=1).str.contains(keywords, case=False, na=False)
     df_match = df[match].copy()
 
     # Adds a column with the appraisal category.
