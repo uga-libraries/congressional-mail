@@ -16,7 +16,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', ''],
                 ['30604', '', '', 'nomination_academy'],
                 ['30605', '', '', 'ACADEMY'],
-                ['30606', '', '', np.nan]]
+                ['30606', '', '', np.nan],
+                ['30607', '', '', 'ACAD'],
+                ['30608', '', '', 'ACAD 25']]
         df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -33,7 +35,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', '', '', 'ACAD', 'Academy_Application'],
+                    ['30608', '', '', 'ACAD 25', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for code_desc df_academy_check")
 
     def test_corr_doc(self):
@@ -45,7 +49,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', 'academy', '', ''],
                 ['30604', '', '', ''],
                 ['30605', 'path\\military.doc', '', ''],
-                ['30606', np.nan, '', '']]
+                ['30606', np.nan, '', ''],
+                ['30607', 'path\\acad.doc', '', ''],
+                ['30608', 'path\\Acad25.pdf', '', '']]
         df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -56,14 +62,15 @@ class MyTestCase(unittest.TestCase):
                     ['30600', 'path\\academy appointment.doc', '', '', 'Academy_Application'],
                     ['30601', 'academy issue.doc', '', '', 'Academy_Application'],
                     ['30602', 'path\\ACADEMY', '', '', 'Academy_Application'],
-                    ['30603', 'academy', '', '', 'Academy_Application']
-                    ]
+                    ['30603', 'academy', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_academy")
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', 'path\\acad.doc', '', '', 'Academy_Application'],
+                    ['30608', 'path\\Acad25.pdf', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_academy_check")
 
     def test_corr_text(self):
@@ -75,7 +82,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', 'academy', ''],
                 ['30604', '', '', ''],
                 ['30605', '', np.nan, ''],
-                ['30605', '', 'Military', '']]
+                ['30606', '', 'Military', ''],
+                ['30607', '', 'acad', ''],
+                ['30608', '', 'acad25', '']]
         df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -92,7 +101,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', '', 'acad', '', 'Academy_Application'],
+                    ['30608', '', 'acad25', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_academy_check")
 
     def test_none(self):

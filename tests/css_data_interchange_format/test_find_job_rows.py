@@ -18,7 +18,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250406', '', 'docs\\Jobs Act.txt', '', ''],
                 ['20250407', '', 'docs\\Jobs Act.txt', '', ''],
                 ['20250408', '', np.nan, '', ''],
-                ['20250409', '', 'docs\\act.txt', '', '']]
+                ['20250409', '', 'docs\\act.txt', '', ''],
+                ['20250410', '', 'docs\\application.txt', '', '']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -35,7 +36,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250406', '', 'docs\\Jobs Act.txt', '', '', 'Job_Application'],
-                    ['20250407', '', 'docs\\Jobs Act.txt', '', '', 'Job_Application']]
+                    ['20250407', '', 'docs\\Jobs Act.txt', '', '', 'Job_Application'],
+                    ['20250410', '', 'docs\\application.txt', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for doc_name, df_job_check")
 
     def test_file_name(self):
@@ -49,7 +51,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250406', '', '', 'good_job.pdf', ''],
                 ['20250407', '', '', 'job.pdf', ''],
                 ['20250408', '', '', np.nan, ''],
-                ['20250409', '', '', 'text.txt', '']]
+                ['20250409', '', '', 'text.txt', ''],
+                ['20250410', '', '', 'Hire.txt', '']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -66,7 +69,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250406', '', '', 'good_job.pdf', '', 'Job_Application'],
-                    ['20250407', '', '', 'job.pdf', '', 'Job_Application']]
+                    ['20250407', '', '', 'job.pdf', '', 'Job_Application'],
+                    ['20250410', '', '', 'Hire.txt', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for file_name, df_job_check")
 
     def test_group_name(self):
@@ -80,7 +84,8 @@ class MyTestCase(unittest.TestCase):
                 ['20250406', 'Jobs Report', '', '', ''],
                 ['20250407', 'econ_jobs', '', '', ''],
                 ['20250408', np.nan, '', '', ''],
-                ['20250409', 'Request', '', '', '']]
+                ['20250409', 'Request', '', '', ''],
+                ['20250410', 'INTERNET', '', '', '']]
         df = make_df(rows)
         df_job, df_job_check = find_job_rows(df)
 
@@ -97,7 +102,8 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_job_check)
         expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
                     ['20250406', 'Jobs Report', '', '', '', 'Job_Application'],
-                    ['20250407', 'econ_jobs', '', '', '', 'Job_Application']]
+                    ['20250407', 'econ_jobs', '', '', '', 'Job_Application'],
+                    ['20250410', 'INTERNET', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for group_name, df_job_check")
 
     def test_none(self):

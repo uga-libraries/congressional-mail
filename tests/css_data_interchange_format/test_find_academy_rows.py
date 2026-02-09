@@ -17,7 +17,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', '', 'docs\\ACADEMY\\doc.txt', '', ''],
                 ['20250405', '', 'docs\\25Academy', '', ''],
                 ['20250406', '', 'docs\\doc.txt', '', ''],
-                ['20250407', '', 'academy', '', '']]
+                ['20250407', '', 'academy', '', ''],
+                ['20250408', '', 'academies', '', ''],
+                ['20250409', '', 'acad day', '', '']]
         df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -32,7 +34,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', 'academies', '', '', 'Academy_Application'],
+                    ['20250409', '', 'acad day', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for doc_name, df_academy_check")
 
     def test_file_name(self):
@@ -44,7 +48,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', '', '', 'ACADEMYdoc.txt', ''],
                 ['20250405', '', '', '25Academy', ''],
                 ['20250406', '', '', 'doc.txt', ''],
-                ['20250407', '', '', 'academy', '']]
+                ['20250407', '', '', 'academy', ''],
+                ['20250408', '', '', 'academies', ''],
+                ['20250409', '', '', 'acad day', '']]
         df = make_df(rows)
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -59,7 +65,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', '', 'academies', '', 'Academy_Application'],
+                    ['20250409', '', '', 'acad day', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for doc_name, df_academy_check")
 
     def test_group_name(self):
@@ -71,7 +79,9 @@ class MyTestCase(unittest.TestCase):
                            ['20250404', np.nan, '', '', ''],
                            ['20250405', '', '', '', ''],
                            ['20250406', 'BoardAcademy', '', '', ''],
-                           ['20250407', 'Admin', '', '', '']],
+                           ['20250407', 'Admin', '', '', ''],
+                           ['20250408', 'Academies', '', '', ''],
+                           ['20250409', 'ACAD DAY', '', '', '']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -86,7 +96,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', 'Academies', '', '', '', 'Academy_Application'],
+                    ['20250409', 'ACAD DAY', '', '', '', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for group_name, df_academy_check")
 
     def test_none(self):
@@ -117,7 +129,9 @@ class MyTestCase(unittest.TestCase):
                            ['20250404', '', '', '', ''],
                            ['20250405', '', '', '', 'keep'],
                            ['20250406', '', '', '', 'BoardAcademy'],
-                           ['20250407', '', '', '', np.nan]],
+                           ['20250407', '', '', '', np.nan],
+                           ['20250408', '', '', '', 'Academies'],
+                           ['20250409', '', '', '', 'AcadDay']],
                           columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         df_academy, df_academy_check = find_academy_rows(df)
 
@@ -132,7 +146,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_academy_check are correct.
         result = df_to_list(df_academy_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', '', '', 'Academies', 'Academy_Application'],
+                    ['20250409', '', '', '', 'AcadDay', 'Academy_Application']]
         self.assertEqual(expected, result, "Problem with test for text, df_academy_check")
 
 

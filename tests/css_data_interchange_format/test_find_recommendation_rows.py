@@ -16,7 +16,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', '', 'recommendation', '', ''],
                 ['20250405', '', 'docs\\doc.txt', '', ''],
                 ['20250406', '', '', '', ''],
-                ['20250407', '', np.nan, '', '']]
+                ['20250407', '', np.nan, '', ''],
+                ['20250408', '', 'docs\\rec.txt', '', ''],
+                ['20250409', '', 'docs\\rec_yes.txt', '', '']]
         df = make_df(rows)
         df_rec, df_rec_check = find_recommendation_rows(df)
 
@@ -31,7 +33,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', 'docs\\rec.txt', '', '', 'Recommendation'],
+                    ['20250409', '', 'docs\\rec_yes.txt', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for doc_name, df_rec_check")
 
     def test_file_name(self):
@@ -43,7 +47,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', 'recommendation', '', '', ''],
                 ['20250405', '', '', '', ''],
                 ['20250406', 'keep', '', '', ''],
-                ['20250407', np.nan, '', '', '']]
+                ['20250407', np.nan, '', '', ''],
+                ['20250406', 'rec.doc', '', '', ''],
+                ['20250406', 'record.doc', '', '', '']]
         df = make_df(rows)
         df_rec, df_rec_check = find_recommendation_rows(df)
 
@@ -58,7 +64,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250406', 'rec.doc', '', '', '', 'Recommendation'],
+                    ['20250406', 'record.doc', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for group, df_rec_check")
 
     def test_group(self):
@@ -70,7 +78,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', 'recommendation', '', '', ''],
                 ['20250405', '', '', '', ''],
                 ['20250406', 'keep', '', '', ''],
-                ['20250407', np.nan, '', '', '']]
+                ['20250407', np.nan, '', '', ''],
+                ['20250408', 'REC', '', '', ''],
+                ['20250409', 'REC1', '', '', '']]
         df = make_df(rows)
         df_rec, df_rec_check = find_recommendation_rows(df)
 
@@ -85,7 +95,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', 'REC', '', '', '', 'Recommendation'],
+                    ['20250409', 'REC1', '', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for group, df_rec_check")
 
     def test_none(self):
@@ -116,7 +128,9 @@ class MyTestCase(unittest.TestCase):
                 ['20250404', '', '', '', 'recommendation'],
                 ['20250405', '', '', '', ''],
                 ['20250406', '', '', '', 'keep'],
-                ['20250407', '', '', '', np.nan]]
+                ['20250407', '', '', '', np.nan],
+                ['20250408', '', '', '', 'Rec'],
+                ['20250409', '', '', '', 'Update_Rec']]
         df = make_df(rows)
         df_rec, df_rec_check = find_recommendation_rows(df)
 
@@ -131,7 +145,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the values in df_rec_check are correct.
         result = df_to_list(df_rec_check)
-        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category']]
+        expected = [['date_in', 'group_name', 'communication_document_name', 'file_name', 'text', 'Appraisal_Category'],
+                    ['20250408', '', '', '', 'Rec', 'Recommendation'],
+                    ['20250409', '', '', '', 'Update_Rec', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for text, df_rec_check")
 
 

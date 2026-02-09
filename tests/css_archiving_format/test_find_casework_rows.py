@@ -27,7 +27,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', np.nan, '', '', '', '', '', ''],
                 ['30607', '', '', '', 'case closed', '', '', '', '', '', ''],
                 ['30608', '', '', '', '\\doc\\case file.doc', '', '', '', '', '', ''],
-                ['30609', '', '', '', 'case', '', '', '', '', '', '']]
+                ['30609', '', '', '', 'case', '', '', '', '', '', ''],
+                ['30610', '', '', '', '\\doc\\issue.doc', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -47,7 +48,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '\\doc\\case.doc', '', '', '', '', '', '', 'Casework'],
-                    ['30604', '', '', '', '\\Form\\Case.doc', '', '', '', '', '', '', 'Casework']]
+                    ['30604', '', '', '', '\\Form\\Case.doc', '', '', '', '', '', '', 'Casework'],
+                    ['30610', '', '', '', '\\doc\\issue.doc', '', '', '', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for in_document_name, df_casework_check")
 
     def test_in_fillin(self):
@@ -62,7 +64,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', '', np.nan, '', '', '', '', ''],
                 ['30607', '', '', '', '', 'open sixth district cases', '', '', '', '', ''],
                 ['30608', '', '', '', '', 'jv prison case help', '', '', '', '', ''],
-                ['30609', '', '', '', '', 'CASE', '', '', '', '', '']]
+                ['30609', '', '', '', '', 'CASE', '', '', '', '', ''],
+                ['30610', '', '', '', '', 'ISSUE', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -82,7 +85,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '', 'maybe case', '', '', '', '', '', 'Casework'],
-                    ['30604', '', '', '', '', 'Not Case', '', '', '', '', '', 'Casework']]
+                    ['30604', '', '', '', '', 'Not Case', '', '', '', '', '', 'Casework'],
+                    ['30610', '', '', '', '', 'ISSUE', '', '', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for in_fillin, df_casework_check")
 
     def test_in_text(self):
@@ -97,7 +101,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', np.nan, '', '', '', '', '', '', ''],
                 ['30607', '', '', 'case issue', '', '', '', '', '', '', ''],
                 ['30608', '', '', 'is case open still?', '', '', '', '', '', '', ''],
-                ['30609', '', '', 'Case', '', '', '', '', '', '', '']]
+                ['30609', '', '', 'Case', '', '', '', '', '', '', ''],
+                ['30610', '', '', 'Car Issue', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -117,7 +122,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', 'probably case', '', '', '', '', '', '', '', 'Casework'],
-                    ['30604', '', '', 'In Case', '', '', '', '', '', '', '', 'Casework']]
+                    ['30604', '', '', 'In Case', '', '', '', '', '', '', '', 'Casework'],
+                    ['30610', '', '', 'Car Issue', '', '', '', '', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_casework_check")
 
     def test_in_topic(self):
@@ -132,7 +138,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', np.nan, '', '', '', '', '', '', '', ''],
                 ['30607', '', 'closed case', '', '', '', '', '', '', '', ''],
                 ['30608', '', 'dc forwarded to me for reply', '', '', '', '', '', '', '', ''],
-                ['30609', '', 'case', '', '', '', '', '', '', '', '']]
+                ['30609', '', 'case', '', '', '', '', '', '', '', ''],
+                ['30610', '', 'ISSUES', '', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -152,7 +159,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', 'maybe case', '', '', '', '', '', '', '', '', 'Casework'],
-                    ['30604', '', 'Not Case', '', '', '', '', '', '', '', '', 'Casework']]
+                    ['30604', '', 'Not Case', '', '', '', '', '', '', '', '', 'Casework'],
+                    ['30610', '', 'ISSUES', '', '', '', '', '', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_casework_check")
 
     def test_none(self):
@@ -190,7 +198,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', '', '', '', '', '', np.nan, ''],
                 ['30607', '', '', '', '', '', '', '', '', 'already open', ''],
                 ['30608', '', '', '', '', '', '', '', '', '\\form\\case closed.txt', ''],
-                ['30609', '', '', '', '', '', '', '', '', 'case!', '']]
+                ['30609', '', '', '', '', '', '', '', '', 'case!', ''],
+                ['30610', '', '', '', '', '', '', '', '', 'zoning_issue', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -210,7 +219,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '', '', '', '', '', '\\form\\case.txt', '', 'Casework'],
-                    ['30604', '', '', '', '', '', '', '', '', '\\Doc\\Case12.txt', '', 'Casework']]
+                    ['30604', '', '', '', '', '', '', '', '', '\\Doc\\Case12.txt', '', 'Casework'],
+                    ['30610', '', '', '', '', '', '', '', '', 'zoning_issue', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_casework_check")
 
     def test_out_fillin(self):
@@ -225,7 +235,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', '', '', '', '', '', '', np.nan],
                 ['30607', '', '', '', '', '', '', '', '', '', 'case has'],
                 ['30608', '', '', '', '', '', '', '', '', '', 'potential case issue - review'],
-                ['30609', '', '', '', '', '', '', '', '', '', 'CASE!']]
+                ['30609', '', '', '', '', '', '', '', '', '', 'CASE!'],
+                ['30610', '', '', '', '', '', '', '', '', '', 'ISSUE']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -245,7 +256,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '', '', '', '', '', '', 'not case', 'Casework'],
-                    ['30604', '', '', '', '', '', '', '', '', '', 'Possible Case', 'Casework']]
+                    ['30604', '', '', '', '', '', '', '', '', '', 'Possible Case', 'Casework'],
+                    ['30610', '', '', '', '', '', '', '', '', '', 'ISSUE', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_fillin, df_casework_check")
 
     def test_out_text(self):
@@ -260,7 +272,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', '', '', '', '', np.nan, '', ''],
                 ['30607', '', '', '', '', '', '', '', 'casework', '', ''],
                 ['30608', '', '', '', '', '', '', '', 'I closed case.', '', ''],
-                ['30609', '', '', '', '', '', '', '', 'Case!', '', '']]
+                ['30609', '', '', '', '', '', '', '', 'Case!', '', ''],
+                ['30610', '', '', '', '', '', '', '', 'issues', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -280,7 +293,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '', '', '', '', 'maybe case', '', '', 'Casework'],
-                    ['30604', '', '', '', '', '', '', '', 'Just In Case', '', '', 'Casework']]
+                    ['30604', '', '', '', '', '', '', '', 'Just In Case', '', '', 'Casework'],
+                    ['30610', '', '', '', '', '', '', '', 'issues', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_casework_check")
 
     def test_out_topic(self):
@@ -295,7 +309,8 @@ class MyTestCase(unittest.TestCase):
                 ['30606', '', '', '', '', '', '', np.nan, '', '', ''],
                 ['30607', '', '', '', '', '', '', 'open case', '', '', ''],
                 ['30608', '', '', '', '', '', '', 'admin^open sixth district cases^help', '', '', ''],
-                ['30609', '', '', '', '', '', '', 'case!', '', '', '']]
+                ['30609', '', '', '', '', '', '', 'case!', '', '', ''],
+                ['30610', '', '', '', '', '', '', 'issue', '', '', '']]
         md_df = make_df(rows)
         df_casework, df_casework_check = find_casework_rows(md_df)
 
@@ -315,7 +330,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30603', '', '', '', '', '', '', 'admin^case', '', '', '', 'Casework'],
-                    ['30604', '', '', '', '', '', '', 'Case^IP', '', '', '', 'Casework']]
+                    ['30604', '', '', '', '', '', '', 'Case^IP', '', '', '', 'Casework'],
+                    ['30610', '', '', '', '', '', '', 'issue', '', '', '', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_casework_check")
 
 

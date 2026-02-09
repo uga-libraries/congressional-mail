@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
                                '', ''],
                               ['30606', 'GEN', 'Congratulations', '', '', '', 'GEN', '', 'Good job', '', ''],
                               ['30607', 'GEN', 'Legislation', '', '', '', 'GEN', '', 'Idea noted', '', ''],
-                              ['30608', 'GEN', 'Arts', 'International Acad', '', '', 'GEN', '', '', '', ''],
+                              ['30608', 'GEN', 'Arts', 'Artist Union', '', '', 'GEN', '', '', '', ''],
                               ['30609', 'GEN', 'Legal', 'Case against Napster', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
@@ -168,6 +168,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
+                    ['30604', 'GEN', 'Culture', 'Acad Awards', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'Academy_Application'],
                     ['30605', 'GEN', 'Farming', 'BLANK', 'BLANK', 'BLANK', 'GEN', 'BLANK', 'BLANK',
                      r'..\doc\case\file.doc', 'BLANK', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for two categories, appraisal check log")

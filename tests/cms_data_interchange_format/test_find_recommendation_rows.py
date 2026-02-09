@@ -16,7 +16,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', '', 'RECOMMENDATION'],
                 ['30604', '', '', ''],
                 ['30605', '', '', 'parks'],
-                ['30607', '', '', np.nan]]
+                ['30606', '', '', np.nan],
+                ['30607', '', '', 'JD REC'],
+                ['30608', '', '', 'REC_YES']]
         df = make_df(rows)
         df_recommendation, df_recommendation_check = find_recommendation_rows(df)
 
@@ -33,7 +35,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendation_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', '', '', 'JD REC', 'Recommendation'],
+                    ['30608', '', '', 'REC_YES', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for code_desc, df_recommendation_check")
 
     def test_corr_doc(self):
@@ -45,7 +49,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', 'RECOMMENDATION', '', ''],
                 ['30604', '', '', ''],
                 ['30605', 'parks', '', ''],
-                ['30606', np.nan, '', '']]
+                ['30606', np.nan, '', ''],
+                ['30607', 'rec', '', ''],
+                ['30608', 'Rec', '', '']]
         df = make_df(rows)
         df_recommendation, df_recommendation_check = find_recommendation_rows(df)
 
@@ -62,7 +68,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendation_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', 'rec', '', '', 'Recommendation'],
+                    ['30608', 'Rec', '', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for corr_doc, df_recommendation_check")
 
     def test_corr_text(self):
@@ -74,7 +82,9 @@ class MyTestCase(unittest.TestCase):
                 ['30603', '', 'RECOMMENDATION', ''],
                 ['30604', '', '', ''],
                 ['30605', '', 'parks', ''],
-                ['30606', '', np.nan, '']]
+                ['30606', '', np.nan, ''],
+                ['30607', '', 'a rec', ''],
+                ['30608', '', 'record', '']]
         df = make_df(rows)
         df_recommendation, df_recommendation_check = find_recommendation_rows(df)
 
@@ -91,7 +101,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in df_recommendations_check are correct.
         result = df_to_list(df_recommendation_check)
         expected = [['zip_code', 'correspondence_document_name', 'correspondence_text', 'code_description',
-                     'Appraisal_Category']]
+                     'Appraisal_Category'],
+                    ['30607', '', 'a rec', '', 'Recommendation'],
+                    ['30608', '', 'record', '', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for corr_text, df_recommendation_check")
 
     def test_none(self):

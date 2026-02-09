@@ -18,7 +18,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '..\\doc\\Intern App.doc', '', '', '', '', ''],
                 ['30606', '', '', '..\\doc\\JOB APP', '', '', '', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', np.nan, '', '', '', '', '']]
+                ['30608', '', '', np.nan, '', '', '', '', ''],
+                ['30609', '', '', 'application', '', '', '', '', '']]
         md_df = make_df(rows)                     
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -37,7 +38,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '..\\doc\\job_file.txt', '', '', '', '', '', 'Job_Application'],
-                    ['30601', '', '', '..\\doc\\jobs\\file.doc', '', '', '', '', '', 'Job_Application']]
+                    ['30601', '', '', '..\\doc\\jobs\\file.doc', '', '', '', '', '', 'Job_Application'],
+                    ['30609', '', '', 'application', '', '', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_job_check")
 
     def test_in_fillin(self):
@@ -51,7 +53,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', 'Send Job.doc file', '', '', '', ''],
                 ['30606', '', '', '', 'ASK RESUME', '', '', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', '', np.nan, '', '', '', '']]
+                ['30608', '', '', '', np.nan, '', '', '', ''],
+                ['30609', '', '', '', 'hire', '', '', '', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -70,7 +73,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', 'check if job', '', '', '', '', 'Job_Application'],
-                    ['30601', '', '', '', 'job', '', '', '', '', 'Job_Application']]
+                    ['30601', '', '', '', 'job', '', '', '', '', 'Job_Application'],
+                    ['30609', '', '', '', 'hire', '', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for in_fillin, df_job_check")
 
     def test_in_text(self):
@@ -84,7 +88,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', 'New Intern DC', '', '', '', '', '', ''],
                 ['30606', '', 'NEW JOB APP', '', '', '', '', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', np.nan, '', '', '', '', '', '']]
+                ['30608', '', np.nan, '', '', '', '', '', ''],
+                ['30609', '', 'intern', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
         
@@ -103,7 +108,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', 'Freelance job', '', '', '', '', '', '', 'Job_Application'],
-                    ['30601', '', 'JOB', '', '', '', '', '', '', 'Job_Application']]
+                    ['30601', '', 'JOB', '', '', '', '', '', '', 'Job_Application'],
+                    ['30609', '', 'intern', '', '', '', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for in_text, df_job_check")
 
     def test_in_topic(self):
@@ -117,7 +123,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', 'Sent Job.doc Already', '', '', '', '', '', '', ''],
                 ['30606', 'REQUEST RESUME', '', '', '', '', '', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', np.nan, '', '', '', '', '', '', '']]
+                ['30608', np.nan, '', '', '', '', '', '', ''],
+                ['30609', 'NEW APPLICATION', '', '', '', '', '', '', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -136,7 +143,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', 'Job^General', '', '', '', '', '', '', '', 'Job_Application'],
-                    ['30601', 'Job Hunting', '', '', '', '', '', '', '', 'Job_Application']]
+                    ['30601', 'Job Hunting', '', '', '', '', '', '', '', 'Job_Application'],
+                    ['30609', 'NEW APPLICATION', '', '', '', '', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for in_topic, df_job_check")
 
     def test_none(self):
@@ -171,7 +179,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', '..\\Doc\\Intern DC.doc', ''],
                 ['30606', '', '', '', '', '', '', '..\\doc\\JOB APP', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', '', '', '', '', np.nan, '']]
+                ['30608', '', '', '', '', '', '', np.nan, ''],
+                ['30609', '', '', '', '', '', '', '..\\DOC\\HIRE', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -190,7 +199,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', '', '', '', '..\\doc\\Doe Job.txt', '', 'Job_Application'],
-                    ['30601', '', '', '', '', '', '', '..\\doc\\job_file.txt', '', 'Job_Application']]
+                    ['30601', '', '', '', '', '', '', '..\\doc\\job_file.txt', '', 'Job_Application'],
+                    ['30609', '', '', '', '', '', '', '..\\DOC\\HIRE', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_document_name, df_job_check")
 
     def test_out_fillin(self):
@@ -204,7 +214,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', '', '', 'Sent Job.doc Today'],
                 ['30606', '', '', '', '', '', '', '', 'REVIEW RESUME'],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', '', '', '', '', '', np.nan]]
+                ['30608', '', '', '', '', '', '', '', np.nan],
+                ['30609', '', '', '', '', '', '', '', 'DC INTERN']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -223,7 +234,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', '', '', '', '', 'check if job', 'Job_Application'],
-                    ['30601', '', '', '', '', '', '', '', 'second jobs', 'Job_Application']]
+                    ['30601', '', '', '', '', '', '', '', 'second jobs', 'Job_Application'],
+                    ['30609', '', '', '', '', '', '', '', 'DC INTERN', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_fillin, df_job_check")
 
     def test_out_text(self):
@@ -237,7 +249,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', '', 'DC Intern Orientation', '', ''],
                 ['30606', '', '', '', '', '', 'CHECK JOB APP', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', '', '', '', np.nan, '', '']]
+                ['30608', '', '', '', '', '', np.nan, '', ''],
+                ['30609', '', '', '', '', '', 'Application Update', '', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -256,7 +269,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text',
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', '', '', 'Job numbers', '', '', 'Job_Application'],
-                    ['30601', '', '', '', '', '', 'District Job', '', '', 'Job_Application']]
+                    ['30601', '', '', '', '', '', 'District Job', '', '', 'Job_Application'],
+                    ['30609', '', '', '', '', '', 'Application Update', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_text, df_job_check")
 
     def test_out_topic(self):
@@ -270,7 +284,8 @@ class MyTestCase(unittest.TestCase):
                 ['30605', '', '', '', '', 'DC Intern App', '', '', ''],
                 ['30606', '', '', '', '', 'UPDATE JOB APP', '', '', ''],
                 ['30607', '', '', '', '', '', '', '', ''],
-                ['30608', '', '', '', '', np.nan, '', '', '']]
+                ['30608', '', '', '', '', np.nan, '', '', ''],
+                ['30609', '', '', '', '', 'DC Hire Possibility', '', '', '']]
         md_df = make_df(rows)
         df_job, df_job_check = find_job_rows(md_df)
 
@@ -289,7 +304,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_topic', 'out_text', 
                      'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30600', '', '', '', '', 'JOB OUTLOOK', '', '', '', 'Job_Application'],
-                    ['30601', '', '', '', '', 'Admin^Job', '', '', '', 'Job_Application']]
+                    ['30601', '', '', '', '', 'Admin^Job', '', '', '', 'Job_Application'],
+                    ['30609', '', '', '', '', 'DC Hire Possibility', '', '', '', 'Job_Application']]
         self.assertEqual(expected, result, "Problem with test for out_topic, df_job_check")
 
         
