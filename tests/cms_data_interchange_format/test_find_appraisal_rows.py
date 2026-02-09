@@ -43,7 +43,7 @@ class MyTestCase(unittest.TestCase):
     def test_one(self):
         """Test for when rows match only one appraisal category, if any"""
         # Makes a dataframe to use as test input and runs the function.
-        md_df = pd.DataFrame([['file_1.doc', 'academy issue', 'x'],
+        md_df = pd.DataFrame([['file_1.doc', 'academy idea', 'x'],
                               ['file_2.doc', 'sports', 'x'],
                               ['file_3.doc', 'summer camp', 'x'],
                               ['file_4.doc', 'x', 'legal > case'],
@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_1.doc', 'academy issue', 'x', 'Academy_Application'],
+                    ['file_1.doc', 'academy idea', 'x', 'Academy_Application'],
                     ['file_5.doc', 'casework - forwarded to me for a response', 'x', 'Casework'],
                     ['file_6.doc', 'Internship applicant', 'x', 'Job_Application'],
                     ['file_8.doc', 'x', 'academy nomination', 'Academy_Application']]
@@ -103,7 +103,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_check_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_check_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file_5.doc', 'rec.doc', 'case > rec', 'Casework']]
+                    ['file_5.doc', 'rec.doc', 'case > rec', 'Casework'],
+                    ['file_5.doc', 'rec.doc', 'case > rec', 'Recommendation']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_check_log.csv")
 
         # Tests the values in appraisal_delete_log.csv are correct.
