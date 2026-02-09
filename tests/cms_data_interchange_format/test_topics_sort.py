@@ -87,7 +87,9 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'dogs', r'in-email\file2.txt'],
                       ['30602', 'cats', r'in-email\file3.txt'],
                       ['30603', 'cats', r'in-email\file4.txt'],
-                      ['30604', 'cats', r'out-custom\Jones.txt']])
+                      ['30604', 'cats', r'out-custom\Jones.txt'],
+                      ['30605', 'dogs', r'forms\Oppose.txt'],
+                      ['30606', 'dogs', r'forms\Support.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -96,7 +98,9 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cats', 'from_constituents', 'file3.txt'),
                     os.path.join(self.by_topic, 'cats', 'from_constituents', 'file4.txt'),
                     os.path.join(self.by_topic, 'cats', 'to_constituents', 'Jones.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt')]
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Oppose.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Support.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_filenotfounderror(self):
@@ -108,7 +112,8 @@ class MyTestCase(unittest.TestCase):
                       ['30603', 'park', r'\doc\in-email\file4.txt'],
                       ['30604', 'cats', r'out-custom\Brown.txt'],
                       ['30605', 'dogs', r'missing\out-custom\Doe.txt'],
-                      ['30606', 'park', r'out-custom\missing.txt']])
+                      ['30606', 'park', r'out-custom\missing.txt'],
+                      ['30607', 'park', r'forms\not_present.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -123,7 +128,8 @@ class MyTestCase(unittest.TestCase):
         expected = [['dogs', r'new\in-email\file2.txt'],
                     ['park', r'\doc\in-email\file4.txt'],
                     ['dogs', r'missing\out-custom\Doe.txt'],
-                    ['park', r'out-custom\missing.txt']]
+                    ['park', r'out-custom\missing.txt'],
+                    ['park', r'forms\not_present.txt']]
         self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
 
     def test_folder_empty(self):
@@ -225,7 +231,8 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30600', 'cats', r'in-email\file1.txt'],
                       ['30601', 'dogs', r'in-email\file2.txt'],
                       ['30602', 'farm', r'out-custom\Doe.txt'],
-                      ['30603', 'park', r'out-custom\Jones.txt']])
+                      ['30603', 'park', r'out-custom\Jones.txt'],
+                      ['30604', 'retire', r'forms\Thanks.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the expected topic folders were created and have the expected files in them.
@@ -233,7 +240,8 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
                     os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
                     os.path.join(self.by_topic, 'farm', 'to_constituents', 'Doe.txt'),
-                    os.path.join(self.by_topic, 'park', 'to_constituents', 'Jones.txt')]
+                    os.path.join(self.by_topic, 'park', 'to_constituents', 'Jones.txt'),
+                    os.path.join(self.by_topic, 'retire', 'to_constituents', 'Thanks.txt')]
         self.assertEqual(expected, result, "Problem with test for unique")
 
 
