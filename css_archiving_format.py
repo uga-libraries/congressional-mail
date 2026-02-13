@@ -591,7 +591,7 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
 
     # Sorts a copy of correspondence from constituents ("in" letters) by topic.
     in_df = topics_sort_df(df, 'in')

@@ -26,13 +26,13 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         """Variables used by every test"""
-        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'Correspondence_by_Topic')
+        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'correspondence_by_topic')
         self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
 
     def tearDown(self):
         """Delete the script outputs, if made"""
-        # Correspondence_by_Topic folder.
+        # correspondence_by_topic folder.
         if os.path.exists(self.by_topic):
             shutil.rmtree(self.by_topic)
 
@@ -151,7 +151,7 @@ class MyTestCase(unittest.TestCase):
                        'Peanuts', r'..\documents\BlobExport\responses\missing.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the empty topic folder and empty from_constituents folder are not in Correspondence_by_Topic:
+        # Verifies the empty topic folder and empty from_constituents folder are not in correspondence_by_topic:
         result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture', 'from_constituents')),
                   os.path.exists(os.path.join(self.by_topic, 'Agriculture', 'to_constituents')),
                   os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
@@ -178,7 +178,7 @@ class MyTestCase(unittest.TestCase):
                        'Peanuts', r'..\documents\BlobExport\responses\missing.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the empty topic folders are not in Correspondence_by_Topic:
+        # Verifies the empty topic folders are not in correspondence_by_topic:
         result = [os.path.exists(os.path.join(self.by_topic, 'Agriculture')),
                   os.path.exists(os.path.join(self.by_topic, 'Peanuts'))]
         expected = [False, False]
