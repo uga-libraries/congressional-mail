@@ -609,7 +609,8 @@ def topics_sort(df, input_dir, output_dir):
         topic_norm = topics_sort_normalize(topic)
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         os.mkdir(topic_path)
-
+        df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
+        
         # Correspondence from constituents ("in" letters)
         from_path = os.path.join(topic_path, 'from_constituents')
         os.mkdir(from_path)
