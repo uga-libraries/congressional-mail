@@ -603,7 +603,16 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
 
+        # Folder and metadata for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        # The topic has to be normalized to be used for a folder and file name.
+        topic_norm = topics_sort_normalize(topic)
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        os.mkdir(topic_path)
+
         # Correspondence from constituents ("in" letters)
+        from_path = os.path.join(topic_path, 'from_constituents')
+        os.mkdir(from_path)
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
@@ -611,6 +620,8 @@ def topics_sort(df, input_dir, output_dir):
         topics_sort_delete_empty(topic_path)
 
         # Correspondence to constituents ("out" letters) by topic.
+        to_path = os.path.join(topic_path, 'to_constituents')
+        os.mkdir(to_path)
         out_df = topics_sort_df(df, 'out')
         topic_list = out_df['out_topic'].unique()
         for topic in topic_list:
@@ -670,8 +681,9 @@ def topics_sort_df(df):
     return df
 
 
-def topics_sort_folder(topic, output_dir, type_folder_name):
-    """Make a folder named with the topic and return the path to that folder"""
+def topics_sort_normalize(topic):
+    """Make a version of the topic that can be used for folder and file naming"""
+
     # Replaces characters that Windows does not permit in a folder name with an underscore.
     for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
         topic = topic.replace(character, '_')
@@ -679,15 +691,7 @@ def topics_sort_folder(topic, output_dir, type_folder_name):
     # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
     topic = topic.rstrip('. ')
 
-    # Makes the path, including a folder with the letter type.
-    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, type_folder_name)
-
-    # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
-    # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
-    if not os.path.exists(topic_path):
-        os.makedirs(topic_path)
-
-    return topic_path
+    return topic
 
 
 def update_path(md_path, input_dir):
