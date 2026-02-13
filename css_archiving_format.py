@@ -626,6 +626,10 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
 
+        # Cleans up and saves the metadata for this topic if the topic folder was not deleted for being empty.
+        if os.path.exists(topic_path):
+            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+
 
 def topics_sort_delete_empty(topic_path):
     """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
@@ -697,6 +701,21 @@ def topics_sort_normalize(topic):
     topic = topic.rstrip('. ')
 
     return topic
+
+
+def topics_sort_save_metadata(df, topic_path, topic_norm):
+    """Remove temporary columns, update temporary column values, and save to a CSV"""
+
+    # Remove temporary folders used for identifying the topic.
+    df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
+
+    # Update any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
+    df['in_document_name_present'] = df['in_document_name_present'].str.replace('TBD', 'no_path')
+    df['out_document_name_present'] = df['out_document_name_present'].str.replace('TBD', 'no_path')
+
+    # Save to the topic folder.
+    csv_path = os.path.join(topic_path, f'{topic_norm}_description.csv')
+    df.to_csv(csv_path, index=False)
 
 
 def update_path(md_path, input_dir):
