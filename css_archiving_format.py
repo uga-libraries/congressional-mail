@@ -623,19 +623,16 @@ def topics_sort(df, input_dir, output_dir):
         os.mkdir(to_path)
         df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
 
+        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_delete_empty(topic_path):
-    """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
-    # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
-    if not os.listdir(topic_path):
-        os.rmdir(topic_path)
-
-        # Deletes the topic folder if it is also empty.
-        # It could contain a from_constituents folder if the function is called to delete to_constituents.
-        if not os.listdir(os.path.dirname(topic_path)):
-            os.rmdir(os.path.dirname(topic_path))
+    """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
+    paths = [os.path.join(topic_path, 'from_constituents'), os.path.join(topic_path, 'to_constituents'), topic_path]
+    for path in paths:
+        if not os.listdir(path):
+            os.rmdir(path)
 
 
 def topics_sort_df(df):
