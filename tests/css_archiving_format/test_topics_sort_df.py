@@ -30,8 +30,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_doc_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_doc_present', 'in_topic_split', 'out_topic_split'],
+                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
                      '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'TBD', 'apple', 'jam'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
@@ -69,8 +69,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_doc_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_doc_present', 'in_topic_split', 'out_topic_split'],
+                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD', 
                      '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'apple', 'U'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD', 
@@ -103,8 +103,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_doc_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_doc_present', 'in_topic_split', 'out_topic_split'],
+                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'pear', 'file1.txt', 'TBD',
                      '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'pear', 'U'],
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'A-A', 'file2.txt', 'TBD',
@@ -128,8 +128,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_doc_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_doc_present', 'in_topic_split', 'out_topic_split'],
+                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'TBD',
                      '*', '*', '*', '*', 'U-V^XYZ', 'file11.txt', 'TBD', 'AAAA', 'U-V'],
                     ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'TBD',

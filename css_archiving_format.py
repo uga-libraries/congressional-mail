@@ -643,6 +643,7 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         doc_new_path = os.path.join(folder_path, doc_name)
         try:
             shutil.copy2(doc_path, doc_new_path)
+            df.loc[df[column] == doc, ]
         except FileNotFoundError:
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
@@ -681,8 +682,8 @@ def topics_sort_df(df):
 
     # Add columns for when the files are sorted to indicate if the file was present in the export or not.
     # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
-    df.insert(10, 'in_doc_present', 'TBD', True)
-    df.insert(17, 'out_doc_present', 'TBD', True)
+    df.insert(10, 'in_document_name_present', 'TBD', True)
+    df.insert(17, 'out_document_name_present', 'TBD', True)
 
     return df
 
