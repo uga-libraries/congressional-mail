@@ -665,7 +665,7 @@ def topics_sort_delete_empty(topic_path):
 
 
 def topics_sort_df(df):
-    """Update dataframe to split up multiple topics for in_topic and out_topic"""
+    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs"""
 
     # If there is more than one in_topic in a row (divided by ^),
     # splits them each to their own row, repeating the rest of the information for each row,
@@ -678,6 +678,11 @@ def topics_sort_df(df):
     # including retaining the original topic column with multiple terms.
     df['out_topic_split'] = df['out_topic'].str.split(r'^')
     df = df.explode('out_topic_split')
+
+    # Add columns for when the files are sorted to indicate if the file was present in the export or not.
+    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
+    df.insert(10, 'in_doc_present', 'TBD', True)
+    df.insert(17, 'out_doc_present', 'TBD', True)
 
     return df
 
