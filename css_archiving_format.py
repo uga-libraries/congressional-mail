@@ -626,34 +626,6 @@ def topics_sort(df, input_dir, output_dir):
         topics_sort_delete_empty(topic_path)
 
 
-def topics_sort_files(df, column, input_dir, output_dir, folder_path):
-    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
-
-    # Gets a list of unique documents from the specified document column (in or out), excluding blanks, to copy.
-    doc_list = df[column].dropna().unique().tolist()
-    for doc in doc_list:
-
-        # Gets the path for the current doc location by updating the path in the metadata.
-        doc_path = update_path(doc, input_dir)
-
-        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
-        # It is common to have docs in the metadata but not in the input directory.
-        doc_name = doc.split('\\')[-1]
-        doc_new_path = os.path.join(folder_path, doc_name)
-        try:
-            shutil.copy2(doc_path, doc_new_path)
-            df.loc[df[column] == doc, f'{column}_present'] = True
-        except FileNotFoundError:
-            df.loc[df[column] == doc, f'{column}_present'] = False
-            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-                log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
-                log_writer.writerow([topic, doc])
-
-    return df
-
-
 def topics_sort_delete_empty(topic_path):
     """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
     # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
@@ -685,6 +657,34 @@ def topics_sort_df(df):
     # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
     df.insert(10, 'in_document_name_present', 'TBD', True)
     df.insert(17, 'out_document_name_present', 'TBD', True)
+
+    return df
+
+
+def topics_sort_files(df, column, input_dir, output_dir, folder_path):
+    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
+
+    # Gets a list of unique documents from the specified document column (in or out), excluding blanks, to copy.
+    doc_list = df[column].dropna().unique().tolist()
+    for doc in doc_list:
+
+        # Gets the path for the current doc location by updating the path in the metadata.
+        doc_path = update_path(doc, input_dir)
+
+        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # If the doc is not in the expected location, logs it instead.
+        # It is common to have docs in the metadata but not in the input directory.
+        doc_name = doc.split('\\')[-1]
+        doc_new_path = os.path.join(folder_path, doc_name)
+        try:
+            shutil.copy2(doc_path, doc_new_path)
+            df.loc[df[column] == doc, f'{column}_present'] = True
+        except FileNotFoundError:
+            df.loc[df[column] == doc, f'{column}_present'] = False
+            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+                log_writer = csv.writer(log)
+                topic = folder_path.split('\\')[-2]
+                log_writer.writerow([topic, doc])
 
     return df
 
