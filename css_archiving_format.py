@@ -591,9 +591,12 @@ def topics_report(df, output_dir):
 
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+
+    # New version of df with multi-topic cells split up.
+    df_topics = topics_sort_df(df)
 
     # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     in_df = topics_sort_df(df, 'in')
     topic_list = in_df['in_topic'].unique()
     for topic in topic_list:
@@ -646,24 +649,22 @@ def topics_sort_delete_empty(topic_path):
             os.rmdir(os.path.dirname(topic_path))
 
 
-def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has values in topic and document_name"""
-    # Initial df, with any row that has some value in topic and document_name
-    topic_column = f'{letter_type}_topic'
-    doc_column = f'{letter_type}_document_name'
-    topic_df = df.dropna(subset=[topic_column, doc_column]).copy()
+def topics_sort_df(df):
+    """Update dataframe to split up multiple topics for in_topic and out_topic"""
 
-    # If there is more than one topic or document_name in a row (divided by ^),
-    # splits them to their own row, repeating the related topic or document_name for each row.
-    topic_df[topic_column] = topic_df[topic_column].str.split(r'^')
-    topic_df = topic_df.explode(topic_column)
-    topic_df[doc_column] = topic_df[doc_column].str.split(r'^')
-    topic_df = topic_df.explode(doc_column)
+    # If there is more than one in_topic in a row (divided by ^),
+    # splits them each to their own row, repeating the rest of the information for each row,
+    # including retaining the original topic column with multiple terms.
+    df['in_topic_split'] = df['in_topic'].str.split(r'^')
+    df = df.explode('in_topic_split')
 
-    # Removes any duplicate combinations of topic and document_name,
-    # which is most common when the office sends the same letter to multiple constituents.
-    topic_df = topic_df.drop_duplicates(subset=[topic_column, doc_column])
-    return topic_df
+    # If there is more than one out_topic in a row (divided by ^),
+    # splits them each to their own row, repeating the rest of the information for each row,
+    # including retaining the original topic column with multiple terms.
+    df['out_topic_split'] = df['out_topic'].str.split(r'^')
+    df = df.explode('out_topic_split')
+
+    return df
 
 
 def topics_sort_folder(topic, output_dir, type_folder_name):
