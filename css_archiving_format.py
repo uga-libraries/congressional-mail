@@ -16,6 +16,7 @@ This allows the archivist to review and edit these documents without needing to 
 import csv
 from datetime import date, datetime
 import hashlib
+import numpy as np
 import os
 import pandas as pd
 import re
@@ -590,32 +591,34 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic"""
+    """Sort copy of incoming and outgoing correspondence into folders by topic
+    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
+    Letters with multiple topics are in multiple topic folders."""
 
     # New version of df with multi-topic cells split up.
     df_topics = topics_sort_df(df)
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
+    # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
-    in_df = topics_sort_df(df, 'in')
-    topic_list = in_df['in_topic'].unique()
+    topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
+
+        # Correspondence from constituents ("in" letters)
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
 
-    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
-    # In and out letters with the same topic are in the same topic folder, but different subfolders.
-    out_df = topics_sort_df(df, 'out')
-    topic_list = out_df['out_topic'].unique()
-    for topic in topic_list:
-        doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
+        # Correspondence to constituents ("out" letters) by topic.
+        out_df = topics_sort_df(df, 'out')
+        topic_list = out_df['out_topic'].unique()
+        for topic in topic_list:
+            doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
+            topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
+            for doc in doc_list:
+                topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
