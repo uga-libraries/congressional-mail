@@ -27,11 +27,13 @@ def files_in_dir(dir_path):
 
 
 def make_dir_list(dir_path):
-    """Make a list of the files in the folder created by the function to compare to expected results"""
+    """Make a list of the folders and files in the directory to compare to expected results"""
     contents_list = []
     for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            contents_list.append(os.path.join(root, file))
+        for dir_name in dirs:
+            contents_list.append(os.path.join(root, dir_name))
+        for file_name in files:
+            contents_list.append(os.path.join(root, file_name))
     return contents_list
 
 
