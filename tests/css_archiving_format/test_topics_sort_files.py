@@ -1,10 +1,19 @@
 import numpy as np
 import os
+import pandas as pd
 import shutil
 import unittest
 from css_archiving_format import topics_sort_files
+from test_read_metadata import df_to_list
 from test_script import csv_to_list, make_dir_list
-from test_topics_sort import make_df
+
+
+def make_df(row_list):
+    """Make a dataframe from a list of rows with consistent columns, used for test input"""
+    column_names = ['zip', 'in_topic', 'in_document_name', 'out_topic',
+                    'out_document_name', 'out_document_name_present']
+    df = pd.DataFrame(row_list, columns=column_names)
+    return df
 
 
 class MyTestCase(unittest.TestCase):
@@ -24,12 +33,23 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when the document column has some blanks that should be skipped"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt'],
-                      ['30601', 'Ag', 'b.txt', 'farming', np.nan],
-                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt'],
-                      ['30603', 'Ag', 'd.txt', 'farming', np.nan],
-                      ['30604', np.nan, np.nan, np.nan, np.nan]])
-        topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', 'TBD'],
+                      ['30601', 'Ag', 'b.txt', 'farming', np.nan, 'TBD'],
+                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', 'TBD'],
+                      ['30603', 'Ag', 'd.txt', 'farming', np.nan, 'TBD'],
+                      ['30604', np.nan, np.nan, np.nan, np.nan, 'TBD']])
+        df_topic = topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+
+        # Verifies df_topic has the correct values.
+        result = df_to_list(df_topic)
+        expected = [['zip', 'in_topic', 'in_document_name', 'out_topic', 'out_document_name',
+                     'out_document_name_present'],
+                    ['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', True],
+                    ['30601', 'Ag', 'b.txt', 'farming', 'blank', 'TBD'],
+                    ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', False],
+                    ['30603', 'Ag', 'd.txt', 'farming', 'blank', 'TBD'],
+                    ['30604', 'blank', 'blank', 'blank', 'blank', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for blank, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
@@ -48,16 +68,31 @@ class MyTestCase(unittest.TestCase):
     def test_duplicate(self):
         """Test for when the document column has some files more than once"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\objects\001.txt'],
-                      ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt'],
-                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt'],
-                      ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\objects\001.txt'],
-                      ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt'],
-                      ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt'],
-                      ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt'],
-                      ['30607', 'Ag', 'h.txt', 'farming', r'..\documents\BlobExport\objects\001.txt'],
-                      ['30608', 'Ag', 'i.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt']])
-        topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', 'TBD'],
+                      ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', 'TBD'],
+                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', 'TBD'],
+                      ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', 'TBD'],
+                      ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', 'TBD'],
+                      ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', 'TBD'],
+                      ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', 'TBD'],
+                      ['30607', 'Ag', 'h.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', 'TBD'],
+                      ['30608', 'Ag', 'i.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', 'TBD']])
+        df_topic = topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+
+        # Verifies df_topic has the correct values.
+        result = df_to_list(df_topic)
+        expected = [['zip', 'in_topic', 'in_document_name', 'out_topic', 'out_document_name',
+                     'out_document_name_present'],
+                    ['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', True],
+                    ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', True],
+                    ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', False],
+                    ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', True],
+                    ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', True],
+                    ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', False],
+                    ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', True],
+                    ['30607', 'Ag', 'h.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', True],
+                    ['30608', 'Ag', 'i.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', False]]
+        self.assertEqual(expected, result, "Problem with test for blank, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
@@ -78,14 +113,27 @@ class MyTestCase(unittest.TestCase):
     def test_unique(self):
         """Test for when each topic and file combination is unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\bees.txt'],
-                      ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt'],
-                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt'],
-                      ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\001.txt'],
-                      ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt'],
-                      ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\002.txt'],
-                      ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt']])
-        topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+        df = make_df([['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\bees.txt', 'TBD'],
+                      ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', 'TBD'],
+                      ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', 'TBD'],
+                      ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\001.txt', 'TBD'],
+                      ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', 'TBD'],
+                      ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\002.txt', 'TBD'],
+                      ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', 'TBD']])
+        df_topic = topics_sort_files(df, 'out_document_name', self.input_dir, self.output_dir, self.folder_path)
+
+        # Verifies df_topic has the correct values.
+        result = df_to_list(df_topic)
+        expected = [['zip', 'in_topic', 'in_document_name', 'out_topic', 'out_document_name',
+                     'out_document_name_present'],
+                    ['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\bees.txt', True],
+                    ['30601', 'Ag', 'b.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', True],
+                    ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', False],
+                    ['30603', 'Ag', 'd.txt', 'farming', r'..\documents\BlobExport\001.txt', False],
+                    ['30604', 'Ag', 'e.txt', 'farming', r'..\documents\BlobExport\objects\001.txt', True],
+                    ['30605', 'Ag', 'f.txt', 'farming', r'..\documents\BlobExport\objects\002.txt', True],
+                    ['30606', 'Ag', 'g.txt', 'farming', r'..\documents\BlobExport\objects\missing.txt', False]]
+        self.assertEqual(expected, result, "Problem with test for blank, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)

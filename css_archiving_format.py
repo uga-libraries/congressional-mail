@@ -643,8 +643,9 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         doc_new_path = os.path.join(folder_path, doc_name)
         try:
             shutil.copy2(doc_path, doc_new_path)
-            df.loc[df[column] == doc, ]
+            df.loc[df[column] == doc, f'{column}_present'] = True
         except FileNotFoundError:
+            df.loc[df[column] == doc, f'{column}_present'] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
                 topic = folder_path.split('\\')[-2]
