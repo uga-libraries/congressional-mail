@@ -610,42 +610,44 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         os.mkdir(topic_path)
         df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
-        
-        # Correspondence from constituents ("in" letters)
+
+        # Sorts correspondence from constituents ("in" letters).
+        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         from_path = os.path.join(topic_path, 'from_constituents')
         os.mkdir(from_path)
-        doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name', input_dir, output_dir, from_path)
 
-        # Correspondence to constituents ("out" letters) by topic.
+        # Sorts correspondence to constituents ("out" letters).
+        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         to_path = os.path.join(topic_path, 'to_constituents')
         os.mkdir(to_path)
-        doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
+
         topics_sort_delete_empty(topic_path)
 
 
-def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
+def topics_sort_files(df, column, input_dir, output_dir, folder_path):
+    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
+
+    # TODO get doc_list from df[column]
+
     # Gets the path for the current doc location by updating the path in the metadata.
-    doc_path = update_path(doc, input_dir)
+    doc_path = update_path(df, input_dir)
 
     # Copies the doc to the topic_path folder.
     # If the doc is not in the expected location, logs it instead.
     # It is common to have docs in the metadata but not in the input directory.
-    doc_name = doc.split('\\')[-1]
-    doc_new_path = os.path.join(topic_path, doc_name)
+    doc_name = df.split('\\')[-1]
+    doc_new_path = os.path.join(folder_path, doc_name)
     try:
         shutil.copy2(doc_path, doc_new_path)
     except FileNotFoundError:
         with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
             log_writer = csv.writer(log)
-            topic = topic_path.split('\\')[-2]
-            log_writer.writerow([topic, doc])
+            topic = folder_path.split('\\')[-2]
+            log_writer.writerow([topic, df])
 
+    return df
 
 def topics_sort_delete_empty(topic_path):
     """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
