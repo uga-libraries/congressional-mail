@@ -614,7 +614,6 @@ def topics_sort(df, input_dir, output_dir):
         from_path = os.path.join(topic_path, 'from_constituents')
         os.mkdir(from_path)
         doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_copy(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
@@ -622,14 +621,10 @@ def topics_sort(df, input_dir, output_dir):
         # Correspondence to constituents ("out" letters) by topic.
         to_path = os.path.join(topic_path, 'to_constituents')
         os.mkdir(to_path)
-        out_df = topics_sort_df(df, 'out')
-        topic_list = out_df['out_topic'].unique()
-        for topic in topic_list:
-            doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
-            topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
-            for doc in doc_list:
-                topics_sort_copy(doc, input_dir, output_dir, topic_path)
-            topics_sort_delete_empty(topic_path)
+        doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
+        for doc in doc_list:
+            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+        topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_copy(doc, input_dir, output_dir, topic_path):
