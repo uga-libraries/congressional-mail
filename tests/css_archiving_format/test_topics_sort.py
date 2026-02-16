@@ -17,7 +17,7 @@ def make_df(rows):
 
 def make_log_list():
     """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
-    log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
+    log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'access_copy', 'topics_sort_file_not_found.csv')
     log_df = pd.read_csv(log_path)
     log_list = [log_df.columns.tolist()] + log_df.values.tolist()
     return log_list
@@ -26,21 +26,16 @@ def make_log_list():
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        """Variables used by every test"""
-        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'correspondence_by_topic')
+        """Variables and output_dir directory used by every test"""
         self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
-        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
+        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'access_copy')
+        os.mkdir(self.output_dir)
+        self.by_topic = os.path.join(self.output_dir, 'correspondence_by_topic')
 
     def tearDown(self):
-        """Delete the script outputs, if made"""
-        # correspondence_by_topic folder.
-        if os.path.exists(self.by_topic):
-            shutil.rmtree(self.by_topic)
-
-        # Log for FileNotFoundError.
-        log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
-        if os.path.exists(log_path):
-            os.remove(log_path)
+        """Delete the output_dir and all its contents, if made"""
+        if os.path.exists(self.output_dir):
+            shutil.rmtree(self.output_dir)
 
     def test_folder_in(self):
         """Test for when no out files for a topic are in the directory, but some in are"""
