@@ -52,8 +52,8 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'Q_R'],
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'X Y Z'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'nan', 'nan']]
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
+                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'TBD', 'nan', 'nan']]
         self.assertEqual(expected, result, "Problem with test for both")
 
     def test_in_only(self):
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'farm app', 'X'],
                     ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'TBD', 
                      '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'park and rec', 'X'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'blank', 'file4.txt', 'TBD',
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'nan', 'Y'],
                     ['*', '*', '30605', '*', '*', '*', '*', '*', 'rec', 'file5.txt', 'TBD',
                      '*', '*', '*', '*', 'Z', 'file55.txt', 'TBD', 'rec', 'Z']]
@@ -109,7 +109,7 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'pear', 'U'],
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'A-A', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'A-A', 'V'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
                      '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'nan', 'X'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'farm app', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'farm app', 'Y']]
@@ -138,8 +138,8 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'TBD', 'BBBB', 'B 1'],
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'TBD', 'BBBB', 'B.2'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'nan', 'nan'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
+                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'TBD', 'nan', 'nan'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'W'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',

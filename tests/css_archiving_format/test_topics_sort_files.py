@@ -45,10 +45,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_document_name', 'out_topic', 'out_document_name',
                      'out_document_name_present'],
                     ['30600', 'Ag', 'a.txt', 'farming', r'..\documents\BlobExport\forms\ag.txt', True],
-                    ['30601', 'Ag', 'b.txt', 'farming', 'blank', 'TBD'],
+                    ['30601', 'Ag', 'b.txt', 'farming', 'BLANK', 'TBD'],
                     ['30602', 'Ag', 'c.txt', 'farming', r'..\documents\BlobExport\forms\missing.txt', False],
-                    ['30603', 'Ag', 'd.txt', 'farming', 'blank', 'TBD'],
-                    ['30604', 'blank', 'blank', 'blank', 'blank', 'TBD']]
+                    ['30603', 'Ag', 'd.txt', 'farming', 'BLANK', 'TBD'],
+                    ['30604', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'TBD']]
         self.assertEqual(expected, result, "Problem with test for blank, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.

@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30600', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
                     ['30606', '', '', '', '', '', '', '', '', '', ''],
-                    ['30607', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank']]
+                    ['30607', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for one_column, df_no_match")
 
     def test_multiple_columns(self):
@@ -79,7 +79,7 @@ class MyTestCase(unittest.TestCase):
                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
                     ['30601', 'case', 'case', 'CASE', 'CASE!', 'Case', '', '', '', '', '', 'Casework'],
                     ['30602', '', 'case!', '', '', '', '', 'case!', '', '', '', 'Casework'],
-                    ['30603', '', '', 'CASE', 'blank', 'blank', 'case', '', '', '', 'case', 'Casework']]
+                    ['30603', '', '', 'CASE', 'BLANK', 'BLANK', 'case', '', '', '', 'case', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for multiple_columns, df_match")
 
         # Tests the values in df_no_match are correct.
@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30600', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
                     ['30604', '', '', '', '', '', '', '', '', '', ''],
-                    ['30605', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank']]
+                    ['30605', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for multiple_columns, df_no_match")
 
     def test_none(self):
@@ -113,7 +113,7 @@ class MyTestCase(unittest.TestCase):
                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30600', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
                     ['30601', '', '', '', '', '', '', '', '', '', ''],
-                    ['30602', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank']]
+                    ['30602', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for none, df_no_match")
 
     def test_partial(self):
@@ -146,7 +146,7 @@ class MyTestCase(unittest.TestCase):
                     ['30603', '', '', 'cAsE', '', '', '', '', '', '', ''],
                     ['30604', '', '', '', 'ENCASED', '', '', '', '', '', ''],
                     ['30605', '', '', '', '', '', '', '', '', '', ''],
-                    ['30606', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank']]
+                    ['30606', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for partial, df_no_match")
 
 
