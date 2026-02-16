@@ -722,7 +722,7 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
     # Save to the topic folder.
-    csv_path = os.path.join(topic_path, f'{topic_norm}_description.csv')
+    csv_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
     df.to_csv(csv_path, index=False)
 
 

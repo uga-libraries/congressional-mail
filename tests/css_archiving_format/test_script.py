@@ -146,7 +146,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'B2'),
                     os.path.join(by_topic, 'A', 'from_constituents'),
                     os.path.join(by_topic, 'A', 'to_constituents'),
-                    os.path.join(by_topic, 'A', 'A_description.csv'),
+                    os.path.join(by_topic, 'A', 'A_metadata.csv'),
                     os.path.join(by_topic, 'A', 'from_constituents', '111111.txt'),
                     os.path.join(by_topic, 'A', 'from_constituents', '111111_add.txt'),
                     os.path.join(by_topic, 'A', 'from_constituents', '333333.txt'),
@@ -155,7 +155,7 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'A', 'to_constituents', 'A.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents'),
                     os.path.join(by_topic, 'A1', 'to_constituents'),
-                    os.path.join(by_topic, 'A1', 'A1_description.csv'),
+                    os.path.join(by_topic, 'A1', 'A1_metadata.csv'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '111111.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '111111_add.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '333333.txt'),
@@ -164,12 +164,12 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'A1', 'to_constituents', 'A.txt'),
                     os.path.join(by_topic, 'B1', 'from_constituents'),
                     os.path.join(by_topic, 'B1', 'to_constituents'),
-                    os.path.join(by_topic, 'B1', 'B1_description.csv'),
+                    os.path.join(by_topic, 'B1', 'B1_metadata.csv'),
                     os.path.join(by_topic, 'B1', 'from_constituents', '222222.txt'),
                     os.path.join(by_topic, 'B1', 'to_constituents', '000002.txt'),
                     os.path.join(by_topic, 'B2', 'from_constituents'),
                     os.path.join(by_topic, 'B2', 'to_constituents'),
-                    os.path.join(by_topic, 'B2', 'B2_description.csv'),
+                    os.path.join(by_topic, 'B2', 'B2_metadata.csv'),
                     os.path.join(by_topic, 'B2', 'from_constituents', '222222.txt'),
                     os.path.join(by_topic, 'B2', 'to_constituents', '000002.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
@@ -183,8 +183,8 @@ class MyTestCase(unittest.TestCase):
                     ['B1', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
 
-        # Tests the contents of A_description.csv
-        csv_path = os.path.join(by_topic, 'A', 'A_description.csv')
+        # Tests the contents of A_metadata.csv
+        csv_path = os.path.join(by_topic, 'A', 'A_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
@@ -201,10 +201,10 @@ class MyTestCase(unittest.TestCase):
                     ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
                      'A', r'..\documents\BlobExport\indivletters\000003.txt', 'True']]
-        self.assertEqual(expected, result, "Problem with test for access, A_description.csv")
+        self.assertEqual(expected, result, "Problem with test for access, A_metadata.csv")
 
-        # Tests the contents of A1_description.csv
-        csv_path = os.path.join(by_topic, 'A1', 'A1_description.csv')
+        # Tests the contents of A1_metadata.csv
+        csv_path = os.path.join(by_topic, 'A1', 'A1_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
@@ -221,10 +221,10 @@ class MyTestCase(unittest.TestCase):
                     ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
                      r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
                      'A', r'..\documents\BlobExport\indivletters\000003.txt', 'True']]
-        self.assertEqual(expected, result, "Problem with test for access, A1_description.csv")
+        self.assertEqual(expected, result, "Problem with test for access, A1_metadata.csv")
 
-        # Tests the contents of B1_description.csv
-        csv_path = os.path.join(by_topic, 'B1', 'B1_description.csv')
+        # Tests the contents of B1_metadata.csv
+        csv_path = os.path.join(by_topic, 'B1', 'B1_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
@@ -235,10 +235,10 @@ class MyTestCase(unittest.TestCase):
                     ['F city', 'FL', '10234', 'BLANK', 'f600', 'General', 'Email', '20230202', 'B1',
                      r'..\documents\BlobExport\objects\xxxxxx.txt', 'False', 'r600', 'General', 'Email', '20230212',
                      'B', r'..\documents\BlobExport\indivletters\00000Z.txt', 'False']]
-        self.assertEqual(expected, result, "Problem with test for access, B1_description.csv")
+        self.assertEqual(expected, result, "Problem with test for access, B1_metadata.csv")
 
-        # Tests the contents of B2_description.csv
-        csv_path = os.path.join(by_topic, 'B2', 'B2_description.csv')
+        # Tests the contents of B2_metadata.csv
+        csv_path = os.path.join(by_topic, 'B2', 'B2_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
@@ -246,7 +246,7 @@ class MyTestCase(unittest.TestCase):
                     ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
                      'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt', 'True']]
-        self.assertEqual(expected, result, "Problem with test for access, B2_description.csv")
+        self.assertEqual(expected, result, "Problem with test for access, B2_metadata.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""

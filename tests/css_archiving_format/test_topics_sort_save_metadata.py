@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
         topics_sort_save_metadata(df, topic_path, topic_norm)
 
         # Verifies the metadata csv has the correct contents.
-        result = csv_to_list(os.path.join(topic_path, 'apples_description.csv'))
+        result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
         expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
                     ['30601', 'apples', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
         topics_sort_save_metadata(df, topic_path, topic_norm)
 
         # Verifies the metadata csv has the correct contents.
-        result = csv_to_list(os.path.join(topic_path, 'apples_description.csv'))
+        result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
         expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
                     ['30601', 'ag^apples', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
@@ -84,7 +84,7 @@ class MyTestCase(unittest.TestCase):
         topics_sort_save_metadata(df, topic_path, topic_norm)
 
         # Verifies the metadata csv has the correct contents.
-        result = csv_to_list(os.path.join(topic_path, 'apples_description.csv'))
+        result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
         expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
                     ['30601', 'ag', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
