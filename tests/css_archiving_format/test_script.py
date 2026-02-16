@@ -49,12 +49,12 @@ class MyTestCase(unittest.TestCase):
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
         # Makes a copy of the test data in the repo, to simplify deleting script outputs.
-        shutil.copytree(os.path.join('test_data', 'script', 'Access'),
-                        os.path.join('test_data', 'script', 'output_dir'))
+        output_directory = os.path.join('test_data', 'script', 'output_dir')
+        shutil.copytree(os.path.join('test_data', 'script', 'Access'), output_directory)
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
-        input_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'constituent_mail_export')
+        input_directory = os.path.join(output_directory, 'constituent_mail_export')
         printed = subprocess.run(f"python {script_path} {input_directory} access",
                                  shell=True, capture_output=True, text=True)
 
@@ -66,7 +66,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
+        csv_path = os.path.join(output_directory, 'archiving_correspondence_redacted.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date',
@@ -92,7 +92,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, archiving_correspondence_redacted.csv")
 
         # Tests the contents of 2021.csv.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2021.csv')
+        csv_path = os.path.join(output_directory, 'correspondence_metadata_by_year', '2021.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -106,7 +106,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2021.csv")
 
         # Tests the contents of 2023.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2023.csv')
+        csv_path = os.path.join(output_directory, 'correspondence_metadata_by_year', '2023.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -120,7 +120,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2023.csv")
 
         # Tests the contents of 2024.csv.
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2024.csv')
+        csv_path = os.path.join(output_directory, 'correspondence_metadata_by_year', '2024.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                      'in_topic', 'in_document_name', 'out_id', 'out_type', 'out_method',
@@ -134,31 +134,119 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for access, 2024.csv")
 
         # Tests that no undated.csv was made.
-        result = os.path.exists(os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir'
-                                             'correspondence_metadata_by_year', 'undated.csv'))
+        result = os.path.exists(os.path.join(output_directory, 'correspondence_metadata_by_year', 'undated.csv'))
         self.assertEqual(False, result, "Problem with test for access, undated.csv")
 
-        # Tests that Correspondence_by_Topic has the expected files.
-        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
+        # Tests that correspondence_by_topic has the expected files.
+        by_topic = os.path.join(output_directory, 'correspondence_by_topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'A', 'to_constituents', '000001.txt'),
+        expected = [os.path.join(by_topic, 'A'),
+                    os.path.join(by_topic, 'A1'),
+                    os.path.join(by_topic, 'B1'),
+                    os.path.join(by_topic, 'B2'),
+                    os.path.join(by_topic, 'A', 'from_constituents'),
+                    os.path.join(by_topic, 'A', 'to_constituents'),
+                    os.path.join(by_topic, 'A', 'A_description.csv'),
+                    os.path.join(by_topic, 'A', 'from_constituents', '111111.txt'),
+                    os.path.join(by_topic, 'A', 'from_constituents', '111111_add.txt'),
+                    os.path.join(by_topic, 'A', 'from_constituents', '333333.txt'),
+                    os.path.join(by_topic, 'A', 'to_constituents', '000001.txt'),
                     os.path.join(by_topic, 'A', 'to_constituents', '000003.txt'),
                     os.path.join(by_topic, 'A', 'to_constituents', 'A.txt'),
+                    os.path.join(by_topic, 'A1', 'from_constituents'),
+                    os.path.join(by_topic, 'A1', 'to_constituents'),
+                    os.path.join(by_topic, 'A1', 'A1_description.csv'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '111111.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '111111_add.txt'),
                     os.path.join(by_topic, 'A1', 'from_constituents', '333333.txt'),
+                    os.path.join(by_topic, 'A1', 'to_constituents', '000001.txt'),
+                    os.path.join(by_topic, 'A1', 'to_constituents', '000003.txt'),
+                    os.path.join(by_topic, 'A1', 'to_constituents', 'A.txt'),
+                    os.path.join(by_topic, 'B1', 'from_constituents'),
+                    os.path.join(by_topic, 'B1', 'to_constituents'),
+                    os.path.join(by_topic, 'B1', 'B1_description.csv'),
                     os.path.join(by_topic, 'B1', 'from_constituents', '222222.txt'),
                     os.path.join(by_topic, 'B1', 'to_constituents', '000002.txt'),
+                    os.path.join(by_topic, 'B2', 'from_constituents'),
+                    os.path.join(by_topic, 'B2', 'to_constituents'),
+                    os.path.join(by_topic, 'B2', 'B2_description.csv'),
                     os.path.join(by_topic, 'B2', 'from_constituents', '222222.txt'),
-                    os.path.join(by_topic, 'B2', 'to_constituents', '000002.txt'),]
+                    os.path.join(by_topic, 'B2', 'to_constituents', '000002.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of topics_sort_file_not_found.csv
-        csv_path = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
+        csv_path = os.path.join(output_directory, 'topics_sort_file_not_found.csv')
         result = csv_to_list(csv_path)
-        expected = [['B1', r'..\documents\BlobExport\objects\xxxxxx.txt'],
-                    ['B', r'..\documents\BlobExport\indivletters\00000Z.txt']]
+        expected = [['B', r'..\documents\BlobExport\objects\xxxxxx.txt'],
+                    ['B', r'..\documents\BlobExport\indivletters\00000Z.txt'],
+                    ['B1', r'..\documents\BlobExport\objects\xxxxxx.txt'],
+                    ['B1', r'..\documents\BlobExport\indivletters\00000Z.txt']]
         self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
+
+        # Tests the contents of A_description.csv
+        csv_path = os.path.join(by_topic, 'A', 'A_description.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\formletters\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\indivletters\000003.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access, A_description.csv")
+
+        # Tests the contents of A1_description.csv
+        csv_path = os.path.join(by_topic, 'A1', 'A1_description.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     r'..\documents\BlobExport\objects\111111_add.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', r'..\documents\BlobExport\indivletters\000001.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\formletters\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     r'..\documents\BlobExport\objects\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
+                     'A', r'..\documents\BlobExport\indivletters\000003.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access, A1_description.csv")
+
+        # Tests the contents of B1_description.csv
+        csv_path = os.path.join(by_topic, 'B1', 'B1_description.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     r'..\documents\BlobExport\objects\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
+                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt', 'True'],
+                    ['F city', 'FL', '10234', 'BLANK', 'f600', 'General', 'Email', '20230202', 'B1',
+                     r'..\documents\BlobExport\objects\xxxxxx.txt', 'False', 'r600', 'General', 'Email', '20230212',
+                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt', 'False']]
+        self.assertEqual(expected, result, "Problem with test for access, B1_description.csv")
+
+        # Tests the contents of B2_description.csv
+        csv_path = os.path.join(by_topic, 'B2', 'B2_description.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     r'..\documents\BlobExport\objects\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
+                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access, B2_description.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
