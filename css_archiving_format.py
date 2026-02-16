@@ -709,6 +709,9 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Remove temporary folders used for identifying the topic.
     df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
 
+    # Remove duplicate rows, from when in_topic and out_topic both matched the topic.
+    df.drop_duplicates(inplace=True)
+
     # Update any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
     df['in_document_name_present'] = df['in_document_name_present'].str.replace('TBD', 'no_path_provided')
     df['out_document_name_present'] = df['out_document_name_present'].str.replace('TBD', 'no_path_provided')
