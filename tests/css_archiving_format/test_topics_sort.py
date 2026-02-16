@@ -42,32 +42,7 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(log_path):
             os.remove(log_path)
 
-    def test_duplicate_topic(self):
-        """Test for when a topic is in the metadata more than once, due to topic combinations"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
-                       'Agriculture', r'..\documents\BlobExport\responses\ag.txt'],
-                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\file2.txt',
-                       'Tax', r'..\documents\BlobExport\responses\answer1.txt'],
-                      ['30602', 'Agriculture^Peanuts^Tax', r'..\documents\BlobExport\objects\file3.txt',
-                       'Agriculture^Tax', r'..\documents\BlobExport\responses\answer2.txt']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'ag.txt'),
-                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'answer2.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer1.txt'),
-                    os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer2.txt')]
-        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
-
-    def test_folder_empty(self):
+    def test_folder_in(self):
         """Test for when no out files for a topic are in the directory, but some in are"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
@@ -94,7 +69,7 @@ class MyTestCase(unittest.TestCase):
                     ['Peanuts', r'..\documents\BlobExport\responses\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for one folder empty, log")
 
-    def test_folders_empty(self):
+    def test_folder_neither(self):
         """Test for when no files (in or out) for a topic are in the directory and the topic folder is empty"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\missing\file1.txt',
@@ -121,7 +96,53 @@ class MyTestCase(unittest.TestCase):
                     ['Peanuts', r'..\documents\BlobExport\responses\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for folders empty, log")
 
-    def test_unique(self):
+    def test_topic_both(self):
+        """Test for when a topic is in the metadata more than once, due to topic combinations"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
+                       'Agriculture', r'..\documents\BlobExport\responses\ag.txt'],
+                      ['30601', 'Agriculture^Peanuts', r'..\documents\BlobExport\objects\file2.txt',
+                       'Tax', r'..\documents\BlobExport\responses\answer1.txt'],
+                      ['30602', 'Agriculture^Peanuts^Tax', r'..\documents\BlobExport\objects\file3.txt',
+                       'Agriculture^Tax', r'..\documents\BlobExport\responses\answer2.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'ag.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'answer2.txt'),
+                    os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'Tax', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer1.txt'),
+                    os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer2.txt')]
+        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
+
+    def test_topic_in(self):
+        """Test for when each topic and file combination is unique"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30601', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
+                       'Agriculture', r'..\documents\BlobExport\responses\ag.txt'],
+                      ['30602', 'Peanuts', r'..\documents\BlobExport\objects\file2.txt',
+                       'Peanuts', r'..\documents\BlobExport\responses\answer1.txt'],
+                      ['30603', 'Small Business', r'..\documents\BlobExport\objects\file3.txt',
+                       'Tax', r'..\documents\BlobExport\responses\answer2.txt']])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.by_topic)
+        expected = [os.path.join(self.by_topic, 'Agriculture', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'Agriculture', 'to_constituents', 'ag.txt'),
+                    os.path.join(self.by_topic, 'Peanuts', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'Peanuts', 'to_constituents', 'answer1.txt'),
+                    os.path.join(self.by_topic, 'Small Business', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'Tax', 'to_constituents', 'answer2.txt')]
+        self.assertEqual(expected, result, "Problem with test for unique")
+
+    def test_topic_out(self):
         """Test for when each topic and file combination is unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30601', 'Agriculture', r'..\documents\BlobExport\objects\file1.txt',
