@@ -713,8 +713,9 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     df.drop_duplicates(inplace=True)
 
     # Update any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
-    df['in_document_name_present'] = df['in_document_name_present'].str.replace('TBD', 'no_path_provided')
-    df['out_document_name_present'] = df['out_document_name_present'].str.replace('TBD', 'no_path_provided')
+    # Make these columns strings first, or it will break with an AttributeError if the column only has True and False.
+    df['in_document_name_present'] = df['in_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
+    df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
     # Save to the topic folder.
     csv_path = os.path.join(topic_path, f'{topic_norm}_description.csv')
