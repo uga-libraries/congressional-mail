@@ -16,6 +16,7 @@ This allows the archivist to review and edit these documents without needing to 
 import csv
 from datetime import date, datetime
 import hashlib
+import numpy as np
 import os
 import pandas as pd
 import re
@@ -590,84 +591,112 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    """Sort copy of incoming and outgoing correspondence into folders by topic
+    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
+    Letters with multiple topics are in multiple topic folders."""
 
-    # Sorts a copy of correspondence from constituents ("in" letters) by topic.
-    in_df = topics_sort_df(df, 'in')
-    topic_list = in_df['in_topic'].unique()
+    # New version of df with multi-topic cells split up.
+    df_topics = topics_sort_df(df)
+
+    # Sorts a copy of all correspondence by topic.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
-        doc_list = in_df.loc[in_df['in_topic'] == topic, 'in_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+
+        # Skip blanks, which are a string because of topics_sort_df converting the column type to split on delimiters.
+        if topic == 'nan':
+            continue
+
+        # Folder and metadata for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        # The topic has to be normalized to be used for a folder and file name.
+        topic_norm = topics_sort_normalize(topic)
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        os.mkdir(topic_path)
+        df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
+
+        # Sorts correspondence from constituents ("in" letters).
+        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
+        from_path = os.path.join(topic_path, 'from_constituents')
+        os.mkdir(from_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name', input_dir, output_dir, from_path)
+
+        # Sorts correspondence to constituents ("out" letters).
+        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
+        to_path = os.path.join(topic_path, 'to_constituents')
+        os.mkdir(to_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
+
+        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
 
-    # Sorts a copy of correspondence to constituents ("out" letters) by topic.
-    # In and out letters with the same topic are in the same topic folder, but different subfolders.
-    out_df = topics_sort_df(df, 'out')
-    topic_list = out_df['out_topic'].unique()
-    for topic in topic_list:
-        doc_list = out_df.loc[out_df['out_topic'] == topic, 'out_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
-
-
-def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
-    # Gets the path for the current doc location by updating the path in the metadata.
-    doc_path = update_path(doc, input_dir)
-
-    # Copies the doc to the topic_path folder.
-    # If the doc is not in the expected location, logs it instead.
-    # It is common to have docs in the metadata but not in the input directory.
-    doc_name = doc.split('\\')[-1]
-    doc_new_path = os.path.join(topic_path, doc_name)
-    try:
-        shutil.copy2(doc_path, doc_new_path)
-    except FileNotFoundError:
-        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-            log_writer = csv.writer(log)
-            topic = topic_path.split('\\')[-2]
-            log_writer.writerow([topic, doc])
+        # Cleans up and saves the metadata for this topic if the topic folder was not deleted for being empty.
+        if os.path.exists(topic_path):
+            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
 
 def topics_sort_delete_empty(topic_path):
-    """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
-    # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
-    if not os.listdir(topic_path):
-        os.rmdir(topic_path)
-
-        # Deletes the topic folder if it is also empty.
-        # It could contain a from_constituents folder if the function is called to delete to_constituents.
-        if not os.listdir(os.path.dirname(topic_path)):
-            os.rmdir(os.path.dirname(topic_path))
+    """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
+    paths = [os.path.join(topic_path, 'from_constituents'), os.path.join(topic_path, 'to_constituents'), topic_path]
+    for path in paths:
+        if not os.listdir(path):
+            os.rmdir(path)
 
 
-def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has values in topic and document_name"""
-    # Initial df, with any row that has some value in topic and document_name
-    topic_column = f'{letter_type}_topic'
-    doc_column = f'{letter_type}_document_name'
-    topic_df = df.dropna(subset=[topic_column, doc_column]).copy()
+def topics_sort_df(df):
+    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs"""
 
-    # If there is more than one topic or document_name in a row (divided by ^),
-    # splits them to their own row, repeating the related topic or document_name for each row.
-    topic_df[topic_column] = topic_df[topic_column].str.split(r'^')
-    topic_df = topic_df.explode(topic_column)
-    topic_df[doc_column] = topic_df[doc_column].str.split(r'^')
-    topic_df = topic_df.explode(doc_column)
+    # If there is more than one in_topic in a row (divided by ^),
+    # splits them each to their own row, repeating the rest of the information for each row,
+    # including retaining the original topic column with multiple terms.
+    df['in_topic_split'] = df['in_topic'].astype(str).str.split(r'^')
+    df = df.explode('in_topic_split')
 
-    # Removes any duplicate combinations of topic and document_name,
-    # which is most common when the office sends the same letter to multiple constituents.
-    topic_df = topic_df.drop_duplicates(subset=[topic_column, doc_column])
-    return topic_df
+    # If there is more than one out_topic in a row (divided by ^),
+    # splits them each to their own row, repeating the rest of the information for each row,
+    # including retaining the original topic column with multiple terms.
+    df['out_topic_split'] = df['out_topic'].astype(str).str.split(r'^')
+    df = df.explode('out_topic_split')
+
+    # Add columns for when the files are sorted to indicate if the file was present in the export or not.
+    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
+    df.insert(10, 'in_document_name_present', 'TBD', True)
+    df.insert(17, 'out_document_name_present', 'TBD', True)
+
+    return df
 
 
-def topics_sort_folder(topic, output_dir, type_folder_name):
-    """Make a folder named with the topic and return the path to that folder"""
+def topics_sort_files(df, column, input_dir, output_dir, folder_path):
+    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
+
+    # Gets a list of unique documents from the specified document column (in or out), excluding blanks, to copy.
+    doc_list = df[column].dropna().unique().tolist()
+    for doc in doc_list:
+
+        # Gets the path for the current doc location by updating the path in the metadata.
+        doc_path = update_path(doc, input_dir)
+
+        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # If the doc is not in the expected location, logs it instead.
+        # It is common to have docs in the metadata but not in the input directory.
+        doc_name = doc.split('\\')[-1]
+        doc_new_path = os.path.join(folder_path, doc_name)
+        try:
+            shutil.copy2(doc_path, doc_new_path)
+            df.loc[df[column] == doc, f'{column}_present'] = True
+        except FileNotFoundError:
+            df.loc[df[column] == doc, f'{column}_present'] = False
+            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+                log_writer = csv.writer(log)
+                topic = folder_path.split('\\')[-2]
+                log_writer.writerow([topic, doc])
+
+    return df
+
+
+def topics_sort_normalize(topic):
+    """Make a version of the topic that can be used for folder and file naming"""
+
     # Replaces characters that Windows does not permit in a folder name with an underscore.
     for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
         topic = topic.replace(character, '_')
@@ -675,15 +704,26 @@ def topics_sort_folder(topic, output_dir, type_folder_name):
     # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
     topic = topic.rstrip('. ')
 
-    # Makes the path, including a folder with the letter type.
-    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, type_folder_name)
+    return topic
 
-    # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
-    # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
-    if not os.path.exists(topic_path):
-        os.makedirs(topic_path)
 
-    return topic_path
+def topics_sort_save_metadata(df, topic_path, topic_norm):
+    """Remove temporary columns, update temporary column values, and save to a CSV"""
+
+    # Remove temporary folders used for identifying the topic.
+    df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
+
+    # Remove duplicate rows, from when in_topic and out_topic both matched the topic.
+    df.drop_duplicates(inplace=True)
+
+    # Update any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
+    # Make these columns strings first, or it will break with an AttributeError if the column only has True and False.
+    df['in_document_name_present'] = df['in_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
+    df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
+
+    # Save to the topic folder.
+    csv_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+    df.to_csv(csv_path, index=False)
 
 
 def update_path(md_path, input_dir):
