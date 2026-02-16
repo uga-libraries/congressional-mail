@@ -645,13 +645,13 @@ def topics_sort_df(df):
     # If there is more than one in_topic in a row (divided by ^),
     # splits them each to their own row, repeating the rest of the information for each row,
     # including retaining the original topic column with multiple terms.
-    df['in_topic_split'] = df['in_topic'].str.split(r'^')
+    df['in_topic_split'] = df['in_topic'].astype(str).str.split(r'^')
     df = df.explode('in_topic_split')
 
     # If there is more than one out_topic in a row (divided by ^),
     # splits them each to their own row, repeating the rest of the information for each row,
     # including retaining the original topic column with multiple terms.
-    df['out_topic_split'] = df['out_topic'].str.split(r'^')
+    df['out_topic_split'] = df['out_topic'].astype(str).str.split(r'^')
     df = df.explode('out_topic_split')
 
     # Add columns for when the files are sorted to indicate if the file was present in the export or not.
