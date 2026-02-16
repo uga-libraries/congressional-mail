@@ -53,7 +53,7 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'X Y Z'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'blank', 'blank']]
+                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'nan', 'nan']]
         self.assertEqual(expected, result, "Problem with test for both")
 
     def test_in_only(self):
@@ -86,9 +86,9 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'TBD', 
                      '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'park and rec', 'X'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'blank', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'blank', 'Y'],
+                     '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'nan', 'Y'],
                     ['*', '*', '30605', '*', '*', '*', '*', '*', 'rec', 'file5.txt', 'TBD',
-                     '*', '*', '*', '*', 'Z', 'file55.txt', 'TBD', 'rec', "Z"]]
+                     '*', '*', '*', '*', 'Z', 'file55.txt', 'TBD', 'rec', 'Z']]
         self.assertEqual(expected, result, "Problem with test for in_only")
 
     def test_none(self):
@@ -110,7 +110,7 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'A-A', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'A-A', 'V'],
                     ['*', '*', '30603', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'blank', 'X'],
+                     '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'nan', 'X'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'farm app', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'farm app', 'Y']]
         self.assertEqual(expected, result, "Problem with test for none")
@@ -139,7 +139,7 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'TBD',
                      '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'TBD', 'BBBB', 'B.2'],
                     ['*', '*', '30603', '*', '*', '*', '*', '*', 'blank', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'blank', 'blank'],
+                     '*', '*', '*', '*', 'blank', 'file33.txt', 'TBD', 'nan', 'nan'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'W'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
