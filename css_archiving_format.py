@@ -603,6 +603,10 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
 
+        # Skip blanks, which are a string because of topics_sort_df converting the column type to split on delimiters.
+        if topic == 'nan':
+            continue
+
         # Folder and metadata for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
