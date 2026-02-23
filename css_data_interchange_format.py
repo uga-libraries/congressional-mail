@@ -591,6 +591,14 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = np.unique(df_topics['group_name'].values).tolist()
     for topic in topic_list:
 
+        # Makes folder and metadata df for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        # The topic has to be normalized to be used for a folder and file name.
+        topic_norm = css_arch.topics_sort_normalize(topic)
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        os.mkdir(topic_path)
+        df_topic = df_topics['group_name' == topic].copy()
+
         # Sorts a copy of correspondence from constituents ("incoming" letters) by topic.
         in_df = topics_sort_df(df, 'IN')
         topic_list = in_df['group_name'].unique()
