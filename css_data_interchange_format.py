@@ -632,11 +632,11 @@ def topics_sort_df(df):
     return df
 
 
-def topics_sort_files(df, type, input_dir, output_dir, folder_path):
+def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
     """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
 
-    # Gets a list of unique documents of the specified type (IN or OUT), excluding blanks, to copy.
-    df_type = df[df['document_type'].str.startswith((type, f'AT_{type}'), na=False)]
+    # Gets a list of unique documents of the specified correspondence type (IN or OUT), excluding blanks, to copy.
+    df_type = df[df['document_type'].str.startswith((corr_type, f'AT_{corr_type}'), na=False)]
     doc_list = df_type['communication_document_name'].dropna().unique().tolist()
     for doc in doc_list:
 
