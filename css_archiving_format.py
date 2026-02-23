@@ -673,7 +673,7 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
     doc_list = df[column].dropna().unique().tolist()
     for doc in doc_list:
 
-        # Gets the path for the current doc location by updating the path in the metadata.
+        # Gets the path for the current doc location by updating the path from the metadata.
         doc_path = update_path(doc, input_dir)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
