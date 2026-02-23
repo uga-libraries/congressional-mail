@@ -632,23 +632,29 @@ def topics_sort_df(df):
     return df
 
 
-def topics_sort_files(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
-    # Gets the path for the current doc location by updating the path in the metadata.
-    doc_path = update_path(doc, input_dir)
+def topics_sort_files(df, type, input_dir, output_dir, topic_path):
+    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
 
-    # Copies the doc to the topic_path folder.
-    # If the doc is not in the expected location, logs it instead.
-    # It is common to have docs in the metadata but not in the input directory.
-    doc_name = doc.split('\\')[-1]
-    doc_new_path = os.path.join(topic_path, doc_name)
-    try:
-        shutil.copy2(doc_path, doc_new_path)
-    except FileNotFoundError:
-        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-            log_writer = csv.writer(log)
-            topic = topic_path.split('\\')[-2]
-            log_writer.writerow([topic, doc])
+    # Gets a list of unique documents of the specified type (IN or OUT), excluding blanks, to copy.
+    df_type = df[df['document_type'].str.startswith((type, f'AT_{type}'), na=False)]
+    doc_list = df_type['communication_document_name'].dropna().unique().tolist()
+    for doc in doc_list:
+
+        # Gets the path for the current doc location by updating the path in the metadata.
+        doc_path = update_path(doc, input_dir)
+
+        # Copies the doc to the topic_path folder.
+        # If the doc is not in the expected location, logs it instead.
+        # It is common to have docs in the metadata but not in the input directory.
+        doc_name = doc.split('\\')[-1]
+        doc_new_path = os.path.join(topic_path, doc_name)
+        try:
+            shutil.copy2(doc_path, doc_new_path)
+        except FileNotFoundError:
+            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+                log_writer = csv.writer(log)
+                topic = topic_path.split('\\')[-2]
+                log_writer.writerow([topic, doc])
 
 
 def update_path(md_path, input_dir):
