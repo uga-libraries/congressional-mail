@@ -588,7 +588,7 @@ def topics_sort(df, input_dir, output_dir):
 
     # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
-    topic_list = np.unique(df_topics['group_name'].values).tolist()
+    topic_list = df_topics['group_name'].unique.tolist()
     for topic in topic_list:
 
         # Makes folder and metadata df for this topic.
@@ -599,25 +599,19 @@ def topics_sort(df, input_dir, output_dir):
         os.mkdir(topic_path)
         df_topic = df_topics['group_name' == topic].copy()
 
-        # Sorts a copy of correspondence from constituents ("incoming" letters) by topic.
-        in_df = topics_sort_df(df, 'IN')
-        topic_list = in_df['group_name'].unique()
-        for topic in topic_list:
-            doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
-            topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'from_constituents')
-            for doc in doc_list:
-                topics_sort_files(doc, input_dir, output_dir, topic_path)
-            css_arch.topics_sort_delete_empty(topic_path)
+        # Sorts correspondence from constituents ("in" letters).
+        # Updates df_topic with if the letter was in the export and makes a log of missing letters.
+        from_path = os.path.join(topic_path, 'from_constituents')
+        os.mkdir(from_path)
+        df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
 
-        # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
-        out_df = topics_sort_df(df, 'OUT')
-        topic_list = out_df['group_name'].unique().tolist()
-        for topic in topic_list:
-            doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
-            topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'to_constituents')
-            for doc in doc_list:
-                topics_sort_files(doc, input_dir, output_dir, topic_path)
-            css_arch.topics_sort_delete_empty(topic_path)
+        # Sorts correspondence to constituents ("out" letters).
+        to_path = os.path.join(topic_path, 'to_constituents')
+        os.mkdir(to_path)
+        df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
+
+        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
+        css_arch.topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_df(df):
