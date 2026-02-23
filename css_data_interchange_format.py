@@ -618,6 +618,7 @@ def topics_sort(df, input_dir, output_dir):
         css_arch.topics_sort_delete_empty(topic_path)
 
         # Saves the metadata for this topic if the topic folder was not deleted for being empty.
+        # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
         if os.path.exists(topic_path):
             metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
             if os.path.exists(metadata_path):
