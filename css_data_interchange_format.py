@@ -20,7 +20,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows, topics_sort_delete_empty, topics_sort_normalize
+import css_archiving_format as css_arch
 
 
 def check_arguments(arg_list):
@@ -205,7 +205,7 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
 
     # Creates a file deletion log, with a header row.
     log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    file_deletion_log(log_path, None, 'header')
+    css_arch.file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, deletes any letter in the communication_document_name column except form letters.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
@@ -216,13 +216,13 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
         if name != '' and name != 'nan' and 'formletters' not in name:
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
-                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+                css_arch.file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
             else:
                 try:
-                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    css_arch.file_deletion_log(log_path, file_path, row.Appraisal_Category)
                     os.remove(file_path)
                 except FileNotFoundError:
-                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+                    css_arch.file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def df_search(df, keywords_list, category):
@@ -587,20 +587,20 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = in_df['group_name'].unique()
     for topic in topic_list:
         doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
+        topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'from_constituents')
         for doc in doc_list:
             topics_sort_files(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
+        css_arch.topics_sort_delete_empty(topic_path)
 
     # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
     out_df = topics_sort_df(df, 'OUT')
     topic_list = out_df['group_name'].unique().tolist()
     for topic in topic_list:
         doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
-        topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
+        topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'to_constituents')
         for doc in doc_list:
             topics_sort_files(doc, input_dir, output_dir, topic_path)
-        topics_sort_delete_empty(topic_path)
+        css_arch.topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_df(df):
@@ -699,7 +699,7 @@ if __name__ == '__main__':
         print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
               "but not change the metadata file.")
         try:
-            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
@@ -715,16 +715,16 @@ if __name__ == '__main__':
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         try:
-            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
         try:
-            restrict_df = read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+            restrict_df = css_arch.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
-        md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
