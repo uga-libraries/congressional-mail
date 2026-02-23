@@ -634,17 +634,16 @@ def topics_sort_delete_empty(topic_path):
             os.rmdir(os.path.dirname(topic_path))
 
 
-def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has values in topic and document_name for that letter type"""
+def topics_sort_df(df):
+    """Update dataframe to remove rows missing group (topic) or document name and add columns for missing docs"""
 
-    # Initial df, with any row of the specified type that has some value in topic (group) and document_name.
-    doc_type = (letter_type, f'AT_{letter_type}')
-    topic_df = df[df['document_type'].str.startswith(doc_type, na=False)]
-    topic_df = topic_df.dropna(subset=['group_name', 'communication_document_name'])
+    # Removes rows with blank in group_name or communication_document_name columns.
+    df = df.dropna(subset=['group_name', 'communication_document_name'])
 
-    # Removes any duplicate combinations of topic (group) and document_name.
-    topic_df = topic_df.drop_duplicates(subset=['group_name', 'communication_document_name'])
-    return topic_df
+    # Removes any duplicate combinations of group_name or communication_document_name.
+    # Not sure if this would happen, but have seen duplication in other exports.
+    df = df.drop_duplicates(subset=['group_name', 'communication_document_name'])
+    return df
 
 
 def topics_sort_folder(topic, output_dir, type_folder_name):
