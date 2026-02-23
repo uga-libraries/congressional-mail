@@ -594,20 +594,24 @@ def topics_sort(df, input_dir, output_dir):
         # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
+        # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
         topic_norm = css_arch.topics_sort_normalize(topic)
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-        os.mkdir(topic_path)
+        if not os.path.exists(topic_path):
+            os.mkdir(topic_path)
         df_topic = df_topics['group_name' == topic].copy()
 
         # Sorts correspondence from constituents ("in" letters).
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
         from_path = os.path.join(topic_path, 'from_constituents')
-        os.mkdir(from_path)
+        if not os.path.exists(from_path):
+            os.mkdir(from_path)
         df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
 
         # Sorts correspondence to constituents ("out" letters).
         to_path = os.path.join(topic_path, 'to_constituents')
-        os.mkdir(to_path)
+        if not os.path.exists(to_path):
+            os.mkdir(to_path)
         df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
