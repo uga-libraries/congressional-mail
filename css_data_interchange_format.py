@@ -588,7 +588,7 @@ def topics_sort(df, input_dir, output_dir):
 
     # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
-    topic_list = df_topics['group_name'].unique.tolist()
+    topic_list = df_topics['group_name'].unique().tolist()
     for topic in topic_list:
 
         # Makes folder and metadata df for this topic.
@@ -599,7 +599,7 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         if not os.path.exists(topic_path):
             os.mkdir(topic_path)
-        df_topic = df_topics['group_name' == topic].copy()
+        df_topic = df_topics[df_topics['group_name'] == topic].copy()
 
         # Sorts correspondence from constituents ("in" letters).
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
