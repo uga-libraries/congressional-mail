@@ -16,6 +16,7 @@ This allows the archivist to review and edit these documents without needing to 
 import csv
 from datetime import date
 from functools import reduce
+import numpy as np
 import os
 import pandas as pd
 import shutil
@@ -579,28 +580,36 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    """Sort copy of incoming and outgoing correspondence into folders by topic
+    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders."""
 
-    # Sorts a copy of correspondence from constituents ("incoming" letters) by topic.
-    in_df = topics_sort_df(df, 'IN')
-    topic_list = in_df['group_name'].unique()
-    for topic in topic_list:
-        doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
-        topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'from_constituents')
-        for doc in doc_list:
-            topics_sort_files(doc, input_dir, output_dir, topic_path)
-        css_arch.topics_sort_delete_empty(topic_path)
+    # New version of df with blanks removed from 'group_name' and 'communication_document_name'.
+    df_topics = topics_sort_df(df)
 
-    # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
-    out_df = topics_sort_df(df, 'OUT')
-    topic_list = out_df['group_name'].unique().tolist()
+    # Sorts a copy of all correspondence by topic.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    topic_list = np.unique(df_topics['group_name'].values).tolist()
     for topic in topic_list:
-        doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
-        topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'to_constituents')
-        for doc in doc_list:
-            topics_sort_files(doc, input_dir, output_dir, topic_path)
-        css_arch.topics_sort_delete_empty(topic_path)
+
+        # Sorts a copy of correspondence from constituents ("incoming" letters) by topic.
+        in_df = topics_sort_df(df, 'IN')
+        topic_list = in_df['group_name'].unique()
+        for topic in topic_list:
+            doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
+            topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'from_constituents')
+            for doc in doc_list:
+                topics_sort_files(doc, input_dir, output_dir, topic_path)
+            css_arch.topics_sort_delete_empty(topic_path)
+
+        # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
+        out_df = topics_sort_df(df, 'OUT')
+        topic_list = out_df['group_name'].unique().tolist()
+        for topic in topic_list:
+            doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
+            topic_path = css_arch.topics_sort_normalize(topic, output_dir, 'to_constituents')
+            for doc in doc_list:
+                topics_sort_files(doc, input_dir, output_dir, topic_path)
+            css_arch.topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_df(df):
