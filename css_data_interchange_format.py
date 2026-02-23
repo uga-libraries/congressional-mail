@@ -619,7 +619,11 @@ def topics_sort(df, input_dir, output_dir):
 
         # Saves the metadata for this topic if the topic folder was not deleted for being empty.
         if os.path.exists(topic_path):
-            df_topic.to_csv(os.path.join(topic_path, f'{topic_norm}_metadata.csv'), index=False)
+            metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+            if os.path.exists(metadata_path):
+                df_topic.to_csv(metadata_path, mode='a', header=False, index=False)
+            else:
+                df_topic.to_csv(metadata_path, index=False)
 
 
 def topics_sort_df(df):

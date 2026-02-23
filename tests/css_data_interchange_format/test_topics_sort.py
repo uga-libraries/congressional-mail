@@ -80,32 +80,32 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies_metadata.csv")
 
         # # Verifies puppies__metadata.csv has the expected contents.
-        # TODO does not have 30603
-        # result = csv_to_list(os.path.join(self.by_topic, 'puppies_', 'puppies__metadata.csv'))
-        # expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-        #              'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-        #              'document_type', 'communication_document_name', 'communication_document_name_present',
-        #              'communication_document_id', 'file_location', 'file_name'],
-        #             ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies?', '*', '*', '30603', '*',
-        #              'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
-        #             ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies/', '*', '*', '30606', '*',
-        #              'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
-        # self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies__metadata.csv")
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies_', 'puppies__metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies?', '*', '*', '30603', '*',
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies/', '*', '*', '30606', '*',
+                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies__metadata.csv")
 
         # Verifies _kittens__metadata.csv has the expected contents.
-        # TODO only has 30607, the second instance of cat.txt that I expected to be deduped
-        # result = csv_to_list(os.path.join(self.by_topic, '_kittens_', '_kittens__metadata.csv'))
-        # expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
-        #              'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-        #              'document_type', 'communication_document_name', 'communication_document_name_present',
-        #              'communication_document_id', 'file_location', 'file_name'],
-        #             ['*', '*', '*', '*', '*', '*', '*', '*', '*kittens*', '*', '*', '30601', '*',
-        #              'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
-        #             ['*', '*', '*', '*', '*', '*', '*', '*', '<kittens>', '*', '*', '30602', '*',
-        #              'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
-        #             ['*', '*', '*', '*', '*', '*', '*', '*', ':kittens:', '*', '*', '30604', '*',
-        #              'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*']]
-        # self.assertEqual(expected, result, "Problem with test for duplicate_norm, _kittens__metadata.csv")
+        result = csv_to_list(os.path.join(self.by_topic, '_kittens_', '_kittens__metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*kittens*', '*', '*', '30601', '*',
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '<kittens>', '*', '*', '30602', '*',
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', ':kittens:', '*', '*', '30604', '*',
+                     'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '|kittens|', '*', '*', '30607', '*',
+                     'OUT', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, _kittens__metadata.csv")
 
     def test_empty_blank(self):
         """Test for when no letters are sorted because the group and/or document name are blank for all"""
