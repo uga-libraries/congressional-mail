@@ -20,7 +20,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
+from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows, topics_sort_normalize
 
 
 def check_arguments(arg_list):
@@ -649,27 +649,6 @@ def topics_sort_df(df):
     df.insert(15, 'communication_document_name_present', 'TBD', True)
 
     return df
-
-
-def topics_sort_folder(topic, output_dir, type_folder_name):
-    """Make a folder named with the topic and return the path to that folder"""
-
-    # Replaces characters that Windows does not permit in a folder name with an underscore.
-    for character in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
-        topic = topic.replace(character, '_')
-
-    # Removes space or period from the end, as Windows is inconsistent in how it handles folders ending in either.
-    topic = topic.rstrip('. ')
-
-    # Makes the path, including a folder with the letter type.
-    topic_path = os.path.join(output_dir, 'Correspondence_by_Topic', topic, type_folder_name)
-
-    # Only makes the folder if it doesn't already exist. Even though topics are deduplicated before making folders,
-    # we still get duplicates if the same topic exists in a ways that do and do not require cleanup.
-    if not os.path.exists(topic_path):
-        os.makedirs(topic_path)
-
-    return topic_path
 
 
 def update_path(md_path, input_dir):
