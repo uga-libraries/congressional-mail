@@ -607,7 +607,7 @@ def topics_sort(df, input_dir, output_dir):
         if topic == 'nan':
             continue
 
-        # Folder and metadata for this topic.
+        # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
         topic_norm = topics_sort_normalize(topic)
