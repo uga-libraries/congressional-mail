@@ -667,7 +667,7 @@ def topics_sort_df(df):
 
 
 def topics_sort_files(df, column, input_dir, output_dir, folder_path):
-    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
+    """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
 
     # Gets a list of unique documents from the specified document column (in or out), excluding blanks, to copy.
     doc_list = df[column].dropna().unique().tolist()
