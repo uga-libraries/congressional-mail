@@ -20,7 +20,7 @@ import os
 import pandas as pd
 import shutil
 import sys
-from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows, topics_sort_normalize
+from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows, topics_sort_delete_empty, topics_sort_normalize
 
 
 def check_arguments(arg_list):
@@ -601,18 +601,6 @@ def topics_sort(df, input_dir, output_dir):
         for doc in doc_list:
             topics_sort_files(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
-
-
-def topics_sort_delete_empty(topic_path):
-    """Delete the to/from constituents folder if empty, and then delete the topic folder if empty"""
-    # Deletes the to/from constituents folder if it is empty, from none of the documents being in the export,
-    if not os.listdir(topic_path):
-        os.rmdir(topic_path)
-
-        # Deletes the topic folder if it is also empty.
-        # It could contain a from_constituents folder if the function is called to delete to_constituents.
-        if not os.listdir(os.path.dirname(topic_path)):
-            os.rmdir(os.path.dirname(topic_path))
 
 
 def topics_sort_df(df):
