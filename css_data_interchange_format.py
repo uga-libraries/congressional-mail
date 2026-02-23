@@ -589,7 +589,7 @@ def topics_sort(df, input_dir, output_dir):
         doc_list = in_df.loc[in_df['group_name'] == topic, 'communication_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'from_constituents')
         for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            topics_sort_files(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
 
     # Sorts a copy of correspondence to constituents ("outgoing" letters) by topic.
@@ -599,27 +599,8 @@ def topics_sort(df, input_dir, output_dir):
         doc_list = out_df.loc[out_df['group_name'] == topic, 'communication_document_name'].tolist()
         topic_path = topics_sort_folder(topic, output_dir, 'to_constituents')
         for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
+            topics_sort_files(doc, input_dir, output_dir, topic_path)
         topics_sort_delete_empty(topic_path)
-
-
-def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
-    # Gets the path for the current doc location by updating the path in the metadata.
-    doc_path = update_path(doc, input_dir)
-
-    # Copies the doc to the topic_path folder.
-    # If the doc is not in the expected location, logs it instead.
-    # It is common to have docs in the metadata but not in the input directory.
-    doc_name = doc.split('\\')[-1]
-    doc_new_path = os.path.join(topic_path, doc_name)
-    try:
-        shutil.copy2(doc_path, doc_new_path)
-    except FileNotFoundError:
-        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-            log_writer = csv.writer(log)
-            topic = topic_path.split('\\')[-2]
-            log_writer.writerow([topic, doc])
 
 
 def topics_sort_delete_empty(topic_path):
@@ -649,6 +630,25 @@ def topics_sort_df(df):
     df.insert(15, 'communication_document_name_present', 'TBD', True)
 
     return df
+
+
+def topics_sort_files(doc, input_dir, output_dir, topic_path):
+    """Copy document to topic folder and log if error"""
+    # Gets the path for the current doc location by updating the path in the metadata.
+    doc_path = update_path(doc, input_dir)
+
+    # Copies the doc to the topic_path folder.
+    # If the doc is not in the expected location, logs it instead.
+    # It is common to have docs in the metadata but not in the input directory.
+    doc_name = doc.split('\\')[-1]
+    doc_new_path = os.path.join(topic_path, doc_name)
+    try:
+        shutil.copy2(doc_path, doc_new_path)
+    except FileNotFoundError:
+        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            log_writer = csv.writer(log)
+            topic = topic_path.split('\\')[-2]
+            log_writer.writerow([topic, doc])
 
 
 def update_path(md_path, input_dir):
