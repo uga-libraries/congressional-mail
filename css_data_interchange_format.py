@@ -613,6 +613,10 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         css_arch.topics_sort_delete_empty(topic_path)
 
+        # Saves the metadata for this topic if the topic folder was not deleted for being empty.
+        if os.path.exists(topic_path):
+            df_topic.to_csv(os.path.join(topic_path, f'{topic_norm}_metadata.csv'), index=False)
+
 
 def topics_sort_df(df):
     """Update dataframe to remove rows missing group (topic) or document name and add column for missing docs"""
