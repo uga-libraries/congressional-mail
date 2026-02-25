@@ -519,10 +519,8 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
 def topics_sort_df(df, letter_type):
     """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
 
-    # Initial df, with any row of the specified type that has some value in topic (code_description)
-    # and the letter type in correspondence_document_name.
-    df = df[df['correspondence_document_name'].str.contains(letter_type, na=False)]
-    df = df.dropna(subset=['code_description'])
+    # Removes rows with blank in code_description or correspondence_document_name columns.
+    df = df.dropna(subset=['code_description', 'correspondence_document_name'])
 
     # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
     df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
