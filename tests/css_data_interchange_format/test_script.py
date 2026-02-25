@@ -173,7 +173,13 @@ class MyTestCase(unittest.TestCase):
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join('test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+        expected = [os.path.join(by_topic, 'FARMING'),
+                    os.path.join(by_topic, 'INTTAX'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents'),
+                    os.path.join(by_topic, 'FARMING', 'FARMING_metadata.csv'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+                    os.path.join(by_topic, 'INTTAX', 'to_constituents'),
+                    os.path.join(by_topic, 'INTTAX', 'INTTAX_metadata.csv'),
                     os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
@@ -362,11 +368,17 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
         self.assertEqual(expected, result, "Problem with test for appraisal, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(input_directory)
-        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat',
-                    '2103422.html', '30046.doc', 'legal_case.html']
-        self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+        # Tests the contents of the export's documents folder, that all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'form_letters'),
+                    os.path.join(doc_path, 'indivletters'),
+                    os.path.join(doc_path, 'objects'),
+                    os.path.join(doc_path, 'form_letters', '2103422.html'),
+                    os.path.join(doc_path, 'form_letters', '30046.doc'),
+                    os.path.join(doc_path, 'form_letters', 'legal_case.html'),
+                    os.path.join(doc_path, 'indivletters', 'case work'),]
+        self.assertEqual(expected, result, "Problem with test for appraisal, documents folder contents")
 
         # Tests the contents of restriction_review.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'restriction_review.csv')
