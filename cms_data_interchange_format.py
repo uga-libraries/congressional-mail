@@ -522,8 +522,10 @@ def topics_sort_df(df, letter_type):
     # Removes rows with blank in code_description or correspondence_document_name columns.
     df = df.dropna(subset=['code_description', 'correspondence_document_name'])
 
-    # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
+    # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
+    # Not sure if this would happen, but have seen duplication in other exports.
     df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+    
     return df
 
 
