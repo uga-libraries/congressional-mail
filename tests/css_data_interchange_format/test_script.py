@@ -183,6 +183,30 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
+        # Tests the contents of FARMING_metadata.csv.
+        csv_path = os.path.join(by_topic, 'FARMING', 'FARMING_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['BLANK', '551', 'C', '19990315', '19990402', 'BLANK', '19990315', 'imail', 'FARMING', 'Marietta',
+                     'GA', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml', 'True',
+                     'BLANK', '1c8614bf01caf83e00010e44.eml', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access, FARMING_metadata.csv")
+
+        # Tests the contents of INTTAX_metadata.csv.
+        csv_path = os.path.join(by_topic, 'INTTAX', 'INTTAX_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['usmail', 'BLANK', 'C', '19990331', '19990402', 'BLANK', '19990331', 'usmail', 'INTTAX',
+                     ' ', ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\formletters\inttax.doc', 'True',
+                     'inttax.doc', ' ', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access, INTTAX_metadata.csv")
+
         # Tests the contents of topics_sort_file_not_found.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
         result = csv_to_list(csv_path)
