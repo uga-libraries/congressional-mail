@@ -517,15 +517,16 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
 
 
 def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has any value in topic and the letter type as part of the document name"""
+    """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
+
     # Initial df, with any row of the specified type that has some value in topic (code_description)
     # and the letter type in correspondence_document_name.
-    topic_df = df[df['correspondence_document_name'].str.contains(letter_type, na=False)]
-    topic_df = topic_df.dropna(subset=['code_description'])
+    df = df[df['correspondence_document_name'].str.contains(letter_type, na=False)]
+    df = df.dropna(subset=['code_description'])
 
     # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
-    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-    return topic_df
+    df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+    return df
 
 
 def topics_report(df, output_dir):
