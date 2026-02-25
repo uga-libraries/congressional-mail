@@ -607,7 +607,7 @@ def topics_sort(df, input_dir, output_dir):
         if topic == 'nan':
             continue
 
-        # Folder and metadata for this topic.
+        # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
         topic_norm = topics_sort_normalize(topic)
@@ -667,13 +667,13 @@ def topics_sort_df(df):
 
 
 def topics_sort_files(df, column, input_dir, output_dir, folder_path):
-    """Copy all documents to a topic folder, update df for if documents were found and log if missing"""
+    """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
 
     # Gets a list of unique documents from the specified document column (in or out), excluding blanks, to copy.
     doc_list = df[column].dropna().unique().tolist()
     for doc in doc_list:
 
-        # Gets the path for the current doc location by updating the path in the metadata.
+        # Gets the path for the current doc location by updating the path from the metadata.
         doc_path = update_path(doc, input_dir)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
@@ -722,8 +722,12 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
     # Save to the topic folder.
-    csv_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    df.to_csv(csv_path, index=False)
+    # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
+    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+    if os.path.exists(metadata_path):
+        df.to_csv(metadata_path, mode='a', header=False, index=False)
+    else:
+        df.to_csv(metadata_path, index=False)
 
 
 def update_path(md_path, input_dir):
@@ -751,7 +755,7 @@ if __name__ == '__main__':
 
     # Validates the script argument values and calculates the path to the metadata file.
     # If there are any errors, prints them and exits the script.
-    input_directory, metadata_path, script_mode, errors_list = check_arguments(sys.argv)
+    input_directory, csv_path, script_mode, errors_list = check_arguments(sys.argv)
     if len(errors_list) > 0:
         for error in errors_list:
             print(error)
@@ -761,7 +765,7 @@ if __name__ == '__main__':
     output_directory = os.path.dirname(input_directory)
 
     # Reads the metadata file into a pandas dataframe.
-    md_df = read_metadata(metadata_path)
+    md_df = read_metadata(csv_path)
 
     # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
     # The export is not changed in this mode.

@@ -4,250 +4,364 @@ import pandas as pd
 import shutil
 import unittest
 from css_data_interchange_format import topics_sort
+from test_script import csv_to_list, make_dir_list
 
 
-def make_df(row_list):
-    """Make a dataframe from a list of rows with consistent columns, used for test input"""
-    df = pd.DataFrame(row_list, columns=['zip_code', 'group_name', 'document_type', 'communication_document_name'])
+def make_df(rows):
+    """Make a df for test input with all columns, where rows just has the values that change for each test"""
+    full_rows = []
+    for row in rows:
+        new_row = ['*', '*', '*', '*', '*', '*', '*', '*', row[0], '*', '*', row[1], '*', row[2], row[3], '*', '*', '*']
+        full_rows.append(new_row)
+    columns = ['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date', 'update_date',
+               'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country', 'document_type',
+               'communication_document_name', 'communication_document_id', 'file_location', 'file_name']
+    df = pd.DataFrame(full_rows, columns=columns)
     return df
-
-
-def make_dir_list(dir_path):
-    """Make a list of the files in the folder created by the function to compare to expected results"""
-    contents_list = []
-    for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            contents_list.append(os.path.join(root, file))
-    return contents_list
-
-
-def make_log_list():
-    """Makes a list of the contents of the log created when files in the metadata are not in the directory"""
-    log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
-    log_df = pd.read_csv(log_path)
-    log_list = [log_df.columns.tolist()] + log_df.values.tolist()
-    return log_list
 
 
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
-        """Variables used by every test"""
-        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'Correspondence_by_Topic')
-        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'css_export')
-        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort')
+        """Variables and directory used by every test"""
+        self.by_topic = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'output_directory', 'correspondence_by_topic')
+        self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'name_export')
+        self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'output_directory')
+        os.mkdir(self.output_dir)
 
     def tearDown(self):
         """Delete the script outputs, if made"""
-        # Correspondence_by_Topic folder.
-        if os.path.exists(self.by_topic):
-            shutil.rmtree(self.by_topic)
+        output_directory = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'output_directory')
+        if os.path.exists(output_directory):
+            shutil.rmtree(output_directory)
 
-        # Log for FileNotFoundError.
-        log_path = os.path.join(os.getcwd(), 'test_data', 'topics_sort', 'topics_sort_file_not_found.csv')
-        if os.path.exists(log_path):
-            os.remove(log_path)
-
-    def test_blank(self):
-        """Test for when some rows have no topic and/or no document and should be skipped"""
+    def test_duplicate_norm(self):
+        """Test for when there are duplicate topics after normalization"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', np.nan, 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', np.nan],
-                      ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', np.nan, 'AT_IN2', np.nan],
-                      ['30604', np.nan, 'OUTGOING', np.nan],
-                      ['30605', 'dogs', 'AT_OUT2', np.nan],
-                      ['30606', np.nan, 'AT_OUT2', r'..\documents\indivletters\toA.txt'],
-                      ['30607', 'farm', 'AT_OUT2', r'..\documents\indivletters\toB.txt']])
+        df = make_df([[np.nan, '30600', 'IN', np.nan],
+                      ['*kittens*', '30601', 'OUTGOING', '..\\documents\\forms\\cat.txt'],
+                      ['<kittens>', '30602', 'AT_OUT2', '..\\documents\\indivletters\\toA.txt'],
+                      ['puppies?', '30603', 'AT_OUT', '..\\documents\\indivletters\\toB.txt'],
+                      [':kittens:', '30604', 'AT_IN2', '..\\documents\\objects\\file3.txt'],
+                      ['puppies', '30605', 'AT_IN', '..\\documents\\objects\\file1.txt'],
+                      ['puppies/', '30606', 'OUT', '..\\documents\\forms\\dog.txt'],
+                      ['|kittens|', '30607', 'OUT', '..\\documents\\forms\\cat.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'farm', 'to_constituents', 'toB.txt')]
-        self.assertEqual(expected, result, "Problem with test for blank")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.by_topic, 'puppies'),
+                    os.path.join(self.by_topic, 'puppies_'),
+                    os.path.join(self.by_topic, '_kittens_'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents'),
+                    os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'puppies_', 'to_constituents'),
+                    os.path.join(self.by_topic, 'puppies_', 'puppies__metadata.csv'),
+                    os.path.join(self.by_topic, 'puppies_', 'to_constituents', 'dog.txt'),
+                    os.path.join(self.by_topic, 'puppies_', 'to_constituents', 'toB.txt'),
+                    os.path.join(self.by_topic, '_kittens_', 'from_constituents'),
+                    os.path.join(self.by_topic, '_kittens_', 'to_constituents'),
+                    os.path.join(self.by_topic, '_kittens_', '_kittens__metadata.csv'),
+                    os.path.join(self.by_topic, '_kittens_', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, '_kittens_', 'to_constituents', 'cat.txt'),
+                    os.path.join(self.by_topic, '_kittens_', 'to_constituents', 'toA.txt')]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, output_directory")
 
-    def test_duplicate_file(self):
-        """Test for when a file is in the metadata with the same topic more than once"""
+        # Verifies puppies_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*',
+                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies_metadata.csv")
+
+        # # Verifies puppies__metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies_', 'puppies__metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies?', '*', '*', '30603', '*',
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies/', '*', '*', '30606', '*',
+                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies__metadata.csv")
+
+        # Verifies _kittens__metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, '_kittens_', '_kittens__metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*kittens*', '*', '*', '30601', '*',
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '<kittens>', '*', '*', '30602', '*',
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', ':kittens:', '*', '*', '30604', '*',
+                     'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '|kittens|', '*', '*', '30607', '*',
+                     'OUT', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_norm, _kittens__metadata.csv")
+
+    def test_empty_blank(self):
+        """Test for when no letters are sorted because the group and/or document name are blank for all"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'dogs', 'AT_IN1', r'..\documents\objects\file2.txt'],
-                      ['30603', 'dogs', 'AT_IN2', r'..\documents\objects\file2.txt'],
-                      ['30604', 'dogs', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
-                      ['30605', 'dogs', 'AT_OUT2', r'..\documents\indivletters\toA.txt']])
+        df = make_df([['kittens', '30601', 'INCOMING', np.nan],
+                      [np.nan, '30602', 'AT_OUT', np.nan],
+                      ['kittens', '30603', 'AT_IN2', np.nan],
+                      [np.nan, '30604', 'OUT', '..\\documents\\objects\\file1.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'toA.txt')]
-        self.assertEqual(expected, result, "Problem with test for duplicate_file")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic')]
+        self.assertEqual(expected, result, "Problem with test for empty_blank, output_directory")
 
-    def test_duplicate_topic(self):
-        """Test for when a topic is in the metadata more than once"""
+    def test_empty_missing(self):
+        """Test for when no letters are sorted because none of the letters are in the export"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'cats', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt'],
-                      ['30604', 'cats', 'AT_OUT2', r'..\documents\indivletters\toB.txt'],
-                      ['30605', 'cats', 'OUTGOING', r'..\documents\indivletters\toD.txt']])
+        df = make_df([['kittens', '30601', 'INCOMING', '..\\documents\\ima\\from_0.txt'],
+                      ['pets', '30602', 'AT_IN1', '..\\documents\\ima\\missing.txt'],
+                      ['kittens', '30603', 'AT_OUT', '..\\documents\\form\\missing.txt'],
+                      ['puppies', '30604', 'OUT', '..\\documents\\objects\\file0.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file4.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'toB.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'toD.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt')]
-        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv')]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, output_directory")
 
-    def test_filenotfounderror(self):
-        """Test for when a file is in the metadata but not the directory"""
+        # Verifies the file_not_found log has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        expected = [['kittens', '..\\documents\\ima\\from_0.txt'],
+                    ['kittens', '..\\documents\\form\\missing.txt'],
+                    ['pets', '..\\documents\\ima\\missing.txt'],
+                    ['puppies', '..\\documents\\objects\\file0.txt']]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, file_not_found")
+
+    def test_in(self):
+        """Test for when all letters are from constituents"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\ima\file2.txt'],
-                      ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'\doc\objects\file4.txt'],
-                      ['30604', 'park', 'OUT_IN2', r'\doc\indivletter\toX.txt'],
-                      ['30605', 'park', 'OUT_IN2', r'\doc\missing\toA.txt']])
+        df = make_df([['kittens', '30601', 'INCOMING', '..\\documents\\ima\\from_01.txt'],
+                      ['pets', '30602', 'AT_IN1', '..\\documents\\ima\\missing.txt'],
+                      ['kittens', '30603', 'AT_IN2', '..\\documents\\ima\\from_01.txt'],
+                      ['puppies', '30604', 'AT_IN', '..\\documents\\objects\\file1.txt'],
+                      ['puppies', '30605', 'IN', '..\\documents\\objects\\file2.txt'],
+                      [np.nan, '30606', 'IN', '..\\documents\\objects\\file3.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt')]
-        self.assertEqual(expected, result, "Problem with test for filenotfounderror, topic folders")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.by_topic, 'kittens'),
+                    os.path.join(self.by_topic, 'puppies'),
+                    os.path.join(self.by_topic, 'kittens', 'from_constituents'),
+                    os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'),
+                    os.path.join(self.by_topic, 'kittens', 'from_constituents', 'from_01.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents'),
+                    os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents', 'file2.txt')]
+        self.assertEqual(expected, result, "Problem with test for in, output_directory")
 
-        # Verifies the expected log was created and has the expected contents.
-        result = make_log_list()
-        expected = [['dogs', r'..\documents\ima\file2.txt'],
-                    ['park', r'\doc\objects\file4.txt'],
-                    ['park', r'\doc\indivletter\toX.txt'],
-                    ['park', r'\doc\missing\toA.txt']]
-        self.assertEqual(expected, result, "Problem with test for filenotfounderror, log")
+        # Verifies kittens_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for in, kittens_metadata.csv")
 
-    def test_folder_empty(self):
-        """Test for when no outgoing files for a topic are in the directory, but some incoming are"""
+        # Verifies puppies_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*', 
+                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*', 
+                     'IN', '..\\documents\\objects\\file2.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for in, puppies_metadata.csv")
+
+        # Verifies the file_not_found log has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        expected = [['pets', '..\\documents\\ima\\missing.txt']]
+        self.assertEqual(expected, result, "Problem with test for in, file_not_found")
+
+    def test_in_out(self):
+        """Test for when letters are from and to constituents"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
-                      ['30602', 'cats', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'cats', 'AT_IN2', r'..\documents\objects\file4.txt'],
-                      ['30604', 'cats', 'OUTGOING', r'..\documents\toX.txt'],
-                      ['30605', 'cats', 'AT_OUT3', r'..\documents\toY.txt']])
+        df = make_df([[np.nan, '30600', 'IN', np.nan],
+                      ['kittens', '30601', 'OUTGOING', '..\\documents\\forms\\cat.txt'],
+                      ['bunnies', '30602', 'AT_OUT1', '..\\documents\\forms\\missing.txt'],
+                      ['kittens', '30603', 'AT_OUT2', '..\\documents\\indivletters\\toA.txt'],
+                      ['puppies', '30604', 'AT_OUT', '..\\documents\\indivletters\\toB.txt'],
+                      ['kittens', '30605', 'AT_IN2', '..\\documents\\objects\\file3.txt'],
+                      ['puppies', '30606', 'AT_IN', '..\\documents\\objects\\file1.txt'],
+                      ['puppies', '30607', 'OUT', '..\\documents\\forms\\dog.txt'],
+                      ['puppies', '30608', 'OUT', np.nan],
+                      ['puppies', '30609', 'AT_IN', '..\\documents\\objects\\file1.txt'],
+                      ['kittens', '30610', 'OUT', '..\\documents\\missing.txt'],
+                      ['kittens', '30611', 'OUT', '..\\documents\\forms\\missing.txt'],
+                      ['kittens', '30612', 'INCOMING', '..\\documents\\ima\\from_01.txt'],
+                      ['bunnies', '30613', 'AT_IN1', '..\\documents\\ima\\missing.txt'],
+                      ['puppies', '30614', 'IN', '..\\documents\\objects\\file2.txt'],
+                      ['bunnies', '30615', 'OUT_JD', '..\\documents\\indivletters\\toD.txt'],
+                      ['kittens', '30616', 'OUT', '..\\documents\\forms\\cat.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file4.txt')]
-        self.assertEqual(expected, result, "Problem with test for one folder empty, topic folders")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.by_topic, 'bunnies'),
+                    os.path.join(self.by_topic, 'kittens'),
+                    os.path.join(self.by_topic, 'puppies'),
+                    os.path.join(self.by_topic, 'bunnies', 'to_constituents'),
+                    os.path.join(self.by_topic, 'bunnies', 'bunnies_metadata.csv'),
+                    os.path.join(self.by_topic, 'bunnies', 'to_constituents', 'toD.txt'),
+                    os.path.join(self.by_topic, 'kittens', 'from_constituents'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents'),
+                    os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'),
+                    os.path.join(self.by_topic, 'kittens', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'kittens', 'from_constituents', 'from_01.txt'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents', 'cat.txt'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents', 'toA.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents'),
+                    os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents', 'dog.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents', 'toB.txt')]
+        self.assertEqual(expected, result, "Problem with test for out, output_directory")
 
-        # Verifies the expected log was created and has the expected contents.
-        result = make_log_list()
-        expected = [['cats', r'..\documents\file1.txt'],
-                    ['dogs', r'..\documents\file2.txt'],
-                    ['cats', r'..\documents\toX.txt'],
-                    ['cats', r'..\documents\toY.txt']]
-        self.assertEqual(expected, result, "Problem with test for one folder empty, log")
+        # Verifies bunnies_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'bunnies', 'bunnies_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30602', '*',
+                     'AT_OUT1', '..\\documents\\forms\\missing.txt', 'False', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30613', '*',
+                     'AT_IN1', '..\\documents\\ima\\missing.txt', 'False', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30615', '*',
+                     'OUT_JD', '..\\documents\\indivletters\\toD.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for out, bunnies_metadata.csv")
 
-        # Verifies folder without a file is not still present.
-        result = os.path.exists(os.path.join(self.by_topic, 'dogs'))
-        expected = False
-        self.assertEqual(expected, result, "Problem with test for one folder empty, folders not deleted")
+        # Verifies kittens_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30603', '*',
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30605', '*',
+                     'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30610', '*',
+                     'OUT', '..\\documents\\missing.txt', 'False', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30611', '*',
+                     'OUT', '..\\documents\\forms\\missing.txt', 'False', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30612', '*',
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for out, kittens_metadata.csv")
 
-    def test_folders_empty(self):
-        """Test for when no files (incoming or outgoing) for a topic are in the directory and the topic folder is empty"""
+        # Verifies puppies_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*',
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30606', '*',
+                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30607', '*',
+                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30614', '*',
+                     'IN', '..\\documents\\objects\\file2.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for out, puppies_metadata.csv")
+
+        # Verifies the file_not_found log has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        expected = [['kittens', '..\\documents\\missing.txt'],
+                    ['kittens', '..\\documents\\forms\\missing.txt'],
+                    ['bunnies', '..\\documents\\ima\\missing.txt'],
+                    ['bunnies', '..\\documents\\forms\\missing.txt']]
+        self.assertEqual(expected, result, "Problem with test for out, file_not_found")
+
+    def test_out(self):
+        """Test for when all letters are to constituents"""
         # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\file2.txt'],
-                      ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt'],
-                      ['30604', 'cats', 'OUTGOING', r'..\documents\toX.txt'],
-                      ['30605', 'cats', 'AT_OUT3', r'..\documents\toY.txt']])
+        df = make_df([['kittens', '30601', 'OUTGOING', '..\\documents\\forms\\cat.txt'],
+                      ['pets', '30602', 'AT_OUT1', '..\\documents\\forms\\missing.txt'],
+                      ['kittens', '30603', 'AT_OUT2', '..\\documents\\indivletters\\toA.txt'],
+                      ['puppies', '30604', 'AT_OUT', '..\\documents\\indivletters\\toB.txt'],
+                      ['puppies', '30605', 'OUT', '..\\documents\\forms\\dog.txt'],
+                      ['puppies', '30606', 'OUT', np.nan],
+                      ['kittens', '30607', 'OUT', '..\\documents\\missing.txt']])
         topics_sort(df, self.input_dir, self.output_dir)
 
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt')]
-        self.assertEqual(expected, result, "Problem with test for folders empty, topic folders")
+        # Verifies the contents of the output_directory.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.by_topic, 'kittens'),
+                    os.path.join(self.by_topic, 'puppies'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents'),
+                    os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents', 'cat.txt'),
+                    os.path.join(self.by_topic, 'kittens', 'to_constituents', 'toA.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents'),
+                    os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents', 'dog.txt'),
+                    os.path.join(self.by_topic, 'puppies', 'to_constituents', 'toB.txt')]
+        self.assertEqual(expected, result, "Problem with test for out, output_directory")
 
-        # Verifies the expected log was created and has the expected contents.
-        result = make_log_list()
-        expected = [['cats', r'..\documents\file1.txt'],
-                    ['dogs', r'..\documents\file2.txt'],
-                    ['cats', r'..\documents\toX.txt'],
-                    ['cats', r'..\documents\toY.txt']]
-        self.assertEqual(expected, result, "Problem with test for folders empty, log")
+        # Verifies kittens_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30603', '*',
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30607', '*',
+                     'OUT', '..\\documents\\missing.txt', 'False', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for out, kittens_metadata.csv")
 
-        # Verifies folders without a file are not still present.
-        result = [os.path.exists(os.path.join(self.by_topic, 'cats')),
-                  os.path.exists(os.path.join(self.by_topic, 'dogs'))]
-        expected = [False, False]
-        self.assertEqual(expected, result, "Problem with test for folders empty, folders not deleted")
+        # Verifies puppies_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_name_present',
+                     'communication_document_id', 'file_location', 'file_name'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*',
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*',
+                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
+        self.assertEqual(expected, result, "Problem with test for out, puppies_metadata.csv")
 
-    def test_folder_name_error(self):
-        """Test for when a topic contains a character that cannot be in a folder name"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'A\\BC/DE:***', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'Ga?', 'OUTGOMING', r'..\documents\indivletters\toB.txt'],
-                      ['30602', '"H"', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', '<pa|rk>', 'OUT_IN2', r'..\documents\indivletters\toC.txt']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'A_BC_DE____', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'Ga_', 'to_constituents', 'toB.txt'),
-                    os.path.join(self.by_topic, '_H_', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, '_pa_rk_', 'to_constituents', 'toC.txt')]
-        self.assertEqual(expected, result, "Problem with test for folder name error")
-
-    def test_folder_name_trailing(self):
-        """Test for when a topic ends with a space or period, which cannot be in the folder name"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', ' apple.com', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'cat ', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
-                      ['30601', 'dog', 'INCOMING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'dog.', 'OUT_IN1', r'..\documents\indivletters\toC.txt'],
-                      ['30603', 'park and rec. ', 'AT_IN2', r'..\documents\objects\file4.txt']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, ' apple.com', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'toA.txt'),
-                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'toC.txt'),
-                    os.path.join(self.by_topic, 'park and rec', 'from_constituents', 'file4.txt')]
-        self.assertEqual(expected, result, "Problem with test for folder name trailing")
-
-    def test_unique(self):
-        """Test for when topic and file is unique"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'cats', 'INCOMING', r'..\documents\ima\file1.txt'],
-                      ['30601', 'dogs', 'INCOMING', r'..\documents\objects\file2.txt'],
-                      ['30602', 'farm', 'AT_IN1', r'..\documents\objects\file3.txt'],
-                      ['30603', 'park', 'AT_IN2', r'..\documents\objects\file4.txt'],
-                      ['30604', 'tree', 'OUTGOING', r'..\documents\indivletters\toA.txt'],
-                      ['30605', 'zoo', 'AT_OUT2', r'..\documents\indivletters\toB.txt']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the expected topic folders were created and have the expected files in them.
-        result = make_dir_list(self.by_topic)
-        expected = [os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'park', 'from_constituents', 'file4.txt'),
-                    os.path.join(self.by_topic, 'tree', 'to_constituents', 'toA.txt'),
-                    os.path.join(self.by_topic, 'zoo', 'to_constituents', 'toB.txt')]
-        self.assertEqual(expected, result, "Problem with test for unique")
+        # Verifies the file_not_found log has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        expected = [['kittens', '..\\documents\\missing.txt'],
+                    ['pets', '..\\documents\\forms\\missing.txt']]
+        self.assertEqual(expected, result, "Problem with test for out, file_not_found")
 
 
 if __name__ == '__main__':
