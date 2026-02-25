@@ -516,7 +516,7 @@ def topics_sort_copy(doc, input_dir, output_dir, topic_path):
             log_writer.writerow([topic, doc])
 
 
-def topics_sort_df(df, letter_type):
+def topics_sort_df(df):
     """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
 
     # Removes rows with blank in code_description or correspondence_document_name columns.
