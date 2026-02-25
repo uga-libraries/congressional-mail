@@ -525,7 +525,11 @@ def topics_sort_df(df, letter_type):
     # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
     # Not sure if this would happen, but have seen duplication in other exports.
     df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-    
+
+    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
+    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
+    df.insert(16, 'correspondence_document_name_present', 'TBD', True)
+
     return df
 
 
