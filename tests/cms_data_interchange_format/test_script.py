@@ -4,7 +4,6 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path, sort=False):
@@ -18,13 +17,15 @@ def csv_to_list(csv_path, sort=False):
     return csv_list
 
 
-def files_in_dir(dir_path):
-    """Make a list of every file in a directory, for testing the result of the function"""
-    file_list = []
+def make_dir_list(dir_path):
+    """Make a list of the files in the folder created by the function to compare to expected results"""
+    contents_list = []
     for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            file_list.append(file)
-    return file_list
+        for dir_name in dirs:
+            contents_list.append(os.path.join(root, dir_name))
+        for file_name in files:
+            contents_list.append(os.path.join(root, file_name))
+    return contents_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -150,8 +151,14 @@ class MyTestCase(unittest.TestCase):
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', '1.txt'),
+        expected = [os.path.join(by_topic, 'LEGAL CASE'),
+                    os.path.join(by_topic, 'MINWAGE'),
+                    os.path.join(by_topic, 'RIGHTS'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', '1.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'from_constituents'),
                     os.path.join(by_topic, 'MINWAGE', 'from_constituents', '2.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents', '33.txt'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
@@ -331,9 +338,14 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for appraisal, file_delete_log.csv")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(input_directory)
-        expected = ['1B.out', '2A.out', '2B.out', '2C.out', '2D.out', '8A.out',
-                    '1.txt', 'case_name.txt', '1001.txt', '1002.txt']
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(doc_path, 'forms'),
+                    os.path.join(doc_path, 'in-email'),
+                    os.path.join(doc_path, 'out-custom'),
+                    os.path.join(doc_path, 'in-email', 'case_name.txt'),
+                    os.path.join(doc_path, 'out-custom', '1001.txt'),
+                    os.path.join(doc_path, 'out-custom', '1002.txt')]
         self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
 
         # Tests the contents of restriction_review.csv
