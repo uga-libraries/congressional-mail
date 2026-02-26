@@ -497,6 +497,23 @@ def topics_sort(df, input_dir, output_dir):
         css_dif.topics_sort_delete_empty(topic_path)
 
 
+def topics_sort_df(df):
+    """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
+
+    # Removes rows with blank in code_description or correspondence_document_name columns.
+    df = df.dropna(subset=['code_description', 'correspondence_document_name'])
+
+    # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
+    # Not sure if this would happen, but have seen duplication in other exports.
+    df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+
+    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
+    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
+    df.insert(16, 'correspondence_document_name_present', 'TBD', True)
+
+    return df
+
+
 def topics_sort_files(doc, input_dir, output_dir, topic_path):
     """Copy document to topic folder and log if error"""
     # Gets the path for the current doc location by updating the path in the metadata.
@@ -514,23 +531,6 @@ def topics_sort_files(doc, input_dir, output_dir, topic_path):
             log_writer = csv.writer(log)
             topic = topic_path.split('\\')[-2]
             log_writer.writerow([topic, doc])
-
-
-def topics_sort_df(df):
-    """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
-
-    # Removes rows with blank in code_description or correspondence_document_name columns.
-    df = df.dropna(subset=['code_description', 'correspondence_document_name'])
-
-    # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
-    # Not sure if this would happen, but have seen duplication in other exports.
-    df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-
-    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
-    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
-    df.insert(16, 'correspondence_document_name_present', 'TBD', True)
-
-    return df
 
 
 def topics_report(df, output_dir):
