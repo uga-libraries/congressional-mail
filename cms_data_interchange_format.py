@@ -506,6 +506,9 @@ def topics_sort(df, input_dir, output_dir):
             os.mkdir(to_path)
         df_topic = topics_sort_files(df_topic, 'forms|out-custom', input_dir, output_dir, to_path)
 
+        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
+        css_dif.topics_sort_delete_empty(topic_path)
+        
 
 def topics_sort_df(df):
     """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
