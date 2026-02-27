@@ -500,15 +500,11 @@ def topics_sort(df, input_dir, output_dir):
             os.mkdir(from_path)
         df_topic = topics_sort_files(df_topic, 'attachments|in-email', input_dir, output_dir, from_path)
 
-        # Sorts a copy of correspondence to constituents (in folders forms or out-custom) by topic.
-        out_df = topics_sort_df(df, 'forms|out-custom')
-        topic_list = out_df['code_description'].unique()
-        for topic in topic_list:
-            doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-            topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
-            for doc in doc_list:
-                topics_sort_files(doc, input_dir, output_dir, topic_path)
-            css_dif.topics_sort_delete_empty(topic_path)
+        # Sorts correspondence to constituents (in folders forms or out-custom).
+        to_path = os.path.join(topic_path, 'to_constituents')
+        if not os.path.exists(to_path):
+            os.mkdir(to_path)
+        df_topic = topics_sort_files(df_topic, 'forms|out-custom', input_dir, output_dir, to_path)
 
 
 def topics_sort_df(df):
