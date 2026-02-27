@@ -480,7 +480,7 @@ def topics_sort(df, input_dir, output_dir):
 
     # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
-    topic_list = df_topics['group_name'].unique().tolist()
+    topic_list = df_topics['code_description'].unique().tolist()
     for topic in topic_list:
 
         # Makes folder and metadata df for this topic.
