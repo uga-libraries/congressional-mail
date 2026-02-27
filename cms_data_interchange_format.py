@@ -19,6 +19,7 @@ import os
 import pandas as pd
 import shutil
 import sys
+import css_archiving_format as css_arch
 import css_data_interchange_format as css_dif
 
 
@@ -206,7 +207,7 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
 
     # Creates a file deletion log, with a header row.
     log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    css_dif.file_deletion_log(log_path, None, 'header')
+    css_arch.file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, deletes any letter in the correspondence_document_name column except form letters.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
@@ -217,13 +218,13 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
         if name != '' and name != 'nan' and not name.startswith('form'):
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
-                css_dif.file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+                css_arch.file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
             else:
                 try:
-                    css_dif.file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    css_arch.file_deletion_log(log_path, file_path, row.Appraisal_Category)
                     os.remove(file_path)
                 except FileNotFoundError:
-                    css_dif.file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+                    css_arch.file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def df_search(df, keywords_list, category):
@@ -487,7 +488,7 @@ def topics_sort(df, input_dir, output_dir):
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
         # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
-        topic_norm = css_dif.topics_sort_normalize(topic)
+        topic_norm = css_arch.topics_sort_normalize(topic)
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         if not os.path.exists(topic_path):
             os.mkdir(topic_path)
@@ -507,7 +508,7 @@ def topics_sort(df, input_dir, output_dir):
         df_topic = topics_sort_files(df_topic, 'forms|out-custom', input_dir, output_dir, to_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        css_dif.topics_sort_delete_empty(topic_path)
+        css_arch.topics_sort_delete_empty(topic_path)
 
         # Saves the metadata for this topic if the topic folder was not deleted for being empty.
         # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
@@ -630,7 +631,7 @@ if __name__ == '__main__':
         print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
               "but not change the metadata file.")
         try:
-            appraisal_df = css_dif.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
@@ -646,16 +647,16 @@ if __name__ == '__main__':
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         try:
-            appraisal_df = css_dif.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
         try:
-            restrict_df = css_dif.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+            restrict_df = css_arch.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
-        md_df = css_dif.remove_appraisal_rows(md_df, appraisal_df)
+        md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
         md_df = css_dif.remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
