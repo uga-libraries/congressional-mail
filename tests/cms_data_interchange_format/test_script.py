@@ -155,13 +155,61 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'MINWAGE'),
                     os.path.join(by_topic, 'RIGHTS'),
                     os.path.join(by_topic, 'LEGAL CASE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv'),
                     os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', '1.txt'),
                     os.path.join(by_topic, 'MINWAGE', 'from_constituents'),
+                    os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv'),
                     os.path.join(by_topic, 'MINWAGE', 'from_constituents', '2.txt'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents'),
+                    os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents', '33.txt'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
+
+        # Tests the contents of LEGAL CASE_metadata.csv.
+        csv_path = os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
+                     'code_description', 'inactive_flag'],
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'True', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access, LEGAL CASE_metadata.csv")
+
+        # Tests the contents of MINWAGE_metadata.csv.
+        csv_path = os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
+                     'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'True', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access, MINWAGE_metadata.csv")
+
+        # Tests the contents of RIGHTS_metadata.csv.
+        csv_path = os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
+                     'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'False',
+                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'True',
+                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'True',
+                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access, RIGHTS_metadata.csv")
 
         # Tests the contents of topics_sort_file_not_found.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
@@ -339,10 +387,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         doc_path = os.path.join(input_directory, 'documents')
-        result = make_dir_list(input_directory)
+        result = make_dir_list(doc_path)
         expected = [os.path.join(doc_path, 'forms'),
                     os.path.join(doc_path, 'in-email'),
                     os.path.join(doc_path, 'out-custom'),
+                    os.path.join(doc_path, 'forms', '1.txt'),
                     os.path.join(doc_path, 'in-email', 'case_name.txt'),
                     os.path.join(doc_path, 'out-custom', '1001.txt'),
                     os.path.join(doc_path, 'out-custom', '1002.txt')]
