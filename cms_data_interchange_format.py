@@ -472,28 +472,36 @@ def restriction_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    """Sort copy of incoming and outgoing correspondence into folders by topic
+    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders"""
 
-    # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
-    in_df = topics_sort_df(df, 'attachments|in-email')
-    topic_list = in_df['code_description'].unique()
-    for topic in topic_list:
-        doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'from_constituents')
-        for doc in doc_list:
-            topics_sort_files(doc, input_dir, output_dir, topic_path)
-        css_dif.topics_sort_delete_empty(topic_path)
+    # New version of df with blanks removed from 'code_description' or 'correspondence_document_name' columns
+    df_topics = topics_sort_df(df)
 
-    # Sorts a copy of correspondence to constituents (in folders forms or out-custom) by topic.
-    out_df = topics_sort_df(df, 'forms|out-custom')
-    topic_list = out_df['code_description'].unique()
+    # Sorts a copy of all correspondence by topic.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    topic_list = df_topics['group_name'].unique().tolist()
     for topic in topic_list:
-        doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
-        for doc in doc_list:
-            topics_sort_files(doc, input_dir, output_dir, topic_path)
-        css_dif.topics_sort_delete_empty(topic_path)
+
+        # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
+        in_df = topics_sort_df(df, 'attachments|in-email')
+        topic_list = in_df['code_description'].unique()
+        for topic in topic_list:
+            doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+            topic_path = css_dif.topics_sort_folder(topic, output_dir, 'from_constituents')
+            for doc in doc_list:
+                topics_sort_files(doc, input_dir, output_dir, topic_path)
+            css_dif.topics_sort_delete_empty(topic_path)
+
+        # Sorts a copy of correspondence to constituents (in folders forms or out-custom) by topic.
+        out_df = topics_sort_df(df, 'forms|out-custom')
+        topic_list = out_df['code_description'].unique()
+        for topic in topic_list:
+            doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
+            topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
+            for doc in doc_list:
+                topics_sort_files(doc, input_dir, output_dir, topic_path)
+            css_dif.topics_sort_delete_empty(topic_path)
 
 
 def topics_sort_df(df):
