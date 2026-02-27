@@ -617,13 +617,8 @@ def topics_sort(df, input_dir, output_dir):
         css_arch.topics_sort_delete_empty(topic_path)
 
         # Saves the metadata for this topic if the topic folder was not deleted for being empty.
-        # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
         if os.path.exists(topic_path):
-            metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-            if os.path.exists(metadata_path):
-                df_topic.to_csv(metadata_path, mode='a', header=False, index=False)
-            else:
-                df_topic.to_csv(metadata_path, index=False)
+            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
 
 def topics_sort_df(df):
@@ -670,6 +665,24 @@ def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
                 log_writer.writerow([topic, doc])
 
     return df
+
+
+def topics_sort_save_metadata(df, topic_path, topic_norm):
+    """Remove rows with no document and temporary column and save to a CSV"""
+
+    # Only include rows where the document is in the export.
+    df = df[df['communication_document_name_present'] == True]
+
+    # Remove the "present" column, now that it only has True.
+    df = df.drop(['communication_document_name_present'], axis=1)
+
+    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
+    # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
+    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+    if os.path.exists(metadata_path):
+        df.to_csv(metadata_path, mode='a', header=False, index=False)
+    else:
+        df.to_csv(metadata_path, index=False)
 
 
 def update_path(md_path, input_dir):
