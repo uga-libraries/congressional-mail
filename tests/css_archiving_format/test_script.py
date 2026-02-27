@@ -231,10 +231,7 @@ class MyTestCase(unittest.TestCase):
                      'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
                     ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
                      r'..\documents\BlobExport\objects\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
-                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt', 'True'],
-                    ['F city', 'FL', '10234', 'BLANK', 'f600', 'General', 'Email', '20230202', 'B1',
-                     r'..\documents\BlobExport\objects\xxxxxx.txt', 'False', 'r600', 'General', 'Email', '20230212',
-                     'B', r'..\documents\BlobExport\indivletters\00000Z.txt', 'False']]
+                     'B1^B2', r'..\documents\BlobExport\indivletters\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, B1_metadata.csv")
 
         # Tests the contents of B2_metadata.csv

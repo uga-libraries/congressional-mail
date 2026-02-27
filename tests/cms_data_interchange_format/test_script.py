@@ -172,10 +172,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
                      'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
-                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'True', 'BLANK',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
                      'COR', '11111', 'LEGAL CASE', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, LEGAL CASE_metadata.csv")
 
@@ -185,10 +184,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
                      'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
-                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'True', 'BLANK',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
                      'COR', '22222', 'MINWAGE', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, MINWAGE_metadata.csv")
 
@@ -198,16 +196,12 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
                      'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
-                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
-                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'False',
-                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
-                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'True',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt',
                      'BLANK', 'COR', '33333', 'RIGHTS', 'Y'],
                     ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
-                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'True',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt',
                      'BLANK', 'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, RIGHTS_metadata.csv")
 

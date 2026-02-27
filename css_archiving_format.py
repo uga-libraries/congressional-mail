@@ -708,20 +708,23 @@ def topics_sort_normalize(topic):
 
 
 def topics_sort_save_metadata(df, topic_path, topic_norm):
-    """Remove temporary columns, update temporary column values, and save to a CSV"""
+    """Remove rows with no file found, temporary columns, update temporary column values, and save to a CSV"""
 
-    # Remove temporary folders used for identifying the topic.
+    # Only keeps rows if at least one of the documents was found.
+    df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
+
+    # Removes temporary folders used for identifying the topic.
     df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
 
-    # Remove duplicate rows, from when in_topic and out_topic both matched the topic.
-    df.drop_duplicates(inplace=True)
-
-    # Update any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
-    # Make these columns strings first, or it will break with an AttributeError if the column only has True and False.
+    # Updates any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
+    # Makes these columns strings first, or it will break with an AttributeError if the column only has True and False.
     df['in_document_name_present'] = df['in_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
     df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
-    # Save to the topic folder.
+    # Removes duplicate rows, from when in_topic and out_topic both matched the topic.
+    df.drop_duplicates(inplace=True)
+
+    # Saves to the topic folder.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
     metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
     if os.path.exists(metadata_path):
