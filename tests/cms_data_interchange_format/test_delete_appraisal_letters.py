@@ -5,7 +5,7 @@ import pandas as pd
 import shutil
 import unittest
 from cms_data_interchange_format import delete_appraisal_letters
-from test_script import csv_to_list, files_in_dir
+from test_script import csv_to_list, make_dir_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -54,9 +54,13 @@ class MyTestCase(unittest.TestCase):
                      '2.8', today, today, '2F48B70AB29E2B466768B6897A1640E2', 'Casework']]
         self.assertEqual(expected, result, "Problem with test for delete, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1.txt', '3.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'in-email'),
+                    os.path.join(doc_path, 'out-custom'),
+                    os.path.join(doc_path, 'in-email', '1.txt'),
+                    os.path.join(doc_path, 'in-email', '3.txt')]
         self.assertEqual(expected, result, "Problem with test for delete, directory contents")
 
     def test_error_filenotfound(self):
@@ -80,9 +84,11 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
         self.assertEqual(expected, result, "Problem with test for error_filenotfound, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'in-email'),
+                    os.path.join(doc_path, 'in-email', '1.txt')]
         self.assertEqual(expected, result, "Problem with test for error_filenotfound, directory contents")
 
     def test_error_new(self):
@@ -106,9 +112,11 @@ class MyTestCase(unittest.TestCase):
                      'Cannot determine file path: new path pattern in metadata']]
         self.assertEqual(expected, result, "Problem with test for error_new, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'in-email'),
+                    os.path.join(doc_path, 'in-email', '1.txt')]
         self.assertEqual(expected, result, "Problem with test for error_new, directory contents")
 
     def test_skip_blank(self):
@@ -128,9 +136,12 @@ class MyTestCase(unittest.TestCase):
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(expected, result, "Problem with test for skip_blank, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1000.txt', '1001.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'out-custom'),
+                    os.path.join(doc_path, 'out-custom', '1000.txt'),
+                    os.path.join(doc_path, 'out-custom', '1001.txt')]
         self.assertEqual(expected, result, "Problem with test for skip_blank, directory contents")
 
     def test_skip_empty_string(self):
@@ -150,9 +161,12 @@ class MyTestCase(unittest.TestCase):
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(expected, result, "Problem with test for skip_empty_string, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1000.txt', '1001.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'out-custom'),
+                    os.path.join(doc_path, 'out-custom', '1000.txt'),
+                    os.path.join(doc_path, 'out-custom', '1001.txt')]
         self.assertEqual(expected, result, "Problem with test for skip_empty_string, directory contents")
 
     def test_skip_form(self):
@@ -173,9 +187,14 @@ class MyTestCase(unittest.TestCase):
         expected = [['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes']]
         self.assertEqual(expected, result, "Problem with test for skip_form, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(os.path.join(input_directory, 'documents'))
-        expected = ['1.txt', '2.txt', '1.txt']
+        # Tests the contents of the documents folder, showing all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'form-attachments'),
+                    os.path.join(doc_path, 'forms'),
+                    os.path.join(doc_path, 'form-attachments', '1.txt'),
+                    os.path.join(doc_path, 'form-attachments', '2.txt'),
+                    os.path.join(doc_path, 'forms', '1.txt')]
         self.assertEqual(expected, result, "Problem with test for skip_form, directory contents")
 
 

@@ -19,8 +19,8 @@ import os
 import pandas as pd
 import shutil
 import sys
+import css_archiving_format as css_arch
 import css_data_interchange_format as css_dif
-from css_archiving_format import file_deletion_log, read_csv, remove_appraisal_rows
 
 
 def check_arguments(arg_list):
@@ -207,7 +207,7 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
 
     # Creates a file deletion log, with a header row.
     log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
-    file_deletion_log(log_path, None, 'header')
+    css_arch.file_deletion_log(log_path, None, 'header')
 
     # For every row in df_appraisal, deletes any letter in the correspondence_document_name column except form letters.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
@@ -218,13 +218,13 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
         if name != '' and name != 'nan' and not name.startswith('form'):
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
-                file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
+                css_arch.file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
             else:
                 try:
-                    file_deletion_log(log_path, file_path, row.Appraisal_Category)
+                    css_arch.file_deletion_log(log_path, file_path, row.Appraisal_Category)
                     os.remove(file_path)
                 except FileNotFoundError:
-                    file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
+                    css_arch.file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
 
 def df_search(df, keywords_list, category):
@@ -473,59 +473,97 @@ def restriction_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic"""
-    os.mkdir(os.path.join(output_dir, 'Correspondence_by_Topic'))
+    """Sort copy of incoming and outgoing correspondence into folders by topic
+    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders"""
 
-    # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
-    in_df = topics_sort_df(df, 'attachments|in-email')
-    topic_list = in_df['code_description'].unique()
+    # New version of df with blanks removed from 'code_description' or 'correspondence_document_name' columns
+    df_topics = topics_sort_df(df)
+
+    # Sorts a copy of all correspondence by topic.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    topic_list = df_topics['code_description'].unique().tolist()
     for topic in topic_list:
-        doc_list = in_df.loc[in_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'from_constituents')
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        css_dif.topics_sort_delete_empty(topic_path)
 
-    # Sorts a copy of correspondence to constituents (in folders forms or out-custom) by topic.
-    out_df = topics_sort_df(df, 'forms|out-custom')
-    topic_list = out_df['code_description'].unique()
-    for topic in topic_list:
-        doc_list = out_df.loc[out_df['code_description'] == topic, 'correspondence_document_name'].tolist()
-        topic_path = css_dif.topics_sort_folder(topic, output_dir, 'to_constituents')
-        for doc in doc_list:
-            topics_sort_copy(doc, input_dir, output_dir, topic_path)
-        css_dif.topics_sort_delete_empty(topic_path)
+        # Makes folder and metadata df for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        # The topic has to be normalized to be used for a folder and file name.
+        # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
+        topic_norm = css_arch.topics_sort_normalize(topic)
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        if not os.path.exists(topic_path):
+            os.mkdir(topic_path)
+        df_topic = df_topics[df_topics['code_description'] == topic].copy()
+
+        # Sorts correspondence from constituents (in folders attachments or in-email).
+        # Updates df_topic with if the letter was in the export and makes a log of missing letters.
+        from_path = os.path.join(topic_path, 'from_constituents')
+        if not os.path.exists(from_path):
+            os.mkdir(from_path)
+        df_topic = topics_sort_files(df_topic, 'attachments|in-email', input_dir, output_dir, from_path)
+
+        # Sorts correspondence to constituents (in folders forms or out-custom).
+        to_path = os.path.join(topic_path, 'to_constituents')
+        if not os.path.exists(to_path):
+            os.mkdir(to_path)
+        df_topic = topics_sort_files(df_topic, 'forms|out-custom', input_dir, output_dir, to_path)
+
+        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
+        css_arch.topics_sort_delete_empty(topic_path)
+
+        # Saves the metadata for this topic if the topic folder was not deleted for being empty.
+        # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
+        if os.path.exists(topic_path):
+            metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+            if os.path.exists(metadata_path):
+                df_topic.to_csv(metadata_path, mode='a', header=False, index=False)
+            else:
+                df_topic.to_csv(metadata_path, index=False)
 
 
-def topics_sort_copy(doc, input_dir, output_dir, topic_path):
-    """Copy document to topic folder and log if error"""
-    # Gets the path for the current doc location by updating the path in the metadata.
-    doc_path = update_path(doc, input_dir)
+def topics_sort_df(df):
+    """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
 
-    # Copies the doc to the topic_path folder.
-    # If the doc is not in the expected location, logs it instead.
-    # It is common to have docs in the metadata but not in the input directory.
-    doc_name = doc.split('\\')[-1]
-    doc_new_path = os.path.join(topic_path, doc_name)
-    try:
-        shutil.copy2(doc_path, doc_new_path)
-    except FileNotFoundError:
-        with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-            log_writer = csv.writer(log)
-            topic = topic_path.split('\\')[-2]
-            log_writer.writerow([topic, doc])
+    # Removes rows with blank in code_description or correspondence_document_name columns.
+    df = df.dropna(subset=['code_description', 'correspondence_document_name'])
+
+    # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
+    # Not sure if this would happen, but have seen duplication in other exports.
+    df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
+
+    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
+    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
+    df.insert(16, 'correspondence_document_name_present', 'TBD', True)
+
+    return df
 
 
-def topics_sort_df(df, letter_type):
-    """Make a dataframe with any row that has any value in topic and the letter type as part of the document name"""
-    # Initial df, with any row of the specified type that has some value in topic (code_description)
-    # and the letter type in correspondence_document_name.
-    topic_df = df[df['correspondence_document_name'].str.contains(letter_type, na=False)]
-    topic_df = topic_df.dropna(subset=['code_description'])
+def topics_sort_files(df, corr_type_folders, input_dir, output_dir, folder_path):
+    """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
 
-    # Removes any duplicate combinations of topic(code_description) and correspondence_document_name.
-    topic_df = topic_df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-    return topic_df
+    # Gets a list of unique documents of the specified correspondence type (in or out) to copy.
+    df_type = df[df['correspondence_document_name'].str.contains(corr_type_folders, na=False)]
+    doc_list = df_type['correspondence_document_name'].dropna().unique().tolist()
+    for doc in doc_list:
+
+        # Gets the path for the current doc location by updating the path from the metadata.
+        doc_path = update_path(doc, input_dir)
+
+        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # If the doc is not in the expected location, logs it instead.
+        # It is common to have docs in the metadata but not in the input directory.
+        doc_name = doc.split('\\')[-1]
+        doc_new_path = os.path.join(folder_path, doc_name)
+        try:
+            shutil.copy2(doc_path, doc_new_path)
+            df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = True
+        except FileNotFoundError:
+            df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = False
+            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+                log_writer = csv.writer(log)
+                topic = folder_path.split('\\')[-2]
+                log_writer.writerow([topic, doc])
+
+    return df
 
 
 def topics_report(df, output_dir):
@@ -593,7 +631,7 @@ if __name__ == '__main__':
         print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
               "but not change the metadata file.")
         try:
-            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
@@ -609,16 +647,16 @@ if __name__ == '__main__':
               "make copies of the metadata split by calendar year, "
               "and make a copy of the letters to and from constituents organized by topic")
         try:
-            appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
         try:
-            restrict_df = read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+            restrict_df = css_arch.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
-        md_df = remove_appraisal_rows(md_df, appraisal_df)
+        md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
         md_df = css_dif.remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)

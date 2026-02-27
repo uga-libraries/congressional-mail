@@ -16,7 +16,6 @@ This allows the archivist to review and edit these documents without needing to 
 import csv
 from datetime import date
 from functools import reduce
-import numpy as np
 import os
 import pandas as pd
 import shutil
