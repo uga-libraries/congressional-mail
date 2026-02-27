@@ -93,14 +93,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30600', '*', '*', '*', '*', '*',
-                     'out-custom\\Brown.txt', 'True', '*', '*', '*', '/dogs', '*'],
+                     'out-custom\\Brown.txt', '*', '*', '*', '/dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
-                     'forms\\Support.txt', 'True', '*', '*', '*', '/dogs', '*'],
+                     'forms\\Support.txt', '*', '*', '*', '/dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', 'True', '*', '*', '*', '<dogs', '*']]
+                     'forms\\Thanks.txt', '*', '*', '*', '<dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate, dogs_metadata.csv")
 
     def test_from(self):
@@ -139,14 +138,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30600', '*', '*', '*', '*', '*',
-                     'attachments\\scan1.txt', 'True', '*', '*', '*', 'cats', '*'],
+                     'attachments\\scan1.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
-                     'attachments\\scan2.txt', 'True', '*', '*', '*', 'cats', '*'],
+                     'attachments\\scan2.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'in-email\\file1.txt', 'True', '*', '*', '*', 'cats', '*']]
+                     'in-email\\file1.txt', '*', '*', '*', 'cats', '*']]
         self.assertEqual(expected, result, "Problem with test for from, cats_metadata.csv")
 
         # Verifies the contents of dogs_metadata.csv
@@ -154,14 +152,11 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
-                     'in-email\\file2.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'in-email\\file2.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
-                     'in-email\\file3.txt', 'True', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30606', '*', '*', '*', '*', '*',
-                     'in-email\\file0.txt', 'False', '*', '*', '*', 'dogs', '*']]
+                     'in-email\\file3.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for from, dogs_metadata.csv")
 
         # Verifies the contents of topics_sort_file_not_found.csv
@@ -222,22 +217,17 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
-                     'out-custom\\Doe.txt', 'True', '*', '*', '*', 'cats', '*'],
+                     'out-custom\\Doe.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
-                     'in-email\\file1.txt', 'True', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30608', '*', '*', '*', '*', '*',
-                     'out-custom\\missing.txt', 'False', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30609', '*', '*', '*', '*', '*',
-                     'forms\\missing.txt', 'False', '*', '*', '*', 'cats', '*'],
+                     'in-email\\file1.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30610', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', 'True', '*', '*', '*', 'cats', '*'],
+                     'forms\\Thanks.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30611', '*', '*', '*', '*', '*',
-                    'forms\\Support.txt', 'True', '*', '*', '*', 'cats', '*'],
+                    'forms\\Support.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30614', '*', '*', '*', '*', '*',
-                     'attachments\\scan1.txt', 'True', '*', '*', '*', 'cats', '*']]
+                     'attachments\\scan1.txt', '*', '*', '*', 'cats', '*']]
         self.assertEqual(expected, result, "Problem with test for from_to, cats_metadata.csv")
 
         # Verifies the contents of dogs_metadata.csv
@@ -245,20 +235,15 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'out-custom\\Jones.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'out-custom\\Jones.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
-                     'in-email\\file2.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'in-email\\file2.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30607', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', 'True', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30615', '*', '*', '*', '*', '*',
-                     'forms\\missing.txt', 'False', '*', '*', '*', 'dogs', '*'],
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30617', '*', '*', '*', '*', '*',
-                     'attachments\\scan2.txt', 'True', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30618', '*', '*', '*', '*', '*',
-                     'in-email\\file0.txt', 'False', '*', '*', '*', 'dogs', '*']]
+                     'attachments\\scan2.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for from_to, dogs_metadata.csv")
 
         # Verifies the contents of topics_sort_file_not_found.csv
@@ -307,14 +292,9 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'out-custom\\Doe.txt', 'True', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30606', '*', '*', '*', '*', '*',
-                     'out-custom\\missing.txt', 'False', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30607', '*', '*', '*', '*', '*',
-                    'forms\\missing.txt', 'False', '*', '*', '*', 'cats', '*']]
+                     'out-custom\\Doe.txt', '*', '*', '*', 'cats', '*']]
         self.assertEqual(expected, result, "Problem with test for from, cats_metadata.csv")
 
         # Verifies the contents of dogs_metadata.csv
@@ -322,16 +302,15 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
-                     'code_description', 'inactive_flag'],
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
-                     'out-custom\\Jones.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'out-custom\\Jones.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
-                     'out-custom\\Smith.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'out-custom\\Smith.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', 'True', '*', '*', '*', 'dogs', '*'],
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30609', '*', '*', '*', '*', '*',
-                     'forms\\Support.txt', 'True', '*', '*', '*', 'dogs', '*']]
+                     'forms\\Support.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for to, dogs_metadata.csv")
 
         # Verifies the contents of topics_sort_file_not_found.csv
