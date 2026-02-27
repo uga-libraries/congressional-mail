@@ -491,6 +491,7 @@ def topics_sort(df, input_dir, output_dir):
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         if not os.path.exists(topic_path):
             os.mkdir(topic_path)
+        df_topic = df_topics[df_topics['code_description'] == topic].copy()
 
         # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
         in_df = topics_sort_df(df, 'attachments|in-email')
