@@ -483,6 +483,15 @@ def topics_sort(df, input_dir, output_dir):
     topic_list = df_topics['group_name'].unique().tolist()
     for topic in topic_list:
 
+        # Makes folder and metadata df for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        # The topic has to be normalized to be used for a folder and file name.
+        # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
+        topic_norm = css_dif.topics_sort_normalize(topic)
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        if not os.path.exists(topic_path):
+            os.mkdir(topic_path)
+
         # Sorts a copy of correspondence from constituents (in folders attachments or in-email) by topic.
         in_df = topics_sort_df(df, 'attachments|in-email')
         topic_list = in_df['code_description'].unique()
