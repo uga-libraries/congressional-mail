@@ -188,10 +188,10 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['BLANK', '551', 'C', '19990315', '19990402', 'BLANK', '19990315', 'imail', 'FARMING', 'Marietta',
-                     'GA', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml', 'True',
+                     'GA', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml',
                      'BLANK', '1c8614bf01caf83e00010e44.eml', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, FARMING_metadata.csv")
 
@@ -200,10 +200,10 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['usmail', 'BLANK', 'C', '19990331', '19990402', 'BLANK', '19990331', 'usmail', 'INTTAX',
-                     ' ', ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\formletters\inttax.doc', 'True',
+                     ' ', ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\formletters\inttax.doc',
                      'inttax.doc', ' ', 'BLANK']]
         self.assertEqual(expected, result, "Problem with test for access, INTTAX_metadata.csv")
 

@@ -73,38 +73,38 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*',
-                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*']]
+                     'AT_IN', '..\\documents\\objects\\file1.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies_metadata.csv")
 
         # # Verifies puppies__metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'puppies_', 'puppies__metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies?', '*', '*', '30603', '*',
-                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies/', '*', '*', '30606', '*',
-                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
+                     'OUT', '..\\documents\\forms\\dog.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate_norm, puppies__metadata.csv")
 
         # Verifies _kittens__metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, '_kittens_', '_kittens__metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*kittens*', '*', '*', '30601', '*',
-                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '<kittens>', '*', '*', '30602', '*',
-                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', ':kittens:', '*', '*', '30604', '*',
-                     'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*'],
+                     'AT_IN2', '..\\documents\\objects\\file3.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '|kittens|', '*', '*', '30607', '*',
-                     'OUT', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*']]
+                     'OUT', '..\\documents\\forms\\cat.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate_norm, _kittens__metadata.csv")
 
     def test_empty_blank(self):
@@ -174,22 +174,22 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
-                     'INCOMING', '..\\documents\\ima\\from_01.txt', 'True', '*', '*', '*']]
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for in, kittens_metadata.csv")
 
         # Verifies puppies_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*', 
-                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*'],
+                     'AT_IN', '..\\documents\\objects\\file1.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*', 
-                     'IN', '..\\documents\\objects\\file2.txt', 'True', '*', '*', '*']]
+                     'IN', '..\\documents\\objects\\file2.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for in, puppies_metadata.csv")
 
         # Verifies the file_not_found log has the expected contents.
@@ -249,50 +249,42 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.by_topic, 'bunnies', 'bunnies_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30602', '*',
-                     'AT_OUT1', '..\\documents\\forms\\missing.txt', 'False', '*', '*', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30613', '*',
-                     'AT_IN1', '..\\documents\\ima\\missing.txt', 'False', '*', '*', '*'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'bunnies', '*', '*', '30615', '*',
-                     'OUT_JD', '..\\documents\\indivletters\\toD.txt', 'True', '*', '*', '*']]
+                     'OUT_JD', '..\\documents\\indivletters\\toD.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, bunnies_metadata.csv")
 
         # Verifies kittens_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
-                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30603', '*',
-                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30605', '*',
-                     'AT_IN2', '..\\documents\\objects\\file3.txt', 'True', '*', '*', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30610', '*',
-                     'OUT', '..\\documents\\missing.txt', 'False', '*', '*', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30611', '*',
-                     'OUT', '..\\documents\\forms\\missing.txt', 'False', '*', '*', '*'],
+                     'AT_IN2', '..\\documents\\objects\\file3.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30612', '*',
-                     'INCOMING', '..\\documents\\ima\\from_01.txt', 'True', '*', '*', '*']]
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, kittens_metadata.csv")
 
         # Verifies puppies_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*',
-                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30606', '*',
-                     'AT_IN', '..\\documents\\objects\\file1.txt', 'True', '*', '*', '*'],
+                     'AT_IN', '..\\documents\\objects\\file1.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30607', '*',
-                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*'],
+                     'OUT', '..\\documents\\forms\\dog.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30614', '*',
-                     'IN', '..\\documents\\objects\\file2.txt', 'True', '*', '*', '*']]
+                     'IN', '..\\documents\\objects\\file2.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, puppies_metadata.csv")
 
         # Verifies the file_not_found log has the expected contents.
@@ -335,26 +327,24 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.by_topic, 'kittens', 'kittens_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
-                     'OUTGOING', '..\\documents\\forms\\cat.txt', 'True', '*', '*', '*'],
+                     'OUTGOING', '..\\documents\\forms\\cat.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30603', '*',
-                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', 'True', '*', '*', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30607', '*',
-                     'OUT', '..\\documents\\missing.txt', 'False', '*', '*', '*']]
+                     'AT_OUT2', '..\\documents\\indivletters\\toA.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, kittens_metadata.csv")
 
         # Verifies puppies_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'puppies', 'puppies_metadata.csv'))
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
-                     'document_type', 'communication_document_name', 'communication_document_name_present',
-                     'communication_document_id', 'file_location', 'file_name'],
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30604', '*',
-                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', 'True', '*', '*', '*'],
+                     'AT_OUT', '..\\documents\\indivletters\\toB.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30605', '*',
-                     'OUT', '..\\documents\\forms\\dog.txt', 'True', '*', '*', '*']]
+                     'OUT', '..\\documents\\forms\\dog.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, puppies_metadata.csv")
 
         # Verifies the file_not_found log has the expected contents.
