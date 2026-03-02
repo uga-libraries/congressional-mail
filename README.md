@@ -22,7 +22,8 @@ This is required by all except aip_prep.py
 access
 * Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
 * Make a copy of the redacted metadata split by calendar year, for smaller files that are easier to open
-* Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included)
+* Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included), 
+  with a CSV with the redacted metadata for each letter found in the export. 
 
 accession
 * Make appraisal reports

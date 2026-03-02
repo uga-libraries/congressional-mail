@@ -36,7 +36,7 @@ class MyTestCase(unittest.TestCase):
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30600', 'abc', '', '', '', '', '', '', ''],
                     ['30601', '', '', '', '', '', '', '', 'text'],
-                    ['30602-one', '', '', 'blank', '', '', 'blank', '', '']]
+                    ['30602-one', '', '', 'BLANK', '', '', 'BLANK', '', '']]
         self.assertEqual(expected, result, "Problem with test for keyword_none, df_no_match")
 
     def test_keyword_one(self):
@@ -74,7 +74,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_no_match)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['30604', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank'],
+                    ['30604', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['30605', '', '', '', '', '', '', '', ''],
                     ['30606', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
         self.assertEqual(expected, result, "Problem with test for keyword_one, df_no_match")
@@ -96,7 +96,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_match)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'ONE', 'one_text', '', 'blank', '', '', '', 'blank', 'one_cat'],
+                    ['30600', 'ONE', 'one_text', '', 'BLANK', '', '', '', 'BLANK', 'one_cat'],
                     ['30601', '', '', 'path\\One.doc', 'fill one', 'ONE', '', '', '', 'one_cat'],
                     ['30604', '', 'ONE ONE', '', '', '', 'one_text', 'path\\One.doc', 'fill one', 'one_cat'],
                     ['30606', 'one', 'one', 'one', 'one', 'one', 'one', 'one', 'one', 'one_cat']]
@@ -107,7 +107,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30602', '', '', '', '', '', '', '', ''],
-                    ['30603', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank'],
+                    ['30603', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['30605', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
         self.assertEqual(expected, result, "Problem with test for keyword_multiple, df_no_match")
 
@@ -132,7 +132,7 @@ class MyTestCase(unittest.TestCase):
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30600-one', 'abc', '', '', '', '', '', '', ''],
                     ['30601-onetwo', '', '', '', '', '', '', '', 'text'],
-                    ['30602-three', '', '', 'blank', '', '', 'blank', '', '']]
+                    ['30602-three', '', '', 'BLANK', '', '', 'BLANK', '', '']]
         self.assertEqual(expected, result, "Problem with test for keywords_none, df_no_match")
 
     def test_keywords_one(self):
@@ -170,7 +170,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_no_match)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
-                    ['30604', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank'],
+                    ['30604', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['30605', '', '', '', '', '', '', '', ''],
                     ['30606', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
         self.assertEqual(expected, result, "Problem with test for keywords_one, df_no_match")
@@ -192,7 +192,7 @@ class MyTestCase(unittest.TestCase):
         result = df_to_list(df_match)
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'ONE', 'one_text', '', 'blank', '', '', '', 'blank', 'cats'],
+                    ['30600', 'ONE', 'one_text', '', 'BLANK', '', '', '', 'BLANK', 'cats'],
                     ['30601', '', '', 'path\\Two.doc', 'fill two', 'TWO', '', '', '', 'cats'],
                     ['30604', '', 'THREE THREE', '', '', '', 'three_text', 'path\\Three.doc', 'fill three', 'cats'],
                     ['30606', 'one', 'two', 'three', 'one two three', 'one', 'two', 'three', 'one', 'cats']]
@@ -203,7 +203,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['zip', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                      'out_topic', 'out_text', 'out_document_name', 'out_fillin'],
                     ['30602', '', '', '', '', '', '', '', ''],
-                    ['30603', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank', 'blank'],
+                    ['30603', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['30605', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
         self.assertEqual(expected, result, "Problem with test for keywords_multiple, df_no_match")
 

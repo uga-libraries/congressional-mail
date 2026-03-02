@@ -5,7 +5,7 @@ import pandas as pd
 import shutil
 import unittest
 from css_data_interchange_format import delete_appraisal_letters
-from test_script import csv_to_list, files_in_dir
+from test_script import csv_to_list, make_dir_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -55,8 +55,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for deletion, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(input_directory)
-        expected = []
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'documents'),
+                    os.path.join(input_directory, 'documents', 'objects')]
         self.assertEqual(expected, result, "Problem with test for deletion, directory contents")
 
     def test_file_not_found(self):
@@ -81,8 +82,11 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for file not found, file deletion log")
 
         # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['100001.txt', 'ABC-1.txt']
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'documents'),
+                    os.path.join(input_directory, 'documents', 'objects'),
+                    os.path.join(input_directory, 'documents', 'objects', '100001.txt'),
+                    os.path.join(input_directory, 'documents', 'objects', 'ABC-1.txt')]
         self.assertEqual(expected, result, "Problem with test for file not found, directory contents")
 
     def test_new_pattern(self):
@@ -109,8 +113,10 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for no deletion - form, file deletion log")
 
         # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['100001.txt', '200002.txt']
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'letters'),
+                    os.path.join(input_directory, 'letters', '100001.txt'),
+                    os.path.join(input_directory, 'letters', '200002.txt')]
         self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
     def test_no_deletion_blank(self):
@@ -132,8 +138,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for no deletion - blank, file deletion log")
 
         # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['ABC-1.txt']
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'text'),
+                    os.path.join(input_directory, 'text', 'ABC-1.txt')]
         self.assertEqual(expected, result, "Problem with test for no deletion - blank, directory contents")
 
     def test_no_deletion_empty_string(self):
@@ -155,8 +162,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for no deletion - empty string, file deletion log")
 
         # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['ABC-1.txt']
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'text'),
+                    os.path.join(input_directory, 'text', 'ABC-1.txt')]
         self.assertEqual(expected, result, "Problem with test for no deletion - empty string, directory contents")
 
     def test_no_deletion_form(self):
@@ -179,8 +187,11 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for no deletion - form, file deletion log")
 
         # Tests that no files have been deleted.
-        result = files_in_dir(input_directory)
-        expected = ['100001.txt', '200002.txt']
+        result = make_dir_list(input_directory)
+        expected = [os.path.join(input_directory, 'documents'),
+                    os.path.join(input_directory, 'documents', 'form_letters'),
+                    os.path.join(input_directory, 'documents', 'form_letters', '100001.txt'),
+                    os.path.join(input_directory, 'documents', 'form_letters', '200002.txt')]
         self.assertEqual(expected, result, "Problem with test for no deletion - form, directory contents")
 
 

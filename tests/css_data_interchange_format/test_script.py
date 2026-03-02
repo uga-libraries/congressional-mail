@@ -4,7 +4,6 @@ import pandas as pd
 import shutil
 import subprocess
 import unittest
-from test_topics_sort import make_dir_list
 
 
 def csv_to_list(csv_path):
@@ -15,13 +14,15 @@ def csv_to_list(csv_path):
     return csv_list
 
 
-def files_in_dir(dir_path):
-    """Make a list of every file in a directory, for testing the result of the function"""
-    file_list = []
+def make_dir_list(dir_path):
+    """Make a list of every file and folder in the folder created by the function to compare to expected results"""
+    contents_list = []
     for root, dirs, files in os.walk(dir_path):
-        for file in files:
-            file_list.append(file)
-    return file_list
+        for dir_name in dirs:
+            contents_list.append(os.path.join(root, dir_name))
+        for file_name in files:
+            contents_list.append(os.path.join(root, file_name))
+    return contents_list
 
 
 class MyTestCase(unittest.TestCase):
@@ -172,9 +173,39 @@ class MyTestCase(unittest.TestCase):
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join('test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
-        expected = [os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+        expected = [os.path.join(by_topic, 'FARMING'),
+                    os.path.join(by_topic, 'INTTAX'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents'),
+                    os.path.join(by_topic, 'FARMING', 'FARMING_metadata.csv'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+                    os.path.join(by_topic, 'INTTAX', 'to_constituents'),
+                    os.path.join(by_topic, 'INTTAX', 'INTTAX_metadata.csv'),
                     os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
+
+        # Tests the contents of FARMING_metadata.csv.
+        csv_path = os.path.join(by_topic, 'FARMING', 'FARMING_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
+                    ['BLANK', '551', 'C', '19990315', '19990402', 'BLANK', '19990315', 'imail', 'FARMING', 'Marietta',
+                     'GA', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml',
+                     'BLANK', '1c8614bf01caf83e00010e44.eml', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access, FARMING_metadata.csv")
+
+        # Tests the contents of INTTAX_metadata.csv.
+        csv_path = os.path.join(by_topic, 'INTTAX', 'INTTAX_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                     'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                     'document_type', 'communication_document_name', 'communication_document_id',
+                     'file_location', 'file_name'],
+                    ['usmail', 'BLANK', 'C', '19990331', '19990402', 'BLANK', '19990331', 'usmail', 'INTTAX',
+                     ' ', ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\formletters\inttax.doc',
+                     'inttax.doc', ' ', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access, INTTAX_metadata.csv")
 
         # Tests the contents of topics_sort_file_not_found.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
@@ -361,11 +392,17 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError']]
         self.assertEqual(expected, result, "Problem with test for appraisal, file deletion log")
 
-        # Tests the contents of the input_directory, that all files that should be deleted are gone.
-        result = files_in_dir(input_directory)
-        expected = ['out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.dat',
-                    '2103422.html', '30046.doc', 'legal_case.html']
-        self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+        # Tests the contents of the export's documents folder, that all files that should be deleted are gone.
+        doc_path = os.path.join(input_directory, 'documents')
+        result = make_dir_list(doc_path)
+        expected = [os.path.join(doc_path, 'form_letters'),
+                    os.path.join(doc_path, 'indivletters'),
+                    os.path.join(doc_path, 'objects'),
+                    os.path.join(doc_path, 'form_letters', '2103422.html'),
+                    os.path.join(doc_path, 'form_letters', '30046.doc'),
+                    os.path.join(doc_path, 'form_letters', 'legal_case.html'),
+                    os.path.join(doc_path, 'indivletters', 'case work'),]
+        self.assertEqual(expected, result, "Problem with test for appraisal, documents folder contents")
 
         # Tests the contents of restriction_review.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'restriction_review.csv')
