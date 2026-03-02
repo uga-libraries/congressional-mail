@@ -627,10 +627,6 @@ def topics_sort_df(df):
     # Removes rows with blank in group_name or communication_document_name columns.
     df = df.dropna(subset=['group_name', 'communication_document_name'])
 
-    # Removes any duplicate combinations of group_name or communication_document_name.
-    # Not sure if this would happen, but have seen duplication in other exports.
-    df = df.drop_duplicates(subset=['group_name', 'communication_document_name'])
-
     # Adds column for when the files are sorted to indicate if the file was present in the export or not.
     # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
     df.insert(15, 'communication_document_name_present', 'TBD', True)
