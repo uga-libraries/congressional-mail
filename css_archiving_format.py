@@ -612,19 +612,22 @@ def topics_sort(df, input_dir, output_dir):
         # The topic has to be normalized to be used for a folder and file name.
         topic_norm = topics_sort_normalize(topic)
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-        os.mkdir(topic_path)
+        if not os.path.exists(topic_path):
+            os.mkdir(topic_path)
         df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
 
         # Sorts correspondence from constituents ("in" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         from_path = os.path.join(topic_path, 'from_constituents')
-        os.mkdir(from_path)
+        if not os.path.exists(from_path):
+            os.mkdir(from_path)
         df_topic = topics_sort_files(df_topic, 'in_document_name', input_dir, output_dir, from_path)
 
         # Sorts correspondence to constituents ("out" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         to_path = os.path.join(topic_path, 'to_constituents')
-        os.mkdir(to_path)
+        if not os.path.exists(to_path):
+            os.mkdir(to_path)
         df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.

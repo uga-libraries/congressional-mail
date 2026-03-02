@@ -322,6 +322,48 @@ class MyTestCase(unittest.TestCase):
                      'cat^dog', '..\\documents\\BlobExport\\responses\\answer2.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for topic_both, pet_metadata.csv")
 
+    def test_topic_dup_norm(self):
+        """Test for when multiple unique topics are normalized to the same thing"""
+        df = make_df([['30601', '*cat', '..\\documents\\BlobExport\\objects\\file1.txt', np.nan, np.nan],
+                      ['30602', '*cat', '..\\documents\\BlobExport\\objects\\file2.txt',
+                       '*cat', '..\\documents\\BlobExport\\responses\\answer1.txt'],
+                      ['30603', np.nan, np.nan, '?cat', '..\\documents\\BlobExport\\responses\\answer2.txt'],
+                      ['30604', '/cat', '..\\documents\\BlobExport\\objects\\file3.txt', np.nan, np.nan]])
+        topics_sort(df, self.input_dir, self.output_dir)
+
+        # Verifies the expected topic folders were created and have the expected files in them.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.by_topic, '_cat'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents'),
+                    os.path.join(self.by_topic, '_cat', '_cat_metadata.csv'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file1.txt'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file2.txt'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'answer1.txt'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'answer2.txt')]
+        self.assertEqual(expected, result, "Problem with test for topic_dup_norm, directory")
+
+        # Verifies cat_metadata.csv has the expected contents.
+        result = csv_to_list(os.path.join(self.by_topic, '_cat', '_cat_metadata.csv'))
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+                     'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*',
+                     '*cat', '..\\documents\\BlobExport\\objects\\file1.txt', 'True', '*', '*', '*', '*',
+                     'BLANK', 'BLANK', 'no_path_provided'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*',
+                     '*cat', '..\\documents\\BlobExport\\objects\\file2.txt', 'True', '*', '*', '*', '*',
+                     '*cat', '..\\documents\\BlobExport\\responses\\answer1.txt', 'True'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*',
+                     '/cat', '..\\documents\\BlobExport\\objects\\file3.txt', 'True', '*', '*', '*', '*',
+                     'BLANK', 'BLANK', 'no_path_provided'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*',
+                     'BLANK', 'BLANK', 'no_path_provided', '*', '*', '*', '*',
+                     '?cat', '..\\documents\\BlobExport\\responses\\answer2.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for topic_dup_norm, _cat_metadata.csv")
+
     def test_topic_one(self):
         """Test for when a topic is either in in_topic or out_topic, but not the other column"""
         # Makes a dataframe to use as test input and runs the function being tested.
