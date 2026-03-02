@@ -533,7 +533,7 @@ def topics_sort_files(df, corr_type_folders, input_dir, output_dir, folder_path)
 
     # Gets a list of unique documents of the specified correspondence type (in or out) to copy.
     df_type = df[df['correspondence_document_name'].str.contains(corr_type_folders, na=False)]
-    doc_list = df_type['correspondence_document_name'].dropna().unique().tolist()
+    doc_list = df_type['correspondence_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
