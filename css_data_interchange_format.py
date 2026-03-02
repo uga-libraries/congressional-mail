@@ -672,6 +672,9 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Remove the "present" column, now that it only has True.
     df = df.drop(['communication_document_name_present'], axis=1)
 
+    # Removes duplicate rows. Not sure if this would happen, but can in other export types.
+    df.drop_duplicates(inplace=True)
+
     # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
     metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
