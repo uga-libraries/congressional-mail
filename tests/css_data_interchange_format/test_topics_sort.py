@@ -177,7 +177,9 @@ class MyTestCase(unittest.TestCase):
                      'document_type', 'communication_document_name', 'communication_document_id',
                      'file_location', 'file_name'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30601', '*',
-                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*']]
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30603', '*',
+                     'AT_IN2', '..\\documents\\ima\\from_01.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for in, kittens_metadata.csv")
 
         # Verifies puppies_metadata.csv has the expected contents.
@@ -268,7 +270,9 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30605', '*',
                      'AT_IN2', '..\\documents\\objects\\file3.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30612', '*',
-                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*']]
+                     'INCOMING', '..\\documents\\ima\\from_01.txt', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'kittens', '*', '*', '30616', '*',
+                     'OUT', '..\\documents\\forms\\cat.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, kittens_metadata.csv")
 
         # Verifies puppies_metadata.csv has the expected contents.
@@ -283,6 +287,8 @@ class MyTestCase(unittest.TestCase):
                      'AT_IN', '..\\documents\\objects\\file1.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30607', '*',
                      'OUT', '..\\documents\\forms\\dog.txt', '*', '*', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30609', '*',
+                     'AT_IN', '..\\documents\\objects\\file1.txt', '*', '*', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'puppies', '*', '*', '30614', '*',
                      'IN', '..\\documents\\objects\\file2.txt', '*', '*', '*']]
         self.assertEqual(expected, result, "Problem with test for out, puppies_metadata.csv")

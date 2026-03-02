@@ -521,10 +521,6 @@ def topics_sort_df(df):
     # Removes rows with blank in code_description or correspondence_document_name columns.
     df = df.dropna(subset=['code_description', 'correspondence_document_name'])
 
-    # Removes any duplicate combinations of topic (code_description) and correspondence_document_name.
-    # Not sure if this would happen, but have seen duplication in other exports.
-    df = df.drop_duplicates(subset=['code_description', 'correspondence_document_name'])
-
     # Adds column for when the files are sorted to indicate if the file was present in the export or not.
     # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
     df.insert(16, 'correspondence_document_name_present', 'TBD', True)
@@ -537,7 +533,7 @@ def topics_sort_files(df, corr_type_folders, input_dir, output_dir, folder_path)
 
     # Gets a list of unique documents of the specified correspondence type (in or out) to copy.
     df_type = df[df['correspondence_document_name'].str.contains(corr_type_folders, na=False)]
-    doc_list = df_type['correspondence_document_name'].dropna().unique().tolist()
+    doc_list = df_type['correspondence_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
@@ -569,6 +565,9 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
 
     # Remove the "present" column, now that it only has True.
     df = df.drop(['correspondence_document_name_present'], axis=1)
+
+    # Removes duplicate rows. Not sure if this would happen, but have seen in other export type.
+    df.drop_duplicates(inplace=True)
 
     # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.

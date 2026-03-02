@@ -22,6 +22,27 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(topic_path):
             shutil.rmtree(topic_path)
 
+    def test_duplicate(self):
+        """Test for when there are duplicate rows"""
+        # Makes test input and runs the function.
+        df = make_df([['rivers', '30601', 'path\\file1.txt', True],
+                      ['rivers', '30601', 'path\\file1.txt', True],
+                      ['rivers', '30602', 'path\\file2.txt', True],
+                      ['rivers', '30602', 'path\\file2.txt', True],
+                      ['rivers', '30603', 'path\\file3.txt', True],
+                      ['rivers', '30603', 'path\\file3.txt', True]])
+        topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'rivers')
+        os.makedirs(topic_path)
+        topics_sort_save_metadata(df, topic_path, 'rivers')
+
+        # Verifies the contents of rivers_metadata.csv
+        result = csv_to_list(os.path.join(topic_path, 'rivers_metadata.csv'))
+        expected = [['code_description', 'zip_code', 'correspondence_document_name'],
+                    ['rivers', '30601', 'path\\file1.txt'],
+                    ['rivers', '30602', 'path\\file2.txt'],
+                    ['rivers', '30603', 'path\\file3.txt']]
+        self.assertEqual(expected, result, "Problem with test for duplicate")
+
     def test_found_all(self):
         """Test for when all documents were found"""
         # Makes test input and runs the function.
