@@ -639,7 +639,7 @@ def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
 
     # Gets a list of unique documents of the specified correspondence type (in or out), excluding blanks, to copy.
     df_type = df[df['document_type'].str.startswith((corr_type, f'AT_{corr_type}'), na=False)]
-    doc_list = df_type['communication_document_name'].dropna().unique().tolist()
+    doc_list = df_type['communication_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
