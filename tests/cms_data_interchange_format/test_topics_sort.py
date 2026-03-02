@@ -156,6 +156,8 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
                      'in-email\\file2.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
+                     'in-email\\file3.txt', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
                      'in-email\\file3.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for from, dogs_metadata.csv")
 
@@ -242,6 +244,10 @@ class MyTestCase(unittest.TestCase):
                      'in-email\\file2.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30607', '*', '*', '*', '*', '*',
                      'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30612', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30616', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30617', '*', '*', '*', '*', '*',
                      'attachments\\scan2.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for from_to, dogs_metadata.csv")
@@ -309,8 +315,12 @@ class MyTestCase(unittest.TestCase):
                      'out-custom\\Smith.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
                      'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30608', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30609', '*', '*', '*', '*', '*',
-                     'forms\\Support.txt', '*', '*', '*', 'dogs', '*']]
+                     'forms\\Support.txt', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30610', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for to, dogs_metadata.csv")
 
         # Verifies the contents of topics_sort_file_not_found.csv
