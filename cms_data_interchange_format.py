@@ -472,6 +472,37 @@ def restriction_report(df, output_dir):
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 
 
+def split_year(df, output_dir):
+    """Make one metadata CSV per calendar year for smaller amount of data to review"""
+
+    # Makes a folder for all the CSVs.
+    year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
+    os.mkdir(year_dir)
+
+    # Makes a column with the year, which uses each of the four date columns in order of priority and then "undated".
+    # If a column has date information, it is formatted YYYYMMDD.
+    df['use_in'] = pd.to_numeric(df['date_in'], errors='coerce').notna()
+    df['use_out'] = (df['use_in'] == False) & (pd.to_numeric(df['date_out'], errors='coerce').notna())
+    df['use_update'] = ((df['use_in'] == False) & (df['use_out'] == False) &
+                        (pd.to_numeric(df['update_date'], errors='coerce').notna()))
+    df['use_reminder'] = ((df['use_in'] == False) & (df['use_out'] == False) & (df['use_update'] == False) &
+                          (pd.to_numeric(df['tickler_date'], errors='coerce').notna()))
+    df['year'] = 'undated'
+    df.loc[df['use_in'] == True, 'year'] = df['date_in'].astype(str).str[:4]
+    df.loc[df['use_out'] == True, 'year'] = df['date_out'].astype(str).str[:4]
+    df.loc[df['use_update'] == True, 'year'] = df['update_date'].astype(str).str[:4]
+    df.loc[df['use_reminder'] == True, 'year'] = df['tickler_date'].astype(str).str[:4]
+
+    # Saves the rows for each year to a separate CSV.
+    # The columns used to calculate year are first removed, so the metadata CSVs only have the original columns.
+    for year, year_df in df.groupby('year'):
+        year_df = year_df.drop(['use_in', 'use_out', 'use_update', 'use_reminder', 'year'], axis=1)
+        year_df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
+
+    # Removes the year rows from the primary df, so it isn't present for the last step (sort by topic).
+    df.drop(['use_in', 'use_out', 'use_update', 'use_reminder', 'year'], axis=1, inplace=True)
+
+
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders"""
@@ -672,5 +703,5 @@ if __name__ == '__main__':
         md_df = css_dif.remove_restricted_rows(md_df, restrict_df)
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-        css_dif.split_year(md_df, output_directory)
+        split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
