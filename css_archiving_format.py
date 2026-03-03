@@ -546,7 +546,7 @@ def split_year(df, output_dir):
     year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
     os.mkdir(year_dir)
 
-    # Make a column with the year, which uses in_date if any, then out_date if any, and then "undated".
+    # Makes a column with the year, which uses in_date if any, then out_date if any, and then "undated".
     # If a column has date information, it is formatted YYYYMMDD.
     df['use_in_date'] = pd.to_numeric(df['in_date'], errors='coerce').notna()
     df['use_out_date'] = (df['use_in_date'] == False) & (pd.to_numeric(df['out_date'], errors='coerce').notna())
