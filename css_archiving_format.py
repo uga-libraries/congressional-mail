@@ -556,9 +556,12 @@ def split_year(df, output_dir):
 
     # Saves the rows for each year to a separate CSV.
     # The columns used to calculate year are first removed, so the metadata CSVs only have the original columns.
-    for year, df in df.groupby('year'):
-        df = df.drop(['use_in_date', 'use_out_date', 'year'], axis=1)
-        df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
+    for year, year_df in df.groupby('year'):
+        year_df = year_df.drop(['use_in_date', 'use_out_date', 'year'], axis=1)
+        year_df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
+
+    # Removes the year rows from the primary df, so it isn't present for the last step (sort by topic).
+    df.drop(['use_in_date', 'use_out_date', 'year'], axis=1, inplace=True)
 
 
 def topics_report(df, output_dir):
@@ -713,7 +716,7 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Only keeps rows if at least one of the documents was found.
     df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
 
-    # Removes temporary folders used for identifying the topic.
+    # Removes temporary folders used for identifying the topic and the year.
     df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
 
     # Updates any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
