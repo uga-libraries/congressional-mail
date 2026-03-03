@@ -546,21 +546,18 @@ def split_year(df, output_dir):
     year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
     os.mkdir(year_dir)
 
-    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
-    df_undated = df[pd.to_numeric(df['in_date'], errors='coerce').isnull()]
-    if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(year_dir, 'undated.csv'), index=False)
+    # Make a column with the year, which uses in_date if any, then out_date if any, and then "undated".
+    # If a column has date information, it is formatted YYYYMMDD.
+    df['use_in_date'] = pd.to_numeric(df['in_date'], errors='coerce').notna()
+    df['use_out_date'] = (df['use_in_date'] == False) & (pd.to_numeric(df['out_date'], errors='coerce').notna())
+    df['year'] = 'undated'
+    df.loc[df['use_in_date'] == True, 'year'] = df['in_date'].astype(str).str[:4]
+    df.loc[df['use_out_date'] == True, 'year'] = df['out_date'].astype(str).str[:4]
 
-    # Removes rows without a year from the dataframe, so the rest can be split by calendar year.
-    df = df[pd.to_numeric(df['in_date'], errors='coerce').notnull()].copy()
-
-    # Adds a column with the year received. Column in_date is formatted YYYYMMDD.
-    df.loc[:, 'year'] = df['in_date'].astype(str).str[:4].astype(int)
-
-    # Splits the rows with date information by year received and saves each group to a separate CSV.
-    # The year column is first removed, so the metadata CSVs only has the original columns.
+    # Saves the rows for each year to a separate CSV.
+    # The columns used to calculate year are first removed, so the metadata CSVs only have the original columns.
     for year, df in df.groupby('year'):
-        df = df.drop(['year'], axis=1)
+        df = df.drop(['use_in_date', 'use_out_date', 'year'], axis=1)
         df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
 
 
