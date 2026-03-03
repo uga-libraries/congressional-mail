@@ -546,22 +546,28 @@ def split_year(df, output_dir):
     year_dir = os.path.join(output_dir, 'correspondence_metadata_by_year')
     os.mkdir(year_dir)
 
-    # Saves rows without a year (date is a not a number, could be blank or text) to a CSV, if any.
-    df_undated = df[pd.to_numeric(df['date_in'], errors='coerce').isnull()]
-    if len(df_undated.index) > 0:
-        df_undated.to_csv(os.path.join(year_dir, 'undated.csv'), index=False)
+    # Makes a column with the year, which uses each of the four date columns in order of priority and then "undated".
+    # If a column has date information, it is formatted YYYYMMDD.
+    df['use_in'] = pd.to_numeric(df['date_in'], errors='coerce').notna()
+    df['use_out'] = (df['use_in'] == False) & (pd.to_numeric(df['date_out'], errors='coerce').notna())
+    df['use_update'] = ((df['use_in'] == False) & (df['use_out'] == False) &
+                        (pd.to_numeric(df['update_date'], errors='coerce').notna()))
+    df['use_reminder'] = ((df['use_in'] == False) & (df['use_out'] == False) & (df['use_update'] == False) &
+                          (pd.to_numeric(df['reminder_date'], errors='coerce').notna()))
+    df['year'] = 'undated'
+    df.loc[df['use_in'] == True, 'year'] = df['date_in'].astype(str).str[:4]
+    df.loc[df['use_out'] == True, 'year'] = df['date_out'].astype(str).str[:4]
+    df.loc[df['use_update'] == True, 'year'] = df['update_date'].astype(str).str[:4]
+    df.loc[df['use_reminder'] == True, 'year'] = df['reminder_date'].astype(str).str[:4]
 
-    # Removes rows without a year from the dataframe, so the rest can be split by calendar.
-    df = df[pd.to_numeric(df['date_in'], errors='coerce').notnull()].copy()
+    # Saves the rows for each year to a separate CSV.
+    # The columns used to calculate year are first removed, so the metadata CSVs only have the original columns.
+    for year, year_df in df.groupby('year'):
+        year_df = year_df.drop(['use_in', 'use_out', 'use_update', 'use_reminder', 'year'], axis=1)
+        year_df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
 
-    # Adds a column with the year received. Column date_in is formatted YYYYMMDD.
-    df.loc[:, 'year'] = df['date_in'].astype(str).str[:4].astype(int)
-
-    # Splits the rows with date information by year received and saves each group to a separate CSV.
-    # The year column is first removed, so the metadata CSVs only have the original columns.
-    for year, df in df.groupby('year'):
-        df = df.drop(['year'], axis=1)
-        df.to_csv(os.path.join(year_dir, f'{year}.csv'), index=False)
+    # Removes the year rows from the primary df, so it isn't present for the last step (sort by topic).
+    df.drop(['use_in', 'use_out', 'use_update', 'use_reminder', 'year'], axis=1, inplace=True)
 
 
 def topics_report(df, output_dir):
