@@ -9,9 +9,10 @@ from test_script import csv_to_list
 
 def make_df(rows):
     """Make a df for test input"""
-    columns = ['zip', 'in_topic', 'in_document_name', 'in_document_name_present', 'out_topic', 'out_document_name',
-               'out_document_name_present', 'in_topic_split', 'out_topic_split']
-    df = pd.DataFrame(rows, columns=columns)
+    column_names = ['in_topic', 'in_document_name', 'in_document_name_present', 'out_topic', 
+                    'out_document_name', 'out_document_name_present', 'in_document_name_split', 
+                    'out_document_name_split', 'in_topic_split', 'out_topic_split']
+    df = pd.DataFrame(rows, columns=column_names)
     return df
 
 
@@ -26,10 +27,10 @@ class MyTestCase(unittest.TestCase):
     def test_basic(self):
         """Test for when the df meets no cleanup criteria other than having topic_split columns before saving"""
         # Makes test input and runs the function.
-        rows = [['30601', 'apples', '1.txt', True, 'Apples', 'Apples.doc', True, 'apples', 'Apples'],
-                ['30602', 'apples', '2.txt', True, 'ag', 'ag.doc', False, 'apples', 'ag'],
-                ['30603', 'apples', '3.txt', False, 'Apples', 'Apples.doc', True, 'apples', 'Apples'],
-                ['30603', 'apples', '4.txt', True, 'ag', 'ag.doc', False, 'apples', 'ag']]
+        rows = [['apples', '1.txt', True, 'Apples', 'Apples.doc', True, '1.txt', 'Apples.doc', 'apples', 'Apples'],
+                ['apples', '2.txt', True, 'ag', 'ag.doc', False, '2.txt', 'ag.doc', 'apples', 'ag'],
+                ['apples', '3.txt', False, 'Apples', 'Apples.doc', True, '3.txt', 'Apples.doc', 'apples', 'Apples'],
+                ['apples', '4.txt', True, 'ag', 'ag.doc', False, '4.txt', 'ag.doc', 'apples', 'ag']]
         df = make_df(rows)
         topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
         os.makedirs(topic_path)
@@ -37,23 +38,23 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the metadata csv has the correct contents.
         result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
-        expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['30601', 'apples', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
-                    ['30602', 'apples', '2.txt', 'True', 'ag', 'ag.doc', 'False'],
-                    ['30603', 'apples', '3.txt', 'False', 'Apples', 'Apples.doc', 'True'],
-                    ['30603', 'apples', '4.txt', 'True', 'ag', 'ag.doc', 'False']]
+                    ['apples', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
+                    ['apples', '2.txt', 'True', 'ag', 'ag.doc', 'False'],
+                    ['apples', '3.txt', 'False', 'Apples', 'Apples.doc', 'True'],
+                    ['apples', '4.txt', 'True', 'ag', 'ag.doc', 'False']]
         self.assertEqual(expected, result, "Problem with test for basic")
 
-    def test_duplicate(self):
+    def test_duplicate_topic(self):
         """Test for when the df includes duplicate rows once the topic_split columns are removed"""
         # Makes test input and runs the function.
-        rows = [['30601', 'ag^apples', '1.txt', False, 'Apples', 'Apples.doc', True, 'ag', 'Apples'],
-                ['30601', 'ag^apples', '1.txt', False, 'Apples', 'Apples.doc', True, 'apples', 'Apples'],
-                ['30602', 'ag^apples', '2.txt', True, 'apples^reg', 'Apples.doc', True, 'ag', 'apples'],
-                ['30602', 'ag^apples', '2.txt', True, 'apples^reg', 'Apples.doc', True, 'apples', 'apples'],
-                ['30602', 'ag^apples', '2.txt', True, 'apples^reg', 'Apples.doc', True, 'apples', 'reg'],
-                ['30603', 'apples', '3.txt', True, 'ag', 'Ag.doc', False, 'apples', 'ag']]
+        rows = [['ag^apples', '1.txt', False, 'Apples', 'Apples.doc', True, '1.txt', 'Apples.doc', 'ag', 'Apples'],
+                ['ag^apples', '1.txt', False, 'Apples', 'Apples.doc', True, '1.txt', 'Apples.doc', 'apples', 'Apples'],
+                ['ag^apples', '2.txt', True, 'apples^reg', 'Ag.doc', True, '2.txt', 'Ag.doc', 'ag', 'apples'],
+                ['ag^apples', '2.txt', True, 'apples^reg', 'Ag.doc', True, '2.txt', 'Ag.doc', 'apples', 'apples'],
+                ['ag^apples', '2.txt', True, 'apples^reg', 'Ag.doc', True, '2.txt', 'Ag.doc', 'apples', 'reg'],
+                ['apples', '3.txt', True, 'ag', 'Ag.doc', False, '3.txt', 'Ag.doc', 'apples', 'ag']]
         df = make_df(rows)
         topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
         os.makedirs(topic_path)
@@ -61,25 +62,25 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the metadata csv has the correct contents.
         result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
-        expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['30601', 'ag^apples', '1.txt', 'False', 'Apples', 'Apples.doc', 'True'],
-                    ['30602', 'ag^apples', '2.txt', 'True', 'apples^reg', 'Apples.doc', 'True'],
-                    ['30603', 'apples', '3.txt', 'True', 'ag', 'Ag.doc', 'False']]
-        self.assertEqual(expected, result, "Problem with test for duplicate")
+                    ['ag^apples', '1.txt', 'False', 'Apples', 'Apples.doc', 'True'],
+                    ['ag^apples', '2.txt', 'True', 'apples^reg', 'Ag.doc', 'True'],
+                    ['apples', '3.txt', 'True', 'ag', 'Ag.doc', 'False']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_not_found(self):
         """Test for when the df includes rows where neither document was found"""
         # Makes test input and runs the function.
-        rows = [['30601', 'apples', '1.txt', True, 'ag', 'Apples.doc', True, 'apples', 'ag'],
-                ['30602', 'apples', '2.txt', False, 'ag', 'XApples.doc', False, 'apples', 'ag'],
-                ['30603', 'apples', '3.txt', True, 'ag', 'XApple.doc', False, 'apples', 'ag'],
-                ['30604', 'apples', '4.txt', False, 'ag', np.nan, 'TBD', 'apples', 'ag'],
-                ['30605', 'apples', '5.txt', True, 'ag', np.nan, 'TBD', 'apples', 'ag'],
-                ['30606', 'apples', np.nan, 'TBD', 'ag', 'XApples.doc', False, 'apples', 'ag'],
-                ['30607', 'apples', '7.txt', False, 'ag', 'Apples.doc', True, 'apples', 'ag'],
-                ['30608', 'apples', np.nan, 'TBD', 'ag', 'Apples.doc', np.nan, 'TBD', 'ag'],
-                ['30609', 'apples', np.nan, 'TBD', 'ag', 'Apples.doc', True, 'apples', 'ag']]
+        rows = [['apples', '1.txt', True, 'ag', 'Apples.doc', True, '1.txt', 'Apples.doc', 'apples', 'ag'],
+                ['apples', '2.txt', False, 'ag', 'XApples.doc', False, '2.txt', 'XApples.doc', 'apples', 'ag'],
+                ['apples', '3.txt', True, 'ag', 'XApple.doc', False, '3.txt', 'XApple.doc', 'apples', 'ag'],
+                ['apples', '4.txt', False, 'ag', np.nan, 'TBD', '4.txt', np.nan, 'apples', 'ag'],
+                ['apples', '5.txt', True, 'ag', np.nan, 'TBD', '5.txt', np.nan, 'apples', 'ag'],
+                ['apples', np.nan, 'TBD', 'ag', 'XApples.doc', False, np.nan, 'XApples.doc', 'apples', 'ag'],
+                ['apples', '7.txt', False, 'ag', 'Apples.doc', True, '7.txt', 'Apples.doc', 'apples', 'ag'],
+                ['apples', np.nan, 'TBD', 'ag', 'Apples.doc', 'TBD', np.nan, 'Apples.doc', np.nan, 'ag'],
+                ['apples', np.nan, 'TBD', 'ag', 'Apples.doc', True, np.nan, 'Apples.doc', 'apples', 'ag']]
         df = make_df(rows)
         topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
         os.makedirs(topic_path)
@@ -87,22 +88,22 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the metadata csv has the correct contents.
         result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
-        expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['30601', 'apples', '1.txt', 'True', 'ag', 'Apples.doc', 'True'],
-                    ['30603', 'apples', '3.txt', 'True', 'ag', 'XApple.doc', 'False'],
-                    ['30605', 'apples', '5.txt', 'True', 'ag', 'BLANK', 'no_path_provided'],
-                    ['30607', 'apples', '7.txt', 'False', 'ag', 'Apples.doc', 'True'],
-                    ['30609', 'apples', 'BLANK', 'no_path_provided', 'ag', 'Apples.doc', 'True']]
+                    ['apples', '1.txt', 'True', 'ag', 'Apples.doc', 'True'],
+                    ['apples', '3.txt', 'True', 'ag', 'XApple.doc', 'False'],
+                    ['apples', '5.txt', 'True', 'ag', 'BLANK', 'no_path_provided'],
+                    ['apples', '7.txt', 'False', 'ag', 'Apples.doc', 'True'],
+                    ['apples', 'BLANK', 'no_path_provided', 'ag', 'Apples.doc', 'True']]
         self.assertEqual(expected, result, "Problem with test for not_found")
 
     def test_tbd(self):
         """Test for when the df includes TBD to be updated"""
         # Makes test input and runs the function.
-        rows = [['30601', 'ag', '1.txt', True, 'Apples', 'Apples.doc', True, 'ag', 'Apples'],
-                ['30602', 'apples', np.nan, 'TBD', 'Apples', 'Apples.doc', True, 'apples', 'Apples'],
-                ['30603', 'apples', '3.txt', True, 'ag', np.nan, 'TBD', 'apples', 'ag'],
-                ['30604', 'apples', np.nan, 'TBD', 'ag', 'Apples.doc', True, 'apples', 'ag']]
+        rows = [['ag', '1.txt', True, 'Apples', 'Apples.doc', True, '1.txt', 'Apples.doc', 'ag', 'Apples'],
+                ['apples', np.nan, 'TBD', 'Apples', 'Apples.doc', True, np.nan, 'Apples.doc', 'apples', 'Apples'],
+                ['apples', '3.txt', True, 'ag', np.nan, 'TBD', '3.txt', np.nan, 'apples', 'ag'],
+                ['apples', np.nan, 'TBD', 'ag', 'Apples.doc', True, np.nan, 'Apples.doc', 'apples', 'ag']]
         df = make_df(rows)
         topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
         os.makedirs(topic_path)
@@ -110,38 +111,38 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the metadata csv has the correct contents.
         result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
-        expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['30601', 'ag', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
-                    ['30602', 'apples', 'BLANK', 'no_path_provided', 'Apples', 'Apples.doc', 'True'],
-                    ['30603', 'apples', '3.txt', 'True', 'ag', 'BLANK', 'no_path_provided'],
-                    ['30604', 'apples', 'BLANK', 'no_path_provided', 'ag', 'Apples.doc', 'True']]
+                    ['ag', '1.txt', 'True', 'Apples', 'Apples.doc', 'True'],
+                    ['apples', 'BLANK', 'no_path_provided', 'Apples', 'Apples.doc', 'True'],
+                    ['apples', '3.txt', 'True', 'ag', 'BLANK', 'no_path_provided'],
+                    ['apples', 'BLANK', 'no_path_provided', 'ag', 'Apples.doc', 'True']]
         self.assertEqual(expected, result, "Problem with test for TBD")
         
     def test_update_csv(self):
         """Test for when multiple topics normalize to the same topic folder and metadata.csv"""
         # Makes test input and runs the function to make the metadata.csv.
-        rows = [['30601', 'ag', '1.txt', True, '|apples|', 'Apples.doc', True, 'ag', '|apples|']]
+        rows = [['ag', '1.txt', True, '|apples|', 'Apples.doc', True, '1.txt', 'Apples.doc', 'ag', '|apples|']]
         df = make_df(rows)
         topic_path = os.path.join('test_data', 'topics_sort_save_metadata', '_apples_')
         os.makedirs(topic_path)
         topics_sort_save_metadata(df, topic_path, '_apples_')
 
         # Makes another df and runs the function to add to the metadata.csv.
-        rows = [['30602', '<apples>', '2.txt', True, 'Apples', 'Apples.doc', True, '<apples>', 'Apples'],
-                ['30603', '<apples>', '3.txt', True, 'ag', 'Apples.doc', True, '<apples>', 'ag'],
-                ['30604', '<apples>', '4.txt', False, 'ag', 'Apples.doc', True, '<apples>', 'ag']]
+        rows = [['<apples>', '2.txt', True, 'Apples', 'Apples.doc', True, '2.txt', 'Apples.doc', '<apples>', 'Apples'],
+                ['<apples>', '3.txt', True, 'ag', 'Apples.doc', True, '3.txt', 'Apples.doc', '<apples>', 'ag'],
+                ['<apples>', '4.txt', False, 'ag', 'Apples.doc', True, '4.txt', 'Apples.doc', '<apples>', 'ag']]
         df = make_df(rows)
         topics_sort_save_metadata(df, topic_path, '_apples_')
 
         # Verifies the metadata csv has the correct contents.
         result = csv_to_list(os.path.join(topic_path, '_apples__metadata.csv'))
-        expected = [['zip', 'in_topic', 'in_document_name', 'in_document_name_present',
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['30601', 'ag', '1.txt', 'True', '|apples|', 'Apples.doc', 'True'],
-                    ['30602', '<apples>', '2.txt', 'True', 'Apples', 'Apples.doc', 'True'],
-                    ['30603', '<apples>', '3.txt', 'True', 'ag', 'Apples.doc', 'True'],
-                    ['30604', '<apples>', '4.txt', 'False', 'ag', 'Apples.doc', 'True']]
+                    ['ag', '1.txt', 'True', '|apples|', 'Apples.doc', 'True'],
+                    ['<apples>', '2.txt', 'True', 'Apples', 'Apples.doc', 'True'],
+                    ['<apples>', '3.txt', 'True', 'ag', 'Apples.doc', 'True'],
+                    ['<apples>', '4.txt', 'False', 'ag', 'Apples.doc', 'True']]
         self.assertEqual(expected, result, "Problem with test for update_csv")
 
 

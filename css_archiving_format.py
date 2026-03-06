@@ -720,15 +720,17 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Only keeps rows if at least one of the documents was found.
     df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
 
-    # Removes temporary folders used for identifying the topic and the year.
-    df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
+    # Removes temporary folders used for identifying the document and topic.
+    df.drop(['in_document_name_split', 'in_topic_split', 'out_document_name_split', 'out_topic_split'],
+            axis=1, inplace=True)
 
     # Updates any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
     # Makes these columns strings first, or it will break with an AttributeError if the column only has True and False.
     df['in_document_name_present'] = df['in_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
     df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
-    # Removes duplicate rows, from when in_topic and out_topic both matched the topic.
+    # Removes duplicate rows, from when rows were duplicated to split document name columns or
+    # in_topic and out_topic both matched the topic.
     df.drop_duplicates(inplace=True)
 
     # Saves to the topic folder.
@@ -822,6 +824,7 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
+        md_df = topics_sort(md_df, input_directory, output_directory)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_year(md_df, output_directory)
-        topics_sort(md_df, input_directory, output_directory)
+
