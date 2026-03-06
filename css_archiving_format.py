@@ -246,12 +246,12 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
-    # For every row in df_appraisal, deletes any letter in the in_document_name and out_document_name columns.
+    # Deletes letters in df_appraisal if they are in the export.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
-    # Form letters are retained.
     df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
-        name = row.in_document_name
+        # Deletes all letters received from constituents.
+        name = row.in_document_name_split
         if name != '' and name != 'nan':
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
@@ -263,13 +263,13 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                 except FileNotFoundError:
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
-        # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
-        name = row.out_document_name
+        # Deletes individual letters, not form letters, sent to constituents.
+        name = row.out_document_name_split
         if name != '' and name != 'nan' and 'form' not in name:
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
                 file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
-            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
+            # Only delete if it is a file. Sometimes, out_document_name_split has the path to a folder instead.
             else:
                 if os.path.isfile(file_path):
                     file_deletion_log(log_path, file_path, row.Appraisal_Category)
