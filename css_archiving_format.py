@@ -543,6 +543,22 @@ def restriction_report(df, output_dir):
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 
 
+def save_redacted_metadata(df, output_dir):
+    """Save the entire df of redacted metadata to a csv, after cleanup"""
+
+    # Removes temporary columns used for the analysis.
+    df.drop(['in_document_name_split', 'out_document_name_split'], axis=1, inplace=True)
+
+    # Removes duplicate rows, where the only differences had been from the temporary columns.
+    df.drop_duplicates(inplace=True)
+
+    # Saves the CSV.
+    df.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
+
+    # Returns the cleaned up df.
+    return df
+
+
 def split_year(df, output_dir):
     """Make one metadata CSV per calendar year for smaller amount of data to review"""
 
@@ -824,7 +840,7 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
-        md_df = topics_sort(md_df, input_directory, output_directory)
-        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
+        topics_sort(md_df, input_directory, output_directory)
+        md_df = save_redacted_metadata(md_df, output_directory)
         split_year(md_df, output_directory)
 
