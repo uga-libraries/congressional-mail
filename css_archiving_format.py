@@ -720,7 +720,7 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Only keeps rows if at least one of the documents was found.
     df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
 
-    # Removes temporary folders used for identifying the document and topic.
+    # Removes temporary columns used for identifying the document and topic.
     df.drop(['in_document_name_split', 'in_topic_split', 'out_document_name_split', 'out_topic_split'],
             axis=1, inplace=True)
 
