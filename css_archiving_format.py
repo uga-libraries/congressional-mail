@@ -191,7 +191,8 @@ def check_metadata_usability(df, output_dir):
     expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                 'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
+                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
+                'in_document_name_split', 'out_document_name_split']
     columns_dict = dict.fromkeys(expected)
     match = list(set(expected).intersection(column_names))
     for column in match:
@@ -216,9 +217,9 @@ def check_metadata_usability(df, output_dir):
     state_mismatch = check_metadata_formatting('state', df, output_dir)
     zip_mismatch = check_metadata_formatting('zip', df, output_dir)
     in_date_mismatch = check_metadata_formatting('in_date', df, output_dir)
-    in_doc_mismatch = check_metadata_formatting_multi('in_document_name', df, output_dir)
+    in_doc_mismatch = check_metadata_formatting_multi('in_document_name_split', df, output_dir)
     out_date_mismatch = check_metadata_formatting('out_date', df, output_dir)
-    out_doc_mismatch = check_metadata_formatting_multi('out_document_name', df, output_dir)
+    out_doc_mismatch = check_metadata_formatting_multi('out_document_name_split', df, output_dir)
 
     # Combines the number of formatting errors for the checked columns into a series, for adding to the report.
     # Other columns have "uncheckable", even if the column is missing from the export.
@@ -226,9 +227,10 @@ def check_metadata_usability(df, output_dir):
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', in_date_mismatch,
-                                 'uncheckable', 'uncheckable', in_doc_mismatch, 'uncheckable', 'uncheckable',
-                                 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
-                                 out_doc_mismatch, 'uncheckable'], index=expected)
+                                 'uncheckable', 'uncheckable', 'see in_document_name_split', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable',
+                                 'uncheckable', 'see out_document_name_split', 'uncheckable',
+                                 in_doc_mismatch, out_doc_mismatch], index=expected)
 
     # Combines the data about each column into a dataframe and saves as a CSV.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
