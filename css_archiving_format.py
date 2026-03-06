@@ -469,10 +469,12 @@ def read_metadata(path):
 
     # Splits rows with multiple documents (in and/or out) so they can be matched to the files in the export.
     # The rest of the row is repeated for each in/out document combination.
-    df['in_document_name'] = df['in_document_name'].str.split(r'^')
-    df = df.explode('in_document_name')
-    df['out_document_name'] = df['out_document_name'].str.split(r'^')
-    df = df.explode('out_document_name')
+    # The split columns are only temporary, for use by the script to match paths to the export,
+    # and only the original columns with the delimiter are in access outputs to show the relationships between docs.
+    df['in_document_name_split'] = df['in_document_name'].str.split(r'^')
+    df = df.explode('in_document_name_split')
+    df['out_document_name_split'] = df['out_document_name'].str.split(r'^')
+    df = df.explode('out_document_name_split')
 
     return df
 
