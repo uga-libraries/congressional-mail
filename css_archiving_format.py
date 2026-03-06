@@ -86,21 +86,21 @@ def check_letter_matching(df, output_dir, input_dir):
 
     # Makes a list of paths for letters from constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
-    in_doc_df = df.dropna(subset=['in_document_name']).copy()
-    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].apply(update_path, input_dir=input_dir)
-    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].str.lower()
-    in_doc_list = in_doc_df['in_document_name'].tolist()
+    in_doc_df = df.dropna(subset=['in_document_name_split']).copy()
+    in_doc_df['in_document_name_split'] = in_doc_df['in_document_name_split'].apply(update_path, input_dir=input_dir)
+    in_doc_df['in_document_name_split'] = in_doc_df['in_document_name_split'].str.lower()
+    in_doc_list = in_doc_df['in_document_name_split'].tolist()
 
     # Makes a list of paths for letters to constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
-    out_doc_df = df.dropna(subset=['out_document_name']).copy()
-    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
-    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].str.lower()
-    out_doc_list = out_doc_df['out_document_name'].tolist()
+    out_doc_df = df.dropna(subset=['out_document_name_split']).copy()
+    out_doc_df['out_document_name_split'] = out_doc_df['out_document_name_split'].apply(update_path, input_dir=input_dir)
+    out_doc_df['out_document_name_split'] = out_doc_df['out_document_name_split'].str.lower()
+    out_doc_list = out_doc_df['out_document_name_split'].tolist()
 
     # Number of metadata rows without a file path.
-    blank_in_doc = df['in_document_name'].isna().sum()
-    blank_out_doc = df['out_document_name'].isna().sum()
+    blank_in_doc = df['in_document_name_split'].isna().sum()
+    blank_out_doc = df['out_document_name_split'].isna().sum()
     blank_total = blank_in_doc + blank_out_doc
 
     # Compares the combined list of file paths in the metadata to the export directory.
