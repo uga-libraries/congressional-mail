@@ -46,6 +46,30 @@ class MyTestCase(unittest.TestCase):
                     ['apples', '4.txt', 'True', 'ag', 'ag.doc', 'False']]
         self.assertEqual(expected, result, "Problem with test for basic")
 
+    def test_duplicate_doc(self):
+        """Test for when the df includes duplicate rows once the document_name_split columns are removed"""
+        # Makes test input and runs the function.
+        rows = [['ag', '1.txt^2.txt', True, 'ag', 'Apples.doc', True, '1.txt', 'Apples.doc', 'ag', 'ag'],
+                ['ag', '1.txt^2.txt', True, 'ag', 'Apples.doc', True, '2.txt', 'Apples.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '2.txt', 'A.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '2.txt', 'B.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '3.txt', 'A.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '3.txt', 'B.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '4.txt', 'A.doc', 'ag', 'ag'],
+                ['ag', '2.txt^3.txt^4.txt', True, 'ag', 'A.doc^B.doc', True, '4.txt', 'B.doc', 'ag', 'ag']]
+        df = make_df(rows)
+        topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
+        os.makedirs(topic_path)
+        topics_sort_save_metadata(df, topic_path, 'apples')
+
+        # Verifies the metadata csv has the correct contents.
+        result = csv_to_list(os.path.join(topic_path, 'apples_metadata.csv'))
+        expected = [['in_topic', 'in_document_name', 'in_document_name_present',
+                     'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['ag', '1.txt^2.txt', 'True', 'ag', 'Apples.doc', 'True'],
+                    ['ag', '2.txt^3.txt^4.txt', 'True', 'ag', 'A.doc^B.doc', 'True']]
+        self.assertEqual(expected, result, "Problem with test for duplicate_doc")
+
     def test_duplicate_topic(self):
         """Test for when the df includes duplicate rows once the topic_split columns are removed"""
         # Makes test input and runs the function.
