@@ -547,7 +547,7 @@ def save_redacted_metadata(df, output_dir):
     """Save the entire df of redacted metadata to a csv, after cleanup"""
 
     # Removes temporary columns used for the analysis.
-    df.drop(['in_document_name_split', 'out_document_name_split'], axis=1, inplace=True)
+    df.drop(['in_document_name_split', 'out_document_name_split', 'in_topic_split'], axis=1, inplace=True)
 
     # Removes duplicate rows, where the only differences had been from the temporary columns.
     df.drop_duplicates(inplace=True)
