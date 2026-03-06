@@ -8,14 +8,18 @@ from test_script import csv_to_list, make_dir_list
 
 
 def make_df(rows):
-    """Make a df for test input with all columns in the export, where rows just has the values that change"""
+    """Make a df for test input with all columns in the export, where rows just has the values that change
+    This can only be used if the document_name columns are not delimited.
+    """
     full_rows = []
     for row in rows:
-        new_row = ['*', '*', row[0], '*', '*', '*', '*', '*', row[1], row[2], '*', '*', '*', '*', row[3], row[4]]
+        new_row = ['*', '*', row[0], '*', '*', '*', '*', '*', row[1], row[2], '*', '*', '*', '*', row[3], row[4],
+                   row[2], row[4]]
         full_rows.append(new_row)
-    columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-               'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name']
-    df = pd.DataFrame(full_rows, columns=columns)
+    column_names = ['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
+                    'out_document_name', 'in_document_name_split', 'out_document_name_split']
+    df = pd.DataFrame(full_rows, columns=column_names)
     return df
 
 

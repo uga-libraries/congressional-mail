@@ -625,14 +625,14 @@ def topics_sort(df, input_dir, output_dir):
         from_path = os.path.join(topic_path, 'from_constituents')
         if not os.path.exists(from_path):
             os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'in_document_name', input_dir, output_dir, from_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, from_path)
 
         # Sorts correspondence to constituents ("out" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         to_path = os.path.join(topic_path, 'to_constituents')
         if not os.path.exists(to_path):
             os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, to_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
@@ -690,9 +690,9 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         doc_new_path = os.path.join(folder_path, doc_name)
         try:
             shutil.copy2(doc_path, doc_new_path)
-            df.loc[df[column] == doc, f'{column}_present'] = True
+            df.loc[df[column] == doc, column.replace('_split', '_present')] = True
         except FileNotFoundError:
-            df.loc[df[column] == doc, f'{column}_present'] = False
+            df.loc[df[column] == doc, column.replace('_split', '_present')] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
                 topic = folder_path.split('\\')[-2]
