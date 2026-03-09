@@ -751,9 +751,9 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # The topic split columns are always removed.
     # The document split columns are removed if there is no delimiter (^).
     to_remove = ['in_topic_split', 'out_topic_split']
-    if not df['in_document_name'].str.contains('\^').any():
+    if not df['in_document_name'].astype(str).str.contains('\^').any():
         to_remove.append('in_document_name_split')
-    if not df['out_document_name'].str.contains('\^').any():
+    if not df['out_document_name'].astype(str).str.contains('\^').any():
         to_remove.append('out_document_name_split')
     df.drop(to_remove, axis=1, inplace=True)
 
