@@ -748,8 +748,14 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
 
     # Removes temporary columns used for identifying the document and topic.
-    df.drop(['in_document_name_split', 'in_topic_split', 'out_document_name_split', 'out_topic_split'],
-            axis=1, inplace=True)
+    # The topic split columns are always removed.
+    # The document split columns are removed if there is no delimiter (^).
+    to_remove = ['in_topic_split', 'out_topic_split']
+    if not df['in_document_name'].str.contains('\^').any():
+        to_remove.append('in_document_name_split')
+    if not df['out_document_name'].str.contains('\^').any():
+        to_remove.append('out_document_name_split')
+    df.drop(to_remove, axis=1, inplace=True)
 
     # Updates any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
     # Makes these columns strings first, or it will break with an AttributeError if the column only has True and False.
