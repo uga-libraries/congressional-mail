@@ -175,32 +175,58 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join(by_topic, 'A', 'A_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
-                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                     'in_topic', 'in_document_name', 'in_document_name_split', 'in_document_name_present',
+                     'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name',
+                     'out_document_name_split', 'out_document_name_present'],
                     ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
                      '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
-                     'True', 'r100', 'General', 'Email', '20210111', 'A',
+                     '..\\documents\\BlobExport\\objects\\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111_add.txt', 'True', 'r100', 'General', 'Email',
+                     '20210111', 'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
                      '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
                     ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
-                     '..\\documents\\BlobExport\\objects\\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313',
                      'A', '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
-                     'True']]
+                     '..\\documents\\BlobExport\\formletters\\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, A_metadata.csv")
 
         # Tests the contents of A1_metadata.csv
         csv_path = os.path.join(by_topic, 'A1', 'A1_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
-                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                     'in_topic', 'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id',
+                     'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present'],
                     ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
                      '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
-                     'True', 'r100', 'General', 'Email', '20210111',
-                     'A', '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                     '..\\documents\\BlobExport\\objects\\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111_add.txt', 'True', 'r100', 'General', 'Email',
+                     '20210111', 'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
                     ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
-                     '..\\documents\\BlobExport\\objects\\333333.txt', 'True', 'r300', 'General', 'Email', '20240313',
-                     'A', '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
-                     'True']]
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\formletters\\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, A1_metadata.csv")
 
         # Tests the contents of B1_metadata.csv

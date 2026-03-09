@@ -126,10 +126,8 @@ class MyTestCase(unittest.TestCase):
                  np.nan, np.nan, '..\\documents\\BlobExport\\objects\\file1.txt', np.nan],
                 ['ag', '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file3.txt',
                  np.nan, np.nan, '..\\documents\\BlobExport\\objects\\file3.txt', np.nan],
-                ['farm', '..\\documents\\BlobExport\\objects\\file2.txt^..\\documents\\BlobExport\\objects\\file3.txt',
-                 np.nan, np.nan, '..\\documents\\BlobExport\\objects\\file2.txt', np.nan],
-                ['farm', '..\\documents\\BlobExport\\objects\\file2.txt^..\\documents\\BlobExport\\objects\\file3.txt',
-                 np.nan, np.nan, '..\\documents\\BlobExport\\objects\\file3.txt', np.nan]]
+                ['farm', '..\\documents\\BlobExport\\objects\\file3.txt', np.nan, np.nan,
+                 '..\\documents\\BlobExport\\objects\\file3.txt', np.nan]]
         df = make_df_delimited(rows)
         topics_sort(df, self.input_dir, self.output_dir)
 
@@ -144,18 +142,22 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'ag', 'from_constituents', 'file3.txt'),
                     os.path.join(self.by_topic, 'farm', 'from_constituents'),
                     os.path.join(self.by_topic, 'farm', 'farm_metadata.csv'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file2.txt'),
                     os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for doc_in, directory")
 
         # Verifies ag_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'ag', 'ag_metadata.csv'))
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present'],
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', 'ag',
                      '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file3.txt',
-                     'True', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided']]
+                     '..\\documents\\BlobExport\\objects\\file1.txt', 'True', '*', '*', '*', '*', 'BLANK', 'BLANK',
+                     'no_path_provided'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'ag',
+                     '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file3.txt',
+                     '..\\documents\\BlobExport\\objects\\file3.txt', 'True', '*', '*', '*', '*', 'BLANK', 'BLANK',
+                     'no_path_provided']]
         self.assertEqual(expected, result, "Problem with test for doc_in, ag_metadata.csv")
 
         # Verifies farm_metadata.csv has the expected contents.
@@ -163,8 +165,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
                      'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
                      'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'farm',
-                     '..\\documents\\BlobExport\\objects\\file2.txt^..\\documents\\BlobExport\\objects\\file3.txt',
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'farm', '..\\documents\\BlobExport\\objects\\file3.txt',
                      'True', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided']]
         self.assertEqual(expected, result, "Problem with test for doc_in, farm_metadata.csv")
 
@@ -229,20 +230,29 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.by_topic, 'ag', 'ag_metadata.csv'))
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
                      'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided', '*', '*', '*', '*', 'ag',
-                     '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\a2.txt', 'True']]
+                     'out_topic', 'out_document_name', 'out_document_name_split', 'out_document_name_present'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided', '*', '*', '*', '*',
+                     'ag', '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\a2.txt',
+                     '..\\documents\\BlobExport\\responses\\a1.txt', 'True'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided', '*', '*', '*', '*',
+                     'ag', '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\a2.txt',
+                     '..\\documents\\BlobExport\\responses\\a2.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for doc_out, ag_metadata.csv")
 
         # Verifies farm_family_metadata.csv has the expected contents.
         result = csv_to_list(os.path.join(self.by_topic, 'farm_family', 'farm_family_metadata.csv'))
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
                      'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided', '*', '*', '*', '*',
-                     'farm/family', '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\ag.txt',
-                     'True']]
-        self.assertEqual(expected, result, "Problem with test for doc_out, farm_metadata.csv")
+                     'out_topic', 'out_document_name', 'out_document_name_split', 'out_document_name_present'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided',
+                     '*', '*', '*', '*', 'farm/family',
+                     '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\ag.txt',
+                     '..\\documents\\BlobExport\\responses\\a1.txt', 'True'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided',
+                     '*', '*', '*', '*', 'farm/family',
+                     '..\\documents\\BlobExport\\responses\\a1.txt^..\\documents\\BlobExport\\responses\\ag.txt',
+                     '..\\documents\\BlobExport\\responses\\ag.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for doc_out, farm_family_metadata.csv")
 
     def test_topic_both(self):
         """Test for when a topic is in both in_topic and out_topic"""
