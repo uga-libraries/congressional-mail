@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
                               ['30603', r'..\BlobExport\documents\indivletters\300.txt', np.nan],
                               ['30604', r'..\BlobExport\documents\indivletters\400.txt',
                                r'..\BlobExport\documents\Formletters\form_b.txt']],
-                             columns=['zip', 'in_document_name', 'out_document_name'])
+                             columns=['zip', 'in_document_name_split', 'out_document_name_split'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'all')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
         check_letter_matching(md_df, output_directory, input_directory)
@@ -63,7 +63,7 @@ class MyTestCase(unittest.TestCase):
                               ['30603', np.nan, np.nan],
                               ['30604', r'..\BlobExport\documents\indivletters\400.txt', np.nan],
                               ['30605', np.nan, r'..\BlobExport\documents\formletters\form_c.txt']],
-                             columns=['zip', 'in_document_name', 'out_document_name'])
+                             columns=['zip', 'in_document_name_split', 'out_document_name_split'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'blanks')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
         check_letter_matching(md_df, output_directory, input_directory)
@@ -87,7 +87,7 @@ class MyTestCase(unittest.TestCase):
         # Makes variables to use as test input and runs the function.
         md_df = pd.DataFrame([['30601', r'..\BlobExport\documents\indivletters\100.txt',
                                r'..\BlobExport\documents\formletters\form_a.txt']],
-                             columns=['zip', 'in_document_name', 'out_document_name'])
+                             columns=['zip', 'in_document_name_split', 'out_document_name_split'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'directory_only')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
         check_letter_matching(md_df, output_directory, input_directory)
@@ -125,7 +125,7 @@ class MyTestCase(unittest.TestCase):
                               r'..\BlobExport\documents\formletters\form_b.txt'],
                               ['30605', r'..\BlobExport\documents\indivletters\part_two\500.txt',
                               r'..\BlobExport\documents\formletters\form_c.txt']],
-                             columns=['zip', 'in_document_name', 'out_document_name'])
+                             columns=['zip', 'in_document_name_split', 'out_document_name_split'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'match')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
         check_letter_matching(md_df, output_directory, input_directory)
@@ -157,7 +157,7 @@ class MyTestCase(unittest.TestCase):
                               r'..\BlobExport\documents\formletters\form_b.txt'],
                               ['30605', r'..\BlobExport\documents\indivletters\500.txt',
                               r'..\BlobExport\documents\formletters\form_c.txt']],
-                             columns=['zip', 'in_document_name', 'out_document_name'])
+                             columns=['zip', 'in_document_name_split', 'out_document_name_split'])
         output_directory = os.path.join('test_data', 'check_letter_matching', 'metadata_only')
         input_directory = os.path.join(output_directory, 'Name_Constituent_Mail_Export')
         check_letter_matching(md_df, output_directory, input_directory)

@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Deletes the reports, if made by the test"""
-        columns = ['in_document_name', 'out_document_name']
+        columns = ['in_document_name_split', 'out_document_name_split']
         for column in columns:
             report_path = os.path.join('test_data', f'metadata_formatting_errors_{column}.csv')
             if os.path.exists(report_path):
@@ -26,15 +26,15 @@ class MyTestCase(unittest.TestCase):
                            ['30605', '..\\documents\\BlobExport\\file3.txt'],
                            ['30606', 'dir\\..\\documents\\BlobExport\\folder1\\file1.txt'],
                            ['30607', 'fileb.txt']],
-                          columns=['zip', 'in_document_name'])
-        in_document_name_mismatch = check_metadata_formatting_multi('in_document_name', df, 'test_data')
+                          columns=['zip', 'in_document_name_split'])
+        in_document_name_split_mismatch = check_metadata_formatting_multi('in_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(3, in_document_name_mismatch, "Problem with test for blob, count")
+        self.assertEqual(3, in_document_name_split_mismatch, "Problem with test for blob, count")
 
         # Tests the values in the report are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_document_name.csv'))
-        expected = [['zip', 'in_document_name'],
+        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_in_document_name_split.csv'))
+        expected = [['zip', 'in_document_name_split'],
                     ['30602', 'root\\documents\\BlobExport\\foldera\\filea.txt'],
                     ['30606', 'dir\\..\\documents\\BlobExport\\folder1\\file1.txt'],
                     ['30607', 'fileb.txt']]
@@ -50,15 +50,15 @@ class MyTestCase(unittest.TestCase):
                            ['30605', '\\\\smith-atlanta\\dos\\public\\file3.txt'],
                            ['30606', 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt'],
                            ['30607', np.nan]],
-                          columns=['zip', 'out_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'out_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(2, out_document_name_mismatch, "Problem with test for dos, count")
+        self.assertEqual(2, out_document_name_split_mismatch, "Problem with test for dos, count")
 
         # Tests the values in the report are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
-        expected = [['zip', 'out_document_name'],
+        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
+        expected = [['zip', 'out_document_name_split'],
                     ['30602', 'root\\\\smith-atlanta\\dos\\public\\foldera\\filea.txt'],
                     ['30606', 'dir\\\\smith-atlanta\\dos\\public\\folder1\\file1.txt']]
         self.assertEqual(expected, result, "Problem with test for dos, report")
@@ -70,15 +70,15 @@ class MyTestCase(unittest.TestCase):
                            ['30602', 'root\\e:\\emailobj\\200202\\416120451.txt'],
                            ['30603', 'e:\\emailobj\\200303\\416120451.txt'],
                            ['30604', np.nan]],
-                          columns=['zip', 'out_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'out_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(1, out_document_name_mismatch, "Problem with test for e, count")
+        self.assertEqual(1, out_document_name_split_mismatch, "Problem with test for e, count")
 
         # Tests the values in the report are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
-        expected = [['zip', 'out_document_name'],
+        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
+        expected = [['zip', 'out_document_name_split'],
                     ['30602', 'root\\e:\\emailobj\\200202\\416120451.txt']]
         self.assertEqual(expected, result, "Problem with test for e, report")
 
@@ -90,14 +90,14 @@ class MyTestCase(unittest.TestCase):
                            ['30603', np.nan],
                            ['30604', np.nan],
                            ['30605', np.nan]],
-                          columns=['zip', 'out_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'out_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual('column_blank', out_document_name_mismatch, "Problem with test for 'column_blank', count")
+        self.assertEqual('column_blank', out_document_name_split_mismatch, "Problem with test for 'column_blank', count")
 
         # Tests the report was not made
-        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
         expected = False
         self.assertEqual(expected, result, "Problem with test for 'column_blank', report")
 
@@ -109,14 +109,14 @@ class MyTestCase(unittest.TestCase):
                            ['30603', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file1.txt'],
                            ['30604', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file2.txt'],
                            ['30605', '..\\documents\\BlobExport\\folder2\\file3.txt']],
-                          columns=['zip', 'in_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'in_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual('column_missing', out_document_name_mismatch, "Problem with test for column_missing, count")
+        self.assertEqual('column_missing', out_document_name_split_mismatch, "Problem with test for column_missing, count")
 
         # Tests the report was not made
-        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
         expected = False
         self.assertEqual(expected, result, "Problem with test for column_missing, report")
 
@@ -128,14 +128,14 @@ class MyTestCase(unittest.TestCase):
                            ['30603', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file1.txt'],
                            ['30604', '\\\\smith-atlanta\\dos\\public\\folder1\\folder2\\file2.txt'],
                            ['30605', '..\\documents\\BlobExport\\folder2\\file3.txt']],
-                          columns=['zip', 'out_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'out_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(0, out_document_name_mismatch, "Problem with test for no errors, count")
+        self.assertEqual(0, out_document_name_split_mismatch, "Problem with test for no errors, count")
 
         # Tests the report was not made
-        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
+        result = os.path.exists(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
         expected = False
         self.assertEqual(expected, result, "Problem with test for no errors, report")
 
@@ -146,15 +146,15 @@ class MyTestCase(unittest.TestCase):
                            ['30602', '..\\documents\\file2.txt'],
                            ['30603', '\\public\\file1.txt'],
                            ['30604', 'file2.txt']],
-                          columns=['zip', 'out_document_name'])
-        out_document_name_mismatch = check_metadata_formatting_multi('out_document_name', df, 'test_data')
+                          columns=['zip', 'out_document_name_split'])
+        out_document_name_split_mismatch = check_metadata_formatting_multi('out_document_name_split', df, 'test_data')
 
         # Tests the returned row count is correct.
-        self.assertEqual(4, out_document_name_mismatch, "Problem with test for only errors, count")
+        self.assertEqual(4, out_document_name_split_mismatch, "Problem with test for only errors, count")
 
         # Tests the values in the report are correct.
-        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name.csv'))
-        expected = [['zip', 'out_document_name'],
+        result = csv_to_list(os.path.join('test_data', 'metadata_formatting_errors_out_document_name_split.csv'))
+        expected = [['zip', 'out_document_name_split'],
                     ['30601', '..\\documents\\folder1\\file1.txt'],
                     ['30602', '..\\documents\\file2.txt'],
                     ['30603', '\\public\\file1.txt'],

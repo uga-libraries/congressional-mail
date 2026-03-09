@@ -86,21 +86,21 @@ def check_letter_matching(df, output_dir, input_dir):
 
     # Makes a list of paths for letters from constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
-    in_doc_df = df.dropna(subset=['in_document_name']).copy()
-    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].apply(update_path, input_dir=input_dir)
-    in_doc_df['in_document_name'] = in_doc_df['in_document_name'].str.lower()
-    in_doc_list = in_doc_df['in_document_name'].tolist()
+    in_doc_df = df.dropna(subset=['in_document_name_split']).copy()
+    in_doc_df['in_document_name_split'] = in_doc_df['in_document_name_split'].apply(update_path, input_dir=input_dir)
+    in_doc_df['in_document_name_split'] = in_doc_df['in_document_name_split'].str.lower()
+    in_doc_list = in_doc_df['in_document_name_split'].tolist()
 
     # Makes a list of paths for letters to constituents in the metadata,
     # updating the path to match how the directory is structured in the export.
-    out_doc_df = df.dropna(subset=['out_document_name']).copy()
-    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].apply(update_path, input_dir=input_dir)
-    out_doc_df['out_document_name'] = out_doc_df['out_document_name'].str.lower()
-    out_doc_list = out_doc_df['out_document_name'].tolist()
+    out_doc_df = df.dropna(subset=['out_document_name_split']).copy()
+    out_doc_df['out_document_name_split'] = out_doc_df['out_document_name_split'].apply(update_path, input_dir=input_dir)
+    out_doc_df['out_document_name_split'] = out_doc_df['out_document_name_split'].str.lower()
+    out_doc_list = out_doc_df['out_document_name_split'].tolist()
 
     # Number of metadata rows without a file path.
-    blank_in_doc = df['in_document_name'].isna().sum()
-    blank_out_doc = df['out_document_name'].isna().sum()
+    blank_in_doc = df['in_document_name_split'].isna().sum()
+    blank_out_doc = df['out_document_name_split'].isna().sum()
     blank_total = blank_in_doc + blank_out_doc
 
     # Compares the combined list of file paths in the metadata to the export directory.
@@ -191,7 +191,8 @@ def check_metadata_usability(df, output_dir):
     expected = ['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
                 'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
                 'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin']
+                'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
+                'in_document_name_split', 'out_document_name_split']
     columns_dict = dict.fromkeys(expected)
     match = list(set(expected).intersection(column_names))
     for column in match:
@@ -216,9 +217,9 @@ def check_metadata_usability(df, output_dir):
     state_mismatch = check_metadata_formatting('state', df, output_dir)
     zip_mismatch = check_metadata_formatting('zip', df, output_dir)
     in_date_mismatch = check_metadata_formatting('in_date', df, output_dir)
-    in_doc_mismatch = check_metadata_formatting_multi('in_document_name', df, output_dir)
+    in_doc_mismatch = check_metadata_formatting_multi('in_document_name_split', df, output_dir)
     out_date_mismatch = check_metadata_formatting('out_date', df, output_dir)
-    out_doc_mismatch = check_metadata_formatting_multi('out_document_name', df, output_dir)
+    out_doc_mismatch = check_metadata_formatting_multi('out_document_name_split', df, output_dir)
 
     # Combines the number of formatting errors for the checked columns into a series, for adding to the report.
     # Other columns have "uncheckable", even if the column is missing from the export.
@@ -226,9 +227,10 @@ def check_metadata_usability(df, output_dir):
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', 'uncheckable', state_mismatch, zip_mismatch,
                                  'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable', in_date_mismatch,
-                                 'uncheckable', 'uncheckable', in_doc_mismatch, 'uncheckable', 'uncheckable',
-                                 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable', 'uncheckable',
-                                 out_doc_mismatch, 'uncheckable'], index=expected)
+                                 'uncheckable', 'uncheckable', 'see in_document_name_split', 'uncheckable',
+                                 'uncheckable', 'uncheckable', 'uncheckable', out_date_mismatch, 'uncheckable',
+                                 'uncheckable', 'see out_document_name_split', 'uncheckable',
+                                 in_doc_mismatch, out_doc_mismatch], index=expected)
 
     # Combines the data about each column into a dataframe and saves as a CSV.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
@@ -244,12 +246,12 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
     log_path = os.path.join(output_dir, f"file_deletion_log_{date.today().strftime('%Y-%m-%d')}.csv")
     file_deletion_log(log_path, None, 'header')
 
-    # For every row in df_appraisal, deletes any letter in the in_document_name and out_document_name columns.
+    # Deletes letters in df_appraisal if they are in the export.
     # The letter path has to be reformatted to match the actual export, and an error is logged if it is a new pattern.
-    # Form letters are retained.
     df_appraisal = df_appraisal.astype(str)
     for row in df_appraisal.itertuples():
-        name = row.in_document_name
+        # Deletes all letters received from constituents.
+        name = row.in_document_name_split
         if name != '' and name != 'nan':
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
@@ -261,13 +263,13 @@ def delete_appraisal_letters(input_dir, output_dir, df_appraisal):
                 except FileNotFoundError:
                     file_deletion_log(log_path, file_path, 'Cannot delete: FileNotFoundError')
 
-        # Deletes individual letters, not form letters, sent to constituents, if the "out" column isn't blank.
-        name = row.out_document_name
+        # Deletes individual letters, not form letters, sent to constituents.
+        name = row.out_document_name_split
         if name != '' and name != 'nan' and 'form' not in name:
             file_path = update_path(name, input_dir)
             if file_path == 'error_new':
                 file_deletion_log(log_path, name, 'Cannot determine file path: new path pattern in metadata')
-            # Only delete if it is a file. Sometimes, out_document_name has the path to a folder instead.
+            # Only delete if it is a file. Sometimes, out_document_name_split has the path to a folder instead.
             else:
                 if os.path.isfile(file_path):
                     file_deletion_log(log_path, file_path, row.Appraisal_Category)
@@ -469,10 +471,12 @@ def read_metadata(path):
 
     # Splits rows with multiple documents (in and/or out) so they can be matched to the files in the export.
     # The rest of the row is repeated for each in/out document combination.
-    df['in_document_name'] = df['in_document_name'].str.split(r'^')
-    df = df.explode('in_document_name')
-    df['out_document_name'] = df['out_document_name'].str.split(r'^')
-    df = df.explode('out_document_name')
+    # The split columns are only temporary, for use by the script to match paths to the export,
+    # and only the original columns with the delimiter are in access outputs to show the relationships between docs.
+    df['in_document_name_split'] = df['in_document_name'].str.split(r'^')
+    df = df.explode('in_document_name_split')
+    df['out_document_name_split'] = df['out_document_name'].str.split(r'^')
+    df = df.explode('out_document_name_split')
 
     return df
 
@@ -537,6 +541,22 @@ def restriction_report(df, output_dir):
                             df_restrict['out_topic_split'].isin(restrict_list)]
     if len(report_df.index) > 0:
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+
+
+def save_redacted_metadata(df, output_dir):
+    """Save the entire df of redacted metadata to a csv, after cleanup"""
+
+    # Removes temporary columns used for the analysis.
+    df.drop(['in_document_name_split', 'out_document_name_split', 'in_topic_split'], axis=1, inplace=True)
+
+    # Removes duplicate rows, where the only differences had been from the temporary columns.
+    df.drop_duplicates(inplace=True)
+
+    # Saves the CSV.
+    df.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
+
+    # Returns the cleaned up df.
+    return df
 
 
 def split_year(df, output_dir):
@@ -621,14 +641,14 @@ def topics_sort(df, input_dir, output_dir):
         from_path = os.path.join(topic_path, 'from_constituents')
         if not os.path.exists(from_path):
             os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'in_document_name', input_dir, output_dir, from_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, from_path)
 
         # Sorts correspondence to constituents ("out" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         to_path = os.path.join(topic_path, 'to_constituents')
         if not os.path.exists(to_path):
             os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'out_document_name', input_dir, output_dir, to_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, to_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
@@ -666,6 +686,17 @@ def topics_sort_df(df):
     df.insert(10, 'in_document_name_present', 'TBD', True)
     df.insert(17, 'out_document_name_present', 'TBD', True)
 
+    # Reorder columns by moving each document_name_split after document_name,
+    # so the "present" column makes more sense when saving the metadata to a CSV when document_name is delimited.
+    columns_list = list(df.columns)
+    columns_list.remove('in_document_name_split')
+    insert_in = columns_list.index('in_document_name') + 1
+    columns_list.insert(insert_in, 'in_document_name_split')
+    columns_list.remove('out_document_name_split')
+    insert_out = columns_list.index('out_document_name') + 1
+    columns_list.insert(insert_out, 'out_document_name_split')
+    df = df[columns_list]
+
     return df
 
 
@@ -686,9 +717,9 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         doc_new_path = os.path.join(folder_path, doc_name)
         try:
             shutil.copy2(doc_path, doc_new_path)
-            df.loc[df[column] == doc, f'{column}_present'] = True
+            df.loc[df[column] == doc, column.replace('_split', '_present')] = True
         except FileNotFoundError:
-            df.loc[df[column] == doc, f'{column}_present'] = False
+            df.loc[df[column] == doc, column.replace('_split', '_present')] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
                 topic = folder_path.split('\\')[-2]
@@ -716,15 +747,23 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Only keeps rows if at least one of the documents was found.
     df = df[(df['in_document_name_present'] == True) | (df['out_document_name_present'] == True)]
 
-    # Removes temporary folders used for identifying the topic and the year.
-    df.drop(['in_topic_split', 'out_topic_split'], axis=1, inplace=True)
+    # Removes temporary columns used for identifying the document and topic.
+    # The topic split columns are always removed.
+    # The document split columns are removed if there is no delimiter (^).
+    to_remove = ['in_topic_split', 'out_topic_split']
+    if not df['in_document_name'].astype(str).str.contains('\^').any():
+        to_remove.append('in_document_name_split')
+    if not df['out_document_name'].astype(str).str.contains('\^').any():
+        to_remove.append('out_document_name_split')
+    df.drop(to_remove, axis=1, inplace=True)
 
     # Updates any remaining "TBD" in the document_present columns, from rows that have blanks instead of document paths.
     # Makes these columns strings first, or it will break with an AttributeError if the column only has True and False.
     df['in_document_name_present'] = df['in_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
     df['out_document_name_present'] = df['out_document_name_present'].astype(str).str.replace('TBD', 'no_path_provided')
 
-    # Removes duplicate rows, from when in_topic and out_topic both matched the topic.
+    # Removes duplicate rows, from when rows were duplicated to split document name columns or
+    # in_topic and out_topic both matched the topic.
     df.drop_duplicates(inplace=True)
 
     # Saves to the topic folder.
@@ -818,6 +857,7 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
-        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-        split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
+        md_df = save_redacted_metadata(md_df, output_directory)
+        split_year(md_df, output_directory)
+
