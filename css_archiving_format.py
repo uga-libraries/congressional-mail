@@ -686,6 +686,17 @@ def topics_sort_df(df):
     df.insert(10, 'in_document_name_present', 'TBD', True)
     df.insert(17, 'out_document_name_present', 'TBD', True)
 
+    # Reorder columns by moving each document_name_split after document_name,
+    # so the "present" column makes more sense when saving the metadata to a CSV when document_name is delimited.
+    columns_list = list(df.columns)
+    columns_list.remove('in_document_name_split')
+    insert_in = columns_list.index('in_document_name') + 1
+    columns_list.insert(insert_in, 'in_document_name_split')
+    columns_list.remove('out_document_name_split')
+    insert_out = columns_list.index('out_document_name') + 1
+    columns_list.insert(insert_out, 'out_document_name_split')
+    df = df[columns_list]
+
     return df
 
 

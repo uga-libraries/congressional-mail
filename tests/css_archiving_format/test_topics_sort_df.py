@@ -9,17 +9,98 @@ def make_df(rows):
     """Make a df for test input with all columns in the export, where rows just has the values that change"""
     full_rows = []
     for row in rows:
-        new_row = ['*', '*', row[0], '*', '*', '*', '*', '*', row[1], row[2], '*', '*', '*', '*', row[3], row[4]]
+        new_row = ['*', '*', row[0], '*', '*', '*', '*', '*', row[1], row[2], '*', '*', '*', '*',
+                   row[3], row[4], row[2], row[4]]
         full_rows.append(new_row)
     columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-               'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name']
+               'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name',
+               'in_document_name_split', 'out_document_name_split']
     df = pd.DataFrame(full_rows, columns=columns)
     return df
 
 
 class MyTestCase(unittest.TestCase):
 
-    def test_both(self):
+    def test_doc_delimited(self):
+        """Test for when one or both of the document name columns is delimited"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        # Not using the function since the doc columns have delimiters and are not just repeated.
+        rows = [['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '*', '*', '*', '*',
+                 'A', 'A.txt', '1.txt', 'A.txt'],
+                ['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '*', '*', '*', '*',
+                 'A', 'A.txt', '11.txt', 'A.txt'],
+                ['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '*', '*', '*', '*',
+                'A', 'A.txt', '111.txt', 'A.txt'],
+                ['*', '*', '30602', '*', '*', '*', '*', '*', 'B', '2.txt', '*', '*', '*', '*',
+                'B', 'B.txt^BB.txt', '2.txt', 'B.txt'],
+                ['*', '*', '30602', '*', '*', '*', '*', '*', 'B', '2.txt', '*', '*', '*', '*',
+                 'B', 'B.txt^BB.txt', '2.txt', 'BB.txt'],
+                ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '*', '*', '*', '*',
+                 'C', 'C.txt^CC.txt', '3.txt', 'C.txt'],
+                ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '*', '*', '*', '*',
+                 'C', 'C.txt^CC.txt', '3.txt', 'CC.txt'],
+                ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '*', '*', '*', '*',
+                 'C', 'C.txt^CC.txt', '33.txt', 'C.txt'],
+                ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '*', '*', '*', '*',
+                 'C', 'C.txt^CC.txt', '33.txt', 'CC.txt']]
+        columns = ['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+                   'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
+                   'out_document_name', 'in_document_name_split', 'out_document_name_split']
+        df = pd.DataFrame(rows, columns=columns)
+        df_topics = topics_sort_df(df)
+
+        # Verifies the contents of the df_topics are correct.
+        result = df_to_list(df_topics)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present', 'in_topic_split', 'out_topic_split'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '1.txt', 'TBD',
+                     '*', '*', '*', '*', 'A', 'A.txt', 'A.txt', 'TBD', 'A', 'A'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '11.txt', 'TBD',
+                     '*', '*', '*', '*', 'A', 'A.txt', 'A.txt', 'TBD', 'A', 'A'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'A', '1.txt^11.txt^111.txt', '111.txt', 'TBD',
+                     '*', '*', '*', '*', 'A', 'A.txt', 'A.txt', 'TBD', 'A', 'A'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'B', '2.txt', '2.txt', 'TBD', '*', '*', '*', '*',
+                     'B', 'B.txt^BB.txt', 'B.txt', 'TBD', 'B', 'B'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'B', '2.txt', '2.txt', 'TBD', '*', '*', '*', '*',
+                     'B', 'B.txt^BB.txt', 'BB.txt', 'TBD', 'B', 'B'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '3.txt', 'TBD', '*', '*',
+                     '*', '*', 'C', 'C.txt^CC.txt', 'C.txt', 'TBD', 'C', 'C'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '3.txt', 'TBD', '*', '*',
+                     '*', '*', 'C', 'C.txt^CC.txt', 'CC.txt', 'TBD', 'C', 'C'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '33.txt', 'TBD', '*', '*',
+                     '*', '*', 'C', 'C.txt^CC.txt', 'C.txt', 'TBD', 'C', 'C'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '33.txt', 'TBD', '*', '*',
+                     '*', '*', 'C', 'C.txt^CC.txt', 'CC.txt', 'TBD', 'C', 'C']]
+        self.assertEqual(expected, result, "Problem with test for doc_delimited")
+
+    def test_none(self):
+        """Test for when no columns have delimiters"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30601', 'pear', 'file1.txt', 'U', 'file11.txt'],
+                      ['30602', 'A-A', 'file2.txt', 'V', 'file22.txt'],
+                      ['30603', np.nan, 'file3.txt', 'X', 'file33.txt'],
+                      ['30604', 'farm app', 'file4.txt', 'Y', 'file44.txt']])
+        df_topics = topics_sort_df(df)
+
+        # Verifies the contents of the df_topics are correct.
+        result = df_to_list(df_topics)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present', 'in_topic_split', 'out_topic_split'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'U', 'file11.txt', 'file11.txt', 'TBD', 'pear', 'U'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'V', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'V'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'file3.txt', 'TBD',
+                     '*', '*', '*', '*', 'X', 'file33.txt', 'file33.txt', 'TBD', 'nan', 'X'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'farm app', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'Y', 'file44.txt', 'file44.txt', 'TBD', 'farm app', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for none")
+
+    def test_topic_both(self):
         """Test for when in_topic and out_topic have multiple topics"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30601', 'apple^pear', 'file1.txt', 'jam^pie', 'file11.txt'],
@@ -30,33 +111,34 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'TBD', 'apple', 'jam'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'TBD', 'apple', 'pie'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'TBD', 'pear', 'jam'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'TBD', 'pear', 'pie'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A A', 'B'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A A', 'Q_R'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A A', 'X Y Z'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'B'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'Q_R'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'TBD', 'A-A', 'X Y Z'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'TBD', 'nan', 'nan']]
-        self.assertEqual(expected, result, "Problem with test for both")
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present', 'in_topic_split', 'out_topic_split'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'file11.txt', 'TBD', 'apple', 'jam'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'file11.txt', 'TBD', 'apple', 'pie'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'file11.txt', 'TBD', 'pear', 'jam'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'jam^pie', 'file11.txt', 'file11.txt', 'TBD', 'pear', 'pie'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A A', 'B'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A A', 'Q_R'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A A', 'X Y Z'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'B'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'Q_R'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A A^A-A', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'X Y Z'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'file3.txt', 'TBD',
+                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'file33.txt', 'TBD', 'nan', 'nan']]
+        self.assertEqual(expected, result, "Problem with test for topic_both")
 
-    def test_in_only(self):
+    def test_topic_in(self):
         """Test for when in_topic is the only column with multiple topics"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30601', 'apple^pear', 'file1.txt', 'U', 'file11.txt'],
@@ -69,53 +151,30 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD', 
-                     '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'apple', 'U'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'TBD', 
-                     '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'pear', 'U'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'A', 'V'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'A-A', 'V'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'B', 'V'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'TBD', 
-                     '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'farm app', 'X'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'TBD', 
-                     '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'park and rec', 'X'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'nan', 'Y'],
-                    ['*', '*', '30605', '*', '*', '*', '*', '*', 'rec', 'file5.txt', 'TBD',
-                     '*', '*', '*', '*', 'Z', 'file55.txt', 'TBD', 'rec', 'Z']]
-        self.assertEqual(expected, result, "Problem with test for in_only")
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present', 'in_topic_split', 'out_topic_split'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'U', 'file11.txt', 'file11.txt', 'TBD', 'apple', 'U'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'apple^pear', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'U', 'file11.txt', 'file11.txt', 'TBD', 'pear', 'U'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'V', 'file22.txt', 'file22.txt', 'TBD', 'A', 'V'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'V', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'V'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A^A-A^B', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'V', 'file22.txt', 'file22.txt', 'TBD', 'B', 'V'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'file3.txt',
+                     'TBD', '*', '*', '*', '*', 'X', 'file33.txt', 'file33.txt', 'TBD', 'farm app', 'X'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'farm app^park and rec', 'file3.txt', 'file3.txt',
+                     'TBD', '*', '*', '*', '*', 'X', 'file33.txt', 'file33.txt', 'TBD', 'park and rec', 'X'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'Y', 'file44.txt', 'file44.txt', 'TBD', 'nan', 'Y'],
+                    ['*', '*', '30605', '*', '*', '*', '*', '*', 'rec', 'file5.txt', 'file5.txt', 'TBD',
+                     '*', '*', '*', '*', 'Z', 'file55.txt', 'file55.txt', 'TBD', 'rec', 'Z']]
+        self.assertEqual(expected, result, "Problem with test for topic_in")
 
-    def test_none(self):
-        """Test for when neither topic column has multiple topics"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30601', 'pear', 'file1.txt', 'U', 'file11.txt'],
-                      ['30602', 'A-A', 'file2.txt', 'V', 'file22.txt'],
-                      ['30603', np.nan, 'file3.txt', 'X', 'file33.txt'],
-                      ['30604', 'farm app', 'file4.txt', 'Y', 'file44.txt']])
-        df_topics = topics_sort_df(df)
-
-        # Verifies the contents of the df_topics are correct.
-        result = df_to_list(df_topics)
-        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'pear', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'U', 'file11.txt', 'TBD', 'pear', 'U'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'A-A', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'V', 'file22.txt', 'TBD', 'A-A', 'V'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'X', 'file33.txt', 'TBD', 'nan', 'X'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'farm app', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'Y', 'file44.txt', 'TBD', 'farm app', 'Y']]
-        self.assertEqual(expected, result, "Problem with test for none")
-
-    def test_out_only(self):
+    def test_topic_out(self):
         """Test for when out_topic is the only column with multiple topics"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30601', 'AAAA', 'file1.txt', 'U-V^XYZ', 'file11.txt'],
@@ -128,29 +187,30 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
         expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
-                     'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
-                     'out_topic', 'out_document_name', 'out_document_name_present', 'in_topic_split', 'out_topic_split'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'U-V^XYZ', 'file11.txt', 'TBD', 'AAAA', 'U-V'],
-                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'TBD',
-                     '*', '*', '*', '*', 'U-V^XYZ', 'file11.txt', 'TBD', 'AAAA', 'XYZ'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'TBD', 'BBBB', 'B 1'],
-                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'TBD',
-                     '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'TBD', 'BBBB', 'B.2'],
-                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'TBD',
-                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'TBD', 'nan', 'nan'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'W'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'X'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'Y'],
-                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'TBD',
-                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'TBD', 'CCCC', 'Z'],
-                    ['*', '*', '30605', '*', '*', '*', '*', '*', 'DDDD', 'file5.txt', 'TBD',
-                     '*', '*', '*', '*', 'ZZZZZZZ', 'file55.txt', 'TBD', 'DDDD', 'ZZZZZZZ']]
-        self.assertEqual(expected, result, "Problem with test for out_only")
+                     'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present', 'in_topic_split', 'out_topic_split'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'U-V^XYZ', 'file11.txt', 'file11.txt', 'TBD', 'AAAA', 'U-V'],
+                    ['*', '*', '30601', '*', '*', '*', '*', '*', 'AAAA', 'file1.txt', 'file1.txt', 'TBD',
+                     '*', '*', '*', '*', 'U-V^XYZ', 'file11.txt', 'file11.txt', 'TBD', 'AAAA', 'XYZ'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'file22.txt', 'TBD', 'BBBB', 'B 1'],
+                    ['*', '*', '30602', '*', '*', '*', '*', '*', 'BBBB', 'file2.txt', 'file2.txt', 'TBD',
+                     '*', '*', '*', '*', 'B 1^B.2', 'file22.txt', 'file22.txt', 'TBD', 'BBBB', 'B.2'],
+                    ['*', '*', '30603', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'file3.txt', 'TBD',
+                     '*', '*', '*', '*', 'BLANK', 'file33.txt', 'file33.txt', 'TBD', 'nan', 'nan'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'file44.txt', 'TBD', 'CCCC', 'W'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'file44.txt', 'TBD', 'CCCC', 'X'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'file44.txt', 'TBD', 'CCCC', 'Y'],
+                    ['*', '*', '30604', '*', '*', '*', '*', '*', 'CCCC', 'file4.txt', 'file4.txt', 'TBD',
+                     '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'file44.txt', 'TBD', 'CCCC', 'Z'],
+                    ['*', '*', '30605', '*', '*', '*', '*', '*', 'DDDD', 'file5.txt', 'file5.txt', 'TBD',
+                     '*', '*', '*', '*', 'ZZZZZZZ', 'file55.txt', 'file55.txt', 'TBD', 'DDDD', 'ZZZZZZZ']]
+        self.assertEqual(expected, result, "Problem with test for topic_out")
 
 
 if __name__ == '__main__':
