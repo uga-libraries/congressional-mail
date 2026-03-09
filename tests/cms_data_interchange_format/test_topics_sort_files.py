@@ -58,9 +58,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'file1.txt'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'file2.txt'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'scan1.txt')]
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments', 'scan1.txt'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email', 'file1.txt'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email', 'file2.txt')]
         self.assertEqual(expected, result, "Problem with test for from_all, output_dir")
 
     def test_from_duplicates(self):
@@ -104,9 +106,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'file1.txt'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'file2.txt'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'scan1.txt')]
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments', 'scan1.txt'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email', 'file1.txt'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email', 'file2.txt')]
         self.assertEqual(expected, result, "Problem with test for from_duplicates, output_dir")
 
     def test_from_unique(self):
@@ -147,8 +151,10 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'file1.txt'),
-                    os.path.join(by_topic, 'pets', 'from_constituents', 'scan1.txt')]
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'attachments', 'scan1.txt'),
+                    os.path.join(by_topic, 'pets', 'from_constituents', 'in-email', 'file1.txt')]
         self.assertEqual(expected, result, "Problem with test for from_unique, output_dir")
 
     def test_to_all(self):
@@ -177,9 +183,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Doe.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Smith.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Support.txt')]
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Doe.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Smith.txt')]
         self.assertEqual(expected, result, "Problem with test for to_all, output_dir")
 
     def test_to_duplicates(self):
@@ -223,9 +231,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Doe.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Smith.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Support.txt')]
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Doe.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Smith.txt')]
         self.assertEqual(expected, result, "Problem with test for to_duplicates, output_dir")
 
     def test_to_unique(self):
@@ -262,9 +272,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'pets'),
                     os.path.join(by_topic, 'pets', 'from_constituents'),
                     os.path.join(by_topic, 'pets', 'to_constituents'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Doe.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Smith.txt'),
-                    os.path.join(by_topic, 'pets', 'to_constituents', 'Support.txt')]
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Doe.txt'),
+                    os.path.join(by_topic, 'pets', 'to_constituents', 'out-custom', 'Smith.txt')]
         self.assertEqual(expected, result, "Problem with test for to_unique, output_dir")
 
 

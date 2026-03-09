@@ -156,14 +156,17 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'RIGHTS'),
                     os.path.join(by_topic, 'LEGAL CASE', 'from_constituents'),
                     os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', '1.txt'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email', '1.txt'),
                     os.path.join(by_topic, 'MINWAGE', 'from_constituents'),
                     os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', '2.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email'),
+                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email', '2.txt'),
                     os.path.join(by_topic, 'RIGHTS', 'to_constituents'),
                     os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', '33.txt'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', '333.txt')]
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom'),
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '33.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of LEGAL CASE_metadata.csv.
