@@ -177,10 +177,12 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'INTTAX'),
                     os.path.join(by_topic, 'FARMING', 'from_constituents'),
                     os.path.join(by_topic, 'FARMING', 'FARMING_metadata.csv'),
-                    os.path.join(by_topic, 'FARMING', 'from_constituents', '4007000.eml'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents', 'objects'),
+                    os.path.join(by_topic, 'FARMING', 'from_constituents', 'objects', '4007000.eml'),
                     os.path.join(by_topic, 'INTTAX', 'to_constituents'),
                     os.path.join(by_topic, 'INTTAX', 'INTTAX_metadata.csv'),
-                    os.path.join(by_topic, 'INTTAX', 'to_constituents', 'inttax.doc')]
+                    os.path.join(by_topic, 'INTTAX', 'to_constituents', 'formletters'),
+                    os.path.join(by_topic, 'INTTAX', 'to_constituents', 'formletters', 'inttax.doc')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of FARMING_metadata.csv.
