@@ -21,6 +21,7 @@ class MyTestCase(unittest.TestCase):
         """Variables and directories used by every test, which are usually from topics_sort()"""
         self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_files', 'name_export')
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_files', 'output')
+        self.by_topic = os.path.join(self.output_dir, 'correspondence_by_topic')
         self.folder_path = os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents')
         os.makedirs(self.folder_path)
 
@@ -57,9 +58,10 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', 'ag.txt')]
+                    os.path.join(self.by_topic, 'ag'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt')]
         self.assertEqual(expected, result, "Problem with test for blank, directory")
 
         # Verifies topics_sort_file_not_found.csv has the correct contents.
@@ -76,15 +78,12 @@ class MyTestCase(unittest.TestCase):
                       ['30600', 'ag',
                        '..\\documents\\BlobExport\\objects\\001.txt^..\\documents\\BlobExport\\forms\\ag.txt',
                        'TBD', '..\\documents\\BlobExport\\forms\\ag.txt'],
-                      ['30601', 'ag', 
-                       '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt', 
-                       'TBD', '..\\documents\\missing.txt'],
                       ['30601', 'ag',
-                       '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt',
-                       'TBD', '..\\documents\\BlobExport\\forms\\ag.txt'],
-                      ['30601', 'ag', 
-                       '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt',
-                       'TBD', 'missing.txt']])
+                       'e:\\emailobj\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt',
+                       'TBD', 'e:\\emailobj\\missing.txt'],
+                      ['30601', 'ag',
+                       'e:\\emailobj\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt',
+                       'TBD', '..\\documents\\BlobExport\\forms\\ag.txt']])
         df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
 
         # Verifies df_topic has the correct values.
@@ -97,30 +96,28 @@ class MyTestCase(unittest.TestCase):
                      '..\\documents\\BlobExport\\objects\\001.txt^..\\documents\\BlobExport\\forms\\ag.txt',
                      True, '..\\documents\\BlobExport\\forms\\ag.txt'],
                     ['30601', 'ag',
-                     '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt',
-                     False, '..\\documents\\missing.txt'],
+                     'e:\\emailobj\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt',
+                     False, 'e:\\emailobj\\missing.txt'],
                     ['30601', 'ag',
-                     '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt',
-                     True, '..\\documents\\BlobExport\\forms\\ag.txt'],
-                    ['30601', 'ag',
-                     '..\\documents\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt^missing.txt',
-                     False, 'missing.txt']]
+                     'e:\\emailobj\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt',
+                     True, '..\\documents\\BlobExport\\forms\\ag.txt']]
         self.assertEqual(expected, result, "Problem with test for duplicate, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', '001.txt'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', 'ag.txt')]
+                    os.path.join(self.by_topic, 'ag'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt')]
         self.assertEqual(expected, result, "Problem with test for delimited, directory")
 
         # Verifies topics_sort_file_not_found.csv has the correct contents.
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
-        expected = [['ag', '..\\documents\\missing.txt'],
-                    ['ag', 'missing.txt']]
+        expected = [['ag', 'e:\\emailobj\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for delimited, not_found")
         
     def test_duplicate(self):
@@ -173,10 +170,12 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', '001.txt'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', 'ag.txt')]
+                    os.path.join(self.by_topic, 'ag'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
 
         # Verifies topics_sort_file_not_found.csv has the correct contents.
@@ -227,12 +226,14 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', '001.txt'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', '002.txt'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', 'ag.txt'),
-                    os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents', 'bees.txt')]
+                    os.path.join(self.by_topic, 'ag'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'bees.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '002.txt')]
         self.assertEqual(expected, result, "Problem with test for unique, directory")
 
         # Verifies topics_sort_file_not_found.csv has the correct contents.
