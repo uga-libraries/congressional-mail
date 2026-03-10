@@ -19,6 +19,7 @@ import hashlib
 import numpy as np
 import os
 import pandas as pd
+from pathlib import Path
 import re
 import shutil
 import sys
@@ -710,11 +711,21 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         # Gets the path for the current doc location by updating the path from the metadata.
         doc_path = update_path(doc, input_dir)
 
+        # Gets the path for the subfolder for where the doc will be saved,
+        # which replicates all original subfolders within the to_constituents or from_constituents folder,
+        # and makes the folder if it doesn't exist.
+        doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
+        subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
+        subfolder_new = False
+        if not os.path.exists(subfolder_path):
+            subfolder_new = True
+            os.makedirs(subfolder_path)
+
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
         # If the doc is not in the expected location, logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
-        doc_new_path = os.path.join(folder_path, doc_name)
+        doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
             shutil.copy2(doc_path, doc_new_path)
             df.loc[df[column] == doc, column.replace('_split', '_present')] = True
@@ -724,6 +735,8 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
                 log_writer = csv.writer(log)
                 topic = folder_path.split('\\')[-2]
                 log_writer.writerow([topic, doc])
+            if subfolder_new:
+                os.rmdir(subfolder_path)
 
     return df
 
@@ -789,7 +802,7 @@ def update_path(md_path, input_dir):
         updated_path = re.sub('\\\\[a-z]+-[a-z]+\\\\dos\\\\public', 'documents', md_path)
         updated_path = input_dir + updated_path
     elif md_path.startswith('e:\\emailobj\\'):
-        updated_path = md_path.replace('e:', input_dir)
+        updated_path = md_path.replace('e:', os.path.join(input_dir, 'documents'))
     else:
         updated_path = 'error_new'
 

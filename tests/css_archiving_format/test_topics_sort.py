@@ -73,16 +73,20 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'ag', 'from_constituents'),
                     os.path.join(self.by_topic, 'ag', 'to_constituents'),
                     os.path.join(self.by_topic, 'ag', 'ag_metadata.csv'),
-                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'responses', 'ag.txt'),
                     os.path.join(self.by_topic, 'farm', 'from_constituents'),
                     os.path.join(self.by_topic, 'farm', 'to_constituents'),
                     os.path.join(self.by_topic, 'farm', 'farm_metadata.csv'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'farm', 'to_constituents', 'ag.txt')]
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, 'farm', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'farm', 'to_constituents', 'responses', 'ag.txt')]
         self.assertEqual(expected, result, "Problem with test for doc_both, directory")
 
         # Verifies the file not found log has the expected contents.
@@ -138,11 +142,13 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'farm'),
                     os.path.join(self.by_topic, 'ag', 'from_constituents'),
                     os.path.join(self.by_topic, 'ag', 'ag_metadata.csv'),
-                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'file3.txt'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'ag', 'from_constituents', 'objects', 'file3.txt'),
                     os.path.join(self.by_topic, 'farm', 'from_constituents'),
                     os.path.join(self.by_topic, 'farm', 'farm_metadata.csv'),
-                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'file3.txt')]
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'farm', 'from_constituents', 'objects', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for doc_in, directory")
 
         # Verifies ag_metadata.csv has the expected contents.
@@ -218,12 +224,14 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'farm_family'),
                     os.path.join(self.by_topic, 'ag', 'to_constituents'),
                     os.path.join(self.by_topic, 'ag', 'ag_metadata.csv'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'a2.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'responses', 'a2.txt'),
                     os.path.join(self.by_topic, 'farm_family', 'to_constituents'),
                     os.path.join(self.by_topic, 'farm_family', 'farm_family_metadata.csv'),
-                    os.path.join(self.by_topic, 'farm_family', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'farm_family', 'to_constituents', 'ag.txt')]
+                    os.path.join(self.by_topic, 'farm_family', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'farm_family', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'farm_family', 'to_constituents', 'responses', 'ag.txt')]
         self.assertEqual(expected, result, "Problem with test for doc_out, directory")
 
         # Verifies ag_metadata.csv has the expected contents.
@@ -277,25 +285,31 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cat', 'from_constituents'),
                     os.path.join(self.by_topic, 'cat', 'to_constituents'),
                     os.path.join(self.by_topic, 'cat', 'cat_metadata.csv'),
-                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'a2.txt'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses', 'a2.txt'),
                     os.path.join(self.by_topic, 'dog', 'from_constituents'),
                     os.path.join(self.by_topic, 'dog', 'to_constituents'),
                     os.path.join(self.by_topic, 'dog', 'dog_metadata.csv'),
-                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'a2.txt'),
+                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'responses', 'a2.txt'),
                     os.path.join(self.by_topic, 'pet', 'from_constituents'),
                     os.path.join(self.by_topic, 'pet', 'to_constituents'),
                     os.path.join(self.by_topic, 'pet', 'pet_metadata.csv'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'a2.txt')]
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses', 'a2.txt')]
         self.assertEqual(expected, result, "Problem with test for topic_both, directory")
 
         # Verifies the file not found log has the expected contents.
@@ -375,11 +389,13 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_cat', 'from_constituents'),
                     os.path.join(self.by_topic, '_cat', 'to_constituents'),
                     os.path.join(self.by_topic, '_cat', '_cat_metadata.csv'),
-                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'a2.txt')]
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, '_cat', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, '_cat', 'to_constituents', 'responses', 'a2.txt')]
         self.assertEqual(expected, result, "Problem with test for topic_dup_norm, directory")
 
         # Verifies cat_metadata.csv has the expected contents.
@@ -425,26 +441,33 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cat', 'from_constituents'),
                     os.path.join(self.by_topic, 'cat', 'to_constituents'),
                     os.path.join(self.by_topic, 'cat', 'cat_metadata.csv'),
-                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'a2.txt'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'cat', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'cat', 'to_constituents', 'responses', 'a2.txt'),
                     os.path.join(self.by_topic, 'dog', 'from_constituents'),
                     os.path.join(self.by_topic, 'dog', 'to_constituents'),
                     os.path.join(self.by_topic, 'dog', 'dog_metadata.csv'),
-                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'a1.txt'),
+                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'dog', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'dog', 'to_constituents', 'responses', 'a1.txt'),
                     os.path.join(self.by_topic, 'pet', 'from_constituents'),
                     os.path.join(self.by_topic, 'pet', 'to_constituents'),
                     os.path.join(self.by_topic, 'pet', 'pet_metadata.csv'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'file3.txt'),
-                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'a1.txt'),
-                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'a2.txt'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file1.txt'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file2.txt'),
+                    os.path.join(self.by_topic, 'pet', 'from_constituents', 'objects', 'file3.txt'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses', 'a1.txt'),
+                    os.path.join(self.by_topic, 'pet', 'to_constituents', 'responses', 'a2.txt'),
                     os.path.join(self.by_topic, 'toy', 'from_constituents'),
                     os.path.join(self.by_topic, 'toy', 'toy_metadata.csv'),
-                    os.path.join(self.by_topic, 'toy', 'from_constituents', 'file3.txt')]
+                    os.path.join(self.by_topic, 'toy', 'from_constituents', 'objects'),
+                    os.path.join(self.by_topic, 'toy', 'from_constituents', 'objects', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for topic_one, directory")
 
         # Verifies the file not found log has the expected contents.

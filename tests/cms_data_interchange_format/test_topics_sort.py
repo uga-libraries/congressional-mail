@@ -48,7 +48,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when all files are only in the metadata and not the directory"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'attachments\\scan0.txt', 'cats'],
-                      ['30601', 'forms\\2025\\Thanks.txt', 'dogs'],
+                      ['30601', 'forms\\con.txt', 'dogs'],
                       ['30602', 'in-email\\file0.txt', 'cats'],
                       ['30603', 'in-email\\file_missing.txt', 'dogs'],
                       ['30604', 'out-custom\\Smith.doc', 'dogs']])
@@ -65,7 +65,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['cats', 'attachments\\scan0.txt'],
                     ['cats', 'in-email\\file0.txt'],
                     ['dogs', 'in-email\\file_missing.txt'],
-                    ['dogs', 'forms\\2025\\Thanks.txt'],
+                    ['dogs', 'forms\\con.txt'],
                     ['dogs', 'out-custom\\Smith.doc']]
         self.assertEqual(expected, result, "Problem with test for empty_missing, not_found")
 
@@ -83,9 +83,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_dogs'),
                     os.path.join(self.by_topic, '_dogs', 'to_constituents'),
                     os.path.join(self.by_topic, '_dogs', '_dogs_metadata.csv'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'Brown.txt'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'Support.txt'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'Thanks.txt')]
+                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'out-custom'),
+                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'out-custom', 'Brown.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
 
         # Verifies the contents of dogs_metadata.csv
@@ -124,13 +126,16 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'dogs'),
                     os.path.join(self.by_topic, 'cats', 'from_constituents'),
                     os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'scan1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'scan2.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan1.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan2.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email', 'file1.txt'),
                     os.path.join(self.by_topic, 'dogs', 'from_constituents'),
                     os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file3.txt')]
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email'),
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file3.txt')]
         self.assertEqual(expected, result, "Problem with test for from, directory")
 
         # Verifies the contents of cats_metadata.csv
@@ -200,18 +205,26 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'cats', 'from_constituents'),
                     os.path.join(self.by_topic, 'cats', 'to_constituents'),
                     os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'scan1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'Doe.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'Support.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan1.txt'),
+                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email', 'file1.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom', 'Doe.txt'),
                     os.path.join(self.by_topic, 'dogs', 'from_constituents'),
                     os.path.join(self.by_topic, 'dogs', 'to_constituents'),
                     os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'scan2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Jones.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Thanks.txt')]
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'attachments'),
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email'),
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'attachments', 'scan2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Jones.txt')]
         self.assertEqual(expected, result, "Problem with test for from_to, directory")
 
         # Verifies the contents of cats_metadata.csv
@@ -284,13 +297,16 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, 'dogs'),
                     os.path.join(self.by_topic, 'cats', 'to_constituents'),
                     os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'Doe.txt'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom'),
+                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom', 'Doe.txt'),
                     os.path.join(self.by_topic, 'dogs', 'to_constituents'),
                     os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Jones.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Smith.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Support.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'Thanks.txt')]
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Support.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Jones.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Smith.txt')]
         self.assertEqual(expected, result, "Problem with test for to, directory")
 
         # Verifies the contents of cats_metadata.csv
