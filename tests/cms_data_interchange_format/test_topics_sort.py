@@ -48,14 +48,13 @@ class MyTestCase(unittest.TestCase):
         """Test for when all files are only in the metadata and not the directory"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30600', 'attachments\\scan0.txt', 'cats'],
-                      ['30601', 'forms\\2025\\Thanks.txt', 'dogs'],
+                      ['30601', 'forms\\con.txt', 'dogs'],
                       ['30602', 'in-email\\file0.txt', 'cats'],
                       ['30603', 'in-email\\file_missing.txt', 'dogs'],
                       ['30604', 'out-custom\\Smith.doc', 'dogs']])
         topics_sort(df, self.input_dir, self.output_dir)
 
         # Verifies the contents of the output directory.
-        # TODO still has dogs\\to_constituents\\forms and dogs_metadata.csv after change to include subfolders.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv')]
@@ -66,7 +65,7 @@ class MyTestCase(unittest.TestCase):
         expected = [['cats', 'attachments\\scan0.txt'],
                     ['cats', 'in-email\\file0.txt'],
                     ['dogs', 'in-email\\file_missing.txt'],
-                    ['dogs', 'forms\\2025\\Thanks.txt'],
+                    ['dogs', 'forms\\con.txt'],
                     ['dogs', 'out-custom\\Smith.doc']]
         self.assertEqual(expected, result, "Problem with test for empty_missing, not_found")
 
