@@ -710,7 +710,6 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
 
         # Gets the path for the current doc location by updating the path from the metadata.
         doc_path = update_path(doc, input_dir)
-        print("URL check", doc, doc_path)
 
         # Gets the path for the subfolder for where the doc will be saved,
         # which replicates all original subfolders within the to_constituents or from_constituents folder,
