@@ -463,12 +463,14 @@ def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
-    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
-                     'immigrant', 'immigration', 'migrant', 'refugee']
+    restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
+                     'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
+                     'migrant', 'refugee', 'social security', 'taxes', 'veterans']
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # The match is case-insensitive.
     # No report is made if no topics are present.
-    report_df = df[df['code_description'].isin(restrict_list)]
+    report_df = df[df['code_description'].str.lower().isin(restrict_list)]
     if len(report_df.index) > 0:
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 
