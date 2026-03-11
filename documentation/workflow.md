@@ -69,7 +69,7 @@ Run the script in "access" mode to make anonymized versions of the metadata that
 and a copy of all unrestricted letters with topical metadata, reorganized by topic, for class use.
 
 Package the script output into DIPs according to the standard born-digital workflow:
-* Form letters and metadata 
+* Form letters and form letter metadata 
 * Letters by topic: each topic folder is a separate DIP
 * Redacted metadata: single CSV and CSV by calendar year 
  
