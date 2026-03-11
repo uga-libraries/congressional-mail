@@ -535,8 +535,9 @@ def restriction_report(df, output_dir):
                      'migrant', 'refugee', 'social security', 'taxes', 'veterans']
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
+    # The match is case-insensitive.
     # No report is made if no topics are present.
-    report_df = df[df['group_name'].isin(restrict_list)]
+    report_df = df[df['group_name'].str.lower().isin(restrict_list)]
     if len(report_df.index) > 0:
         report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
 
