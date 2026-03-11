@@ -533,8 +533,9 @@ def restriction_report(df, output_dir):
     df_restrict = df_restrict.explode('out_topic_split')
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
-    restrict_list = ['citizen', 'citizenship', 'court', 'crime', 'criminal justice',
-                     'immigrant', 'immigration', 'migrant', 'refugee']
+    restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
+                     'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
+                     'migrant', 'refugee', 'social security', 'taxes', 'veterans']
 
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
     # The match is case-insensitive.
