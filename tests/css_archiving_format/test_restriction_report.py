@@ -105,19 +105,19 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', np.nan, 'Safe'],
                               ['30601', 'Safe', 'Safe'],
-                              ['30602', 'citizen', 'Restrict'],
+                              ['30602', 'CITIZEN', 'Restrict'],
                               ['30603', 'crime', 'Restrict'],
                               ['30604', 'basketball court', 'Safe'],
-                              ['30605', 'court', 'Restrict']],
+                              ['30605', 'Court', 'Restrict']],
                              columns=['zip', 'in_topic', 'out_topic'])
         restriction_report(md_df, 'test_data')
 
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
         expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
-                    ['30602', 'citizen', 'Restrict', 'citizen', 'Restrict'],
+                    ['30602', 'CITIZEN', 'Restrict', 'CITIZEN', 'Restrict'],
                     ['30603', 'crime', 'Restrict', 'crime', 'Restrict'],
-                    ['30605', 'court', 'Restrict', 'court', 'Restrict']]
+                    ['30605', 'Court', 'Restrict', 'Court', 'Restrict']]
         self.assertEqual(expected, result, "Problem with test for restrict_in")
 
     def test_restrict_in_out(self):
@@ -145,8 +145,8 @@ class MyTestCase(unittest.TestCase):
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['30600', 'Safe', np.nan],
                               ['30601', 'Safe', 'Safe'],
-                              ['30602', 'Restrict', 'citizenship'],
-                              ['30603', 'Restrict', 'criminal justice'],
+                              ['30602', 'Restrict', 'CITIZENSHIP'],
+                              ['30603', 'Restrict', 'Criminal Justice'],
                               ['30604', 'Safe', 'basketball court'],
                               ['30605', 'Restrict', 'immigrant']],
                              columns=['zip', 'in_topic', 'out_topic'])
@@ -155,8 +155,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of the restriction_review.csv.
         result = csv_to_list(os.path.join('test_data', 'restriction_review.csv'))
         expected = [['zip', 'in_topic', 'out_topic', 'in_topic_split', 'out_topic_split'],
-                    ['30602', 'Restrict', 'citizenship', 'Restrict', 'citizenship'],
-                    ['30603', 'Restrict', 'criminal justice', 'Restrict', 'criminal justice'],
+                    ['30602', 'Restrict', 'CITIZENSHIP', 'Restrict', 'CITIZENSHIP'],
+                    ['30603', 'Restrict', 'Criminal Justice', 'Restrict', 'Criminal Justice'],
                     ['30605', 'Restrict', 'immigrant', 'Restrict', 'immigrant']]
         self.assertEqual(expected, result, "Problem with test for restrict_out")
 
