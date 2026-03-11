@@ -240,6 +240,33 @@ class MyTestCase(unittest.TestCase):
                     ['ag', '..\\documents\\BlobExport\\subfolder\\C\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for subfolder, not_found")
 
+    def test_skip(self):
+        """Test for when there are some document paths that should be skipped"""
+        # Makes a dataframe to use as test input and runs the function being tested.
+        df = make_df([['30600', 'ag', 'new\\file.txt', 'TBD', 'error_new'],
+                      ['30601', 'ag', '..\\documents\\BlobExport\\forms\\ag.txt', 'TBD',
+                       '..\\documents\\BlobExport\\forms\\ag.txt'],
+                      ['30602', 'ag', 'new\\pattern\\file.txt', 'TBD', 'error_new']])
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+
+        # Verifies df_topic has the correct values.
+        result = df_to_list(df_topic)
+        expected = [['zip', 'out_topic', 'out_document_name', 'out_document_name_present', 'out_document_name_split'],
+                    ['30600', 'ag', 'new\\file.txt', 'TBD', 'error_new'],
+                    ['30601', 'ag', '..\\documents\\BlobExport\\forms\\ag.txt', True,
+                     '..\\documents\\BlobExport\\forms\\ag.txt'],
+                    ['30602', 'ag', 'new\\pattern\\file.txt', 'TBD', 'error_new']]
+        self.assertEqual(expected, result, "Problem with test for skip, df_topic")
+
+        # Verifies the expected folders were created and have the expected files in them.
+        result = make_dir_list(self.output_dir)
+        expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.by_topic, 'ag'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt')]
+        self.assertEqual(expected, result, "Problem with test for skip, directory")
+
     def test_unique(self):
         """Test for when each topic and file combination is unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
