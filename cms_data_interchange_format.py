@@ -573,9 +573,9 @@ def topics_sort_files(df, corr_type_folders, input_dir, output_dir, folder_path)
         # Gets the path for the current doc location by updating the path from the metadata.
         doc_path = update_path(doc, input_dir)
 
-        # Skip any path that doesn't match a known pattern and update_path returned "error_new".
+        # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
         # This happens when there is data in the document column that cannot be mapped to a path in the export.
-        if doc == 'error_new':
+        if doc == 'error_new' or os.path.isdir(doc):
             continue
 
         # Gets the path for the subfolder for where the doc will be saved,
