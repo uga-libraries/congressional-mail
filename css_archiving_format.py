@@ -717,8 +717,9 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
         doc_path = update_path(doc, input_dir)
 
         # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
-        # This happens when there is data in the document column that cannot be mapped to a path in the export.
-        if doc == 'error_new' or os.path.isdir(doc):
+        # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
+        # Cannot use os.path.isdir() to test for directory because the folder may not exist.
+        if doc_path == 'error_new' or '.' not in doc_path:
             continue
 
         # Gets the path for the subfolder for where the doc will be saved,
