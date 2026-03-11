@@ -537,6 +537,9 @@ def restriction_report(df, output_dir):
                      'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
                      'migrant', 'refugee', 'social security', 'taxes', 'veterans']
 
+    # Use the code below to temporarily add terms to the restrict_list for a specific export.
+    # restrict_list.extend(['add', 'temporary', 'terms', 'here', 'in', 'lowercase'])
+
     # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
     # The match is case-insensitive.
     # No report is made if no topics are present.
