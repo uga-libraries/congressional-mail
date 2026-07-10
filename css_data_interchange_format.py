@@ -769,9 +769,9 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
+        restriction_report(md_df, output_directory)
         md_df.drop(['text'], axis=1, inplace=True)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
