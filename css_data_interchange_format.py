@@ -529,17 +529,21 @@ def remove_restricted_rows(df, df_restrict):
 def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
-    # List of topics (adjust based on topics_report.csv from accession mode of this script)
-    restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
-                     'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
-                     'migrant', 'refugee', 'social security', 'taxes', 'veterans']
+    crime_list = ['court', 'crime', 'hate', 'jud batch', 'jud54', 'judicial', 'judiciary', 'lawtrust', 'legal', 'police', 'prison', 'secret', 'selfdef']
+    crime_df = df[df['group_name'].str.contains('|'.join(crime_list), case=False, na=False)]
+    crime_df.to_csv(os.path.join(output_dir, 'restriction_review_crime.csv'), index=False)
 
-    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
-    # The match is case-insensitive.
-    # No report is made if no topics are present.
-    report_df = df[df['group_name'].str.lower().isin(restrict_list)]
-    if len(report_df.index) > 0:
-        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+    fin_list = ['assistance', 'bank', 'bkrptcy', 'bnkrpcty', 'mortgage', 'social_security', 'social security', 'tax', 'welfare']
+    fin_df = df[df['group_name'].str.contains('|'.join(fin_list), case=False, na=False)]
+    fin_df.to_csv(os.path.join(output_dir, 'restriction_review_financial.csv'), index=False)
+
+    health_list = ['drug', 'health', 'hospice', 'med', 'mental', 'tricare', 'vet']
+    health_df = df[df['group_name'].str.contains('|'.join(health_list), case=False, na=False)]
+    health_df.to_csv(os.path.join(output_dir, 'restriction_review_health.csv'), index=False)
+
+    imm_list = ['alien', 'amnesty', 'children at the border', 'citizen', 'daca', 'detainee', 'dream', 'green card', 'illegal', 'imm', 'refugee', 'visa']
+    imm_df = df[df['group_name'].str.contains('|'.join(imm_list), case=False, na=False)]
+    imm_df.to_csv(os.path.join(output_dir, 'restriction_review_immigration.csv'), index=False)
 
 
 def split_year(df, output_dir):
