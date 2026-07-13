@@ -393,12 +393,12 @@ def form_letter_metadata_read(table_id, input_dir):
     """Read a single form letter metadata table into a dataframe or return an error"""
 
     columns_dict = {'6A': ['record_type', 'document_id', 'version', 'document_grouping_id', 'document_type',
-                           'document_display_name', 'document_description', 'document_name', 'created_by',
+                           'document_display_name', 'document_description', 'document_name_6A', 'created_by',
                            'revised_by', 'approved_by', 'creation_date', 'revision_date', 'last_used_date',
                            'status', 'inactive_flag', 'virtual_directory'],
                     '6B': ['record_type', 'document_id', 'fill-in_field_name', 'label'],
                     '6C': ['record_type', 'document_id', 'code', 'code_type'],
-                    '6D': ['record_type', 'document_id', 'document_name', 'user_id', 'attached_date', 'text',
+                    '6D': ['record_type', 'document_id', 'document_name_6D', 'user_id', 'attached_date', 'text',
                            'form_letter_attachment_flag', 'file_name'],
                     '6F': ['record_type', 'document_id', 'owned_by']}
 
