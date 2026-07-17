@@ -654,32 +654,33 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
         if doc_current_path == 'error_new' or '.' not in doc_current_path:
             continue
 
-        # # Gets the path for the subfolder for where the doc will be saved,
-        # # which replicates all original subfolders within the to_constituents or from_constituents folder,
-        # # and makes the folder if it doesn't exist.
-        # doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
-        # subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        # subfolder_new = False
-        # if not os.path.exists(subfolder_path):
-        #     subfolder_new = True
-        #     os.makedirs(subfolder_path)
-        #
-        # # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # # If the doc is not in the expected location, logs it instead.
-        # # It is common to have docs in the metadata but not in the input directory.
-        # doc_name = doc.split('\\')[-1]
-        # doc_new_path = os.path.join(subfolder_path, doc_name)
-        # try:
-        #     shutil.copy2(doc_path, doc_new_path)
-        #     df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
-        # except FileNotFoundError:
-        #     df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
-        #     with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-        #         log_writer = csv.writer(log)
-        #         topic = folder_path.split('\\')[-2]
-        #         log_writer.writerow([topic, doc])
-        #     if subfolder_new:
-        #         os.rmdir(subfolder_path)
+        # Gets the path for the subfolder for where the doc will be saved,
+        # which replicates all original subfolders within the to_constituents or from_constituents folder,
+        # and makes the folder if it doesn't exist.
+        doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
+        subfolder_path = os.path.join(group_folder_path, os.path.dirname(doc_relative_path))
+        subfolder_new = False
+        if not os.path.exists(subfolder_path):
+            subfolder_new = True
+            os.makedirs(subfolder_path)
+
+        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # If the doc is not in the expected location, logs it instead.
+        # It is common to have docs in the metadata but not in the input directory.
+        doc_name = doc.split('\\')[-1]
+        doc_new_path = os.path.join(subfolder_path, doc_name)
+        try:
+            shutil.copy2(doc_current_path, doc_new_path)
+            df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
+        except FileNotFoundError:
+            print("File not found", doc_current_path)
+            # df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
+            # with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            #     log_writer = csv.writer(log)
+            #     topic = group_folder_path.split('\\')[-2]
+            #     log_writer.writerow([topic, doc])
+            # if subfolder_new:
+            #     os.rmdir(subfolder_path)
 
     return df
 
