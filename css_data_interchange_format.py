@@ -694,6 +694,23 @@ def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
     return df
 
 
+def topics_sort_prep(output_dir):
+    """Make metadata file with rows for files to try to sort topically, using CSVs in the output directory"""
+
+    # Read the three expected files. If any are missing, quit the script with a warning.
+
+    # Add topic information to md_df.
+
+    # Remove rows that do not have enough information to topic sort (no group_name, no document path,
+    # and/or topic is EXCLUDE because the group_name has no topical information.
+
+    # Add a column for tracking which files are present.
+
+    # Save the metadata to a CSV for easy restarting of the sort process, which is very time consuming.
+
+    # Make a folder for the topic sorted version of the export.
+    
+
 def topics_sort_save_metadata(df, topic_path, topic_norm):
     """Remove rows with no document and temporary column and save to a CSV"""
 
@@ -797,5 +814,6 @@ if __name__ == '__main__':
     #     md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
     #     form_letter_metadata(input_directory, output_directory)
     #     split_year(md_df, output_directory)
+          topics_sort_prep(output_directory)
     #     topics_sort(md_df, input_directory, output_directory)
 
