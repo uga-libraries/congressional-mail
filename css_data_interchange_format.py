@@ -591,46 +591,52 @@ def topics_report(df, output_dir):
     topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
-def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic
-    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders."""
+def topics_sort(input_dir, output_dir):
+    """Sort copy of all correspondence into folders by topic."""
 
-    # New version of df with blanks removed from 'group_name' and 'communication_document_name'.
-    df_topics = 'TBD'
+    # Reads the metadata for documents to try to sort and a list of topics to sort in this iteration of the script.
+    # To do part at a time, edit the list of topics to only include a subset.
+    # If either are missing, quit the script with a warning.
+    try:
+        df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'))
+        topics_df = pd.read_csv(os.path.join(output_dir, 'topics_unique.csv'))
+        topic_list = topics_df['topic'].values.tolist()
+    except FileNotFoundError:
+        print("For topic sort, must have topics_sort_metadata.csv and topics_unique.csv in the output directory")
+        sys.exit(1)
 
-    # Sorts a copy of all correspondence by topic.
-    topic_list = df_topics['group_name'].unique().tolist()
-    for topic in topic_list:
-
-        # Makes folder and metadata df for this topic.
-        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
-        # The topic has to be normalized to be used for a folder and file name.
-        # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
-        topic_norm = css_arch.topics_sort_normalize(topic)
-        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-        if not os.path.exists(topic_path):
-            os.mkdir(topic_path)
-        df_topic = df_topics[df_topics['group_name'] == topic].copy()
-
-        # Sorts correspondence from constituents ("in" letters).
-        # Updates df_topic with if the letter was in the export and makes a log of missing letters.
-        from_path = os.path.join(topic_path, 'from_constituents')
-        if not os.path.exists(from_path):
-            os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
-
-        # Sorts correspondence to constituents ("out" letters).
-        to_path = os.path.join(topic_path, 'to_constituents')
-        if not os.path.exists(to_path):
-            os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
-
-        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        css_arch.topics_sort_delete_empty(topic_path)
-
-        # Saves the metadata for this topic if the topic folder was not deleted for being empty.
-        if os.path.exists(topic_path):
-            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+    # # Sorts a copy of all correspondence by topic.
+    # for topic in topic_list:
+    #
+    #     # Makes folder and metadata df for this topic.
+    #     # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+    #     # The topic has to be normalized to be used for a folder and file name.
+    #     # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
+    #     topic_norm = css_arch.topics_sort_normalize(topic)
+    #     topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+    #     if not os.path.exists(topic_path):
+    #         os.mkdir(topic_path)
+    #     df_topic = df[df['group_name'] == topic].copy()
+    #
+    #     # Sorts correspondence from constituents ("in" letters).
+    #     # Updates df_topic with if the letter was in the export and makes a log of missing letters.
+    #     from_path = os.path.join(topic_path, 'from_constituents')
+    #     if not os.path.exists(from_path):
+    #         os.mkdir(from_path)
+    #     df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
+    #
+    #     # Sorts correspondence to constituents ("out" letters).
+    #     to_path = os.path.join(topic_path, 'to_constituents')
+    #     if not os.path.exists(to_path):
+    #         os.mkdir(to_path)
+    #     df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
+    #
+    #     # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
+    #     css_arch.topics_sort_delete_empty(topic_path)
+    #
+    #     # Saves the metadata for this topic if the topic folder was not deleted for being empty.
+    #     if os.path.exists(topic_path):
+    #         topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
 
 def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
@@ -689,7 +695,7 @@ def topics_sort_prep(output_dir):
         df = pd.read_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'))
         topic_df = pd.read_csv(os.path.join(output_dir, 'topics_group_name.csv'))
     except FileNotFoundError:
-        print("For topic sort, must have archiving_correspondence_redacted.csv and topics_group_name.csv "
+        print("For topic sort prep, must have archiving_correspondence_redacted.csv and topics_group_name.csv "
               "in the output directory")
         sys.exit(1)
 
@@ -706,7 +712,7 @@ def topics_sort_prep(output_dir):
     df.insert(15, 'communication_document_name_present', 'TBD', True)
 
     # Save the metadata to a CSV for easy restarting of the sort process, which is very time-consuming.
-    df.to_csv(os.path.join(output_dir, 'topic_sort_metadata.csv'), index=False)
+    df.to_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), index=False)
 
     # Make a folder for the topic sorted version of the export.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
@@ -815,6 +821,6 @@ if __name__ == '__main__':
     #     md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
     #     form_letter_metadata(input_directory, output_directory)
     #     split_year(md_df, output_directory)
-          topics_sort_prep(output_directory)
-    #     topics_sort(md_df, input_directory, output_directory)
+    #     topics_sort_prep(output_directory)
+          topics_sort(input_directory, output_directory)
 
