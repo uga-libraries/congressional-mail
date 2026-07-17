@@ -627,19 +627,10 @@ def topics_sort(input_dir, output_dir):
             if not os.path.exists(group_path):
                 os.mkdir(group_path)
 
-    #     # Sorts correspondence from constituents ("in" letters).
-    #     # Updates df_topic with if the letter was in the export and makes a log of missing letters.
-    #     from_path = os.path.join(topic_path, 'from_constituents')
-    #     if not os.path.exists(from_path):
-    #         os.mkdir(from_path)
-    #     df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
-    #
-    #     # Sorts correspondence to constituents ("out" letters).
-    #     to_path = os.path.join(topic_path, 'to_constituents')
-    #     if not os.path.exists(to_path):
-    #         os.mkdir(to_path)
-    #     df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
-    #
+            # Sorts correspondence for the group, maintaining all subfolders.
+            # Updates df_topic with if the letter was in the export and makes a log of missing letters.
+            df_topic = topics_sort_files(df_topic, input_dir, output_dir, group, group_path)
+
     #     # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
     #     css_arch.topics_sort_delete_empty(topic_path)
     #
@@ -648,49 +639,47 @@ def topics_sort(input_dir, output_dir):
     #         topics_sort_save_metadata(df_topic, topic_path, group_norm)
 
 
-def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
-    """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
-
-    # Gets a list of unique documents of the specified correspondence type (in or out), excluding blanks, to copy.
-    df_type = df[df['document_type'].str.startswith((corr_type, f'AT_{corr_type}'), na=False)]
-    doc_list = df_type['communication_document_name'].unique().tolist()
+def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
+    """Copy all documents to a group folder, update df for if each document was found and log if missing"""
+    # Gets a list of unique documents of the specified group to copy.
+    doc_list = df[df['group_name'] == group_name]['communication_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
-        doc_path = update_path(doc, input_dir)
+        doc_current_path = update_path(doc, input_dir)
 
         # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
         # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
         # Cannot use os.path.isdir() to test for directory because the folder may not exist.
-        if doc_path == 'error_new' or '.' not in doc_path:
+        if doc_current_path == 'error_new' or '.' not in doc_current_path:
             continue
 
-        # Gets the path for the subfolder for where the doc will be saved,
-        # which replicates all original subfolders within the to_constituents or from_constituents folder,
-        # and makes the folder if it doesn't exist.
-        doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
-        subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        subfolder_new = False
-        if not os.path.exists(subfolder_path):
-            subfolder_new = True
-            os.makedirs(subfolder_path)
-
-        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
-        # It is common to have docs in the metadata but not in the input directory.
-        doc_name = doc.split('\\')[-1]
-        doc_new_path = os.path.join(subfolder_path, doc_name)
-        try:
-            shutil.copy2(doc_path, doc_new_path)
-            df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
-        except FileNotFoundError:
-            df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
-            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
-                log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
-                log_writer.writerow([topic, doc])
-            if subfolder_new:
-                os.rmdir(subfolder_path)
+        # # Gets the path for the subfolder for where the doc will be saved,
+        # # which replicates all original subfolders within the to_constituents or from_constituents folder,
+        # # and makes the folder if it doesn't exist.
+        # doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
+        # subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
+        # subfolder_new = False
+        # if not os.path.exists(subfolder_path):
+        #     subfolder_new = True
+        #     os.makedirs(subfolder_path)
+        #
+        # # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # # If the doc is not in the expected location, logs it instead.
+        # # It is common to have docs in the metadata but not in the input directory.
+        # doc_name = doc.split('\\')[-1]
+        # doc_new_path = os.path.join(subfolder_path, doc_name)
+        # try:
+        #     shutil.copy2(doc_path, doc_new_path)
+        #     df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
+        # except FileNotFoundError:
+        #     df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
+        #     with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+        #         log_writer = csv.writer(log)
+        #         topic = folder_path.split('\\')[-2]
+        #         log_writer.writerow([topic, doc])
+        #     if subfolder_new:
+        #         os.rmdir(subfolder_path)
 
     return df
 
