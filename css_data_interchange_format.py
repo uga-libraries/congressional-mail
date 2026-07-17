@@ -596,7 +596,7 @@ def topics_sort(df, input_dir, output_dir):
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders."""
 
     # New version of df with blanks removed from 'group_name' and 'communication_document_name'.
-    df_topics = topics_sort_df(df)
+    df_topics = 'TBD'
 
     # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
@@ -632,19 +632,6 @@ def topics_sort(df, input_dir, output_dir):
         # Saves the metadata for this topic if the topic folder was not deleted for being empty.
         if os.path.exists(topic_path):
             topics_sort_save_metadata(df_topic, topic_path, topic_norm)
-
-
-def topics_sort_df(df):
-    """Update dataframe to remove rows missing group (topic) or document name and add column for missing docs"""
-
-    # Removes rows with blank in group_name or communication_document_name columns.
-    df = df.dropna(subset=['group_name', 'communication_document_name'])
-
-    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
-    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
-    df.insert(15, 'communication_document_name_present', 'TBD', True)
-
-    return df
 
 
 def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
@@ -713,9 +700,11 @@ def topics_sort_prep(output_dir):
 
     # Remove rows that do not have enough information to topic sort:
     # no group_name, no document path, and/or topic is EXCLUDE because the group_name has no topical information.
-    
+    df = df.dropna(subset=['group_name', 'communication_document_name'])
+    df = df[df['topic'] != 'EXCLUDE']
 
-    # Add a column for tracking which files are present.
+    # Add a column for tracking which files are present in the export during sorting.
+    df.insert(15, 'communication_document_name_present', 'TBD', True)
 
     # Save the metadata to a CSV for easy restarting of the sort process, which is very time-consuming.
     df.to_csv(os.path.join(output_dir, 'topic_sort_metadata.csv'), index=False)
