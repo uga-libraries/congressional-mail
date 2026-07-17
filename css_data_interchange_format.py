@@ -659,7 +659,7 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
         # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
         # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
         # Cannot use os.path.isdir() to test for directory because the folder may not exist, so test for a "." from file extension.
-        if doc_current_path == 'error_new' or '.' not in doc_current_path:
+        if doc_current_path == 'error_new':
             continue
 
         # Gets the path for the subfolder for where the doc will be saved,
@@ -671,14 +671,14 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
             os.makedirs(subfolder_path)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
+        # If the doc is not in the expected location, or is a folder (PermissionError), logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
         doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
             shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
