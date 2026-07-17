@@ -599,7 +599,6 @@ def topics_sort(df, input_dir, output_dir):
     df_topics = 'TBD'
 
     # Sorts a copy of all correspondence by topic.
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     topic_list = df_topics['group_name'].unique().tolist()
     for topic in topic_list:
 
@@ -710,7 +709,7 @@ def topics_sort_prep(output_dir):
     df.to_csv(os.path.join(output_dir, 'topic_sort_metadata.csv'), index=False)
 
     # Make a folder for the topic sorted version of the export.
-
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
 
 def topics_sort_save_metadata(df, topic_path, topic_norm):
     """Remove rows with no document and temporary column and save to a CSV"""
