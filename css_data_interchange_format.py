@@ -707,14 +707,18 @@ def topics_sort_prep(output_dir):
               "in the output directory")
         sys.exit(1)
 
-    # Add topic information to md_df.
+    # Add topic information to metadata df, but only if the group_name is in the metadata df.
+    # It is possible for all rows of a group_name to be removed for appraisal or restriction by this point.
+    df = df.merge(topic_df, on='group_name', how='left')
 
-    # Remove rows that do not have enough information to topic sort (no group_name, no document path,
-    # and/or topic is EXCLUDE because the group_name has no topical information.
+    # Remove rows that do not have enough information to topic sort:
+    # no group_name, no document path, and/or topic is EXCLUDE because the group_name has no topical information.
+    
 
     # Add a column for tracking which files are present.
 
-    # Save the metadata to a CSV for easy restarting of the sort process, which is very time consuming.
+    # Save the metadata to a CSV for easy restarting of the sort process, which is very time-consuming.
+    df.to_csv(os.path.join(output_dir, 'topic_sort_metadata.csv'), index=False)
 
     # Make a folder for the topic sorted version of the export.
 
