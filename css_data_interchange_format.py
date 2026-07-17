@@ -633,6 +633,19 @@ def topics_sort(input_dir, output_dir):
         # Saves the metadata to a csv for the topic once all groups within the topic have been sorted.
         topics_sort_save_metadata(df_topic, topic_path, topic)
 
+    # Deletes empty folders at any level, including folders that only contain empty folders.
+    topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
+
+
+def topics_sort_delete_empty(topic_dir):
+    """Delete empty folders in correspondence_by_topic, including folders that only contain empty folders"""
+    print("\nDeleting empty folders at all levels")
+    for root, dirs, files in os.walk(topic_dir, topdown=False):
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            if not os.listdir(dir_path):
+                os.rmdir(dir_path)
+
 
 def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
     """Copy all documents to a group folder, update df for if each document was found and log if missing"""
@@ -654,9 +667,7 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
         # and makes the folder if it doesn't exist.
         doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
         subfolder_path = os.path.join(group_folder_path, os.path.dirname(doc_relative_path))
-        subfolder_new = False
         if not os.path.exists(subfolder_path):
-            subfolder_new = True
             os.makedirs(subfolder_path)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
@@ -674,8 +685,6 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
                 topic = group_folder_path.split('\\')[-2]
                 group = group_folder_path.split('\\')[-1]
                 log_writer.writerow([topic, group, doc])
-            if subfolder_new:
-                os.rmdir(subfolder_path)
 
     return df
 
