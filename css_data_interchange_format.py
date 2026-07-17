@@ -618,14 +618,14 @@ def topics_sort(input_dir, output_dir):
         # Sorts each group within a topic. Topics may have one or more groups.
         group_list = df_topic['group_name'].unique().tolist()
         for group in group_list:
-            print(group)
 
-        # # Makes a folder for each group within this topic.
-        # # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
-        # topic_norm = css_arch.topics_sort_normalize(topic)
-        # topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-        # if not os.path.exists(topic_path):
-        #     os.mkdir(topic_path)
+            # Makes a folder for each group within this topic.
+            # The group must be normalized to replace characters that cannot be in a folder name with an underscore.
+            # Checks if the folder exists because there may be multiple variations that normalize to the same thing.
+            group_norm = css_arch.topics_sort_normalize(group)
+            group_path = os.path.join(topic_path, group_norm)
+            if not os.path.exists(group_path):
+                os.mkdir(group_path)
 
     #     # Sorts correspondence from constituents ("in" letters).
     #     # Updates df_topic with if the letter was in the export and makes a log of missing letters.
@@ -645,7 +645,7 @@ def topics_sort(input_dir, output_dir):
     #
     #     # Saves the metadata for this topic if the topic folder was not deleted for being empty.
     #     if os.path.exists(topic_path):
-    #         topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+    #         topics_sort_save_metadata(df_topic, topic_path, group_norm)
 
 
 def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
