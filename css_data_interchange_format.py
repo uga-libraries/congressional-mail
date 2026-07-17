@@ -605,19 +605,21 @@ def topics_sort(input_dir, output_dir):
         print("For topic sort, must have topics_sort_metadata.csv and topics_unique.csv in the output directory")
         sys.exit(1)
 
-    # # Sorts a copy of all correspondence by topic.
-    # for topic in topic_list:
-    #
-    #     # Makes folder and metadata df for this topic.
-    #     # The metadata is updated with if the documents are found and eventually saved to the topic folder.
-    #     # The topic has to be normalized to be used for a folder and file name.
-    #     # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
-    #     topic_norm = css_arch.topics_sort_normalize(topic)
-    #     topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-    #     if not os.path.exists(topic_path):
-    #         os.mkdir(topic_path)
-    #     df_topic = df[df['group_name'] == topic].copy()
-    #
+    # Sorts a copy of all correspondence by topic.
+    for topic in topic_list:
+
+        # Makes folder and metadata df for this topic.
+        # The metadata is updated with if the documents are found and eventually saved to the topic folder.
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic)
+        os.mkdir(topic_path)
+
+        # # The topic has to be normalized to be used for a folder and file name.
+        # # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
+        # topic_norm = css_arch.topics_sort_normalize(topic)
+        # topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
+        # if not os.path.exists(topic_path):
+        #     os.mkdir(topic_path)
+        #
     #     # Sorts correspondence from constituents ("in" letters).
     #     # Updates df_topic with if the letter was in the export and makes a log of missing letters.
     #     from_path = os.path.join(topic_path, 'from_constituents')
