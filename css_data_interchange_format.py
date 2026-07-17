@@ -630,12 +630,8 @@ def topics_sort(input_dir, output_dir):
             # Updates df_topic with if the letter was in the export and makes a log of missing letters.
             df_topic = topics_sort_files(df_topic, input_dir, output_dir, group, group_path)
 
-    #     # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-    #     css_arch.topics_sort_delete_empty(topic_path)
-    #
-    #     # Saves the metadata for this topic if the topic folder was not deleted for being empty.
-    #     if os.path.exists(topic_path):
-    #         topics_sort_save_metadata(df_topic, topic_path, group_norm)
+        # Saves the metadata to a csv for the topic once all groups within the topic have been sorted.
+        topics_sort_save_metadata(df_topic, topic_path, topic)
 
 
 def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
@@ -649,7 +645,7 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
 
         # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
         # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
-        # Cannot use os.path.isdir() to test for directory because the folder may not exist.
+        # Cannot use os.path.isdir() to test for directory because the folder may not exist, so test for a "." from file extension.
         if doc_current_path == 'error_new' or '.' not in doc_current_path:
             continue
 
@@ -715,24 +711,22 @@ def topics_sort_prep(output_dir):
     # Make a folder for the topic sorted version of the export.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
 
-def topics_sort_save_metadata(df, topic_path, topic_norm):
+def topics_sort_save_metadata(df, topic_path, topic):
     """Remove rows with no document and temporary column and save to a CSV"""
 
     # Only include rows where the document is in the export.
     df = df[df['communication_document_name_present'] == True]
 
-    # Remove the "present" column, now that it only has True.
-    df = df.drop(['communication_document_name_present'], axis=1)
+    # Remove the "present" column, now that it only has True and the topic column
+    # as the only other column added by the script to the original metadata. The topic is in the file name.
+    df = df.drop(['communication_document_name_present', 'topic'], axis=1)
 
     # Removes duplicate rows. Not sure if this would happen, but can in other export types.
     df.drop_duplicates(inplace=True)
 
-    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
-    # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
-    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    if os.path.exists(metadata_path):
-        df.to_csv(metadata_path, mode='a', header=False, index=False)
-    else:
+    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic if any rows remain.
+    if len(df.index) > 0:
+        metadata_path = os.path.join(topic_path, f'{topic}_metadata.csv')
         df.to_csv(metadata_path, index=False)
 
 
