@@ -697,7 +697,15 @@ def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
 def topics_sort_prep(output_dir):
     """Make metadata file with rows for files to try to sort topically, using CSVs in the output directory"""
 
-    # Read the three expected files. If any are missing, quit the script with a warning.
+    # Read the two expected CSV files (redacted metadata and topic information) into dataframes.
+    # If either are missing, quit the script with a warning.
+    try:
+        df = pd.read_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'))
+        topic_df = pd.read_csv(os.path.join(output_dir, 'topics_group_name.csv'))
+    except FileNotFoundError:
+        print("For topic sort, must have archiving_correspondence_redacted.csv and topics_group_name.csv "
+              "in the output directory")
+        sys.exit(1)
 
     # Add topic information to md_df.
 
@@ -709,7 +717,7 @@ def topics_sort_prep(output_dir):
     # Save the metadata to a CSV for easy restarting of the sort process, which is very time consuming.
 
     # Make a folder for the topic sorted version of the export.
-    
+
 
 def topics_sort_save_metadata(df, topic_path, topic_norm):
     """Remove rows with no document and temporary column and save to a CSV"""
@@ -794,6 +802,7 @@ if __name__ == '__main__':
     # # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
     # elif script_mode == 'access':
+    if script_mode == 'access':
     #     print("\nThe script is running in access mode.")
     #     print("It will remove rows for deleted or restricted letters and columns with PII, "
     #           "make copies of the metadata split by calendar year, "
