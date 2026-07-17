@@ -612,7 +612,8 @@ def topics_sort(input_dir, output_dir):
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic)
         os.mkdir(topic_path)
-
+        df_topic = df[df['topic'] == topic].copy()
+        
         # # The topic has to be normalized to be used for a folder and file name.
         # # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
         # topic_norm = css_arch.topics_sort_normalize(topic)
