@@ -680,7 +680,7 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
         except (FileNotFoundError, PermissionError):
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
-            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            with open(os.path.join(output_dir, 'topics_sort_move_errors.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
                 topic = group_folder_path.split('\\')[-2]
                 group = group_folder_path.split('\\')[-1]
