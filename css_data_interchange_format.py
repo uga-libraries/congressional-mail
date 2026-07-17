@@ -615,13 +615,18 @@ def topics_sort(input_dir, output_dir):
         df_topic = df[df['topic'] == topic].copy()
         print(f"Starting topic {topic}, which has {len(df_topic.index)} rows in the df")
 
-        # # The topic has to be normalized to be used for a folder and file name.
+        # Sorts each group within a topic. Topics may have one or more groups.
+        group_list = df_topic['group_name'].unique().tolist()
+        for group in group_list:
+            print(group)
+
+        # # Makes a folder for each group within this topic.
         # # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
         # topic_norm = css_arch.topics_sort_normalize(topic)
         # topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
         # if not os.path.exists(topic_path):
         #     os.mkdir(topic_path)
-        #
+
     #     # Sorts correspondence from constituents ("in" letters).
     #     # Updates df_topic with if the letter was in the export and makes a log of missing letters.
     #     from_path = os.path.join(topic_path, 'from_constituents')
