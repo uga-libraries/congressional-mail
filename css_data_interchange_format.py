@@ -599,14 +599,13 @@ def topics_sort(input_dir, output_dir):
     # If either are missing, quit the script with a warning.
     try:
         df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'))
-        topics_df = pd.read_csv(os.path.join(output_dir, 'topics_unique.csv'))
-        topic_list = topics_df['topic'].values.tolist()
+        topics_list = pd.read_csv(os.path.join(output_dir, 'topics_unique.csv'))['topic'].values.tolist()
     except FileNotFoundError:
         print("For topic sort, must have topics_sort_metadata.csv and topics_unique.csv in the output directory")
         sys.exit(1)
 
     # Sorts a copy of all correspondence by topic.
-    for topic in topic_list:
+    for topic in topics_list:
 
         # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
@@ -673,8 +672,7 @@ def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
             shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
         except FileNotFoundError:
-            print("File not found", doc_current_path)
-            # df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
+            df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
             # with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
             #     log_writer = csv.writer(log)
             #     topic = group_folder_path.split('\\')[-2]
