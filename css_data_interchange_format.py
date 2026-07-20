@@ -765,61 +765,66 @@ if __name__ == '__main__':
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     # Columns with PII must be removed now to save memory, given the size of the data.
-    # TODO - remove comment
-    # md_df = read_metadata(metadata_paths_dict)
-    #
-    # # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
-    # # The column 'text' is removed after appraisal_df is made because it has PII but is used to evaluate for appraisal.
-    # # The export is not changed in this mode.
-    # if script_mode == 'accession':
-    #     print("\nThe script is running in accession mode.")
-    #     print("It will produce usability and appraisal reports and not change the export.")
-    #     appraisal_df = find_appraisal_rows(md_df, output_directory)
-    #     md_df.drop(['text'], axis=1, inplace=True)
-    #     check_metadata_usability(md_df, output_directory)
-    #     check_letter_matching(md_df, output_directory, input_directory)
-    #     topics_report(md_df, output_directory)
-    #
-    # # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
-    # # Restricted letters would not be included in the access copy.
-    # # The metadata file is not changed in this mode.
-    # elif script_mode == 'appraisal':
-    #     print("\nThe script is running in appraisal mode.")
-    #     print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
-    #           "but not change the metadata file.")
-    #     try:
-    #         appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
-    #     except FileNotFoundError:
-    #         print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
-    #         sys.exit(1)
-    #     restriction_report(md_df, output_directory)
-    #     md_df.drop(['text'], axis=1, inplace=True)
-    #     delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-    #
-    # # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
-    # # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
-    # elif script_mode == 'access':
-    if script_mode == 'access':
-    #     print("\nThe script is running in access mode.")
-    #     print("It will remove rows for deleted or restricted letters and columns with PII, "
-    #           "make copies of the metadata split by calendar year, "
-    #           "and make a copy of the letters to and from constituents organized by topic")
-    #     try:
-    #         appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
-    #     except FileNotFoundError:
-    #         print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
-    #         sys.exit(1)
-    #     try:
-    #         restrict_df = css_arch.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
-    #     except FileNotFoundError:
-    #         print("No restriction_review.csv in the output directory. Cannot do access without it.")
-    #         sys.exit(1)
-    #     md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
-    #     md_df = remove_restricted_rows(md_df, restrict_df)
-    #     md_df.drop(['text'], axis=1, inplace=True)
-    #     md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
-    #     form_letter_metadata(input_directory, output_directory)
-    #     split_year(md_df, output_directory)
-    #     topics_sort_prep(output_directory)
-          topics_sort(input_directory, output_directory)
+    TODO - remove comment
+    md_df = read_metadata(metadata_paths_dict)
+
+    # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
+    # The column 'text' is removed after appraisal_df is made because it has PII but is used to evaluate for appraisal.
+    # The export is not changed in this mode.
+    if script_mode == 'accession':
+        print("\nThe script is running in accession mode.")
+        print("It will produce usability and appraisal reports and not change the export.")
+        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        md_df.drop(['text'], axis=1, inplace=True)
+        check_metadata_usability(md_df, output_directory)
+        check_letter_matching(md_df, output_directory, input_directory)
+        topics_report(md_df, output_directory)
+
+    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
+    # Restricted letters would not be included in the access copy.
+    # The metadata file is not changed in this mode.
+    elif script_mode == 'appraisal':
+        print("\nThe script is running in appraisal mode.")
+        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
+              "but not change the metadata file.")
+        try:
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            sys.exit(1)
+        restriction_report(md_df, output_directory)
+        md_df.drop(['text'], axis=1, inplace=True)
+        delete_appraisal_letters(input_directory, output_directory, appraisal_df)
+
+    # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
+    # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
+    elif script_mode == 'access':
+        print("\nThe script is running in access mode.")
+        print("It will remove rows for deleted or restricted letters and columns with PII, "
+              "make copies of the metadata split by calendar year, "
+              "and make a copy of the letters to and from constituents organized by topic")
+        try:
+            appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
+        except FileNotFoundError:
+            print("No appraisal_delete_log.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
+        try:
+            restrict_df = css_arch.read_csv(os.path.join(output_directory, 'restriction_review.csv'))
+        except FileNotFoundError:
+            print("No restriction_review.csv in the output directory. Cannot do access without it.")
+            sys.exit(1)
+        count_initial = len(md_df.index)
+        md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
+        count_appraisal = len(md_df.index)
+        md_df = remove_restricted_rows(md_df, restrict_df)
+        count_restricted = len(md_df.index)
+        print("\nFor QC")
+        print("Rows removed for appraisal:", count_initial - count_appraisal)
+        print("Rows removed for restriction:", count_appraisal - count_restricted)
+        md_df.drop(['text'], axis=1, inplace=True)
+        md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
+        form_letter_metadata(input_directory, output_directory)
+        split_year(md_df, output_directory)
+        topics_sort_prep(output_directory)
+        #topics_sort(input_directory, output_directory)
 
