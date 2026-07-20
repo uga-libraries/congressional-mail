@@ -21,6 +21,14 @@ def metadata_paths(input_dir):
     return md_paths
 
 
+def make_restrict_list(restrict_dir):
+    """Get names of all files in the restriction directory"""
+    restrict = []
+    for file in os.listdir(restrict_dir):
+        restrict.append(file)
+    return restrict
+
+
 if __name__ == '__main__':
 
     # Variables from script arguments.
@@ -35,6 +43,7 @@ if __name__ == '__main__':
 
     # Get list of filenames to restrict.
     # Convert to paths to match the metadata.
+    restrict_list = make_restrict_list(restrict_directory)
 
     # Find metadata row(s) matching the each path, if any.
 
