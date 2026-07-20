@@ -21,6 +21,18 @@ def metadata_paths(input_dir):
     return md_paths
 
 
+def make_df(path):
+    """Makes df with all columns blank except the communication_document_name
+    to document restricted files with no metadata"""
+    column_names = ['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
+                    'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
+                    'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
+                    'file_name', 'text']
+    df = pd.DataFrame([['', '', '', '', '', '', '', '', '', '', '', '', '', '', path, '', '', '', '']],
+                      columns=column_names)
+    return df
+
+
 def make_restrict_list(restrict_dir):
     """Get names of all files in the restriction directory"""
     restrict = []
@@ -56,7 +68,11 @@ if __name__ == '__main__':
     for restrict_file in restrict_list:
         restrict_path = f'..\\documents\\imail\\{restrict_file}'
 
-        # Find metadata row(s) matching the each path, if any, and save to additional_restrictions.csv.
-        restrict_rows = md_df[md_df['communication_document_name'] == restrict_path]
-        if len(restrict_rows) > 0:
-            save(output_directory, restrict_rows)
+        # Find metadata row(s) matching the each path, if any, or make a df with just the document if not.
+        # Even if there is no metadata row, we want a record that this file was restricted.
+        restrict_df = md_df[md_df['communication_document_name'] == restrict_path]
+        if len(restrict_df) == 0:
+            restrict_df = make_df(restrict_path)
+
+        # Save to additional_restrictions.csv.
+        save(output_directory, restrict_df)
