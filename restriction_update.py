@@ -6,7 +6,19 @@ Arguments: path to the export (input_directory) and folder with files to restric
 Returns: additiona_restrictions.csv in parent folder of the input directory
 """
 import os
+import pandas as pd
 import sys
+from css_data_interchange_format import read_metadata
+
+
+def metadata_paths(input_dir):
+    """Get paths of the four DAT files in the input directory and return as a dictionary"""
+    # Before this script is run, would already know these files are in the expected location.
+    md_paths = {'1B':os.path.join(input_dir,'out_1B.dat'),
+                '2A':os.path.join(input_dir,'out_2A.dat'),
+                '2C':os.path.join(input_dir,'out_2C.dat'),
+                '2D':os.path.join(input_dir,'out_2D.dat')}
+    return md_paths
 
 
 if __name__ == '__main__':
@@ -18,6 +30,8 @@ if __name__ == '__main__':
 
     # Read the metadata, including merging tables.
     # Calculate metadata paths and import functions from css_data_interchange_format.py
+    metadata_paths_dict = metadata_paths(input_directory)
+    md_df = read_metadata(metadata_paths_dict)
 
     # Get list of filenames to restrict.
     # Convert to paths to match the metadata.
