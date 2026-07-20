@@ -765,7 +765,6 @@ if __name__ == '__main__':
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     # Columns with PII must be removed now to save memory, given the size of the data.
-    TODO - remove comment
     md_df = read_metadata(metadata_paths_dict)
 
     # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
