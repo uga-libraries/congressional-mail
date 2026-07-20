@@ -29,6 +29,15 @@ def make_restrict_list(restrict_dir):
     return restrict
 
 
+def save(output_dir, df):
+    """Save a df with restricted rows to a CSV, which may already exist"""
+    csv_path = os.path.join(output_dir, 'additional_restrictions.csv')
+    if os.path.exists(csv_path):
+        df.to_csv(csv_path, header=False, index=False, mode='a')
+    else:
+        df.to_csv(csv_path, header=True, index=False)
+
+
 if __name__ == '__main__':
 
     # Variables from script arguments.
@@ -47,6 +56,7 @@ if __name__ == '__main__':
     for restrict_file in restrict_list:
         restrict_path = f'..\\documents\\imail\\{restrict_file}'
 
-        # Find metadata row(s) matching the each path, if any.
-
-        # Save to additional_restrictions.csv
+        # Find metadata row(s) matching the each path, if any, and save to additional_restrictions.csv.
+        restrict_rows = md_df[md_df['communication_document_name'] == restrict_path]
+        if len(restrict_rows) > 0:
+            save(output_directory, restrict_rows)
