@@ -44,7 +44,9 @@ if __name__ == '__main__':
     # Get list of filenames to restrict.
     # Convert to paths to match the metadata.
     restrict_list = make_restrict_list(restrict_directory)
+    for restrict_file in restrict_list:
+        restrict_path = f'..\\documents\\imail\\{restrict_file}'
 
-    # Find metadata row(s) matching the each path, if any.
+        # Find metadata row(s) matching the each path, if any.
 
-    # Save to additional_restrictions.csv
+        # Save to additional_restrictions.csv
