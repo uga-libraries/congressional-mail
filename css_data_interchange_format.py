@@ -434,7 +434,7 @@ def read_metadata(paths):
     columns_2a = ['record_type', 'person_id', 'communication_id', 'workflow_id', 'workflow_person_id',
                   'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                   'update_date', 'response_type', 'address_id', 'email_address', 'household_flag', 'household_id',
-                  'group_name', 'salutation', 'extra']
+                  'group_name', 'salutation', 'extra', 'extra5', 'extra6', 'extra7', 'extra8', 'extra9']
     columns_2c = ['record_type', 'person_id', 'communication_id', 'document_type', 'communication_document_name',
                   'communication_document_id', 'file_location', 'file_name']
     columns_2d = ['record_type', 'person_id', 'communication_id', '2d_sequence_number',
@@ -507,7 +507,8 @@ def remove_pii(df):
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
               'workflow_person_id', 'user_id', 'address_id_y', 'email_address', 'household_flag', 'household_id',
-              'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4']
+              'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4', 'extra5', 'extra6', 'extra7',
+              'extra8', 'extra9']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
