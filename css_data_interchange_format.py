@@ -599,7 +599,7 @@ def topics_sort(input_dir, output_dir):
     # To do part at a time, edit the list of topics to only include a subset.
     # If either are missing, quit the script with a warning.
     try:
-        df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'))
+        df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), dtype=str)
         topics_list = pd.read_csv(os.path.join(output_dir, 'topics_unique.csv'))['topic'].values.tolist()
     except FileNotFoundError:
         print("For topic sort, must have topics_sort_metadata.csv and topics_unique.csv in the output directory")
@@ -694,7 +694,7 @@ def topics_sort_prep(output_dir):
     # Read the two expected CSV files (redacted metadata and topic information) into dataframes.
     # If either are missing, quit the script with a warning.
     try:
-        df = pd.read_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'))
+        df = pd.read_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), dtype=str)
         topic_df = pd.read_csv(os.path.join(output_dir, 'topics_group_name.csv'))
     except FileNotFoundError:
         print("For topic sort prep, must have archiving_correspondence_redacted.csv and topics_group_name.csv "
