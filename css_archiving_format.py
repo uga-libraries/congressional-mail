@@ -899,3 +899,8 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
 
+    # For access_restarts, finishes the topics sort. The rest of access will already be done.
+    # Uses topics_sort_metadata.csv and topics_sort_complete.txt (in output_directory from access mode) to restart.
+    elif script_mode == 'access_restart':
+        md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
+        topics_sort(md_df, input_directory, output_directory)
