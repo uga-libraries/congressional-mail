@@ -67,7 +67,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies correspondence_by_topic has the expected contents:
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'ag'),
                     os.path.join(self.by_topic, 'farm'),
                     os.path.join(self.by_topic, 'ag', 'from_constituents'),
@@ -123,6 +125,11 @@ class MyTestCase(unittest.TestCase):
                      'farm', '..\\documents\\BlobExport\\responses\\farm_missing.txt', 'False']]
         self.assertEqual(expected, result, "Problem with test for doc_both, farm_metadata.csv")
 
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['ag'], ['farm']]
+        self.assertEqual(expected, result, "Problem with test for doc_both, topics_sort_complete.txt")
+
     def test_doc_in(self):
         """Test for when only in_document_name has paths matching the export"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -138,6 +145,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies correspondence_by_topic has the expected contents:
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'ag'),
                     os.path.join(self.by_topic, 'farm'),
                     os.path.join(self.by_topic, 'ag', 'from_constituents'),
@@ -175,6 +184,11 @@ class MyTestCase(unittest.TestCase):
                      'True', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided']]
         self.assertEqual(expected, result, "Problem with test for doc_in, farm_metadata.csv")
 
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['ag'], ['farm']]
+        self.assertEqual(expected, result, "Problem with test for doc_in, topics_sort_complete.txt")
+
     def test_doc_neither(self):
         """Test for when neither in_document_name nor out_document_name have paths matching the export"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -188,7 +202,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies correspondence_by_topic has the expected contents:
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv')]
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv')]
         self.assertEqual(expected, result, "Problem with test for doc_neither, directory")
 
         # Verifies the file not found log has the expected contents.
@@ -198,6 +214,11 @@ class MyTestCase(unittest.TestCase):
                     ['farm', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['farm', '..\\documents\\BlobExport\\responses\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for doc_neither, file not found log")
+
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['ag'], ['farm']]
+        self.assertEqual(expected, result, "Problem with test for doc_neither, topics_sort_complete.txt")
 
     def test_doc_out(self):
         """Test for when only out_document_name has paths matching the export"""
@@ -220,6 +241,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies correspondence_by_topic has the expected contents:
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'ag'),
                     os.path.join(self.by_topic, 'farm_family'),
                     os.path.join(self.by_topic, 'ag', 'to_constituents'),
@@ -262,6 +285,11 @@ class MyTestCase(unittest.TestCase):
                      '..\\documents\\BlobExport\\responses\\ag.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for doc_out, farm_family_metadata.csv")
 
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['ag'], ['farm/family']]
+        self.assertEqual(expected, result, "Problem with test for doc_out, topics_sort_complete.txt")
+
     def test_topic_both(self):
         """Test for when a topic is in both in_topic and out_topic"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -278,7 +306,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'cat'),
                     os.path.join(self.by_topic, 'dog'),
                     os.path.join(self.by_topic, 'pet'),
@@ -373,6 +403,11 @@ class MyTestCase(unittest.TestCase):
                      'cat^dog', '..\\documents\\BlobExport\\responses\\a2.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for topic_both, pet_metadata.csv")
 
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['cat'], ['dog'], ['pet']]
+        self.assertEqual(expected, result, "Problem with test for topic_both, topics_sort_complete.txt")
+
     def test_topic_dup_norm(self):
         """Test for when multiple unique topics are normalized to the same thing"""
         df = make_df([['30601', '*cat', '..\\documents\\BlobExport\\objects\\file1.txt', np.nan, np.nan],
@@ -385,6 +420,8 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, '_cat'),
                     os.path.join(self.by_topic, '_cat', 'from_constituents'),
                     os.path.join(self.by_topic, '_cat', 'to_constituents'),
@@ -417,6 +454,11 @@ class MyTestCase(unittest.TestCase):
                      '?cat', '..\\documents\\BlobExport\\responses\\a2.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for topic_dup_norm, _cat_metadata.csv")
 
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['*cat'], ['/cat'], ['?cat']]
+        self.assertEqual(expected, result, "Problem with test for topic_dup_norm, topics_sort_complete.txt")
+
     def test_topic_one(self):
         """Test for when a topic is either in in_topic or out_topic, but not the other column"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -433,7 +475,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected topic folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'cat'),
                     os.path.join(self.by_topic, 'dog'),
                     os.path.join(self.by_topic, 'pet'),
@@ -532,6 +576,11 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', '..\\documents\\BlobExport\\objects\\file3.txt', 'True', '*', '*', '*', '*',
                      'pet^toy', '..\\documents\\BlobExport\\responses\\missing.txt', 'False']]
         self.assertEqual(expected, result, "Problem with test for topic_one, toy_metadata.csv")
+
+        # Verifies topics_sort_complete.txt has the expected contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = [['cat'], ['dog'], ['pet'], ['toy']]
+        self.assertEqual(expected, result, "Problem with test for topic_one, topics_sort_complete.txt")
 
 
 if __name__ == '__main__':
