@@ -622,7 +622,7 @@ def topics_sort(df, input_dir, output_dir):
     Letters with multiple topics are in multiple topic folders."""
 
     # New version of df with multi-topic cells split up.
-    df_topics = topics_sort_df(df)
+    df_topics = topics_sort_df(df, output_dir)
 
     # Sorts a copy of all correspondence by topic.
     os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
@@ -672,8 +672,9 @@ def topics_sort_delete_empty(topic_path):
             os.rmdir(path)
 
 
-def topics_sort_df(df):
-    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs"""
+def topics_sort_df(df, output_dir):
+    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs
+    and save to a CSV in case topic sorting needs to be restarted to save time"""
 
     # If there is more than one in_topic in a row (divided by ^),
     # splits them each to their own row, repeating the rest of the information for each row,
@@ -702,6 +703,9 @@ def topics_sort_df(df):
     insert_out = columns_list.index('out_document_name') + 1
     columns_list.insert(insert_out, 'out_document_name_split')
     df = df[columns_list]
+
+    # Save the df to the output_directory to use if topic sorting needs to be restarted.
+    df.to_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), index=False)
 
     return df
 
