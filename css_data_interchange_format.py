@@ -743,8 +743,9 @@ def update_path(md_path, input_dir):
 
     # So far, we have seen one way that paths are formatted in the metadata:
     # ..\documents\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    # and some files may contain an additional '..', so only the first instance of it is replaced.
     if md_path.startswith('..\\documents'):
-        updated_path = md_path.replace('..', input_dir)
+        updated_path = md_path.replace('..', input_dir, 1)
     else:
         updated_path = 'error_new'
 
