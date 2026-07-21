@@ -613,7 +613,8 @@ def topics_sort(input_dir, output_dir):
         topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic)
         os.mkdir(topic_path)
         df_topic = df[df['topic'] == topic].copy()
-        print(f"Starting topic {topic}, which has {len(df_topic.index)} rows in the df")
+        print(f"Starting topic {topic}, which has {df_topic['communication_document_name'].nunique()} "
+              f"unique document paths in the df")
 
         # Sorts each group within a topic. Topics may have one or more groups.
         group_list = df_topic['group_name'].unique().tolist()
