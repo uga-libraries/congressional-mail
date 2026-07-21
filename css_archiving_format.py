@@ -8,10 +8,14 @@ appraisal: delete letters due to appraisal and make report of possible restricti
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
+access_restart: start topics sorting where the script left off
 
 For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
+
+For access_restart, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
+If it didn't get that far, delete the outputs and run the access mode again.
 """
 import csv
 from datetime import date, datetime
@@ -60,7 +64,7 @@ def check_arguments(arg_list):
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
-        if arg_list[2] in ('accession', 'appraisal', 'preservation', 'access'):
+        if arg_list[2] in ('accession', 'appraisal', 'preservation', 'access', 'access_restart'):
             mode = arg_list[2]
         else:
             errors.append(f"Provided mode '{arg_list[2]}' is not one of the expected modes")
