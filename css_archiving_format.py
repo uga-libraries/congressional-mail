@@ -663,6 +663,10 @@ def topics_sort(df, input_dir, output_dir):
         if os.path.exists(topic_path):
             topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
+        # Saves the original (not normalized) version of the topic to a log for if topic sorting needs to be restarted.
+        with open(os.path.join(output_dir, 'topics_sort_complete.txt'), 'a') as file:
+            file.write(topic + '\n')
+
 
 def topics_sort_delete_empty(topic_path):
     """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
