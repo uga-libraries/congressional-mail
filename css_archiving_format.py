@@ -895,7 +895,7 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
-        topics_sort(md_df, input_directory, output_directory)
         md_df = save_redacted_metadata(md_df, output_directory)
         split_year(md_df, output_directory)
+        topics_sort(md_df, input_directory, output_directory)
 
