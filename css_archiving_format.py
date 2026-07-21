@@ -845,8 +845,10 @@ if __name__ == '__main__':
     # Calculates parent folder of the input_directory, which is where script outputs are saved.
     output_directory = os.path.dirname(input_directory)
 
-    # Reads the metadata file into a pandas dataframe.
-    md_df = read_metadata(csv_path)
+    # Reads the metadata file into a pandas dataframe, unless the mode is access_restart,
+    # in which case it saves time by reading topics_sort_metadata.csv instead.
+    if not script_mode == 'access_restart':
+        md_df = read_metadata(csv_path)
 
     # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
     # The export is not changed in this mode.
