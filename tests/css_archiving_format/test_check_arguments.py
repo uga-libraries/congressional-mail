@@ -19,6 +19,20 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('access', script_mode, "Problem with correct - access, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - access, errors_list")
 
+    def test_correct_access_restart(self):
+        """Test for when both required arguments are present, input_directory path exists, and mode is access_restart."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['css_archiving_format.py', input_dir, 'access_restart']
+        input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        self.assertEqual(input_dir, input_directory, "Problem with correct - access_restart, input_directory")
+        self.assertEqual(os.path.join(input_dir, 'archiving_correspondence.dat'), metadata_path,
+                         "Problem with correct - access_restart, metadata_path")
+        self.assertEqual('access_restart', script_mode, "Problem with correct - access_restart, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - access_restart, errors_list")
+
     def test_correct_accession(self):
         """Test for when both required arguments are present, input_directory path exists, and mode is accession."""
         # Runs the function being tested.
