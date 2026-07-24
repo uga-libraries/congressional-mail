@@ -625,11 +625,17 @@ def topics_sort(df, input_dir, output_dir, restart=False):
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
     Letters with multiple topics are in multiple topic folders."""
 
-    # New version of df with multi-topic cells split up.
-    df_topics = topics_sort_df(df, output_dir)
+    # Set up for topic sort varies depending on if this is the first time or a restart.
+    # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
+    # During restarts, the parameter df is ready to be df_topics and an additional file of topics to skip is read.
+    if not restart:
+        df_topics = topics_sort_df(df, output_dir)
+        os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    else:
+        df_topics = df.copy()
+        skip_list = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
 
     # Sorts a copy of all correspondence by topic.
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
 
