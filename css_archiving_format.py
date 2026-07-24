@@ -620,7 +620,7 @@ def topics_report(df, output_dir):
     df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
-def topics_sort(df, input_dir, output_dir):
+def topics_sort(df, input_dir, output_dir, restart=False):
     """Sort copy of incoming and outgoing correspondence into folders by topic
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
     Letters with multiple topics are in multiple topic folders."""
@@ -903,4 +903,5 @@ if __name__ == '__main__':
     # Uses topics_sort_metadata.csv and topics_sort_complete.txt (in output_directory from access mode) to restart.
     elif script_mode == 'access_restart':
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
-        topics_sort(md_df, input_directory, output_directory)
+        topics_sort(md_df, input_directory, output_directory, restart=True)
+
