@@ -1,0 +1,4 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,in_document_name_present,out_id,out_type,out_method,out_date,out_topic,out_document_name,out_document_name_present
+*,*,30601,*,*,*,*,*,ag,..\documents\BlobExport\objects\file1.txt,True,*,*,*,*,ag^farm,..\documents\BlobExport\responses\ag.txt,True
+*,*,30602,*,*,*,*,*,ag^farm,..\documents\BlobExport\objects\file2.txt,True,*,*,*,*,ag,..\documents\BlobExport\responses\ag.txt,True
+*,*,30603,*,*,*,*,*,farm,..\documents\BlobExport\objects\file3.txt,True,*,*,*,*,farm,..\documents\BlobExport\responses\farm_missing.txt,False

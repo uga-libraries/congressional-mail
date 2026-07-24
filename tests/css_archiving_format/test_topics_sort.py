@@ -53,6 +53,15 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(self.output_dir):
             shutil.rmtree(self.output_dir)
 
+        # Test for restart has a different set of files to delete,
+        # since some files must be retained to simulate the function having been run previously.
+        output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_restart')
+        if os.path.exists(os.path.join(output_dir, 'correspondence_by_topic')):
+            shutil.rmtree(os.path.join(output_dir, 'correspondence_by_topic'))
+        for file_name in ['topics_sort_complete.txt', 'topics_sort_file_not_found.csv', 'topics_sort_metadata.csv']:
+            if os.path.exists(os.path.join(output_dir, file_name)):
+                os.remove(os.path.join(output_dir, file_name))
+
     def test_doc_both(self):
         """Test for when in_document_name and out_document_name have paths matching the export"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -289,6 +298,71 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
         expected = [['ag'], ['farm/family']]
         self.assertEqual(expected, result, "Problem with test for doc_out, topics_sort_complete.txt")
+
+    def test_restart(self):
+        """Test for when topic sorting is being restarted and skips topics that are already done"""
+        # Makes input to use as test input and runs the function being tested.
+        input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_restart', 'css_export')
+        output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_restart')
+        shutil.copytree(os.path.join(output_dir, 'output_copy', 'correspondence_by_topic'),
+                        os.path.join(output_dir, 'correspondence_by_topic'))
+        shutil.copy2(os.path.join(output_dir, 'output_copy', 'topics_sort_complete.txt'),
+                     os.path.join(output_dir, 'topics_sort_complete.txt'))
+        shutil.copy2(os.path.join(output_dir, 'output_copy', 'topics_sort_file_not_found.csv'),
+                     os.path.join(output_dir, 'topics_sort_file_not_found.csv'))
+        shutil.copy2(os.path.join(output_dir, 'output_copy', 'topics_sort_metadata.csv'),
+                     os.path.join(output_dir, 'topics_sort_metadata.csv'))
+        df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), dtype=str)
+        topics_sort(df, input_dir, output_dir, restart=True)
+
+        # # Verifies correspondence_by_topic has the expected contents.
+        # # TODO example the number of topics for more complete test of
+        # by_topic = os.path.join(output_dir, 'correspondence_by_topic')
+        # result = make_dir_list(output_dir)
+        # expected = [os.path.join(output_dir, 'correspondence_by_topic'),
+        #             os.path.join(output_dir, 'topics_sort_complete.txt'),
+        #             os.path.join(output_dir, 'topics_sort_metadata.csv'),
+        #             os.path.join(by_topic, 'ag'),
+        #             os.path.join(by_topic, 'farm'),
+        #             os.path.join(by_topic, 'ag', 'from_constituents'),
+        #             os.path.join(by_topic, 'ag', 'ag_metadata.csv'),
+        #             os.path.join(by_topic, 'ag', 'from_constituents', 'objects'),
+        #             os.path.join(by_topic, 'ag', 'from_constituents', 'objects', 'file1.txt'),
+        #             os.path.join(by_topic, 'ag', 'from_constituents', 'objects', 'file3.txt'),
+        #             os.path.join(by_topic, 'farm', 'from_constituents'),
+        #             os.path.join(by_topic, 'farm', 'farm_metadata.csv'),
+        #             os.path.join(by_topic, 'farm', 'from_constituents', 'objects'),
+        #             os.path.join(by_topic, 'farm', 'from_constituents', 'objects', 'file3.txt')]
+        # self.assertEqual(expected, result, "Problem with test for restart, directory")
+        #
+        # # Verifies ag_metadata.csv has the expected contents.
+        # result = csv_to_list(os.path.join(by_topic, 'ag', 'ag_metadata.csv'))
+        # expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+        #              'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id', 'out_type',
+        #              'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+        #             ['*', '*', '*', '*', '*', '*', '*', '*', 'ag',
+        #              '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file3.txt',
+        #              '..\\documents\\BlobExport\\objects\\file1.txt', 'True', '*', '*', '*', '*', 'BLANK', 'BLANK',
+        #              'no_path_provided'],
+        #             ['*', '*', '*', '*', '*', '*', '*', '*', 'ag',
+        #              '..\\documents\\BlobExport\\objects\\file1.txt^..\\documents\\BlobExport\\objects\\file3.txt',
+        #              '..\\documents\\BlobExport\\objects\\file3.txt', 'True', '*', '*', '*', '*', 'BLANK', 'BLANK',
+        #              'no_path_provided']]
+        # self.assertEqual(expected, result, "Problem with test for restart, ag_metadata.csv")
+        #
+        # # Verifies farm_metadata.csv has the expected contents.
+        # result = csv_to_list(os.path.join(by_topic, 'farm', 'farm_metadata.csv'))
+        # expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date', 'in_topic',
+        #              'in_document_name', 'in_document_name_present', 'out_id', 'out_type', 'out_method', 'out_date',
+        #              'out_topic', 'out_document_name', 'out_document_name_present'],
+        #             ['*', '*', '*', '*', '*', '*', '*', '*', 'farm', '..\\documents\\BlobExport\\objects\\file3.txt',
+        #              'True', '*', '*', '*', '*', 'BLANK', 'BLANK', 'no_path_provided']]
+        # self.assertEqual(expected, result, "Problem with test for restart, farm_metadata.csv")
+        #
+        # # Verifies topics_sort_complete.txt has the expected contents.
+        # result = csv_to_list(os.path.join(output_dir, 'topics_sort_complete.txt'))
+        # expected = [['ag'], ['farm']]
+        # self.assertEqual(expected, result, "Problem with test for restart, topics_sort_complete.txt")
 
     def test_topic_both(self):
         """Test for when a topic is in both in_topic and out_topic"""
