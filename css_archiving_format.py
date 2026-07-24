@@ -643,6 +643,11 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         if topic == 'nan':
             continue
 
+        # If this is a restart, skips any topics that were already done.
+        # The topic folder may not be in correspondence_by_topic if all files were missing.
+        if restart and topic in skip_list:
+            continue
+
         # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
         # The topic has to be normalized to be used for a folder and file name.
