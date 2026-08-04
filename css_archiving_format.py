@@ -633,7 +633,8 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     else:
         df_topics = df.copy()
-        skip_list = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
+        skip_df = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
+        skip_list = skip_df[0].tolist()
 
     # Sorts a copy of all correspondence by topic.
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
