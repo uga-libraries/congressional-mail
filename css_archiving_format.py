@@ -556,17 +556,20 @@ def restriction_report(df, output_dir):
 def save_redacted_metadata(df, output_dir):
     """Save the entire df of redacted metadata to a csv, after cleanup"""
 
+    # Makes a copy of the dataframe to edit, so the original dataframe retains the split columns for topic sort.
+    df_redact = df.copy()
+
     # Removes temporary columns used for the analysis.
-    df.drop(['in_document_name_split', 'out_document_name_split'], axis=1, inplace=True)
+    df_redact.drop(['in_document_name_split', 'out_document_name_split'], axis=1, inplace=True)
 
     # Removes duplicate rows, where the only differences had been from the temporary columns.
-    df.drop_duplicates(inplace=True)
+    df_redact.drop_duplicates(inplace=True)
 
     # Saves the CSV.
-    df.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
+    df_redact.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
 
-    # Returns the cleaned up df.
-    return df
+    # Saves the same information as one CSV per year.
+    split_year(df_redact, output_dir)
 
 
 def split_year(df, output_dir):
@@ -907,8 +910,7 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
-        md_df = save_redacted_metadata(md_df, output_directory)
-        split_year(md_df, output_directory)
+        save_redacted_metadata(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
 
     # For access_restarts, finishes the topics sort. The rest of access will already be done.
