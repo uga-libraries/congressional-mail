@@ -661,19 +661,10 @@ def topics_sort(df, input_dir, output_dir, restart=False):
             os.mkdir(topic_path)
         df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
 
-        # Sorts correspondence from constituents ("in" letters).
+        # Sorts correspondence from constituents ("in" letters) and to constituents ("out" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
-        from_path = os.path.join(topic_path, 'from_constituents')
-        if not os.path.exists(from_path):
-            os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, from_path)
-
-        # Sorts correspondence to constituents ("out" letters).
-        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
-        to_path = os.path.join(topic_path, 'to_constituents')
-        if not os.path.exists(to_path):
-            os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, to_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, topic_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, topic_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         topics_sort_delete_empty(topic_path)
@@ -688,11 +679,9 @@ def topics_sort(df, input_dir, output_dir, restart=False):
 
 
 def topics_sort_delete_empty(topic_path):
-    """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
-    paths = [os.path.join(topic_path, 'from_constituents'), os.path.join(topic_path, 'to_constituents'), topic_path]
-    for path in paths:
-        if not os.listdir(path):
-            os.rmdir(path)
+    """Delete the topic folder if empty - will expand this later"""
+    if not os.listdir(topic_path):
+        os.rmdir(topic_path)
 
 
 def topics_sort_df(df, output_dir):
