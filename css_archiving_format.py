@@ -760,7 +760,7 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
             df.loc[df[column] == doc, column.replace('_split', '_present')] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
+                topic = folder_path.split('\\')[-1]
                 log_writer.writerow([topic, doc])
             if subfolder_new:
                 os.rmdir(subfolder_path)
