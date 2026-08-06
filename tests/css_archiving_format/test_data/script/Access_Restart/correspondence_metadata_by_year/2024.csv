@@ -1,0 +1,2 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,out_id,out_type,out_method,out_date,out_topic,out_document_name
+C city,CO,34567,,c300,General,Letter,20240303,A1,..\documents\BlobExport\objects\333333.txt,r300,General,Email,20240313,A,..\documents\BlobExport\formletters\A.txt^..\documents\BlobExport\indivletters\000003.txt
