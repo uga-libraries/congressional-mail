@@ -554,7 +554,7 @@ def restriction_report(df, output_dir):
 
 
 def save_redacted_metadata(df, output_dir):
-    """Save the entire df of redacted metadata to a csv, after cleanup"""
+    """Save the entire df of redacted metadata to a csv, and one csv per year, after cleanup"""
 
     # Makes a copy of the dataframe to edit, so the original dataframe retains the split columns for topic sort.
     df_redact = df.copy()
