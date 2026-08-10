@@ -674,9 +674,8 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, topic_path)
         df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, topic_path)
 
-        # Cleans up and saves the metadata for this topic if the topic folder was not deleted for being empty.
-        if os.path.exists(topic_path):
-            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+        # Cleans up and saves the metadata for this topic.
+        topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
         # Saves the original (not normalized) version of the topic to a log for if topic sorting needs to be restarted.
         with open(os.path.join(output_dir, 'topics_sort_complete.txt'), 'a') as file:
@@ -813,13 +812,14 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # in_topic and out_topic both matched the topic.
     df.drop_duplicates(inplace=True)
 
-    # Saves to the topic folder.
+    # Saves to the topic folder, unless it has no rows because no files were found.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
-    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    if os.path.exists(metadata_path):
-        df.to_csv(metadata_path, mode='a', header=False, index=False)
-    else:
-        df.to_csv(metadata_path, index=False)
+    if len(df.index) > 0:
+        metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+        if os.path.exists(metadata_path):
+            df.to_csv(metadata_path, mode='a', header=False, index=False)
+        else:
+            df.to_csv(metadata_path, index=False)
 
 
 def update_path(md_path, input_dir):
