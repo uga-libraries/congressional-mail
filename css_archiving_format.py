@@ -674,9 +674,6 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, topic_path)
         df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, topic_path)
 
-        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        topics_sort_delete_empty(topic_path)
-
         # Cleans up and saves the metadata for this topic if the topic folder was not deleted for being empty.
         if os.path.exists(topic_path):
             topics_sort_save_metadata(df_topic, topic_path, topic_norm)
@@ -685,11 +682,18 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         with open(os.path.join(output_dir, 'topics_sort_complete.txt'), 'a') as file:
             file.write(topic + '\n')
 
+    # Deletes empty folders at any level, including folders that only contain empty folders.
+    topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
-def topics_sort_delete_empty(topic_path):
-    """Delete the topic folder if empty - will expand this later"""
-    if not os.listdir(topic_path):
-        os.rmdir(topic_path)
+
+def topics_sort_delete_empty(topic_dir):
+    """Delete empty folders within correspondence_by_topic, including folders that only contain empty folders"""
+    print("\nDeleting empty folders at all levels")
+    for root, dirs, files in os.walk(topic_dir, topdown=False):
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            if not os.listdir(dir_path):
+                os.rmdir(dir_path)
 
 
 def topics_sort_df(df, output_dir):
