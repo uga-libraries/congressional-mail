@@ -634,22 +634,19 @@ def topics_sort(df, input_dir, output_dir, restart=False):
     if not restart:
         df_topics = topics_sort_df(df, output_dir)
         os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+        skip_list = ['nan']
     else:
         df_topics = df.copy()
         skip_df = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
-        skip_list = skip_df[0].tolist()
+        skip_list = skip_df[0].tolist() + ['nan']
 
     # Sorts a copy of all correspondence by topic.
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
 
-        # Skip blanks, which are a string because of topics_sort_df converting the column type to split on delimiters.
-        if topic == 'nan':
-            continue
-
-        # If this is a restart, skips any topics that were already done.
+        # Skip blanks and any topics already done if this is a restart..
         # The topic folder may not be in correspondence_by_topic if all files were missing.
-        if restart and topic in skip_list:
+        if topic in skip_list:
             continue
 
         # Makes folder and metadata df for this topic.
