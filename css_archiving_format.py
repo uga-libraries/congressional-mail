@@ -757,14 +757,14 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
                 os.makedirs(subfolder_path)
 
         # Copies the doc to the topic folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
+        # If the doc is not in the expected location, or is a folder (PermissionError), logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
         doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
             shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df[column] == doc, column.replace('_split', '_present')] = True
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
             df.loc[df[column] == doc, column.replace('_split', '_present')] = False
             with open(os.path.join(output_dir, 'topics_sort_file_move_errors.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
