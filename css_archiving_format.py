@@ -5,17 +5,19 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
-access: remove metadata rows for appraisal and restrictions and columns for PII,
-        make copy of metadata split by calendar year,
+access: make copy of metadata without metadata rows for appraisal and restrictions and columns for PII,
+        make another copy of the redacted metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
 access_restart: start topics sorting where the script left off
 
-For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
+For appraisal and access modes, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
 
-For access_restart, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
+For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
 If it didn't get that far, delete the outputs and run the access mode again.
+Access mode needs to be restarted periodically because topic sorting takes multiple days
+and is prone to the script breaking due to special characters and network restarts.
 """
 import csv
 from datetime import date, datetime
