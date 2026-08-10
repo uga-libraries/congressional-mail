@@ -141,7 +141,23 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for duplicate_topic")
 
     def test_not_found(self):
-        """Test for when the df includes rows where neither document was found"""
+        """Test for when the df includes no document that was found, so the metadata.csv is not made"""
+        # Makes test input and runs the function.
+        rows = [['apples', '1.txt', '1.txt', False, 'ag', 'Apples.doc', 'Apples.doc', False, 'apples', 'ag'],
+                ['apples', '2.txt', '2.txt', False, 'ag', 'XApples.doc', 'XApples.doc', False, 'apples', 'ag'],
+                ['apples', '3.txt', '3.txt', False, 'ag', 'XApples.doc', 'XApples.doc', False, 'apples', 'ag']]
+        df = make_df(rows)
+        topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'apples')
+        os.makedirs(topic_path)
+        topics_sort_save_metadata(df, topic_path, 'apples')
+
+        # Verifies the metadata csv was not made.
+        result = os.path.exists(os.path.join(topic_path, 'apples_metadata.csv'))
+        expected = False
+        self.assertEqual(expected, result, "Problem with test for not_found")
+
+    def test_not_found_partial(self):
+        """Test for when the df includes some rows where neither document was found"""
         # Makes test input and runs the function.
         rows = [['apples', '1.txt', '1.txt', True, 'ag', 'Apples.doc', 'Apples.doc', True, 'apples', 'ag'],
                 ['apples', '2.txt', '2.txt', False, 'ag', 'XApples.doc', 'XApples.doc', False, 'apples', 'ag'],
@@ -166,7 +182,7 @@ class MyTestCase(unittest.TestCase):
                     ['apples', '5.txt', 'True', 'ag', 'BLANK', 'no_path_provided'],
                     ['apples', '7.txt', 'False', 'ag', 'Apples.doc', 'True'],
                     ['apples', 'BLANK', 'no_path_provided', 'ag', 'Apples.doc', 'True']]
-        self.assertEqual(expected, result, "Problem with test for not_found")
+        self.assertEqual(expected, result, "Problem with test for not_found_partial")
 
     def test_tbd(self):
         """Test for when the df includes TBD to be updated"""
