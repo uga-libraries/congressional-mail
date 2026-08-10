@@ -4,7 +4,7 @@ import shutil
 import pandas as pd
 import unittest
 from css_archiving_format import save_redacted_metadata
-from test_script import csv_to_list
+from test_script import csv_to_list, make_dir_list
 
 
 def make_df(rows):
@@ -32,10 +32,10 @@ class MyTestCase(unittest.TestCase):
         rows = [['20001010', 'A', '1.txt^2.txt^3.txt', '20001011', 'AA', 'A.txt', '1.txt', 'A.txt'],
                 ['20001010', 'A', '1.txt^2.txt^3.txt', '20001011', 'AA', 'A.txt', '2.txt', 'A.txt'],
                 ['20001010', 'A', '1.txt^2.txt^3.txt', '20001011', 'AA', 'A.txt', '3.txt', 'A.txt'],
-                ['20001010', 'B', '4.txt^5.txt', '20001011', 'BB', 'B1.txt^B2.txt', '4.txt', 'B1.txt'],
-                ['20001010', 'B', '4.txt^5.txt', '20001011', 'BB', 'B1.txt^B2.txt', '4.txt', 'B2.txt'],
-                ['20001010', 'B', '4.txt^5.txt', '20001011', 'BB', 'B1.txt^B2.txt', '5.txt', 'B1.txt'],
-                ['20001010', 'B', '4.txt^5.txt', '20001011', 'BB', 'B1.txt^B2.txt', '5.txt', 'B2.txt']]
+                ['20011010', 'B', '4.txt^5.txt', '20011011', 'BB', 'B1.txt^B2.txt', '4.txt', 'B1.txt'],
+                ['20011010', 'B', '4.txt^5.txt', '20011011', 'BB', 'B1.txt^B2.txt', '4.txt', 'B2.txt'],
+                ['20011010', 'B', '4.txt^5.txt', '20011011', 'BB', 'B1.txt^B2.txt', '5.txt', 'B1.txt'],
+                ['20011010', 'B', '4.txt^5.txt', '20011011', 'BB', 'B1.txt^B2.txt', '5.txt', 'B2.txt']]
         df = make_df(rows)
         save_redacted_metadata(df, 'test_data')
 
@@ -43,15 +43,21 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_redacted.csv'))
         expected = [['in_date', 'in_topic', 'in_document_name', 'out_date', 'out_topic', 'out_document_name'],
                     ['20001010', 'A', '1.txt^2.txt^3.txt', '20001011', 'AA', 'A.txt'],
-                    ['20001010', 'B', '4.txt^5.txt', '20001011', 'BB', 'B1.txt^B2.txt']]
+                    ['20011010', 'B', '4.txt^5.txt', '20011011', 'BB', 'B1.txt^B2.txt']]
         self.assertEqual(expected, result, "Problem with test for duplicate, csv")
+
+        # Verifies the year folder has the expected CSVs.
+        csv_folder = os.path.join('test_data', 'correspondence_metadata_by_year')
+        result = make_dir_list(csv_folder)
+        expected = [os.path.join(csv_folder, '2000.csv'), os.path.join(csv_folder, '2001.csv')]
+        self.assertEqual(expected, result, "Problem with test for duplicate, year_folder")
 
     def test_unique(self):
         """Test when there are no duplicate rows because there were no delimiters in the document name columns"""
         # Makes test input and runs the function.
         rows = [['20001010', 'A', '1.txt', '20001011', 'AA', 'A.txt', '1.txt', 'A.txt'],
-                ['20001010', 'A', '2.txt', '20001011', 'AA', 'A.txt', '2.txt', 'A.txt'],
-                ['20001010', 'B', '3.txt', '20001011', 'BB', 'B.txt', '3.txt', 'B.txt']]
+                ['20011010', 'A', '2.txt', '20011011', 'AA', 'A.txt', '2.txt', 'A.txt'],
+                ['20021010', 'B', '3.txt', '20021011', 'BB', 'B.txt', '3.txt', 'B.txt']]
         df = make_df(rows)
         save_redacted_metadata(df, 'test_data')
 
@@ -59,9 +65,17 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join('test_data', 'archiving_correspondence_redacted.csv'))
         expected = [['in_date', 'in_topic', 'in_document_name', 'out_date', 'out_topic', 'out_document_name'],
                     ['20001010', 'A', '1.txt', '20001011', 'AA', 'A.txt'],
-                    ['20001010', 'A', '2.txt', '20001011', 'AA', 'A.txt'],
-                    ['20001010', 'B', '3.txt', '20001011', 'BB', 'B.txt']]
+                    ['20011010', 'A', '2.txt', '20011011', 'AA', 'A.txt'],
+                    ['20021010', 'B', '3.txt', '20021011', 'BB', 'B.txt']]
         self.assertEqual(expected, result, "Problem with test for unique, csv")
+
+        # Verifies the year folder has the expected CSVs.
+        csv_folder = os.path.join('test_data', 'correspondence_metadata_by_year')
+        result = make_dir_list(csv_folder)
+        expected = [os.path.join(csv_folder, '2000.csv'),
+                    os.path.join(csv_folder, '2001.csv'),
+                    os.path.join(csv_folder, '2002.csv')]
+        self.assertEqual(expected, result, "Problem with test for unique, year_folder")
 
 
 if __name__ == '__main__':
