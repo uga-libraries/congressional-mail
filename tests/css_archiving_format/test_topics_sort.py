@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'ag'),
                     os.path.join(self.by_topic, 'farm'),
@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for doc_both, directory")
 
         # Verifies the file not found log has the expected contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['farm', '..\\documents\\BlobExport\\responses\\farm_missing.txt']]
         self.assertEqual(expected, result, "Problem with test for doc_both, file not found log")
 
@@ -216,12 +216,12 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.output_dir, 'topics_sort_metadata.csv')]
         self.assertEqual(expected, result, "Problem with test for doc_neither, directory")
 
         # Verifies the file not found log has the expected contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['ag', '..\\documents\\BlobExport\\responses\\missing.txt'],
                     ['farm', '..\\documents\\BlobExport\\objects\\missing.txt'],
@@ -327,7 +327,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(output_restart, 'correspondence_by_topic'),
                     os.path.join(output_restart, 'topics_sort_complete.txt'),
                     os.path.join(output_restart, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(output_restart, 'topics_sort_file_not_found.csv'),
+                    os.path.join(output_restart, 'topics_sort_file_move_errors.csv'),
                     os.path.join(output_restart, 'topics_sort_metadata.csv'),
                     os.path.join(by_topic, 'ag'),
                     os.path.join(by_topic, 'a_b'),
@@ -384,15 +384,15 @@ class MyTestCase(unittest.TestCase):
         expected = [['a/b'], ['ag'], ['farm'], ['a*b'], ['farm_bill'], ['land']]
         self.assertEqual(expected, result, "Problem with test for restart, topics_sort_complete.txt")
 
-        # Verifies topics_sort_file_not_found.csv has the expected contents.
-        result = csv_to_list(os.path.join(output_restart, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the expected contents.
+        result = csv_to_list(os.path.join(output_restart, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['farm', '..\\documents\\BlobExport\\objects\\missing2.txt'],
                     ['farm', '..\\documents\\BlobExport\\responses\\missing.txt'],
                     ['farm_bill', '..\\documents\\BlobExport\\responses\\missing.txt'],
                     ['land', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['land', '..\\documents\\BlobExport\\responses\\missing.txt']]
-        self.assertEqual(expected, result, "Problem with test for restart, topics_sort_file_not_found.csv")
+        self.assertEqual(expected, result, "Problem with test for restart, topics_sort_file_move_errors.csv")
 
         # Verifies topics_sort_expected_file_count.csv has the expected contents.
         result = csv_to_list(os.path.join(output_restart, 'topics_sort_expected_file_count.csv'))
@@ -417,7 +417,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'cat'),
                     os.path.join(self.by_topic, 'dog'),
@@ -447,7 +447,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for topic_both, directory")
 
         # Verifies the file not found log has the expected contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['cat', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['cat', '..\\documents\\BlobExport\\responses\\missing.txt'],
                     ['dog', '..\\documents\\BlobExport\\objects\\missing.txt'],
@@ -590,7 +590,7 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
                     os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'cat'),
                     os.path.join(self.by_topic, 'dog'),
@@ -622,7 +622,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for topic_one, directory")
 
         # Verifies the file not found log has the expected contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['cat', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['pet', '..\\documents\\BlobExport\\objects\\missing.txt'],
                     ['pet', '..\\documents\\BlobExport\\responses\\missing.txt'],
