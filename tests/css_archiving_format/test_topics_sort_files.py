@@ -22,8 +22,8 @@ class MyTestCase(unittest.TestCase):
         self.input_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_files', 'name_export')
         self.output_dir = os.path.join(os.getcwd(), 'test_data', 'topics_sort_files', 'output')
         self.by_topic = os.path.join(self.output_dir, 'correspondence_by_topic')
-        self.folder_path = os.path.join(self.output_dir, 'correspondence_by_topic', 'ag', 'to_constituents')
-        os.makedirs(self.folder_path)
+        self.ag_path = os.path.join(self.output_dir, 'correspondence_by_topic', 'ag')
+        os.makedirs(self.ag_path)
 
     def tearDown(self):
         """Delete the script outputs, if made"""
@@ -40,7 +40,7 @@ class MyTestCase(unittest.TestCase):
                        '..\\documents\\BlobExport\\forms\\missing.txt'],
                       ['30603', 'ag', np.nan, 'TBD', np.nan],
                       ['30604', np.nan, np.nan, 'TBD', np.nan]])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
@@ -57,15 +57,14 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt')]
+                    os.path.join(self.by_topic, 'ag', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'ag.txt')]
         self.assertEqual(expected, result, "Problem with test for blank, directory")
 
-        # Verifies topics_sort_file_not_found.csv has the correct contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\forms\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for blank, not_found")
 
@@ -84,7 +83,7 @@ class MyTestCase(unittest.TestCase):
                       ['30601', 'ag',
                        'e:\\emailobj\\missing.txt^..\\documents\\BlobExport\\forms\\ag.txt',
                        'TBD', '..\\documents\\BlobExport\\forms\\ag.txt']])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
@@ -106,17 +105,17 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt')]
+                    os.path.join(self.by_topic, 'ag', 'emailobj'),
+                    os.path.join(self.by_topic, 'ag', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'objects', '001.txt')]
         self.assertEqual(expected, result, "Problem with test for delimited, directory")
 
-        # Verifies topics_sort_file_not_found.csv has the correct contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', 'e:\\emailobj\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for delimited, not_found")
         
@@ -141,7 +140,7 @@ class MyTestCase(unittest.TestCase):
                        '..\\documents\\BlobExport\\objects\\001.txt'],
                       ['30608', 'ag', '..\\documents\\BlobExport\\objects\\missing.txt', 'TBD',
                        '..\\documents\\BlobExport\\objects\\missing.txt']])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
@@ -169,17 +168,16 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt')]
+                    os.path.join(self.by_topic, 'ag', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'objects', '001.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
 
-        # Verifies topics_sort_file_not_found.csv has the correct contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\forms\\missing.txt'],
                     ['ag', '..\\documents\\BlobExport\\objects\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for duplicate, not_found")
@@ -199,7 +197,7 @@ class MyTestCase(unittest.TestCase):
                        '..\\documents\\BlobExport\\subfolder\\B\\BB\\4.txt'],
                       ['30604', 'ag', '..\\documents\\BlobExport\\subfolder\\C\\missing.txt', 'TBD',
                        '..\\documents\\BlobExport\\subfolder\\C\\missing.txt']])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
@@ -221,21 +219,21 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'A'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'B'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', '1.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'A', '2.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'B', 'BB'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'B', 'BB', '3.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'subfolder', 'B', 'BB', '4.txt')]
+                    os.path.join(self.by_topic, 'ag', 'subfolder'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'A'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'B'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'C'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', '1.txt'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'A', '2.txt'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'B', 'BB'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'B', 'BB', '3.txt'),
+                    os.path.join(self.by_topic, 'ag', 'subfolder', 'B', 'BB', '4.txt')]
         self.assertEqual(expected, result, "Problem with test for subfolder, directory")
 
-        # Verifies topics_sort_file_not_found.csv has the correct contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\subfolder\\A\\missing.txt'],
                     ['ag', '..\\documents\\BlobExport\\subfolder\\C\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for subfolder, not_found")
@@ -248,26 +246,33 @@ class MyTestCase(unittest.TestCase):
                        '..\\documents\\BlobExport\\forms\\ag.txt'],
                       ['30602', 'ag', '..\\documents\\BlobExport\\forms', 'TBD', '..\\documents\\BlobExport\\forms'],
                       ['30603', 'ag', '..\\documents\\BlobExport\\none', 'TBD', '..\\documents\\BlobExport\\none']])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
         expected = [['zip', 'out_topic', 'out_document_name', 'out_document_name_present', 'out_document_name_split'],
-                    ['30600', 'ag', 'new\\pattern\\file.txt', 'TBD', 'new\\pattern\\file.txt'],
+                    ['30600', 'ag', 'new\\pattern\\file.txt', False, 'new\\pattern\\file.txt'],
                     ['30601', 'ag', '..\\documents\\BlobExport\\forms\\ag.txt', True,
                      '..\\documents\\BlobExport\\forms\\ag.txt'],
-                    ['30602', 'ag', '..\\documents\\BlobExport\\forms', 'TBD', '..\\documents\\BlobExport\\forms'],
-                    ['30603', 'ag', '..\\documents\\BlobExport\\none', 'TBD', '..\\documents\\BlobExport\\none']]
+                    ['30602', 'ag', '..\\documents\\BlobExport\\forms', False, '..\\documents\\BlobExport\\forms'],
+                    ['30603', 'ag', '..\\documents\\BlobExport\\none', False, '..\\documents\\BlobExport\\none']]
         self.assertEqual(expected, result, "Problem with test for skip, df_topic")
 
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt')]
+                    os.path.join(self.by_topic, 'ag', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'ag.txt')]
         self.assertEqual(expected, result, "Problem with test for skip, directory")
+
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
+        expected = [['ag', 'new\\pattern\\file.txt'],
+                    ['ag', '..\\documents\\BlobExport\\forms'],
+                    ['ag', '..\\documents\\BlobExport\\none']]
+        self.assertEqual(expected, result, "Problem with test for skip, not_found")
 
     def test_unique(self):
         """Test for when each topic and file combination is unique"""
@@ -286,7 +291,7 @@ class MyTestCase(unittest.TestCase):
                        '..\\documents\\BlobExport\\objects\\002.txt'],
                       ['30606', 'ag', '..\\documents\\BlobExport\\objects\\missing.txt', 'TBD',
                        '..\\documents\\BlobExport\\objects\\missing.txt']])
-        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.folder_path)
+        df_topic = topics_sort_files(df, 'out_document_name_split', self.input_dir, self.output_dir, self.ag_path)
 
         # Verifies df_topic has the correct values.
         result = df_to_list(df_topic)
@@ -310,19 +315,18 @@ class MyTestCase(unittest.TestCase):
         # Verifies the expected folders were created and have the expected files in them.
         result = make_dir_list(self.output_dir)
         expected = [os.path.join(self.output_dir, 'correspondence_by_topic'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'),
                     os.path.join(self.by_topic, 'ag'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'ag.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'forms', 'bees.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '001.txt'),
-                    os.path.join(self.by_topic, 'ag', 'to_constituents', 'objects', '002.txt')]
+                    os.path.join(self.by_topic, 'ag', 'forms'),
+                    os.path.join(self.by_topic, 'ag', 'objects'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'ag.txt'),
+                    os.path.join(self.by_topic, 'ag', 'forms', 'bees.txt'),
+                    os.path.join(self.by_topic, 'ag', 'objects', '001.txt'),
+                    os.path.join(self.by_topic, 'ag', 'objects', '002.txt')]
         self.assertEqual(expected, result, "Problem with test for unique, directory")
 
-        # Verifies topics_sort_file_not_found.csv has the correct contents.
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
+        # Verifies topics_sort_file_move_errors.csv has the correct contents.
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_move_errors.csv'))
         expected = [['ag', '..\\documents\\BlobExport\\forms\\missing.txt'],
                     ['ag', '..\\documents\\BlobExport\\001.txt'],
                     ['ag', '..\\documents\\BlobExport\\objects\\missing.txt']]

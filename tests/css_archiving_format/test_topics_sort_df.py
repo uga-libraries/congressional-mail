@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pandas as pd
 import unittest
@@ -20,6 +22,12 @@ def make_df(rows):
 
 
 class MyTestCase(unittest.TestCase):
+
+    def tearDown(self):
+        """Deletes the script output, if made"""
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        if os.path.exists(csv_path):
+            os.remove(csv_path)
 
     def test_doc_delimited(self):
         """Test for when one or both of the document name columns is delimited"""
@@ -47,7 +55,7 @@ class MyTestCase(unittest.TestCase):
                    'in_document_name', 'out_id', 'out_type', 'out_method', 'out_date', 'out_topic',
                    'out_document_name', 'in_document_name_split', 'out_document_name_split']
         df = pd.DataFrame(rows, columns=columns)
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -73,7 +81,13 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', 'C', 'C.txt^CC.txt', 'C.txt', 'TBD', 'C', 'C'],
                     ['*', '*', '30603', '*', '*', '*', '*', '*', 'C', '3.txt^33.txt', '33.txt', 'TBD', '*', '*',
                      '*', '*', 'C', 'C.txt^CC.txt', 'CC.txt', 'TBD', 'C', 'C']]
-        self.assertEqual(expected, result, "Problem with test for doc_delimited")
+        self.assertEqual(expected, result, "Problem with test for doc_delimited, df")
+
+        # Verifies the dataframe was saved to a csv.
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        expected = os.path.exists(csv_path)
+        self.assertEqual(expected, True, "Problem with test for doc_delimited, csv")
+
 
     def test_none(self):
         """Test for when no columns have delimiters"""
@@ -82,7 +96,7 @@ class MyTestCase(unittest.TestCase):
                       ['30602', 'A-A', 'file2.txt', 'V', 'file22.txt'],
                       ['30603', np.nan, 'file3.txt', 'X', 'file33.txt'],
                       ['30604', 'farm app', 'file4.txt', 'Y', 'file44.txt']])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -98,7 +112,12 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'X', 'file33.txt', 'file33.txt', 'TBD', 'nan', 'X'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'farm app', 'file4.txt', 'file4.txt', 'TBD',
                      '*', '*', '*', '*', 'Y', 'file44.txt', 'file44.txt', 'TBD', 'farm app', 'Y']]
-        self.assertEqual(expected, result, "Problem with test for none")
+        self.assertEqual(expected, result, "Problem with test for none, df")
+
+        # Verifies the dataframe was saved to a csv.
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        expected = os.path.exists(csv_path)
+        self.assertEqual(expected, True, "Problem with test for none, csv")
 
     def test_topic_both(self):
         """Test for when in_topic and out_topic have multiple topics"""
@@ -106,7 +125,7 @@ class MyTestCase(unittest.TestCase):
         df = make_df([['30601', 'apple^pear', 'file1.txt', 'jam^pie', 'file11.txt'],
                       ['30602', 'A A^A-A', 'file2.txt', 'B^Q_R^X Y Z', 'file22.txt'],
                       ['30604', np.nan, 'file3.txt', np.nan, 'file33.txt']])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -136,7 +155,12 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'B^Q_R^X Y Z', 'file22.txt', 'file22.txt', 'TBD', 'A-A', 'X Y Z'],
                     ['*', '*', '30604', '*', '*', '*', '*', '*', 'BLANK', 'file3.txt', 'file3.txt', 'TBD',
                      '*', '*', '*', '*', 'BLANK', 'file33.txt', 'file33.txt', 'TBD', 'nan', 'nan']]
-        self.assertEqual(expected, result, "Problem with test for topic_both")
+        self.assertEqual(expected, result, "Problem with test for topic_both, df")
+
+        # Verifies the dataframe was saved to a csv.
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        expected = os.path.exists(csv_path)
+        self.assertEqual(expected, True, "Problem with test for topic_both, csv")
 
     def test_topic_in(self):
         """Test for when in_topic is the only column with multiple topics"""
@@ -146,7 +170,7 @@ class MyTestCase(unittest.TestCase):
                       ['30603', 'farm app^park and rec', 'file3.txt', 'X', 'file33.txt'],
                       ['30604', np.nan, 'file4.txt', 'Y', 'file44.txt'],
                       ['30605', 'rec', 'file5.txt', 'Z', 'file55.txt']])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -172,7 +196,12 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'Y', 'file44.txt', 'file44.txt', 'TBD', 'nan', 'Y'],
                     ['*', '*', '30605', '*', '*', '*', '*', '*', 'rec', 'file5.txt', 'file5.txt', 'TBD',
                      '*', '*', '*', '*', 'Z', 'file55.txt', 'file55.txt', 'TBD', 'rec', 'Z']]
-        self.assertEqual(expected, result, "Problem with test for topic_in")
+        self.assertEqual(expected, result, "Problem with test for topic_in, df")
+
+        # Verifies the dataframe was saved to a csv.
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        expected = os.path.exists(csv_path)
+        self.assertEqual(expected, True, "Problem with test for topic_in, csv")
 
     def test_topic_out(self):
         """Test for when out_topic is the only column with multiple topics"""
@@ -182,7 +211,7 @@ class MyTestCase(unittest.TestCase):
                       ['30603', np.nan, 'file3.txt', np.nan, 'file33.txt'],
                       ['30604', 'CCCC', 'file4.txt', 'W^X^Y^Z', 'file44.txt'],
                       ['30605', 'DDDD', 'file5.txt', 'ZZZZZZZ', 'file55.txt']])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -210,7 +239,12 @@ class MyTestCase(unittest.TestCase):
                      '*', '*', '*', '*', 'W^X^Y^Z', 'file44.txt', 'file44.txt', 'TBD', 'CCCC', 'Z'],
                     ['*', '*', '30605', '*', '*', '*', '*', '*', 'DDDD', 'file5.txt', 'file5.txt', 'TBD',
                      '*', '*', '*', '*', 'ZZZZZZZ', 'file55.txt', 'file55.txt', 'TBD', 'DDDD', 'ZZZZZZZ']]
-        self.assertEqual(expected, result, "Problem with test for topic_out")
+        self.assertEqual(expected, result, "Problem with test for topic_out, df")
+
+        # Verifies the dataframe was saved to a csv.
+        csv_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        expected = os.path.exists(csv_path)
+        self.assertEqual(expected, True, "Problem with test for topic_out, csv")
 
 
 if __name__ == '__main__':

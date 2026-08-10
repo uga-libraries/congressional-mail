@@ -16,7 +16,7 @@ This is required by all the scripts.
 The export directory will be named Lastname_Constituent_Mail_Export (UGA naming convention)
 and contain the metadata files and a folder named "documents" with the letters.
 
-script_mode: access, accession, appraisal
+script_mode: access, access_restart, accession, appraisal
 This is required by all except aip_prep.py
 
 access
@@ -24,6 +24,9 @@ access
 * Make a copy of the redacted metadata split by calendar year, for smaller files that are easier to open
 * Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included), 
   with a CSV with the redacted metadata for each letter found in the export. 
+
+access_restart
+* Continue sorting by topic where access mode left off.
 
 accession
 * Make appraisal reports
@@ -42,6 +45,7 @@ To keep the expected test results manageable, most tests only use a small subset
 
 appraisal_delete_log.csv (created in accession mode) must be in the output_directory before running appraisal or access modes.
 restriction_review.csv (created in appraisal mode) must be in the output_directory before running access mode.
+topics_sort_metadata.csv and topics_sort_complete.txt must be in the output_directory before running access_restart mode.
 The output_directory is the parent folder of input_directory
 
 ## Author

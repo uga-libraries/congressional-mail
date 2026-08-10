@@ -5,13 +5,19 @@ Required arguments: input_directory (path to the folder with the export) and scr
 Script modes
 accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
-access: remove metadata rows for appraisal and restrictions and columns for PII,
-        make copy of metadata split by calendar year,
+access: make copy of metadata without metadata rows for appraisal and restrictions and columns for PII,
+        make another copy of the redacted metadata split by calendar year,
         and make a copy of incoming and outgoing correspondence in folders by topic
+access_restart: start topics sorting where the script left off
 
-For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
+For appraisal and access modes, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
+
+For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
+If it didn't get that far, delete the outputs and run the access mode again.
+Access mode needs to be restarted periodically because topic sorting takes multiple days
+and is prone to the script breaking due to special characters and network restarts.
 """
 import csv
 from datetime import date, datetime
@@ -60,7 +66,7 @@ def check_arguments(arg_list):
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
-        if arg_list[2] in ('accession', 'appraisal', 'preservation', 'access'):
+        if arg_list[2] in ('accession', 'appraisal', 'preservation', 'access', 'access_restart'):
             mode = arg_list[2]
         else:
             errors.append(f"Provided mode '{arg_list[2]}' is not one of the expected modes")
@@ -550,19 +556,22 @@ def restriction_report(df, output_dir):
 
 
 def save_redacted_metadata(df, output_dir):
-    """Save the entire df of redacted metadata to a csv, after cleanup"""
+    """Save the entire df of redacted metadata to a csv, and one csv per year, after cleanup"""
+
+    # Makes a copy of the dataframe to edit, so the original dataframe retains the split columns for topic sort.
+    df_redact = df.copy()
 
     # Removes temporary columns used for the analysis.
-    df.drop(['in_document_name_split', 'out_document_name_split', 'in_topic_split'], axis=1, inplace=True)
+    df_redact.drop(['in_document_name_split', 'out_document_name_split'], axis=1, inplace=True)
 
     # Removes duplicate rows, where the only differences had been from the temporary columns.
-    df.drop_duplicates(inplace=True)
+    df_redact.drop_duplicates(inplace=True)
 
     # Saves the CSV.
-    df.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
+    df_redact.to_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), index=False)
 
-    # Returns the cleaned up df.
-    return df
+    # Saves the same information as one CSV per year.
+    split_year(df_redact, output_dir)
 
 
 def split_year(df, output_dir):
@@ -616,21 +625,30 @@ def topics_report(df, output_dir):
     df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
-def topics_sort(df, input_dir, output_dir):
+def topics_sort(df, input_dir, output_dir, restart=False):
     """Sort copy of incoming and outgoing correspondence into folders by topic
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
     Letters with multiple topics are in multiple topic folders."""
 
-    # New version of df with multi-topic cells split up.
-    df_topics = topics_sort_df(df)
+    # Set up for topic sort varies depending on if this is the first time or a restart.
+    # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
+    # During restarts, the parameter df is ready to be df_topics and an additional file of topics to skip is read.
+    if not restart:
+        df_topics = topics_sort_df(df, output_dir)
+        os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+        skip_list = ['nan']
+    else:
+        df_topics = df.copy()
+        skip_df = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
+        skip_list = skip_df[0].tolist() + ['nan']
 
     # Sorts a copy of all correspondence by topic.
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     topic_list = np.unique(df_topics[['in_topic_split', 'out_topic_split']].values).tolist()
     for topic in topic_list:
 
-        # Skip blanks, which are a string because of topics_sort_df converting the column type to split on delimiters.
-        if topic == 'nan':
+        # Skip blanks and any topics already done if this is a restart..
+        # The topic folder may not be in correspondence_by_topic if all files were missing.
+        if topic in skip_list:
             continue
 
         # Makes folder and metadata df for this topic.
@@ -642,38 +660,43 @@ def topics_sort(df, input_dir, output_dir):
             os.mkdir(topic_path)
         df_topic = df_topics[(df_topics['in_topic_split'] == topic) | (df_topics['out_topic_split'] == topic)].copy()
 
-        # Sorts correspondence from constituents ("in" letters).
+        # Saves the topic and number of unique files to a log for QC of the number moved.
+        # Also prints the information to track progress and if the script appears to be stuck.
+        file_count = df_topic['in_document_name_split'].nunique() + df_topic['out_document_name_split'].nunique()
+        with open(os.path.join(output_dir, 'topics_sort_expected_file_count.csv'), 'a') as count_log:
+            log_writer = csv.writer(count_log)
+            log_writer.writerow([topic_norm, file_count])
+        print(f"Starting topic {topic}, which has {file_count} unique document paths in the df")
+
+        # Sorts correspondence from constituents ("in" letters) and to constituents ("out" letters).
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
-        from_path = os.path.join(topic_path, 'from_constituents')
-        if not os.path.exists(from_path):
-            os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, from_path)
+        df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, topic_path)
+        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, topic_path)
 
-        # Sorts correspondence to constituents ("out" letters).
-        # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
-        to_path = os.path.join(topic_path, 'to_constituents')
-        if not os.path.exists(to_path):
-            os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, to_path)
+        # Cleans up and saves the metadata for this topic.
+        topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
-        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        topics_sort_delete_empty(topic_path)
+        # Saves the original (not normalized) version of the topic to a log for if topic sorting needs to be restarted.
+        with open(os.path.join(output_dir, 'topics_sort_complete.txt'), 'a') as file:
+            file.write(topic + '\n')
 
-        # Cleans up and saves the metadata for this topic if the topic folder was not deleted for being empty.
-        if os.path.exists(topic_path):
-            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+    # Deletes empty folders at any level, including folders that only contain empty folders.
+    topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
 
-def topics_sort_delete_empty(topic_path):
-    """Delete the from_constituents, to_constituents, and/or topic folder if empty"""
-    paths = [os.path.join(topic_path, 'from_constituents'), os.path.join(topic_path, 'to_constituents'), topic_path]
-    for path in paths:
-        if not os.listdir(path):
-            os.rmdir(path)
+def topics_sort_delete_empty(topic_dir):
+    """Delete empty folders within correspondence_by_topic, including folders that only contain empty folders"""
+    print("\nDeleting empty folders at all levels")
+    for root, dirs, files in os.walk(topic_dir, topdown=False):
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            if not os.listdir(dir_path):
+                os.rmdir(dir_path)
 
 
-def topics_sort_df(df):
-    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs"""
+def topics_sort_df(df, output_dir):
+    """Update dataframe to split up multiple topics for in_topic and out_topic and add columns for missing docs
+    and save to a CSV in case topic sorting needs to be restarted to save time"""
 
     # If there is more than one in_topic in a row (divided by ^),
     # splits them each to their own row, repeating the rest of the information for each row,
@@ -703,6 +726,9 @@ def topics_sort_df(df):
     columns_list.insert(insert_out, 'out_document_name_split')
     df = df[columns_list]
 
+    # Save the df to the output_directory to use if topic sorting needs to be restarted.
+    df.to_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), index=False)
+
     return df
 
 
@@ -714,40 +740,35 @@ def topics_sort_files(df, column, input_dir, output_dir, folder_path):
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
-        doc_path = update_path(doc, input_dir)
+        doc_current_path = update_path(doc, input_dir)
 
-        # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
-        # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
-        # Cannot use os.path.isdir() to test for directory because the folder may not exist.
-        if doc_path == 'error_new' or '.' not in doc_path:
-            continue
+        # If the current path isn't an error (which would break the script trying to calculate the relative path),
+        # or an entire folder (just want to get files, and can't test with os because it may not exist),
+        # gets the path for the subfolder for where the doc will be saved and makes the folder if it doesn't exist.
+        # The path replicates all original subfolders within the export.
+        # If it is an error, it will be logged in the next step when the path doesn't exist.
+        if doc_current_path == 'error_new' or '.' not in doc_current_path:
+            subfolder_path = 'error'
+        else:
+            doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
+            subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
 
-        # Gets the path for the subfolder for where the doc will be saved,
-        # which replicates all original subfolders within the to_constituents or from_constituents folder,
-        # and makes the folder if it doesn't exist.
-        doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
-        subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        subfolder_new = False
-        if not os.path.exists(subfolder_path):
-            subfolder_new = True
-            os.makedirs(subfolder_path)
-
-        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
+        # Copies the doc to the topic folder and updates the df with if it was found.
+        # If the doc is not in the expected location, or is a folder (PermissionError), logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
         doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
-            shutil.copy2(doc_path, doc_new_path)
+            shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df[column] == doc, column.replace('_split', '_present')] = True
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
             df.loc[df[column] == doc, column.replace('_split', '_present')] = False
-            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            with open(os.path.join(output_dir, 'topics_sort_file_move_errors.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
+                topic = folder_path.split('\\')[-1]
                 log_writer.writerow([topic, doc])
-            if subfolder_new:
-                os.rmdir(subfolder_path)
 
     return df
 
@@ -790,13 +811,14 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # in_topic and out_topic both matched the topic.
     df.drop_duplicates(inplace=True)
 
-    # Saves to the topic folder.
+    # Saves to the topic folder, unless it has no rows because no files were found.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
-    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    if os.path.exists(metadata_path):
-        df.to_csv(metadata_path, mode='a', header=False, index=False)
-    else:
-        df.to_csv(metadata_path, index=False)
+    if len(df.index) > 0:
+        metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+        if os.path.exists(metadata_path):
+            df.to_csv(metadata_path, mode='a', header=False, index=False)
+        else:
+            df.to_csv(metadata_path, index=False)
 
 
 def update_path(md_path, input_dir):
@@ -833,8 +855,10 @@ if __name__ == '__main__':
     # Calculates parent folder of the input_directory, which is where script outputs are saved.
     output_directory = os.path.dirname(input_directory)
 
-    # Reads the metadata file into a pandas dataframe.
-    md_df = read_metadata(csv_path)
+    # Reads the metadata file into a pandas dataframe, unless the mode is access_restart,
+    # in which case it saves time by reading topics_sort_metadata.csv instead.
+    if not script_mode == 'access_restart':
+        md_df = read_metadata(csv_path)
 
     # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
     # The export is not changed in this mode.
@@ -881,7 +905,15 @@ if __name__ == '__main__':
         md_df = remove_appraisal_rows(md_df, appraisal_df)
         md_df = remove_restricted_rows(md_df, restrict_df)
         md_df = remove_pii(md_df)
+        save_redacted_metadata(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
-        md_df = save_redacted_metadata(md_df, output_directory)
-        split_year(md_df, output_directory)
+
+    # For access_restarts, finishes the topics sort. The rest of access will already be done.
+    # Uses topics_sort_metadata.csv and topics_sort_complete.txt (in output_directory from access mode) to restart.
+    elif script_mode == 'access_restart':
+        print("\nThe script is running in access_restart mode.")
+        print("It will continue copying the letters to and from constituents organized by topic, "
+              "skipping topics already done prior to the script being stopped.")
+        md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
+        topics_sort(md_df, input_directory, output_directory, restart=True)
 

@@ -1,0 +1,2 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,in_document_name_present,out_id,out_type,out_method,out_date,out_topic,out_document_name,out_document_name_present
+*,*,30601,*,*,*,*,*,a/b,..\documents\BlobExport\objects\file1.txt,True,*,*,*,*,a/b,..\documents\BlobExport\responses\ag.txt,True

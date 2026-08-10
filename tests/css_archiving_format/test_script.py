@@ -62,7 +62,13 @@ class MyTestCase(unittest.TestCase):
         result = printed.stdout
         expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted or restricted letters "
                     "and columns with PII, make copies of the metadata split by calendar year, and make a copy "
-                    "of the letters to and from constituents organized by topic\n")
+                    "of the letters to and from constituents organized by topic\n"
+                    "Starting topic A, which has 6 unique document paths in the df\n"
+                    "Starting topic A1, which has 6 unique document paths in the df\n"
+                    "Starting topic B, which has 2 unique document paths in the df\n"
+                    "Starting topic B1, which has 4 unique document paths in the df\n"
+                    "Starting topic B2, which has 2 unique document paths in the df\n"
+                    "\nDeleting empty folders at all levels\n")
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
@@ -132,54 +138,46 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(by_topic, 'A1'),
                     os.path.join(by_topic, 'B1'),
                     os.path.join(by_topic, 'B2'),
-                    os.path.join(by_topic, 'A', 'from_constituents'),
-                    os.path.join(by_topic, 'A', 'to_constituents'),
+                    os.path.join(by_topic, 'A', 'formletters'),
+                    os.path.join(by_topic, 'A', 'indivletters'),
+                    os.path.join(by_topic, 'A', 'objects'),
                     os.path.join(by_topic, 'A', 'A_metadata.csv'),
-                    os.path.join(by_topic, 'A', 'from_constituents', 'objects'),
-                    os.path.join(by_topic, 'A', 'from_constituents', 'objects', '111111.txt'),
-                    os.path.join(by_topic, 'A', 'from_constituents', 'objects', '111111_add.txt'),
-                    os.path.join(by_topic, 'A', 'from_constituents', 'objects', '333333.txt'),
-                    os.path.join(by_topic, 'A', 'to_constituents', 'formletters'),
-                    os.path.join(by_topic, 'A', 'to_constituents', 'indivletters'),
-                    os.path.join(by_topic, 'A', 'to_constituents', 'formletters', 'A.txt'),
-                    os.path.join(by_topic, 'A', 'to_constituents', 'indivletters', '000001.txt'),
-                    os.path.join(by_topic, 'A', 'to_constituents', 'indivletters', '000003.txt'),
-                    os.path.join(by_topic, 'A1', 'from_constituents'),
-                    os.path.join(by_topic, 'A1', 'to_constituents'),
+                    os.path.join(by_topic, 'A', 'formletters', 'A.txt'),
+                    os.path.join(by_topic, 'A', 'indivletters', '000001.txt'),
+                    os.path.join(by_topic, 'A', 'indivletters', '000003.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '111111.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '111111_add.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '333333.txt'),
+                    os.path.join(by_topic, 'A1', 'formletters'),
+                    os.path.join(by_topic, 'A1', 'indivletters'),
+                    os.path.join(by_topic, 'A1', 'objects'),
                     os.path.join(by_topic, 'A1', 'A1_metadata.csv'),
-                    os.path.join(by_topic, 'A1', 'from_constituents', 'objects'),
-                    os.path.join(by_topic, 'A1', 'from_constituents', 'objects', '111111.txt'),
-                    os.path.join(by_topic, 'A1', 'from_constituents', 'objects', '111111_add.txt'),
-                    os.path.join(by_topic, 'A1', 'from_constituents', 'objects', '333333.txt'),
-                    os.path.join(by_topic, 'A1', 'to_constituents', 'formletters'),
-                    os.path.join(by_topic, 'A1', 'to_constituents', 'indivletters'),
-                    os.path.join(by_topic, 'A1', 'to_constituents', 'formletters', 'A.txt'),
-                    os.path.join(by_topic, 'A1', 'to_constituents', 'indivletters', '000001.txt'),
-                    os.path.join(by_topic, 'A1', 'to_constituents', 'indivletters', '000003.txt'),
-                    os.path.join(by_topic, 'B1', 'from_constituents'),
-                    os.path.join(by_topic, 'B1', 'to_constituents'),
+                    os.path.join(by_topic, 'A1', 'formletters', 'A.txt'),
+                    os.path.join(by_topic, 'A1', 'indivletters', '000001.txt'),
+                    os.path.join(by_topic, 'A1', 'indivletters', '000003.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '111111.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '111111_add.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '333333.txt'),
+                    os.path.join(by_topic, 'B1', 'indivletters'),
+                    os.path.join(by_topic, 'B1', 'objects'),
                     os.path.join(by_topic, 'B1', 'B1_metadata.csv'),
-                    os.path.join(by_topic, 'B1', 'from_constituents', 'objects'),
-                    os.path.join(by_topic, 'B1', 'from_constituents', 'objects', '222222.txt'),
-                    os.path.join(by_topic, 'B1', 'to_constituents', 'indivletters'),
-                    os.path.join(by_topic, 'B1', 'to_constituents', 'indivletters', '000002.txt'),
-                    os.path.join(by_topic, 'B2', 'from_constituents'),
-                    os.path.join(by_topic, 'B2', 'to_constituents'),
+                    os.path.join(by_topic, 'B1', 'indivletters', '000002.txt'),
+                    os.path.join(by_topic, 'B1', 'objects', '222222.txt'),
+                    os.path.join(by_topic, 'B2', 'indivletters'),
+                    os.path.join(by_topic, 'B2', 'objects'),
                     os.path.join(by_topic, 'B2', 'B2_metadata.csv'),
-                    os.path.join(by_topic, 'B2', 'from_constituents', 'objects'),
-                    os.path.join(by_topic, 'B2', 'from_constituents', 'objects', '222222.txt'),
-                    os.path.join(by_topic, 'B2', 'to_constituents', 'indivletters'),
-                    os.path.join(by_topic, 'B2', 'to_constituents', 'indivletters', '000002.txt')]
+                    os.path.join(by_topic, 'B2', 'indivletters', '000002.txt'),
+                    os.path.join(by_topic, 'B2', 'objects', '222222.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
-        # Tests the contents of topics_sort_file_not_found.csv
-        csv_path = os.path.join(output_directory, 'topics_sort_file_not_found.csv')
+        # Tests the contents of topics_sort_file_move_errors.csv
+        csv_path = os.path.join(output_directory, 'topics_sort_file_move_errors.csv')
         result = csv_to_list(csv_path)
         expected = [['B', '..\\documents\\BlobExport\\objects\\xxxxxx.txt'],
                     ['B', '..\\documents\\BlobExport\\indivletters\\00000Z.txt'],
                     ['B1', '..\\documents\\BlobExport\\objects\\xxxxxx.txt'],
                     ['B1', '..\\documents\\BlobExport\\indivletters\\00000Z.txt']]
-        self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_move_errors.csv")
 
         # Tests the contents of A_metadata.csv
         csv_path = os.path.join(by_topic, 'A', 'A_metadata.csv')
@@ -260,6 +258,158 @@ class MyTestCase(unittest.TestCase):
                      '..\\documents\\BlobExport\\objects\\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
                      'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, B2_metadata.csv")
+
+    def test_correct_access_restart(self):
+        """Test for when the script runs correctly and is in access_restart mode"""
+        # Makes a copy of the test data in the repo, to simplify deleting script outputs.
+        output_directory = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir')
+        shutil.copytree(os.path.join('test_data', 'script', 'access_restart'), output_directory)
+
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
+        input_directory = os.path.join(output_directory, 'constituent_mail_export')
+        printed = subprocess.run(f"python {script_path} {input_directory} access_restart",
+                                 shell=True, capture_output=True, text=True)
+
+        # Tests the printed statement.
+        result = printed.stdout
+        expected = ("\nThe script is running in access_restart mode.\nIt will continue copying the letters to and from "
+                    "constituents organized by topic, skipping topics already done prior to the script being stopped.\n"
+                    "Starting topic A1, which has 6 unique document paths in the df\n"
+                    "Starting topic B, which has 2 unique document paths in the df\n"
+                    "Starting topic B1, which has 4 unique document paths in the df\n"
+                    "Starting topic B2, which has 2 unique document paths in the df\n"
+                    "\nDeleting empty folders at all levels\n")
+        self.assertEqual(expected, result, "Problem with test for access_restart, printed statement")
+
+        # Tests that correspondence_by_topic has the expected files.
+        by_topic = os.path.join(output_directory, 'correspondence_by_topic')
+        result = make_dir_list(by_topic)
+        expected = [os.path.join(by_topic, 'A'),
+                    os.path.join(by_topic, 'A1'),
+                    os.path.join(by_topic, 'B1'),
+                    os.path.join(by_topic, 'B2'),
+                    os.path.join(by_topic, 'A', 'formletters'),
+                    os.path.join(by_topic, 'A', 'indivletters'),
+                    os.path.join(by_topic, 'A', 'objects'),
+                    os.path.join(by_topic, 'A', 'A_metadata.csv'),
+                    os.path.join(by_topic, 'A', 'formletters', 'A.txt'),
+                    os.path.join(by_topic, 'A', 'indivletters', '000001.txt'),
+                    os.path.join(by_topic, 'A', 'indivletters', '000003.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '111111.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '111111_add.txt'),
+                    os.path.join(by_topic, 'A', 'objects', '333333.txt'),
+                    os.path.join(by_topic, 'A1', 'formletters'),
+                    os.path.join(by_topic, 'A1', 'indivletters'),
+                    os.path.join(by_topic, 'A1', 'objects'),
+                    os.path.join(by_topic, 'A1', 'A1_metadata.csv'),
+                    os.path.join(by_topic, 'A1', 'formletters', 'A.txt'),
+                    os.path.join(by_topic, 'A1', 'indivletters', '000001.txt'),
+                    os.path.join(by_topic, 'A1', 'indivletters', '000003.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '111111.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '111111_add.txt'),
+                    os.path.join(by_topic, 'A1', 'objects', '333333.txt'),
+                    os.path.join(by_topic, 'B1', 'indivletters'),
+                    os.path.join(by_topic, 'B1', 'objects'),
+                    os.path.join(by_topic, 'B1', 'B1_metadata.csv'),
+                    os.path.join(by_topic, 'B1', 'indivletters', '000002.txt'),
+                    os.path.join(by_topic, 'B1', 'objects', '222222.txt'),
+                    os.path.join(by_topic, 'B2', 'indivletters'),
+                    os.path.join(by_topic, 'B2', 'objects'),
+                    os.path.join(by_topic, 'B2', 'B2_metadata.csv'),
+                    os.path.join(by_topic, 'B2', 'indivletters', '000002.txt'),
+                    os.path.join(by_topic, 'B2', 'objects', '222222.txt')]
+        self.assertEqual(expected, result, "Problem with test for access_restart, Correspondence_by_Topic")
+
+        # Tests the contents of topics_sort_file_move_errors.csv
+        csv_path = os.path.join(output_directory, 'topics_sort_file_move_errors.csv')
+        result = csv_to_list(csv_path)
+        expected = [['B', '..\\documents\\BlobExport\\objects\\xxxxxx.txt'],
+                    ['B', '..\\documents\\BlobExport\\indivletters\\00000Z.txt'],
+                    ['B1', '..\\documents\\BlobExport\\objects\\xxxxxx.txt'],
+                    ['B1', '..\\documents\\BlobExport\\indivletters\\00000Z.txt']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, topics_sort_file_move_errors.csv")
+
+        # Tests the contents of A_metadata.csv
+        csv_path = os.path.join(by_topic, 'A', 'A_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_split', 'in_document_name_present',
+                     'out_id', 'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name',
+                     'out_document_name_split', 'out_document_name_present'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111_add.txt', 'True', 'r100', 'General', 'Email',
+                     '20210111', 'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313',
+                     'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\formletters\\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, A_metadata.csv")
+
+        # Tests the contents of A1_metadata.csv
+        csv_path = os.path.join(by_topic, 'A1', 'A1_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_split', 'in_document_name_present', 'out_id',
+                     'out_type', 'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_split',
+                     'out_document_name_present'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111.txt', 'True', 'r100', 'General', 'Email', '20210111',
+                     'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'A1',
+                     '..\\documents\\BlobExport\\objects\\111111.txt^..\\documents\\BlobExport\\objects\\111111_add.txt',
+                     '..\\documents\\BlobExport\\objects\\111111_add.txt', 'True', 'r100', 'General', 'Email',
+                     '20210111', 'A', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\formletters\\A.txt', 'True'],
+                    ['C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'A1',
+                     '..\\documents\\BlobExport\\objects\\333333.txt', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     'True', 'r300', 'General', 'Email', '20240313', 'A',
+                     '..\\documents\\BlobExport\\formletters\\A.txt^..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, A1_metadata.csv")
+
+        # Tests the contents of B1_metadata.csv
+        csv_path = os.path.join(by_topic, 'B1', 'B1_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     '..\\documents\\BlobExport\\objects\\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
+                     'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, B1_metadata.csv")
+
+        # Tests the contents of B2_metadata.csv
+        csv_path = os.path.join(by_topic, 'B2', 'B2_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_document_name', 'in_document_name_present', 'out_id', 'out_type',
+                     'out_method', 'out_date', 'out_topic', 'out_document_name', 'out_document_name_present'],
+                    ['B city', 'WY', '23456', 'BLANK', 'b200', 'General', 'Email', '20230202', 'B1^B2',
+                     '..\\documents\\BlobExport\\objects\\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
+                     'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, B2_metadata.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
