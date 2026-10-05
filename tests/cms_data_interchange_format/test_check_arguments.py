@@ -65,26 +65,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('appraisal', script_mode, "Problem with correct - appraisal, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - appraisal, errors_list")
 
-    def test_correct_preservation(self):
-        """Test for when both required arguments are present, input_directory path exists and 
-        all metadata files are present, and mode is access."""
-        # Runs the function being tested.
-        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['cms_data_interchange_format.py', input_dir, 'preservation']
-        input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
-
-        # Tests the value of each of the four variables returned by the function
-        expected_dict = {'1B': os.path.join(input_dir, '1B.out'),
-                         '2A': os.path.join(input_dir, '2A.out'),
-                         '2B': os.path.join(input_dir, '2B.out'),
-                         '2C': os.path.join(input_dir, '2C.out'),
-                         '2D': os.path.join(input_dir, '2D.out'),
-                         '8A': os.path.join(input_dir, '8A.out')}
-        self.assertEqual(input_dir, input_directory, "Problem with correct - preservation, input_directory")
-        self.assertEqual(expected_dict, metadata_paths_dict, "Problem with correct - preservation, metadata_paths_dict")
-        self.assertEqual('preservation', script_mode, "Problem with correct - preservation, script_mode")
-        self.assertEqual([], errors_list, "Problem with correct - preservation, errors_list")
-
     def test_error_input_directory(self):
         """Test for when the input_directory path does not exist"""
         # Runs the function being tested.

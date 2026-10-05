@@ -61,20 +61,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('appraisal', script_mode, "Problem with correct - appraisal, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - access, errors_list")
 
-    def test_correct_preservation(self):
-        """Test for when both required arguments are present, input_directory path exists, and mode is preservation."""
-        # Runs the function being tested.
-        input_dir = os.path.join('test_data', 'check_arguments', 'correct_caps')
-        sys_argv = ['css_archiving_format.py', input_dir, 'preservation']
-        input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
-
-        # Tests the value of each of the four variables returned by the function
-        self.assertEqual(input_dir, input_directory, "Problem with correct - preservation, input_directory")
-        self.assertEqual(os.path.join(input_dir, 'archiving_CORRESPONDENCE.dat'), metadata_path,
-                         "Problem with correct - preservation, metadata_path")
-        self.assertEqual('preservation', script_mode, "Problem with correct - preservation, script_mode")
-        self.assertEqual([], errors_list, "Problem with correct - preservation, errors_list")
-
     def test_error_missing_one(self):
         """Test for when one required argument (mode) is missing."""
         # Runs the function being tested.
