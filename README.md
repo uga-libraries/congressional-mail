@@ -17,7 +17,6 @@ The export directory will be named Lastname_Constituent_Mail_Export (UGA naming 
 and contain the metadata files and a folder named "documents" with the letters.
 
 script_mode: access, access_restart, accession, appraisal
-This is required by all except aip_prep.py
 
 access
 * Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
