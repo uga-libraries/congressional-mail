@@ -393,12 +393,12 @@ def form_letter_metadata_read(table_id, input_dir):
     """Read a single form letter metadata table into a dataframe or return an error"""
 
     columns_dict = {'6A': ['record_type', 'document_id', 'version', 'document_grouping_id', 'document_type',
-                           'document_display_name', 'document_description', 'document_name', 'created_by',
+                           'document_display_name', 'document_description', 'document_name_6A', 'created_by',
                            'revised_by', 'approved_by', 'creation_date', 'revision_date', 'last_used_date',
                            'status', 'inactive_flag', 'virtual_directory'],
                     '6B': ['record_type', 'document_id', 'fill-in_field_name', 'label'],
                     '6C': ['record_type', 'document_id', 'code', 'code_type'],
-                    '6D': ['record_type', 'document_id', 'document_name', 'user_id', 'attached_date', 'text',
+                    '6D': ['record_type', 'document_id', 'document_name_6D', 'user_id', 'attached_date', 'text',
                            'form_letter_attachment_flag', 'file_name'],
                     '6F': ['record_type', 'document_id', 'owned_by']}
 
@@ -434,7 +434,7 @@ def read_metadata(paths):
     columns_2a = ['record_type', 'person_id', 'communication_id', 'workflow_id', 'workflow_person_id',
                   'communication_type', 'user_id', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                   'update_date', 'response_type', 'address_id', 'email_address', 'household_flag', 'household_id',
-                  'group_name', 'salutation', 'extra']
+                  'group_name', 'salutation', 'extra', 'extra5', 'extra6', 'extra7', 'extra8', 'extra9']
     columns_2c = ['record_type', 'person_id', 'communication_id', 'document_type', 'communication_document_name',
                   'communication_document_id', 'file_location', 'file_name']
     columns_2d = ['record_type', 'person_id', 'communication_id', '2d_sequence_number',
@@ -507,7 +507,8 @@ def remove_pii(df):
               'title', 'organization_name', 'address_line_1', 'address_line_2', 'address_line_3', 'address_line_4',
               'carrier_route', 'county', 'district', 'precinct', 'no_mail_flag', 'deliverability', 'workflow_id',
               'workflow_person_id', 'user_id', 'address_id_y', 'email_address', 'household_flag', 'household_id',
-              'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4']
+              'salutation', 'extra', 'extra1', 'extra2', 'extra3', 'extra4', 'extra5', 'extra6', 'extra7',
+              'extra8', 'extra9']
 
     # Removes every column on the remove list from the dataframe, if they are present.
     # Nothing happens, due to errors="ignore", if any are not present.
@@ -529,17 +530,21 @@ def remove_restricted_rows(df, df_restrict):
 def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
-    # List of topics (adjust based on topics_report.csv from accession mode of this script)
-    restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
-                     'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
-                     'migrant', 'refugee', 'social security', 'taxes', 'veterans']
+    crime_list = ['court', 'crime', 'hate', 'jud batch', 'jud54', 'judicial', 'judiciary', 'lawtrust', 'legal', 'police', 'prison', 'secret', 'selfdef']
+    crime_df = df[df['group_name'].str.contains('|'.join(crime_list), case=False, na=False)]
+    crime_df.to_csv(os.path.join(output_dir, 'restriction_review_crime.csv'), index=False)
 
-    # Save the subset of the df where the topic matches any term in the restrict list to the output directory.
-    # The match is case-insensitive.
-    # No report is made if no topics are present.
-    report_df = df[df['group_name'].str.lower().isin(restrict_list)]
-    if len(report_df.index) > 0:
-        report_df.to_csv(os.path.join(output_dir, 'restriction_review.csv'), index=False)
+    fin_list = ['assistance', 'bank', 'bkrptcy', 'bnkrpcty', 'mortgage', 'social_security', 'social security', 'tax', 'welfare']
+    fin_df = df[df['group_name'].str.contains('|'.join(fin_list), case=False, na=False)]
+    fin_df.to_csv(os.path.join(output_dir, 'restriction_review_financial.csv'), index=False)
+
+    health_list = ['drug', 'health', 'hospice', 'med', 'mental', 'tricare', 'vet']
+    health_df = df[df['group_name'].str.contains('|'.join(health_list), case=False, na=False)]
+    health_df.to_csv(os.path.join(output_dir, 'restriction_review_health.csv'), index=False)
+
+    imm_list = ['alien', 'amnesty', 'children at the border', 'citizen', 'daca', 'detainee', 'dream', 'green card', 'illegal', 'imm', 'refugee', 'visa']
+    imm_df = df[df['group_name'].str.contains('|'.join(imm_list), case=False, na=False)]
+    imm_df.to_csv(os.path.join(output_dir, 'restriction_review_immigration.csv'), index=False)
 
 
 def split_year(df, output_dir):
@@ -587,127 +592,150 @@ def topics_report(df, output_dir):
     topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
-def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic
-    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders."""
+def topics_sort(input_dir, output_dir):
+    """Sort copy of all correspondence into folders by topic."""
 
-    # New version of df with blanks removed from 'group_name' and 'communication_document_name'.
-    df_topics = topics_sort_df(df)
+    # Reads the metadata for documents to try to sort and a list of topics to sort in this iteration of the script.
+    # To do part at a time, edit the list of topics to only include a subset.
+    # If either are missing, quit the script with a warning.
+    try:
+        df = pd.read_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), dtype=str)
+        topics_list = pd.read_csv(os.path.join(output_dir, 'topics_unique.csv'))['topic'].values.tolist()
+    except FileNotFoundError:
+        print("For topic sort, must have topics_sort_metadata.csv and topics_unique.csv in the output directory")
+        sys.exit(1)
 
     # Sorts a copy of all correspondence by topic.
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
-    topic_list = df_topics['group_name'].unique().tolist()
-    for topic in topic_list:
+    for topic in topics_list:
 
         # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
-        # The topic has to be normalized to be used for a folder and file name.
-        # Check if the topic path exists because there may be multiple variations that normalize to the same thing.
-        topic_norm = css_arch.topics_sort_normalize(topic)
-        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic_norm)
-        if not os.path.exists(topic_path):
-            os.mkdir(topic_path)
-        df_topic = df_topics[df_topics['group_name'] == topic].copy()
+        topic_path = os.path.join(output_dir, 'correspondence_by_topic', topic)
+        os.mkdir(topic_path)
+        df_topic = df[df['topic'] == topic].copy()
+        print(f"Starting topic {topic}, which has {df_topic['communication_document_name'].nunique()} "
+              f"unique document paths in the df")
 
-        # Sorts correspondence from constituents ("in" letters).
-        # Updates df_topic with if the letter was in the export and makes a log of missing letters.
-        from_path = os.path.join(topic_path, 'from_constituents')
-        if not os.path.exists(from_path):
-            os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'IN', input_dir, output_dir, from_path)
+        # Sorts each group within a topic. Topics may have one or more groups.
+        group_list = df_topic['group_name'].unique().tolist()
+        for group in group_list:
 
-        # Sorts correspondence to constituents ("out" letters).
-        to_path = os.path.join(topic_path, 'to_constituents')
-        if not os.path.exists(to_path):
-            os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'OUT', input_dir, output_dir, to_path)
+            # Makes a folder for each group within this topic.
+            # The group must be normalized to replace characters that cannot be in a folder name with an underscore.
+            # Checks if the folder exists because there may be multiple variations that normalize to the same thing.
+            group_norm = css_arch.topics_sort_normalize(group)
+            group_path = os.path.join(topic_path, group_norm)
+            if not os.path.exists(group_path):
+                os.mkdir(group_path)
 
-        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        css_arch.topics_sort_delete_empty(topic_path)
+            # Sorts correspondence for the group, maintaining all subfolders.
+            # Updates df_topic with if the letter was in the export and makes a log of missing letters.
+            df_topic = topics_sort_files(df_topic, input_dir, output_dir, group, group_path)
 
-        # Saves the metadata for this topic if the topic folder was not deleted for being empty.
-        if os.path.exists(topic_path):
-            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+        # Saves the metadata to a csv for the topic once all groups within the topic have been sorted.
+        topics_sort_save_metadata(df_topic, topic_path, topic)
 
-
-def topics_sort_df(df):
-    """Update dataframe to remove rows missing group (topic) or document name and add column for missing docs"""
-
-    # Removes rows with blank in group_name or communication_document_name columns.
-    df = df.dropna(subset=['group_name', 'communication_document_name'])
-
-    # Adds column for when the files are sorted to indicate if the file was present in the export or not.
-    # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
-    df.insert(15, 'communication_document_name_present', 'TBD', True)
-
-    return df
+    # Deletes empty folders at any level, including folders that only contain empty folders.
+    topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
 
-def topics_sort_files(df, corr_type, input_dir, output_dir, folder_path):
-    """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
+def topics_sort_delete_empty(topic_dir):
+    """Delete empty folders in correspondence_by_topic, including folders that only contain empty folders"""
+    print("\nDeleting empty folders at all levels")
+    for root, dirs, files in os.walk(topic_dir, topdown=False):
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            if not os.listdir(dir_path):
+                os.rmdir(dir_path)
 
-    # Gets a list of unique documents of the specified correspondence type (in or out), excluding blanks, to copy.
-    df_type = df[df['document_type'].str.startswith((corr_type, f'AT_{corr_type}'), na=False)]
-    doc_list = df_type['communication_document_name'].unique().tolist()
+
+def topics_sort_files(df, input_dir, output_dir, group_name, group_folder_path):
+    """Copy all documents to a group folder, update df for if each document was found and log if missing"""
+    # Gets a list of unique documents of the specified group to copy.
+    doc_list = df[df['group_name'] == group_name]['communication_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
-        doc_path = update_path(doc, input_dir)
+        doc_current_path = update_path(doc, input_dir)
 
-        # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
-        # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
-        # Cannot use os.path.isdir() to test for directory because the folder may not exist.
-        if doc_path == 'error_new' or '.' not in doc_path:
-            continue
-
-        # Gets the path for the subfolder for where the doc will be saved,
-        # which replicates all original subfolders within the to_constituents or from_constituents folder,
-        # and makes the folder if it doesn't exist.
-        doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
-        subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        subfolder_new = False
-        if not os.path.exists(subfolder_path):
-            subfolder_new = True
-            os.makedirs(subfolder_path)
+        # If the current path isn't an error (which would break the script trying to calculate the relative path),
+        # Gets the path for the subfolder for where the doc will be saved and makes the folder if it doesn't exist.
+        # The path replicates all original subfolders within the export.
+        # If it is an error, it will be logged in the next step when the path doesn't exist.
+        if doc_current_path == 'error_new':
+            subfolder_path = 'error'
+        else:
+            doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
+            subfolder_path = os.path.join(group_folder_path, os.path.dirname(doc_relative_path))
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
-        # If the doc is not in the expected location, logs it instead.
+        # If the doc is not in the expected location, or is a folder (PermissionError), logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
         doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
-            shutil.copy2(doc_path, doc_new_path)
+            shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = True
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
             df.loc[df['communication_document_name'] == doc, 'communication_document_name_present'] = False
-            with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
+            with open(os.path.join(output_dir, 'topics_sort_move_errors.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
-                log_writer.writerow([topic, doc])
-            if subfolder_new:
-                os.rmdir(subfolder_path)
+                topic = group_folder_path.split('\\')[-2]
+                group = group_folder_path.split('\\')[-1]
+                log_writer.writerow([topic, group, doc])
 
     return df
 
 
-def topics_sort_save_metadata(df, topic_path, topic_norm):
+def topics_sort_prep(output_dir):
+    """Make metadata file with rows for files to try to sort topically, using CSVs in the output directory"""
+
+    # Read the two expected CSV files (redacted metadata and topic information) into dataframes.
+    # If either are missing, quit the script with a warning.
+    try:
+        df = pd.read_csv(os.path.join(output_dir, 'archiving_correspondence_redacted.csv'), dtype=str)
+        topic_df = pd.read_csv(os.path.join(output_dir, 'topics_group_name.csv'))
+    except FileNotFoundError:
+        print("For topic sort prep, must have archiving_correspondence_redacted.csv and topics_group_name.csv "
+              "in the output directory")
+        sys.exit(1)
+
+    # Add topic information to metadata df, but only if the group_name is in the metadata df.
+    # It is possible for all rows of a group_name to be removed for appraisal or restriction by this point.
+    df = df.merge(topic_df, on='group_name', how='left')
+
+    # Remove rows that do not have enough information to topic sort:
+    # no group_name, no document path, and/or topic is EXCLUDE because the group_name has no topical information.
+    df = df.dropna(subset=['group_name', 'communication_document_name'])
+    df = df[df['topic'] != 'EXCLUDE']
+
+    # Add a column for tracking which files are present in the export during sorting.
+    df.insert(15, 'communication_document_name_present', 'TBD', True)
+
+    # Save the metadata to a CSV for easy restarting of the sort process, which is very time-consuming.
+    df.to_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), index=False)
+
+    # Make a folder for the topic sorted version of the export.
+    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+
+def topics_sort_save_metadata(df, topic_path, topic):
     """Remove rows with no document and temporary column and save to a CSV"""
 
     # Only include rows where the document is in the export.
     df = df[df['communication_document_name_present'] == True]
 
-    # Remove the "present" column, now that it only has True.
-    df = df.drop(['communication_document_name_present'], axis=1)
+    # Remove the "present" column, now that it only has True and the topic column
+    # as the only other column added by the script to the original metadata. The topic is in the file name.
+    df = df.drop(['communication_document_name_present', 'topic'], axis=1)
 
     # Removes duplicate rows. Not sure if this would happen, but can in other export types.
     df.drop_duplicates(inplace=True)
 
-    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
-    # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
-    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    if os.path.exists(metadata_path):
-        df.to_csv(metadata_path, mode='a', header=False, index=False)
-    else:
+    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic if any rows remain.
+    if len(df.index) > 0:
+        metadata_path = os.path.join(topic_path, f'{topic}_metadata.csv')
         df.to_csv(metadata_path, index=False)
 
 
@@ -716,8 +744,9 @@ def update_path(md_path, input_dir):
 
     # So far, we have seen one way that paths are formatted in the metadata:
     # ..\documents\folder\..\file.ext, where the export is \documents\folder\..\file.ext
+    # and some files may contain an additional '..', so only the first instance of it is replaced.
     if md_path.startswith('..\\documents'):
-        updated_path = md_path.replace('..', input_dir)
+        updated_path = md_path.replace('..', input_dir, 1)
     else:
         updated_path = 'error_new'
 
@@ -765,9 +794,9 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
+        restriction_report(md_df, output_directory)
         md_df.drop(['text'], axis=1, inplace=True)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
@@ -786,11 +815,18 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No restriction_review.csv in the output directory. Cannot do access without it.")
             sys.exit(1)
+        count_initial = len(md_df.index)
         md_df = css_arch.remove_appraisal_rows(md_df, appraisal_df)
+        count_appraisal = len(md_df.index)
         md_df = remove_restricted_rows(md_df, restrict_df)
+        count_restricted = len(md_df.index)
+        print("\nFor QC")
+        print("Rows removed for appraisal:", count_initial - count_appraisal)
+        print("Rows removed for restriction:", count_appraisal - count_restricted)
         md_df.drop(['text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         form_letter_metadata(input_directory, output_directory)
         split_year(md_df, output_directory)
-        topics_sort(md_df, input_directory, output_directory)
+        topics_sort_prep(output_directory)
+        #topics_sort(input_directory, output_directory)
 
