@@ -47,11 +47,9 @@ If time allows, we may process at the time of accessioning to streamline the wor
 
 ### Preservation
 The preservation version has letters deleted for appraisal and the entire metadata file.
-1. Run aip_prep.py to split a copy of the export into folders to keep AIP size reasonable 
-while maintaining the directory structure and start the metadata.csv file.
-2. Add the department, collection, and AIP ids to the metadata.csv.
-3. Run general_aip.py script to produce the AIPs, and follow that workflow for QC.
-4. Once the AIPs are successfully ingested into ARCHive and access copies are made, delete the unsplit copy.
+1. Reorganize the export in ProcessingCopy using TeraCopy.
+2. Create the [metadata.csv](https://github.com/uga-libraries/general-aip/blob/main/documentation/metadata.csv) for the general_aip.py script.
+3. Follow the [preservation steps of the born-digital processing workflow](https://github.com/uga-libraries/born-digital-processing/blob/main/preservation-log.md). 
 
 ### Access
 
