@@ -493,12 +493,17 @@ def make_metadata_csv(output_dir):
         for root, dirs, files in os.walk(os.path.join(topics_dir, topic)):
             for file in files:
                 topic_bytes += os.path.getsize(os.path.join(root, file))
-        extent = round(topic_bytes / 1000000000, 3)
+        extent = topic_bytes / 1000000000
+        rounder = 3
+        extent_rounded = round(extent, rounder)
+        while extent_rounded == 0.0:
+            rounder += 1
+            extent_rounded = round(extent, rounder)
 
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, start_year, end_year, extent])
+            writer.writerow([title, start_year, end_year, extent_rounded])
 
 
 def read_csv(path):
