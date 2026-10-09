@@ -455,17 +455,17 @@ def find_recommendation_rows(df):
     return df_recommendation, df_recommendation_check
 
 
-def make_metadata_csv(path):
+def make_metadata_csv(output_dir):
     """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
 
     # Start a csv for the metadata.
-    with open(os.path.join(path, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
+    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['title', 'start_date', 'end_date', 'extent'])
 
     # Get metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
-    topics_dir = os.path.join(path, 'correspondence_by_topic')
+    topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
         print("Starting on", topic)
 
