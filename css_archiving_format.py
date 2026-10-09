@@ -469,6 +469,14 @@ def make_metadata_csv(output_dir):
     for topic in os.listdir(topics_dir):
         print("Starting on", topic)
 
+        # Form title.
+        title = topic + ' [electronic files]'
+
+        # Save metadata for this topic to the CSV.
+        with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([title, 'start_tbd', 'end_tbd', 'extent_tbd'])
+
 
 def read_csv(path):
     """Read a CSV produced by a previous mode of this script into a dataframe"""
