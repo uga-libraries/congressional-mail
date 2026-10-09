@@ -458,24 +458,34 @@ def find_recommendation_rows(df):
 def make_metadata_csv(output_dir):
     """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
 
-    # Start a csv for the metadata.
+    # Starts a csv for the metadata.
     with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['title', 'start_date', 'end_date', 'extent'])
 
-    # Get metadata for every topic folder.
+    # Gets metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
     topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
         print("Starting on", topic)
 
-        # Form title.
+        # Forms the title.
         title = topic + ' [electronic files]'
 
-        # Save metadata for this topic to the CSV.
+        # Gets the dates from "in_date" from this topic's metadata.csv (formatted YYYYMMDD)
+        # and calculates the earliest and latest year.
+        # Years are converted to integers to remove the .0 added when there is a blank in the date column.
+        topic_csv = os.path.join(topics_dir, topic, f'{topic}_metadata.csv')
+        df = pd.read_csv(topic_csv, dtype=str)
+        df['year'] = df['in_date'].astype(str).str[:4]
+        df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
+        start_year = int(df['year_num'].min())
+        end_year = int(df['year_num'].max())
+
+        # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, 'start_tbd', 'end_tbd', 'extent_tbd'])
+            writer.writerow([title, start_year, end_year, 'extent_tbd'])
 
 
 def read_csv(path):
