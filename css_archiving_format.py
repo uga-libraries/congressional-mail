@@ -461,7 +461,7 @@ def make_metadata_csv(path):
     # Start a csv for the metadata.
     with open(os.path.join(path, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['title', 'start_date', 'end_date', ''])
+        writer.writerow(['title', 'start_date', 'end_date', 'extent'])
 
     # Get metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
