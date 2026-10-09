@@ -472,15 +472,20 @@ def make_metadata_csv(output_dir):
         # Forms the title.
         title = topic + ' [electronic files]'
 
-        # Gets the dates from "in_date" from this topic's metadata.csv (formatted YYYYMMDD)
+        # Gets the dates from "in_date" column from this topic's metadata.csv (formatted YYYYMMDD)
         # and calculates the earliest and latest year.
         # Years are converted to integers to remove the .0 added when there is a blank in the date column.
-        topic_csv = os.path.join(topics_dir, topic, f'{topic}_metadata.csv')
-        df = pd.read_csv(topic_csv, dtype=str)
-        df['year'] = df['in_date'].astype(str).str[:4]
-        df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
-        start_year = int(df['year_num'].min())
-        end_year = int(df['year_num'].max())
+        # Assigns a default if the file isn't found, which can happen due to path lengths.
+        try:
+            topic_csv = os.path.join(topics_dir, topic, f'{topic}_metadata.csv')
+            df = pd.read_csv(topic_csv, dtype=str)
+            df['year'] = df['in_date'].astype(str).str[:4]
+            df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
+            start_year = int(df['year_num'].min())
+            end_year = int(df['year_num'].max())
+        except FileNotFoundError:
+            start_year = 'unknown'
+            end_year = 'unknown'
 
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
