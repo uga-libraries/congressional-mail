@@ -456,7 +456,13 @@ def find_recommendation_rows(df):
 
 
 def make_metadata_csv(path):
-    """Makes a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
+    """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
+
+    # Get metadata for every topic folder.
+    # The folders for form letters, metadata, and the original export are added manually after the script runs.
+    topics_dir = os.path.join(path, 'correspondence_by_topic')
+    for topic in os.listdir(topics_dir):
+        print("Starting on", topic)
 
 
 def read_csv(path):
@@ -913,7 +919,7 @@ if __name__ == '__main__':
         md_df = remove_pii(md_df)
         save_redacted_metadata(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
-        make_metadata_csv(input_directory)
+        make_metadata_csv(output_directory)
 
     # For access_restarts, finishes the topics sort and makes the metadata inventory for the finding aid.
     # The rest of access will already be done.
@@ -925,4 +931,4 @@ if __name__ == '__main__':
               "and make the metadata inventory for the finding aid.")
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
         topics_sort(md_df, input_directory, output_directory, restart=True)
-        make_metadata_csv(input_directory)
+        make_metadata_csv(output_directory)
