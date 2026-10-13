@@ -14,29 +14,12 @@ def check_metadata(df, output_dir):
     """This is a quickly made function for looking at the metadata, to decide if it is complete enough to keep
     but needs to be refined if we do keep it"""
 
-    # Tests if all expected columns are present and if there are any unexpected columns.
-    column_names = df.columns.tolist()
-    expected = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
-                'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
-                'letter_date', 'staffer_initials', 'document_number', 'comments']
-    columns_dict = dict.fromkeys(expected)
-    match = list(set(expected).intersection(column_names))
-    for column in match:
-        columns_dict[column] = True
-    missing = list(set(expected) - set(column_names))
-    for column in missing:
-        columns_dict[column] = False
-    extra = list(set(column_names) - set(expected))
-    for column in extra:
-        columns_dict[column] = 'Error: unexpected column'
-    columns_present = pd.Series(data=columns_dict, index=list(columns_dict.keys()))
-
     # Calculates the number and percentage of blank cells in each column, and saves it all to a CSV.
     blank_count = df.eq('').sum()
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
-    columns_df = pd.concat([columns_present, blank_count, blank_percent], axis=1)
-    columns_df.columns = ['Present', 'Blank_Count', 'Blank_Percent']
+    columns_df = pd.concat([blank_count, blank_percent], axis=1)
+    columns_df.columns = ['Blank_Count', 'Blank_Percent']
     print(columns_df)
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
