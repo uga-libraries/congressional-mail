@@ -20,14 +20,11 @@ def check_blanks(df, output_dir):
     columns_df.to_csv(os.path.join(output_dir, 'metadata_review_blanks.csv'), index=True, index_label='Column_Name')
 
 def check_documents(df, output_dir):
-    """Make a report with information on the documents column"""
-    blank_count = df['document_number'].eq('').sum()
-    doc_num_count = df['document_number'].nunique()
-    q_count = df['document_number'].str.startswith('Q').sum()
-    with open(os.path.join(output_dir, 'metadata_review_documents.txt'), 'w', newline='') as report:
-        report.write(f'Document number blank        : {blank_count}\n')
-        report.write(f'Document number unique values: {doc_num_count}\n')
-        report.write(f'Comments with Q# (filename?) : {q_count}\n')
+    """Make a report with the number of occurrences per document_id"""
+    df['document_number'] = df['document_number'].replace('', 'BLANK')
+    df_counts = df['document_number'].value_counts().reset_index()
+    df_counts.columns = ['Document_Number', 'Document_Number_Count']
+    df_counts.to_csv(os.path.join(output_dir, 'metadata_review_document_number.csv'), index=False)
 
 def check_topics(df, output_dir):
     """Make a report with the number of occurrences per topic"""
