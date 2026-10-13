@@ -3,6 +3,9 @@
 ## Overview
 Providing basic access to congressional correspondent system exports. DRAFT
 
+The archival office export type is a non-standard export received for a single collection.
+This script is not in sync with the rest, and only has the ability to read and report on the metadata file.
+
 ## Getting Started
 
 ### Dependencies
