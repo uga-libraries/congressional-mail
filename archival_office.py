@@ -7,39 +7,6 @@ import pandas as pd
 import sys
 
 
-def check_arguments(arg_list):
-    """Verify the required script argument is present and valid and get the path to the metadata file"""
-
-    # Default values for the variables calculated by this function.
-    input_dir = None
-    md_path = None
-    errors = []
-
-    # Argument is missing (only the script path is present).
-    # Return immediately, or it would also have the error one missing required argument.
-    if len(arg_list) == 1:
-        errors.append("Missing required argument, input_directory")
-        return input_dir, md_path, errors
-
-    # At least the first argument is present.
-    # Verifies it is a valid path, and if so that it contains the expected DAT file.
-    if len(arg_list) > 1:
-        if os.path.exists(arg_list[1]):
-            input_dir = arg_list[1]
-            if os.path.exists(os.path.join(input_dir, 'archive.dat')):
-                md_path = os.path.join(input_dir, 'archive.dat')
-            else:
-                errors.append(f"No archive.dat file in the input_directory")
-        else:
-            errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
-
-    # More than the expected required argument is present.
-    if len(arg_list) > 2:
-        errors.append("Provided more than the required argument, input_directory")
-
-    return input_dir, md_path, errors
-
-
 def check_metadata(df, output_dir):
     """This is a quickly made function for looking at the metadata, to decide if it is complete enough to keep
     but needs to be refined if we do keep it"""
