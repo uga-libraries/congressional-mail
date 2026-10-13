@@ -1,5 +1,7 @@
 """
-Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
+Read the metadata from our export in the Archival Office Correspondence Data format
+and create a few reports summarizing the metadata.
+We already know that the metadata does not match the filenames in the export.
 
 Required arguments:
 metadata_path (path to the archive.date file)
