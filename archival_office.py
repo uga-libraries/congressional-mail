@@ -59,8 +59,8 @@ def check_metadata(df, output_dir):
 def read_metadata(md_path):
     """Read the metadata file into a dataframe"""
 
-    # Makes a list from the file contents with one list per row and one item per column,
-    # splitting the data into columns based on the character position and removing extra spaces.
+    # Reads the metadata into a list of lists, with one list per row,
+    # splitting each row into one item per column based on the character position and removing extra spaces.
     rows_list = []
     positions = [(0, 39), (39, 69), (69, 99), (99, 129), (129, 159), (159, 189), (189, 191), (191, 201), (201, 251),
                  (251, 301), (301, 351), (351, 357), (357, 361), (361, 371), (371, 471)]
@@ -69,15 +69,13 @@ def read_metadata(md_path):
             row_list = [line[slice(*pos)].strip() for pos in positions]
             rows_list.append(row_list)
 
-    # Save as a dataframe, with column names.
+    # Saves as a dataframe, with column names.
     columns_list = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
     df = pd.DataFrame(rows_list, columns=columns_list, dtype=str)
 
-    # Removes blank rows, which are present in some of the data exports.
-    # Blank rows have an empty string in every column.
-    # Source: Microsoft Copilot
+    # Removes blank rows, which have an empty string in every column.
     df = df[~(df == '').all(axis=1)]
 
     return df
@@ -85,12 +83,12 @@ def read_metadata(md_path):
 
 if __name__ == '__main__':
 
-    # Gets the script arguments
+    # Gets the script arguments.
     metadata_path = sys.argv[1]
     output_directory = sys.argv[2]
 
     # Reads the metadata file into a pandas dataframe and saves as a csv.
     md_df = read_metadata(metadata_path)
-    md_df.to_csv(os.path.join(output_directory, 'archive.csv'), index=False)
+    md_df.to_csv(os.path.join(output_directory, 'archive_metadata.csv'), index=False)
 
     check_metadata(md_df, output_directory)
