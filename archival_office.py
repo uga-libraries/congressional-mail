@@ -1,6 +1,9 @@
 """
 Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
-Required argument: input_directory (path to the folder with the css export).
+
+Required arguments:
+metadata_path (path to the archive.date file)
+output_directory (path to the folder where script ouputs are saved)
 """
 import os
 import pandas as pd
@@ -84,16 +87,9 @@ def read_metadata(path):
 
 if __name__ == '__main__':
 
-    # Validates the script argument and calculates the path to the metadata file.
-    # If there are any errors, prints them and exits the script.
-    input_directory, metadata_path, errors_list = check_arguments(sys.argv)
-    if len(errors_list) > 0:
-        for error in errors_list:
-            print(error)
-        sys.exit(1)
-
-    # Calculates parent folder of the input_directory, which is where script outputs are saved.
-    output_directory = os.path.dirname(input_directory)
+    # Gets the script arguments
+    metadata_path = sys.argv [1]
+    output_directory = sys.argv [2]
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
