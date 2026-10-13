@@ -2,12 +2,9 @@
 Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
 Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
 """
-from datetime import date
-import numpy as np
 import os
 import pandas as pd
 import sys
-from css_archiving_format import file_deletion_log
 
 
 def check_arguments(arg_list):
