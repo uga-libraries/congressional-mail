@@ -1,6 +1,6 @@
 """
 Draft script to prepare preservation and access copies from an export in the Archival Office Correspondence Data format.
-Required arguments: input_directory (path to the folder with the css export) and script_mode (access or preservation).
+Required argument: input_directory (path to the folder with the css export).
 """
 import os
 import pandas as pd
@@ -8,19 +8,18 @@ import sys
 
 
 def check_arguments(arg_list):
-    """Verify the required script arguments are present and valid and get the path to the metadata file"""
+    """Verify the required script argument is present and valid and get the path to the metadata file"""
 
     # Default values for the variables calculated by this function.
     input_dir = None
     md_path = None
-    mode = None
     errors = []
 
-    # Both arguments are missing (only the script path is present).
+    # Argument is missing (only the script path is present).
     # Return immediately, or it would also have the error one missing required argument.
     if len(arg_list) == 1:
-        errors.append("Missing required arguments, input_directory and script_mode")
-        return input_dir, md_path, mode, errors
+        errors.append("Missing required argument, input_directory")
+        return input_dir, md_path, errors
 
     # At least the first argument is present.
     # Verifies it is a valid path, and if so that it contains the expected DAT file.
@@ -34,21 +33,11 @@ def check_arguments(arg_list):
         else:
             errors.append(f"Provided input_directory '{arg_list[1]}' does not exist")
 
-    # Both required arguments are present.
-    # Verifies the second is one of the expected modes.
+    # More than the expected required argument is present.
     if len(arg_list) > 2:
-        if arg_list[2] in ('access', 'preservation', 'test'):
-            mode = arg_list[2]
-        else:
-            errors.append(f"Provided mode '{arg_list[2]}' is not 'access' or 'preservation'")
-    else:
-        errors.append("Missing one of the required arguments, input_directory or script_mode")
+        errors.append("Provided more than the required argument, input_directory")
 
-    # More than the expected two required arguments are present.
-    if len(arg_list) > 3:
-        errors.append("Provided more than the required arguments, input_directory and script_mode")
-
-    return input_dir, md_path, mode, errors
+    return input_dir, md_path, errors
 
 
 def check_metadata(df, output_dir):
@@ -128,9 +117,9 @@ def read_metadata(path):
 
 if __name__ == '__main__':
 
-    # Validates the script argument values and calculates the path to the metadata file.
+    # Validates the script argument and calculates the path to the metadata file.
     # If there are any errors, prints them and exits the script.
-    input_directory, metadata_path, script_mode, errors_list = check_arguments(sys.argv)
+    input_directory, metadata_path, errors_list = check_arguments(sys.argv)
     if len(errors_list) > 0:
         for error in errors_list:
             print(error)
@@ -141,11 +130,6 @@ if __name__ == '__main__':
 
     # Reads the metadata file into a pandas dataframe.
     md_df = read_metadata(metadata_path)
+    md_df.to_csv(os.path.join(output_directory, 'archive.csv'), index=False)
 
-    # For access, removes rows for casework and columns with PII from the metadata
-    # and makes a copy of the data split by congress year.
-    if script_mode == 'access':
-        md_df.to_csv(os.path.join(output_directory, 'archive_redacted.csv'), index=False)
-
-    if script_mode == 'test':
-        check_metadata(md_df, output_directory)
+    check_metadata(md_df, output_directory)
