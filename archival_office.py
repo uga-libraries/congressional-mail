@@ -17,14 +17,14 @@ def check_blanks(df, output_dir):
     blank_percent = round((blank_count / total_rows) * 100, 2)
     columns_df = pd.concat([blank_count, blank_percent], axis=1)
     columns_df.columns = ['Blank_Count', 'Blank_Percent']
-    columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
+    columns_df.to_csv(os.path.join(output_dir, 'metadata_review_blanks.csv'), index=True, index_label='Column_Name')
 
 def check_documents(df, output_dir):
     """Make a report with information on the documents column"""
     blank_count = df['document_number'].eq('').sum()
     doc_num_count = df['document_number'].nunique()
     q_count = df['document_number'].str.startswith('Q').sum()
-    with open(os.path.join(output_dir, 'file_names_options.txt'), 'w', newline='') as report:
+    with open(os.path.join(output_dir, 'metadata_review_documents.txt'), 'w', newline='') as report:
         report.write(f'Document number blank        : {blank_count}\n')
         report.write(f'Document number unique values: {doc_num_count}\n')
         report.write(f'Comments with Q# (filename?) : {q_count}\n')
@@ -34,7 +34,7 @@ def check_topics(df, output_dir):
     df['correspondence_topic'] = df['correspondence_topic'].replace('', 'BLANK')
     df_counts = df['correspondence_topic'].value_counts().reset_index()
     df_counts.columns = ['Topic', 'Topic_Count']
-    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+    df_counts.to_csv(os.path.join(output_dir, 'metadata_review_topics.csv'), index=False)
 
 def read_metadata(md_path):
     """Read the metadata file into a dataframe"""
