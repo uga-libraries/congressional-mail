@@ -6,7 +6,7 @@ or there would have already been an error.
 """
 import pandas as pd
 import unittest
-from archival_office_correspondence_data import remove_pii
+from archival_office import remove_pii
 
 
 class MyTestCase(unittest.TestCase):

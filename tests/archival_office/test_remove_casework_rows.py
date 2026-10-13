@@ -4,7 +4,7 @@ To simplify the input the test uses dataframes with only a few of the columns pr
 """
 import pandas as pd
 import unittest
-from archival_office_correspondence_data import remove_casework_rows
+from archival_office import remove_casework_rows
 from test_find_casework_rows import df_to_list
 
 

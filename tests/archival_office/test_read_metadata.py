@@ -3,7 +3,7 @@ Tests for the function read_metadata(), which reads the dat file into a datafram
 """
 import os
 import unittest
-from archival_office_correspondence_data import read_metadata
+from archival_office import read_metadata
 
 
 class MyTestCase(unittest.TestCase):

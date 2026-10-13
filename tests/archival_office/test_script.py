@@ -1,5 +1,5 @@
 """
-Tests for the script archival_office_correspondence_data.py
+Tests for the script archival_office.py
 """
 from datetime import date
 import os
@@ -50,7 +50,7 @@ class MyTestCase(unittest.TestCase):
                         os.path.join('test_data', 'script', 'access_test'))
 
         # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
+        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office.py')
         input_directory = os.path.join('test_data', 'script', 'access_test')
         subprocess.run(f"python {script_path} {input_directory} access", shell=True)
 
@@ -111,7 +111,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_error_argument(self):
         """Test for when the script exits due to an argument error."""
-        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
+        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office.py')
 
         # Runs the script and tests that it exits.
         with self.assertRaises(subprocess.CalledProcessError):
@@ -130,7 +130,7 @@ class MyTestCase(unittest.TestCase):
                         os.path.join('test_data', 'script', 'preservation_test'))
 
         # Runs the script.
-        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office_correspondence_data.py')
+        script_path = os.path.join(os.getcwd(), '..', '..', 'archival_office.py')
         input_directory = os.path.join('test_data', 'script', 'preservation_test')
         subprocess.run(f"python {script_path} {input_directory} preservation", shell=True)
 

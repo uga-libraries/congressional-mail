@@ -5,7 +5,7 @@ from datetime import date
 import os
 import shutil
 import unittest
-from archival_office_correspondence_data import remove_casework_letters
+from archival_office import remove_casework_letters
 from test_script import csv_to_list, files_in_dir
 
 

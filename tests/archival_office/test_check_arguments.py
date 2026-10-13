@@ -4,7 +4,7 @@ For input, tests use a list with argument values. In production, this would be t
 """
 import os
 import unittest
-from archival_office_correspondence_data import check_arguments
+from archival_office import check_arguments
 
 
 class MyTestCase(unittest.TestCase):
@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when both required arguments are present, input_directory path exists, and mode is access."""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir, 'access']
+        sys_argv = ['archival_office.py', input_dir, 'access']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when both required arguments are present, input_directory path exists, and mode is preservation."""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir, 'preservation']
+        sys_argv = ['archival_office.py', input_dir, 'preservation']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -40,7 +40,7 @@ class MyTestCase(unittest.TestCase):
     def test_error_input_directory(self):
         """Test for when the input_directory path does not exist"""
         # Runs the function being tested.
-        sys_argv = ['archival_office_correspondence_data.py', 'path_error', 'access']
+        sys_argv = ['archival_office.py', 'path_error', 'access']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -55,7 +55,7 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir, 'mode_error']
+        sys_argv = ['archival_office.py', input_dir, 'mode_error']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -69,7 +69,7 @@ class MyTestCase(unittest.TestCase):
     def test_missing_both(self):
         """Test for when both required arguments are missing"""
         # Runs the function being tested.
-        sys_argv = ['archival_office_correspondence_data.py']
+        sys_argv = ['archival_office.py']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -83,7 +83,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when the archive.dat file is not in the input_directory"""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'no_metadata')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir, 'preservation']
+        sys_argv = ['archival_office.py', input_dir, 'preservation']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
         """Test for when one required argument (script_mode) is missing"""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['archival_office_correspondence_data.py', input_dir]
+        sys_argv = ['archival_office.py', input_dir]
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -111,7 +111,7 @@ class MyTestCase(unittest.TestCase):
     def test_too_many(self):
         """Test for when too many arguments are provided, with none being expected values"""
         # Runs the function being tested.
-        sys_argv = ['archival_office_correspondence_data.py', 'path_error', 'mode_error', 'extra_error']
+        sys_argv = ['archival_office.py', 'path_error', 'mode_error', 'extra_error']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function

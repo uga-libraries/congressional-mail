@@ -5,7 +5,7 @@ To simplify input, tests use dataframes with only some of the columns present in
 import os
 import pandas as pd
 import unittest
-from archival_office_correspondence_data import find_casework_rows
+from archival_office import find_casework_rows
 from test_script import csv_to_list
 
 
