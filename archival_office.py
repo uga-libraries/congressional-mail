@@ -70,8 +70,6 @@ def read_metadata(path):
             rows_list.append(row_list)
 
     # Save as a dataframe, with column names.
-    # TODO: verify these column names.
-    # TODO: add error handling for if the data is not the expected number of columns?
     columns_list = ['name', 'title', 'organization', 'address_line_1', 'address_line_2', 'city', 'state_code',
                     'zip_code', 'correspondence_type', 'correspondence_topic', 'correspondence_subtopic',
                     'letter_date', 'staffer_initials', 'document_number', 'comments']
@@ -88,10 +86,10 @@ def read_metadata(path):
 if __name__ == '__main__':
 
     # Gets the script arguments
-    metadata_path = sys.argv [1]
-    output_directory = sys.argv [2]
+    metadata_path = sys.argv[1]
+    output_directory = sys.argv[2]
 
-    # Reads the metadata file into a pandas dataframe.
+    # Reads the metadata file into a pandas dataframe and saves as a csv.
     md_df = read_metadata(metadata_path)
     md_df.to_csv(os.path.join(output_directory, 'archive.csv'), index=False)
 
