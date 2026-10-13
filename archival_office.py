@@ -56,7 +56,7 @@ def check_metadata(df, output_dir):
         report.write(f'Comments with Q# (filename?) : {q_count}\n')
 
 
-def read_metadata(path):
+def read_metadata(md_path):
     """Read the metadata file into a dataframe"""
 
     # Makes a list from the file contents with one list per row and one item per column,
@@ -64,7 +64,7 @@ def read_metadata(path):
     rows_list = []
     positions = [(0, 39), (39, 69), (69, 99), (99, 129), (129, 159), (159, 189), (189, 191), (191, 201), (201, 251),
                  (251, 301), (301, 351), (351, 357), (357, 361), (361, 371), (371, 471)]
-    with open(path) as open_file:
+    with open(md_path) as open_file:
         for line in open_file:
             row_list = [line[slice(*pos)].strip() for pos in positions]
             rows_list.append(row_list)
