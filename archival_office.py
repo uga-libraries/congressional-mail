@@ -10,26 +10,17 @@ import pandas as pd
 import sys
 
 
-def check_metadata(df, output_dir):
-    """This is a quickly made function for looking at the metadata, to decide if it is complete enough to keep
-    but needs to be refined if we do keep it"""
-
-    # Calculates the number and percentage of blank cells in each column, and saves it all to a CSV.
+def check_blanks(df, output_dir):
+    """Make a report with the number and percentage of blank cells in each column"""
     blank_count = df.eq('').sum()
     total_rows = len(df.index)
     blank_percent = round((blank_count / total_rows) * 100, 2)
     columns_df = pd.concat([blank_count, blank_percent], axis=1)
     columns_df.columns = ['Blank_Count', 'Blank_Percent']
-    print(columns_df)
     columns_df.to_csv(os.path.join(output_dir, 'usability_report_metadata.csv'), index=True, index_label='Column_Name')
 
-    # Counts the number of each topic
-    df['correspondence_topic'] = df['correspondence_topic'].replace('', 'BLANK')
-    df_counts = df['correspondence_topic'].value_counts().reset_index()
-    df_counts.columns = ['Topic', 'Topic_Count']
-    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
-
-    # Checking the rows with a possible file name
+def check_documents(df, output_dir):
+    """Make a report with information on the documents column"""
     blank_count = df['document_number'].eq('').sum()
     doc_num_count = df['document_number'].nunique()
     q_count = df['document_number'].str.startswith('Q').sum()
@@ -38,6 +29,12 @@ def check_metadata(df, output_dir):
         report.write(f'Document number unique values: {doc_num_count}\n')
         report.write(f'Comments with Q# (filename?) : {q_count}\n')
 
+def check_topics(df, output_dir):
+    """Make a report with the number of occurrences per topic"""
+    df['correspondence_topic'] = df['correspondence_topic'].replace('', 'BLANK')
+    df_counts = df['correspondence_topic'].value_counts().reset_index()
+    df_counts.columns = ['Topic', 'Topic_Count']
+    df_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 def read_metadata(md_path):
     """Read the metadata file into a dataframe"""
@@ -74,4 +71,7 @@ if __name__ == '__main__':
     md_df = read_metadata(metadata_path)
     md_df.to_csv(os.path.join(output_directory, 'archive_metadata.csv'), index=False)
 
-    check_metadata(md_df, output_directory)
+    # Creates reports to summarize the metadata.
+    check_blanks(md_df, output_directory)
+    check_documents(md_df, output_directory)
+    check_topics(md_df, output_directory)
