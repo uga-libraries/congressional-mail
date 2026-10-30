@@ -265,6 +265,8 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
         result = csv_to_list(csv_path)
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['A [electronic files]', '2021', '2024', '2e-06'],
                     ['A1 [electronic files]', '2021', '2024', '2e-06'],
                     ['B1 [electronic files]', '2023', '2023', '4e-07'],
@@ -432,6 +434,8 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
         result = csv_to_list(csv_path)
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['A [electronic files]', '2021', '2024', '2e-06'],
                     ['A1 [electronic files]', '2021', '2024', '2e-06'],
                     ['B1 [electronic files]', '2023', '2023', '4e-07'],

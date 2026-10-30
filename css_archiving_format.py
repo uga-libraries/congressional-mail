@@ -467,6 +467,8 @@ def make_metadata_csv(output_dir):
     with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['title', 'start_date', 'end_date', 'extent'])
+        writer.writerow(['Constituent Mail Export [electronic files]', '', '', ''])
+        writer.writerow(['Correspondence by Topic [electronic files]', '', '', ''])
 
     # Gets metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
