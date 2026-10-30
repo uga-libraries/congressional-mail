@@ -7,7 +7,8 @@ accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
-        and make a copy of incoming and outgoing correspondence in folders by topic
+        make a copy of incoming and outgoing correspondence in folders by topic
+        make the start of an inventory for ArchiveSpace with title, dates, and extent
 
 For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
@@ -868,7 +869,8 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
-              "and make a copy of the letters to and from constituents organized by topic")
+              "make a copy of the letters to and from constituents organized by topic,"
+              "and make the metadata inventory for the finding aid")
         try:
             appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
