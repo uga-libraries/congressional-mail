@@ -507,6 +507,20 @@ def split_year(df, output_dir):
     df.drop(['use_in', 'use_out', 'use_update', 'use_reminder', 'year'], axis=1, inplace=True)
 
 
+def topics_report(df, output_dir):
+    """Makes a report with the frequency of each code description, the topic column for this export"""
+
+    # Replace blanks with BLANK so that it is counted as a topic.
+    df['code_description'] = df['code_description'].fillna('BLANK')
+
+    # Gets a count for each topic.
+    topic_counts = df['code_description'].value_counts().reset_index()
+    topic_counts.columns = ['Topic', 'Topic_Count']
+
+    # Saves to a CSV.
+    topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
+
+
 def topics_sort(df, input_dir, output_dir):
     """Sort copy of incoming and outgoing correspondence into folders by topic
     Letters to and from constituents with the same topic are in the same topic folder, but different subfolders"""
@@ -629,20 +643,6 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
         df.to_csv(metadata_path, mode='a', header=False, index=False)
     else:
         df.to_csv(metadata_path, index=False)
-
-
-def topics_report(df, output_dir):
-    """Makes a report with the frequency of each code description, the topic column for this export"""
-
-    # Replace blanks with BLANK so that it is counted as a topic.
-    df['code_description'] = df['code_description'].fillna('BLANK')
-
-    # Gets a count for each topic.
-    topic_counts = df['code_description'].value_counts().reset_index()
-    topic_counts.columns = ['Topic', 'Topic_Count']
-
-    # Saves to a CSV.
-    topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
 def update_path(md_path, input_dir):
