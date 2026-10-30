@@ -25,9 +25,9 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of formletter_metadata.csv.
         result = csv_to_list(os.path.join('test_data', 'form_letter_metadata.csv'))
         expected = [['document_id', 'version', 'document_grouping_id', 'document_type', 'document_display_name', 
-                     'document_description', 'document_name_x', 'created_by', 'revised_by', 'approved_by', 
+                     'document_description', 'document_name_6A', 'created_by', 'revised_by', 'approved_by',
                      'creation_date', 'revision_date', 'last_used_date', 'status', 'inactive_flag', 
-                     'virtual_directory', 'fill-in_field_name', 'label', 'code', 'code_type', 'document_name_y', 
+                     'virtual_directory', 'fill-in_field_name', 'label', 'code', 'code_type', 'document_name_6D',
                      'user_id', 'attached_date', 'text', 'form_letter_attachment_flag', 'file_name', 'owned_by'],
                     ['000001', '1', '123456', 'Form', 'Economy', 'BLANK', r'..\doc\formletter\econ.pdf', '17',
                      'JSmith', '17', '20101212', '20110101', '20150101', 'Approved', 'BLANK', 'Form Letters',
