@@ -467,7 +467,6 @@ def make_metadata_csv(output_dir):
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
     topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
-        print("Starting on", topic)
 
         # Forms the title.
         title = topic + ' [electronic files]'
