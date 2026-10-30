@@ -7,7 +7,8 @@ accession: produce usability and appraisal reports; export not changed
 appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
-        and make a copy of incoming and outgoing correspondence in folders by topic
+        make a copy of incoming and outgoing correspondence in folders by topic
+        make the start of an inventory for ArchiveSpace with title, dates, and extent
 
 For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
@@ -421,6 +422,70 @@ def form_letter_metadata_read(table_id, input_dir):
     return df
 
 
+def make_metadata_csv(output_dir):
+    """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
+
+    # Starts a csv for the metadata.
+    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['title', 'start_date', 'end_date', 'extent'])
+        writer.writerow(['Constituent Mail Export [electronic files]', '', '', ''])
+        writer.writerow(['Correspondence by Topic [electronic files]', '', '', ''])
+
+    # Gets metadata for every topic folder.
+    # The folders for form letters, metadata, and the original export are added manually after the script runs.
+    topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
+    for topic in os.listdir(topics_dir):
+
+        # Forms the title.
+        title = topic + ' [electronic files]'
+
+        # Gets the dates from "date_in" column from this topic's metadata.csv (formatted YYYYMMDD)
+        # and calculates the earliest and latest year.
+        # Years are converted to integers to remove the .0 added when there is a blank in the date column.
+        # Assigns a default if the file isn't found, which can happen due to path lengths.
+        try:
+            topic_csv = os.path.join(topics_dir, topic, f'{topic}_metadata.csv')
+            df = pd.read_csv(topic_csv, dtype=str)
+            df['year'] = df['date_in'].astype(str).str[:4]
+            df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
+            start_year = int(df['year_num'].min())
+            end_year = int(df['year_num'].max())
+        except FileNotFoundError:
+            start_year = 'unknown'
+            end_year = 'unknown'
+
+        # Gets the size of the topics folder and converts to GB,
+        # rounding to 3 decimal places or the minimum number to not be 0.
+        # Assigns a default if the file isn't found, which can happen due to path lengths.
+        try:
+            topic_bytes = 0
+            for root, dirs, files in os.walk(os.path.join(topics_dir, topic)):
+                for file in files:
+                    topic_bytes += os.path.getsize(os.path.join(root, file))
+            extent = topic_bytes / 1000000000
+            rounder = 3
+            extent_rounded = round(extent, rounder)
+            while extent_rounded == 0.0:
+                rounder += 1
+                extent_rounded = round(extent, rounder)
+        except FileNotFoundError:
+            extent_rounded = 'could_not_calculate'
+
+        # Saves metadata for this topic to the CSV.
+        with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([title, start_year, end_year, extent_rounded])
+
+    # Adds titles for the other three folders (same title for every export), as a reminder.
+    # The dates and size are added manually.
+    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'])
+        writer.writerow(['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'])
+        writer.writerow(['Original Export [electronic files]', 'TBD', 'TBD', 'TBD'])
+
+
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
     # TODO read 2B if we receive an export that includes that table (better topic information)
@@ -804,7 +869,8 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
-              "and make a copy of the letters to and from constituents organized by topic")
+              "make a copy of the letters to and from constituents organized by topic,"
+              "and make the metadata inventory for the finding aid")
         try:
             appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
@@ -829,4 +895,5 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         topics_sort_prep(output_directory)
         #topics_sort(input_directory, output_directory)
+        make_metadata_csv(output_directory)
 

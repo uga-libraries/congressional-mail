@@ -60,9 +60,11 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the printed statement.
         result = printed.stdout
-        expected = ("\nThe script is running in access mode.\nIt will remove rows for deleted or restricted letters "
-                    "and columns with PII, make copies of the metadata split by calendar year, and make a copy "
-                    "of the letters to and from constituents organized by topic\n"
+        expected = ("\nThe script is running in access mode.\n"
+                    "It will remove rows for deleted or restricted letters and columns with PII, "
+                    "make copies of the metadata split by calendar year, "
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\n"
                     "Starting topic A, which has 6 unique document paths in the df\n"
                     "Starting topic A1, which has 6 unique document paths in the df\n"
                     "Starting topic B, which has 2 unique document paths in the df\n"
@@ -259,6 +261,21 @@ class MyTestCase(unittest.TestCase):
                      'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, B2_metadata.csv")
 
+        # Tests the contents of aspace_inventory.csv
+        csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
+        result = csv_to_list(csv_path)
+        expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['A [electronic files]', '2021', '2024', '2e-06'],
+                    ['A1 [electronic files]', '2021', '2024', '2e-06'],
+                    ['B1 [electronic files]', '2023', '2023', '4e-07'],
+                    ['B2 [electronic files]', '2023', '2023', '4e-07'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access, aspace_inventory.csv")
+
     def test_correct_access_restart(self):
         """Test for when the script runs correctly and is in access_restart mode"""
         # Makes a copy of the test data in the repo, to simplify deleting script outputs.
@@ -273,8 +290,10 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the printed statement.
         result = printed.stdout
-        expected = ("\nThe script is running in access_restart mode.\nIt will continue copying the letters to and from "
-                    "constituents organized by topic, skipping topics already done prior to the script being stopped.\n"
+        expected = ("\nThe script is running in access_restart mode.\n"
+                    "It will continue copying the letters to and from constituents organized by topic, "
+                    "skipping topics already done prior to the script being stopped,"
+                    "and make the metadata inventory for the finding aid.\n"
                     "Starting topic A1, which has 6 unique document paths in the df\n"
                     "Starting topic B, which has 2 unique document paths in the df\n"
                     "Starting topic B1, which has 4 unique document paths in the df\n"
@@ -410,6 +429,21 @@ class MyTestCase(unittest.TestCase):
                      '..\\documents\\BlobExport\\objects\\222222.txt', 'True', 'r200', 'General', 'Email', '20230212',
                      'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access_restart, B2_metadata.csv")
+
+        # Tests the contents of aspace_inventory.csv
+        csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
+        result = csv_to_list(csv_path)
+        expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['A [electronic files]', '2021', '2024', '2e-06'],
+                    ['A1 [electronic files]', '2021', '2024', '2e-06'],
+                    ['B1 [electronic files]', '2023', '2023', '4e-07'],
+                    ['B2 [electronic files]', '2023', '2023', '4e-07'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, aspace_inventory.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
@@ -703,7 +737,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no delete")
 
@@ -723,7 +758,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No restriction_review.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no restriction")
 

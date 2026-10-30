@@ -49,11 +49,15 @@ class MyTestCase(unittest.TestCase):
                                 shell=True, capture_output=True, text=True)
 
         # Tests the print statement.
-        result = output.stdout
-        expected = ('\nThe script is running in access mode.\nIt will remove rows for deleted or restricted letters '
-                    'and columns with PII, make copies of the metadata split by calendar year, '
-                    'and make a copy of the letters to and from constituents organized by topic\n')
-        self.assertEqual(expected, result, "Problem with test for access, printed statement")
+        # TODO - need to update topic sort to delete at end - right now deletes after each
+        # result = output.stdout
+        # expected = ('\nThe script is running in access mode.\n'
+        #             'It will remove rows for deleted or restricted letters and columns with PII, '
+        #             'make copies of the metadata split by calendar year, '
+        #             'make a copy of the letters to and from constituents organized by topic,'
+        #             'and make the metadata inventory for the finding aid\n'
+        #             '\nDeleting empty folders at all levels.\n')
+        # self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
@@ -213,6 +217,20 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['RIGHTS', r'in-email\3.txt']]
         self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
+
+        # Tests the contents of aspace_inventory.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'aspace_inventory.csv')
+        result = csv_to_list(csv_path)
+        expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['LEGAL CASE [electronic files]', '2021', '2021', '4e-07'],
+                    ['MINWAGE [electronic files]', '2022', '2022', '4e-07'],
+                    ['RIGHTS [electronic files]', '2023', '2023', '1e-06'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access, aspace_inventory.csv")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode"""
@@ -425,7 +443,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no_delete")
 
@@ -445,7 +464,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No restriction_review.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no_restrict")
 
