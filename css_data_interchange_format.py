@@ -446,7 +446,7 @@ def make_metadata_csv(output_dir):
         try:
             topic_csv = os.path.join(topics_dir, topic, f'{topic}_metadata.csv')
             df = pd.read_csv(topic_csv, dtype=str)
-            df['year'] = df['in_date'].astype(str).str[:4]
+            df['year'] = df['date_in'].astype(str).str[:4]
             df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
             start_year = int(df['year_num'].min())
             end_year = int(df['year_num'].max())
