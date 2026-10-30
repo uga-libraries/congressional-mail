@@ -1,6 +1,6 @@
 import os
 import unittest
-from cms_data_interchange_format import make_metadata_csv
+from css_data_interchange_format import make_metadata_csv
 from test_script import csv_to_list
 
 
