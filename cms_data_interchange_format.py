@@ -375,10 +375,11 @@ def form_letter_metadata(input_dir, output_dir):
     # TODO: if we ever get 8D (form letter merge) or 8E (form letter code), review for inclusion
 
     # Reads the metadata file into a dataframe, including supplying column headings.
+    # The numbered columns at the end are present in one of our exports but not named in the export description.
     # Prints an error if the file is not in the expected location.
     md_path = os.path.join(input_dir, '8C.out')
     columns = ['record_type', 'letter_code', 'letter_description', 'document_name', 'owner',
-               'creation_date', 'revision_date', 'archive_flag']
+               'creation_date', 'revision_date', 'archive_flag', '1', '2', '3', '4']
     try:
         df = pd.read_csv(md_path, delimiter='\t', dtype=str, on_bad_lines='warn', names=columns)
     except FileNotFoundError:
@@ -389,7 +390,7 @@ def form_letter_metadata(input_dir, output_dir):
         print("The form letter file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
         df = pd.read_csv(md_path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn', names=columns)
 
-    # Removes the record_type column, which every dataframe has, because it isn't helpful.
+    # Removes the record_type column (the name of the table) because we never retain that.
     df.drop(['record_type'], axis=1, inplace=True)
 
     # Saves to CSV.
