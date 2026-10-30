@@ -38,7 +38,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['cats [electronic files]', 'unknown', 'unknown', '0.0001'],
                     ['dogs [electronic files]', '2021', '2024', '0.0002'],
-                    ['farm [electronic files]', 'unknown', 'unknown', '0.0003']]
+                    ['farm [electronic files]', 'unknown', 'unknown', '0.0003'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
         self.assertEqual(expected, result, "Problem with test for missing metadata")
 
     def test_size_differences(self):
@@ -55,8 +58,11 @@ class MyTestCase(unittest.TestCase):
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['2-decimal [electronic files]', '1999', '1999', '0.026'],
                     ['4-decimal-down [electronic files]', '2001', '2003', '0.0001'],
-                    ['4-decimal-up [electronic files]', '2001', '2003', '0.001']]
-        self.assertEqual(expected, result, "Problem with test for missing metadata")
+                    ['4-decimal-up [electronic files]', '2001', '2003', '0.001'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for size differences")
 
     def test_year_differences(self):
         """Testing variations related to start and end year (see titles)"""
@@ -72,7 +78,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['blank years [electronic files]', '2011', '2023', '0.001'],
                     ['multiple years [electronic files]', '2001', '2003', '0.003'],
-                    ['one year [electronic files]', '1999', '1999', '0.004']]
+                    ['one year [electronic files]', '1999', '1999', '0.004'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
         self.assertEqual(expected, result, "Problem with test for year differences")
 
 
