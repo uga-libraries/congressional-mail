@@ -508,6 +508,13 @@ def make_metadata_csv(output_dir):
             writer = csv.writer(csv_file)
             writer.writerow([title, start_year, end_year, extent_rounded])
 
+    # Adds titles for the other three folders (same title for every export), as a reminder.
+    # The dates and size are added manually.
+    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'])
+        writer.writerow(['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'])
+        writer.writerow(['Original Export [electronic files]', 'TBD', 'TBD', 'TBD'])
 
 def read_csv(path):
     """Read a CSV produced by a previous mode of this script into a dataframe"""
