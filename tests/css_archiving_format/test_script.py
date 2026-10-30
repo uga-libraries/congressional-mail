@@ -733,7 +733,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no delete")
 
@@ -753,7 +754,8 @@ class MyTestCase(unittest.TestCase):
         expected = ("\r\nThe script is running in access mode.\r\n"
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
-                    "and make a copy of the letters to and from constituents organized by topic\r\n"
+                    "make a copy of the letters to and from constituents organized by topic,"
+                    "and make the metadata inventory for the finding aid\r\n"
                     "No restriction_review.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no restriction")
 
