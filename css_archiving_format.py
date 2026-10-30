@@ -488,16 +488,20 @@ def make_metadata_csv(output_dir):
 
         # Gets the size of the topics folder and converts to GB,
         # rounding to 3 decimal places or the minimum number to not be 0.
-        topic_bytes = 0
-        for root, dirs, files in os.walk(os.path.join(topics_dir, topic)):
-            for file in files:
-                topic_bytes += os.path.getsize(os.path.join(root, file))
-        extent = topic_bytes / 1000000000
-        rounder = 3
-        extent_rounded = round(extent, rounder)
-        while extent_rounded == 0.0:
-            rounder += 1
+        # Assigns a default if the file isn't found, which can happen due to path lengths.
+        try:
+            topic_bytes = 0
+            for root, dirs, files in os.walk(os.path.join(topics_dir, topic)):
+                for file in files:
+                    topic_bytes += os.path.getsize(os.path.join(root, file))
+            extent = topic_bytes / 1000000000
+            rounder = 3
             extent_rounded = round(extent, rounder)
+            while extent_rounded == 0.0:
+                rounder += 1
+                extent_rounded = round(extent, rounder)
+        except FileNotFoundError:
+            extent_rounded = 'could_not_calculate'
 
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
