@@ -788,3 +788,4 @@ if __name__ == '__main__':
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_year(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
+        make_metadata_csv(output_directory)
