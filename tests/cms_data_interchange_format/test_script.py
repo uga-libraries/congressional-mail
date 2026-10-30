@@ -218,6 +218,8 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'aspace_inventory.csv')
         result = csv_to_list(csv_path)
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['LEGAL CASE [electronic files]', '2021', '2021', '4e-07'],
                     ['MINWAGE [electronic files]', '2022', '2022', '4e-07'],
                     ['RIGHTS [electronic files]', '2023', '2023', '1e-06'],

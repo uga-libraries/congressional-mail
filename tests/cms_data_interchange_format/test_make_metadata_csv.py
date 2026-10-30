@@ -36,6 +36,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['cats [electronic files]', 'unknown', 'unknown', '0.0001'],
                     ['dogs [electronic files]', '2021', '2024', '0.0002'],
                     ['farm [electronic files]', 'unknown', 'unknown', '0.0003'],
@@ -56,6 +58,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['2-decimal [electronic files]', '1999', '1999', '0.026'],
                     ['4-decimal-down [electronic files]', '2001', '2003', '0.0001'],
                     ['4-decimal-up [electronic files]', '2001', '2003', '0.001'],
@@ -76,6 +80,8 @@ class MyTestCase(unittest.TestCase):
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['blank years [electronic files]', '2011', '2023', '0.001'],
                     ['multiple years [electronic files]', '2001', '2003', '0.003'],
                     ['one year [electronic files]', '1999', '1999', '0.004'],
