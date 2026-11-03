@@ -83,33 +83,52 @@ Document the original arrangement in the processing plan.
 
 ## Run script in accession mode
 
-`python accession.py input_directory accession`
+### Preparation
 
-The script will read the metadata, combine it if there are multiple metadata files, and create:
-* Appraisal reports
-* Metadata usability reports, including how many files in the export match the metadata
-* Topic report
+Prior to running the script, verify:
+ 
+* For exports with multiple files, decide if any new were received that we should incorporate
+* The expected metadata file(s) are present, by comparing to what is expected in check_arguments()
+* For the css archiving format, which has a header, see if the column names match what the script expects
+
+For the last two, the script will give an error if the expected conditions are not met,
+but it may save time to catch the problem before starting, if possible.
+
+### Script
 
 Unless the export is particularly small, this should be done by remoting into Hub.
 
-Prior to running the script, verify:
-* The expected metadata file(s) are present
-* For exports with multiple files, if any new were received that we should incorporate
-* For metadata files with a header, if they match what the script expects
+`python accession.py input_directory accession`
 
-Read errors
-- Unexpected number of columns: add columns named "extra"
-- Unicode error: document it, but no action required
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
+
+### Script Outputs
+
+All script outputs will be saved to AppraisalCopy.
+
+* appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal)
+* appraisal_delete_log.csv (metadata rows likely to be appraisal)
+* metadata_formatting_errors_COLUMN.csv (1 per column with errors)
+* usability_report_matching.csv (how well the document metadata matches the files in the export)
+* usability_report_matching_details.csv (the document paths in the metadata or files in the export with no match)
+* usability_report_metadata.csv (how many columns are missing, blank, or have formatting errors)
+* topics_report.csv (number of occurrences of each topic or topic combination if the export allows delimiters)
 
 The appraisal reports are only searching columns we believe have any probability of showing a restriction, 
 like topics, file paths, office notes, and fill in text fields.
 It results in too many false positives to search other columns, 
 due to columns like names and addresses that would never show a restriction. 
 
-The letter matching report removes duplicates before attempting to match (response letters often repeat).
+The usability reports for matching removes duplicates before attempting to match (response letters often repeat).
 so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
 
 ## Review script results
+
+### Read Errors
+Read errors
+- Unexpected number of columns: add columns named "extra"
+- Unicode error: document it, but no action required
+
 
 ### Usability
 
