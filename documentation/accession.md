@@ -18,7 +18,7 @@ Make another copy to work on, so it is easier to recover if there are errors dur
 
 Within the collection folder, make a new folder named CSSAppraisalCopy or CMSAppraisalCopy (name with export type).
 This will keep constituent mail separate from other born-digital.
-Within that, make a folder names smith_constituent_mail_export, where "Smith" is the name of the congressperson.
+Within that, make a folder names smith_constituent_mail_export, where "Smith" is the last name of the congressperson.
 Then copy the accession (if bagged, just the contents of the objects folder, without any zips) to the export folder.
 
 For smaller exports, use TeraCopy over the network. 
@@ -62,19 +62,24 @@ make a note to review it during appraisal, after the metadata-based review.
 Also note any non-standard files received, like a PST of their schedule.
 If it is not directly part of the export, it should be processed with the rest of the born-digital.
 
-## Reorganize the copy
+## Reorganize ApppraisalCopy
 
 The scripts require a consistent directory structure.
-This typically means combining files from multiple disks to one directory 
-and removing extra directory levels (BlobExport, dos, etc.).
-Document the original arrangement in the processing plan.
-The finished arrangement should look like the following, where Smith is the last name of the congressperson.
+This typically means combining files from multiple disks to one directory and removing extra directory levels.
+
+For extra protection against error, use TeraCopy when moving the files.
+The finished arrangement should look like the following, where "Smith" is the last name of the congressperson.
 
 * smith_constituent_mail_export 
   * documents
     * _folders that contain the letters_ 
   * _metadata files_ 
 
+The folders that contain the letters may also have subfolders, which should stay where they are.
+We just want to remove any additional folders between "documents" and the first folders that contain files,
+such as blobexport and dos.
+
+Document the original arrangement in the processing plan.
 
 ## Run script in accession mode
 
