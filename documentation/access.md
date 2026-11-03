@@ -1,5 +1,7 @@
 # Workflow for Constituent Mail: Access
 
+See the processing plan (started during accessioning) for what to document from this stage.
+
 Processing typically does not take place until after the collection can open.
 If time allows, we may process at the time of accessioning to streamline the work and future validation process.
 
@@ -52,8 +54,7 @@ so the inventory should include everything.
 ## Review DIPs
 
 Delete any topic folders that do not provide meaningful access, such as dates or numerical codes.
-Note the number of folders deleted in the processing plan, but do not do file-level documentation, 
-as they are still in present in the restricted full export.
+Do not add to the deletion log, since they are still in present in the restricted full export.
 
 I have also combined topics that were highlight related, like pro/con versions of the same topic.
 If do this, must combine the metadata csvs as well.

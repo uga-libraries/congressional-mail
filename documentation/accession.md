@@ -43,6 +43,9 @@ For extra confidence, compare the file count and size in bytes between this copy
 Make a folder named "reports and logs" within AppraisalCopy and move AppraisalCopy.log to it.
 All script outputs of permanent value should be added to this folder throughout this workflow.
 
+Use the [processing plan template](TEMPLATE%20Constituent%20Mail%20Processing%20Plan.docx) 
+to start a processing plan in the AppraisalCopy folder. Reference the template for what to document.
+
 ## Export Completeness
 
 Check the export contains all expected files:
@@ -78,8 +81,6 @@ The finished arrangement should look like the following, where "Smith" is the la
 The folders that contain the letters may also have subfolders, which should stay where they are.
 We just want to remove any additional folders between "documents" and the first folders that contain files,
 such as blobexport and dos.
-
-Document the original arrangement in the processing plan.
 
 ## Run script in accession mode
 
@@ -126,15 +127,13 @@ so the number of metadata rows matched, unmatched, and blank will be fewer than 
 
 ### Printed warnings
 
-If there is a warning that characters were skipped due to UnicodeEncodeError,
-document that in the processing plan. No action is required.
+If there is a warning that characters were skipped due to UnicodeEncodeError, no action is required.
 
 If there is a warning that lines were skipped for having too many fields,
 this can be addressed by adding columns named "extra#" (each has to be unique) when reading the file,
 and then removing those files along with columns that have PII. Delete all script outputs and run the script again.
 However, if there are not many rows being skipped, they do not need to be recovered.
 The metadata is just for the access copies, and the complete metadata with these rows is still in the preservation copy.
-Document the number skipped and if action was taken in the processing plan.
 
 If there are warnings about the script itself, make a GitHub issue, if one does not already exist.
 These may indicate code that will stop working with later versions of Python.

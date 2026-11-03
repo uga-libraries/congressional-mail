@@ -1,5 +1,7 @@
 # Workflow for Constituent Mail: Appraisal
 
+See the processing plan (started during accessioning) for what to document from this stage.
+
 ## Review Appraisal Logs
 
 Save an unedited copy of both in "reports and logs" folder.
@@ -10,7 +12,6 @@ The appraisal delete log is more likely to be appraisal.
 * Delete any rows that are false positives
 * !!! Add tips and tricks for what to look for
 * !!! Add tips and tricks if cannot open in Excel.
-* Summarize decisions in processing plan.
 
 ### Appraisal Check Log
 
@@ -26,7 +27,6 @@ If the metadata is inconclusive (e.g., don't have enough detail), do not remove 
   * Forwarding to another office is not enough, as that could be for more information
 * !!! Add more tips and tricks for what to look for
 * Add any rows for appraisal to the appraisal delete log
-* Summarize decisions in processing plan.
 
 ## Select topics for routine office appraisal
 
@@ -50,7 +50,7 @@ Unless the export is particularly small, this should be done by remoting into Hu
 
 Prior to running the script, verify:
 * The appraisal_delete_log.csv in output_dir with only rows to be deleted (from previous step)
-* Add topics for restriction review to restrictions list in restriction_report() and document in processing plan. 
+* Add topics for restriction review to restrictions list in restriction_report() 
   Get the topics from the topics report. Either need to do exact matches (even when delimiter)
   or change to testing if topic includes instead of equals and get more false positives.
 * Check for new path formats and add to update_path()
@@ -69,12 +69,10 @@ Check all other folders except indivletters and objects (huge, rely on metadata)
 If you decide to delete, documentation TBD.
 
 When checking files, copy a small sample and only open the copy, or it risks metadata changing.
-Record in the processing plan which you reviewed, the percent reviewed, and your findings.
 
 ## Metadata Review
 
 For exports with multiple metadata files, delete any metadata file that is for casework only.
-Document in the processing plan.
 
 ## Restriction Review
 Requests for assistance on these topics are likely to include highly sensitive information 
