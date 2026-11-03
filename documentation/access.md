@@ -53,7 +53,7 @@ so the inventory should include everything.
 
 ## Review DIPs
 
-Delete any topic folders that do not provide meaningful access, such as dates or numerical codes.
+Delete any topic folders that do not provide meaningful access, such as dates, staff names, or numerical codes.
 Do not add to the deletion log, since they are still in present in the restricted full export.
 
 I have also combined topics that were highlight related, like pro/con versions of the same topic.
@@ -64,19 +64,24 @@ If do this, must combine the metadata csvs as well.
 Package the script output into DIPs according to the standard born-digital workflow.
 This is in development, but rename to add access number, maybe zip.
 
+### Letters by Topic
+
+Each topic folder is a separate DIP.
+
 ### Form Letters
 
 Copy the entire form letter folder form the export.
 For exports with multiple files, use the combined form letter metadata.
-If the export has a form letter DAT file, convert to CSV (just for access copy)
 
-### Redacted Metadata
+If the export has a form letter DAT file, convert to CSV (just for access copy)
+1. Open in Excel, selecting tab as the delimiter.
+2. Use filter to check each column has the right kind of information and there are no extra columns.
+3. Save as a CSV.
+4. Open in Notepad++ and confirm the number of rows matches the DAT and there are no obvious Excel formatting issues.
+
+### Correspondence Metadata
 
 Full redacted metadata and by_year folder are in one DIP together.
-
-### Letters by Topic
-
-Each topic folder is a separate DIP.
 
 ## ArchivesSpace  
 
