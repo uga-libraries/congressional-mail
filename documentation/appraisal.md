@@ -51,6 +51,8 @@ Requests for assistance on these topics are likely to include highly sensitive i
 
 Review the topics report and update the list in the restriction_report() function with the exact topics to review.
 Include any delimited versions of these topics.
+If this is too many topics, switch to a search for the "in" instead of "equals" - already did for css dif.
+This will result in some false positives.
 
 ## Run Script in Appraisal Mode
 
