@@ -66,6 +66,11 @@ Unless it is obviously staffer initials, do leave in letter codes, as they may b
 I have also combined topics that were highlight related, like pro/con versions of the same topic.
 If do this, must combine the metadata csvs as well.
 
+Mostly leave the folder names as is, but you can correct obvious misspellings,
+and replace the underscore from an unpermitted character with something more meaningful.
+Update the topic portion of the metadata.csv filename to match any changes.
+Wait to expand on acronyms or add additional information until making the ArchivesSpace inventory.
+
 ## Package DIPs
 
 Package the script output into DIPs according to the standard born-digital workflow.
