@@ -52,7 +52,13 @@ To keep the expected test results manageable, most tests only use a small subset
 
 ## Workflow
 
+1. As soon as a constituent mail is received, [accession](documentation/accession.md)
+   and determine if it is complete enough to accept.
 
+2. If the accession is accepted, proceed to [appraisal](documentation/appraisal.md).
+
+3. If the collection is closed, [preservation](documentation/preservation.md) and [access](documentation/access.md)
+   may wait until it can be opened, or can be done now.
 
 ## Author
 
