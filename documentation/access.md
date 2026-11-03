@@ -53,8 +53,15 @@ so the inventory should include everything.
 
 ## Review DIPs
 
-Delete any topic folders that do not provide meaningful access, such as dates, staff names, or numerical codes.
+Delete any topic folders that do not provide meaningful access, such as:
+* Dates
+* Numerical codes
+* Staff names or roles
+* Workflows (e.g., no response required)
+
 Do not add to the deletion log, since they are still in present in the restricted full export.
+
+Unless it is obviously staffer initials, do leave in letter codes, as they may be a meaningful acronym.
 
 I have also combined topics that were highlight related, like pro/con versions of the same topic.
 If do this, must combine the metadata csvs as well.
