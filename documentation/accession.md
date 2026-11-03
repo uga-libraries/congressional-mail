@@ -47,14 +47,20 @@ All script outputs of permanent value should be added to this folder throughout 
 
 Check the export contains all expected files:
 
-* One or more metadata files (depends on the export type, may be .DAT or .out)
+* One or more metadata files
+  * CMS DIF has multiple .out files
+  * CSS Archiving has 2 .dat files (one with primary metadata, one for form letters)
+  * CMS DIF has multiple .dat files
 * Description of the metadata fields in the export (filename varies, usually a Word doc)
-* Reports on missing files (often named nonexist)
+* Reports on missing files (often named nonexist.txt)
 * A README
 * Directories with the text of the letters (common directories: formletters, indivletters, objects)
 
 We request they not send us casework. If there is a letter directory including the word case,
 make a note to review it during appraisal, after the metadata-based review.
+
+Also note any non-standard files received, like a PST of their schedule.
+If it is not directly part of the export, it should be processed with the rest of the born-digital.
 
 ## Reorganize the copy
 
