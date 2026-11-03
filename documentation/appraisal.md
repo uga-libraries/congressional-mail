@@ -67,6 +67,9 @@ For exports with multiple metadata files, delete any metadata file that is for c
 Document in the processing plan.
 
 ## Restriction Review
+Requests for assistance on these topics are likely to include highly sensitive information 
+and are being restricted from access until we make a determination of if they should be retained 
+or restricted for 75 years.
 
 Save a full copy of this in "reports and logs". Work on a copy so can delete as you determine it isn't restricted.
 Like with appraisal, has to be clearly about their personal situation and not an opinion or too little info to decide.
