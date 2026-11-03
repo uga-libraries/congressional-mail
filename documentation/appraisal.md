@@ -1,5 +1,28 @@
 # Workflow for Constituent Mail: Appraisal
 
+### Appraisal Logs
+
+Save an unedited copy of both in "reports and logs" folder.
+
+The appraisal delete log is more likely to be appraisal.
+* Delete any rows that are false positives
+* !!! Add tips and tricks for what to look for
+* !!! Add tips and tricks if cannot open in Excel.
+* Summarize decisions in processing plan.
+
+The appraisal check log is looking for new terms that indicate appraisal, and will have a lot of false positives.
+If the metadata is inconclusive (e.g., don't have enough detail), do not remove for appraisal.
+* Watch for big patterns of not appraisal that we might want to add to the script.
+* Narrow it down by removing any rows that don't have enough info (no doc or doc is id number and no notes)
+* Indicators of casework:
+  * Privacy form or PARF referenced
+  * Staffer signature in fill shows them responsible for casework
+  * Notes about your problem/situation or a family members problem/situation
+  * Forwarding to another office is not enough, as that could be for more information
+* !!! Add more tips and tricks for what to look for
+* Add any rows for appraisal to the appraisal delete log
+* Summarize decisions in processing plan.
+
 Requires appraisal_delete_log.csv, created in accession mode.
 This CSV may be manually edited (remove rows to not delete, add rows from appraisal_check_log.csv to delete).
 For casework, delete even if the phrase indicates it is not a case or casework, 
