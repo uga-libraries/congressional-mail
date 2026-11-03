@@ -91,6 +91,9 @@ If the export has a form letter DAT file, convert to CSV (just for access copy)
 3. Save as a CSV.
 4. Open in Notepad++ and confirm the number of rows matches the DAT and there are no obvious Excel formatting issues.
 
+Open the form letter metadata in Notepad++ and briefly review for useless rows.
+We have deleted rows with nothing but a document_id before.
+
 ### Correspondence Metadata
 
 Full redacted metadata and by_year folder are in one DIP together.
