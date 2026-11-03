@@ -25,7 +25,13 @@ If the metadata is inconclusive (e.g., don't have enough detail), do not remove 
   * Notes about your problem/situation or a family members problem/situation
   * If the note is that it isn't case or casework, still count as casework since it was sensitive enough to be considered
   * Forwarding to another office is not enough, as that could be for more information
-* !!! Add more tips and tricks for what to look for
+* Some label a row "intern" because it was written by the intern, so it isn't enough on its own to be a job application
+* Do not delete recommendations for public office
+* Do not delete requests for interviews if it likely to be an interview of the congressperson
+* Do not review further if it is related to a piece of legislation
+* Do not review further if it has pro/con/neutral position
+* Do delete individual help with finding a job , which is casework-like (likely to come up as possible job application)
+* !!!Any more tips and tricks?
 * Add any rows for appraisal to the appraisal delete log
 
 ## Select topics for routine office appraisal
