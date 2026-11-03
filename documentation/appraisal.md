@@ -21,7 +21,7 @@ If the metadata is inconclusive (e.g., don't have enough detail), do not remove 
 * Narrow it down by removing any rows that don't have enough info (no doc or doc is id number and no notes)
 * Indicators of casework:
   * Privacy form or PARF referenced
-  * Staffer signature in fill shows them responsible for casework
+  * Staffer signature shows them only responsible for casework (may be part of fill column)
   * Notes about your problem/situation or a family members problem/situation
   * If the note is that it isn't case or casework, still count as casework since it was sensitive enough to be considered
   * Forwarding to another office is not enough, as that could be for more information
@@ -37,6 +37,14 @@ We do want to keep replies to students writing for class.
 Process is TBD, but need to add this to the appraisal delete log somehow.
 The file level deletion does need to be logged and these files should not be in the preservation or access copies.
 The metadata will also not be in the access copies.
+
+## Select topics for restriction review
+
+We are doing additional review for topics related to criminal justice, finances, health, and immigration.
+Requests for assistance on these topics are likely to include highly sensitive information.
+
+Review the topics report and update the list in the restriction_report() function with the exact topics to review.
+Include any delimited versions of these topics.
 
 ## Run Script in Appraisal Mode
 
@@ -68,6 +76,9 @@ Check the form letter folder for filled in privacy forms, tour lists with social
 Check all other folders except indivletters and objects (huge, rely on metadata) for folders or subfolders that suggest restrictions.
 If you decide to delete, documentation TBD.
 
+Even if the file is casework, check it. If it is just form letters or other templates, it is ok to keep.
+Only delete if it is about an individual's situation.
+
 When checking files, copy a small sample and only open the copy, or it risks metadata changing.
 
 ## Metadata Review
@@ -75,9 +86,8 @@ When checking files, copy a small sample and only open the copy, or it risks met
 For exports with multiple metadata files, delete any metadata file that is for casework only.
 
 ## Restriction Review
-Requests for assistance on these topics are likely to include highly sensitive information 
-and are being restricted from access until we make a determination of if they should be retained 
-or restricted for 75 years.
+We are doing additional review for topics related to criminal justice, finances, health, and immigration.
+Requests for assistance on these topics are likely to include highly sensitive information.
 
 Save a full copy of this in "reports and logs". Work on a copy so can delete as you determine it isn't restricted.
 Like with appraisal, has to be clearly about their personal situation and not an opinion or too little info to decide.
