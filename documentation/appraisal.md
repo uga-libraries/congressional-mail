@@ -28,6 +28,16 @@ If the metadata is inconclusive (e.g., don't have enough detail), do not remove 
 * Add any rows for appraisal to the appraisal delete log
 * Summarize decisions in processing plan.
 
+## Select topics for routine office appraisal
+
+Review the topic report for any topic related to routine office interactions, such as 
+requests for flags, tours, congratulations, thank you’s, scouts, invitations, and holidays (Christmas cards, etc.)
+We do want to keep replies to students writing for class.
+
+Process is TBD, but need to add this to the appraisal delete log somehow.
+The file level deletion does need to be logged and these files should not be in the preservation or access copies.
+The metadata will also not be in the access copies.
+
 ## Run Script in Appraisal Mode
 
 `python accession.py input_directory appraisal`
