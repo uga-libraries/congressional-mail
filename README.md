@@ -14,6 +14,11 @@ This script is not in sync with the rest, and only has the ability to read and r
 
 ### Script Arguments
 
+appraisal_delete_log.csv (created in accession mode) must be in the output_directory before running appraisal or access modes.
+restriction_review.csv (created in appraisal mode) must be in the output_directory before running access mode.
+topics_sort_metadata.csv and topics_sort_complete.txt must be in the output_directory before running access_restart mode.
+The output_directory is the parent folder of input_directory
+
 input_directory: path to the folder with the export
 This is required by all the scripts.
 The export directory will be named Lastname_Constituent_Mail_Export (UGA naming convention)
@@ -47,10 +52,7 @@ To keep the expected test results manageable, most tests only use a small subset
 
 ## Workflow
 
-appraisal_delete_log.csv (created in accession mode) must be in the output_directory before running appraisal or access modes.
-restriction_review.csv (created in appraisal mode) must be in the output_directory before running access mode.
-topics_sort_metadata.csv and topics_sort_complete.txt must be in the output_directory before running access_restart mode.
-The output_directory is the parent folder of input_directory
+
 
 ## Author
 
