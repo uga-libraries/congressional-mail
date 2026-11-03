@@ -138,6 +138,15 @@ The metadata is just for the access copies, and the complete metadata with these
 If there are warnings about the script itself, make a GitHub issue, if one does not already exist.
 These may indicate code that will stop working with later versions of Python.
 
+### Letter Types
+
+Based on the folder names in documents, does the export include letters from constituents or just by the office?
+The letters from constituents are usually in a folder named objects.
+The letters by the office are usually in folders named form letters and indivletters.
+
+We have retained an export that just had letters by the office, but it lessens the value.
+If an export also had very incomplete metadata, being by the office only may further decrease the chance we keep it.
+
 ### Metadata Formatting Errors
 
 There will be one report for each column with potential errors.
