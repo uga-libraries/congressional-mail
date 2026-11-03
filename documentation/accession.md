@@ -4,12 +4,44 @@ Accession as soon as possible after the donation is received, so we can address 
 
 ## Copy Export
 
-*  Do usual steps (virus, copy to Hub, etc.) for transfer media
+### Copy from Transfer Media
+
+*  Do usual steps (virus, copy to Hub, etc.) for transfer media [Born Digital Accessioning](https://github.com/uga-libraries/born-digital-accessioning)
+*  If received on an external hard drive, do not include the hard drive software.
 *  Unzip. Retain the zips until processing is done, but move into their own folder.
-*  Bag now? We haven't been doing that, but there can be quite a delay before accessioning is done.
-*  Make another copy to work on, as we're about to do appraisal
-   *  TeraCopy over network if smaller
-   *  Robocopy remoted into Hub if bigger (more a file count issue)
+*  Bag now? We haven't been doing that, but there can be quite a delay before accessioning is done,
+   so it would be better for verifying authenticity. It is just slow.
+
+### Appraisal Copy
+
+Make another copy to work on, so it is easier to recover if there are errors during arrangement or appraisal.
+
+Within the collection folder, make a new folder named CSSAppraisalCopy or CMSAppraisalCopy (name with export type).
+This will keep constituent mail separate from other born-digital.
+Within that, make a folder names smith_constituent_mail_export, where "Smith" is the name of the congressperson.
+Then copy the accession (if bagged, just the contents of the objects folder, without any zips) to the export folder.
+
+For smaller exports, use TeraCopy over the network. 
+For larger exports (unclear what the threshold is, but it is from file count),
+remote into Hub and use robocopy instead. This may still take multiple hours.
+
+Change the terminal directory to the collection folder on Hub and use the following command:
+   
+    `robocopy SOURCE DESTINATION /S /E /COPY:DAT /LOG:PATH\AppraisalCopy.log` 
+
+The source folder is not copied. Just its contents are. It will show as skipped in the log.
+
+The log size in file properties will not increase, but it still may be working.
+You have to make a copy of the file for it to update file properties and to review progress.
+
+The resulting log is so long that it is not easy to find error messages.
+The number of "New File" should match the number of files.
+The number of "100%" (indicates success) may be lower than that, as it doesn't count all 0 byte sizes.
+
+For extra confidence, compare the file count and size in bytes between this copy and the original accession folder.
+
+Make a folder named "reports and logs" within AppraisalCopy and move AppraisalCopy.log to it.
+All script outputs of permanent value should be added to this folder throughout this workflow.
 
 ## Export Completeness
 
