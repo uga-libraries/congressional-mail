@@ -6,6 +6,10 @@ Providing basic access to congressional correspondent system exports. DRAFT
 The archival office export type is a non-standard export received for a single collection.
 This script is not in sync with the rest, and only has the ability to read and report on the metadata file.
 
+The archiving and data interchange export formats have their own scripts.
+The actions are close but there is enough difference in metadata (especially column names and delimiters) to require their own.
+We intend to phase out data interchange and focus on archiving, or else would have spent more time on shared functions.
+
 ## Getting Started
 
 ### Dependencies
@@ -58,7 +62,19 @@ To keep the expected test results manageable, most tests only use a small subset
 2. If the accession is accepted, proceed to [appraisal](documentation/appraisal.md).
 
 3. If the collection is closed, [preservation](documentation/preservation.md) and [access](documentation/access.md)
-   may wait until it can be opened, or can be done now.
+   may wait until it can be opened, or can be done now. TBD - zip to reduce strain on Hub?
+
+Run all scripts remotely on Hub for exports with larger numbers of files (size uncertain - 100,000?)
+
+All scripts read the metadata and remove columns with PII (names, addresses, office notes.)
+However, notes columns are initially kept to use for appraisal and restriction review, and only later removed.
+There is some data loss during reading from character encoding and parsing errors, so this metadata is only suitable for access.
+If there are multiple metadata files, they are combined using the correspondence id, to avoid a lot of incomplete rows (e.g., address only).
+For the multiple metadata files, we only read select files that contain information needed for the access copies or appraisal and restriction review.
+The original metadata file(s) are retained in the preservation copy for when PII is no longer restricted.
+
+The beginning of the file paths in the metadata must be updated to match how they are organized in the export
+in order to align the metadata and files for sorting.
 
 ## Author
 
