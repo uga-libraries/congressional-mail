@@ -72,12 +72,7 @@ This will result in some false positives.
 
 ## Run Script in Appraisal Mode
 
-Delete letters due to appraisal (leaves form letters) and make report of possible restrictions; metadata not changed
-
-`python accession.py input_directory appraisal`
-
-The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
-The output_directory will be AppraisalCopy.
+### Script preparation
 
 Prior to running the script, verify:
 * The appraisal_delete_log.csv in output_dir with only rows to be deleted (from previous step)
@@ -87,7 +82,19 @@ Prior to running the script, verify:
 * Check for new path formats and add to update_path()
 * Calculate the number of files in the documents folder, to check after that the right number were deleted.
 
-QC of the script
+### Script command
+
+`python path/to/script input_directory appraisal`
+
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export
+
+### Script actions and outputs
+
+All outputs are saved in AppraisalCopy. 
+
+Delete letters due to appraisal (leaves form letters) and make report of possible restrictions; metadata not changed
+
+### Script QC
 * Number of files in the documents folder decreases by the expected amount (number of files in the deletion log without a path error)
 * Number of files in the deletion log matches the number in appraisal delete log
 * Check a few files in the log are not in the export

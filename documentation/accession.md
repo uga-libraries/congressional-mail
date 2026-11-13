@@ -99,7 +99,7 @@ such as blobexport and dos.
 
 ## Run script in accession mode
 
-### Preparation
+### Script preparation
 
 Prior to running the script, verify:
  
@@ -110,18 +110,15 @@ Prior to running the script, verify:
 For the last two, the script will give an error if the expected conditions are not met,
 but it may save time to catch the problem before starting, if possible.
 
-### Script
+### Script command
 
-Produces usability and appraisal reports; export not changed
+`python path/to/script input_directory accession`
 
-`python accession.py input_directory accession`
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export
 
-The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
-The output_directory will be AppraisalCopy.
+### Script outputs
 
-### Script Outputs
-
-All script outputs will be saved to AppraisalCopy.
+All outputs are saved in AppraisalCopy. The export is not changed.
 
 * appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal - not used in acceptance review)
 * appraisal_delete_log.csv (metadata rows likely to be appraisal - not used in acceptance review)
