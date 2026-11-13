@@ -6,21 +6,35 @@ Accession as soon as possible after the donation is received, so we can address 
 
 ### Copy from Transfer Media
 
-*  Do usual steps (virus, copy to Hub, etc.) for transfer media [Born Digital Accessioning](https://github.com/uga-libraries/born-digital-accessioning)
-*  If received on an external hard drive, do not include the hard drive software.
-*  Unzip. Retain the zips until processing is done, but move into their own folder.
-*  Bag now? We haven't been doing that, but there can be quite a delay before accessioning is done,
-   so it would be better for verifying authenticity. It is just slow.
+1.  Follow the usual [Born Digital Accessioning](https://github.com/uga-libraries/born-digital-accessioning) 
+   steps for transfer media (virus scanning, copy to Hub, documentation). 
+    * If received on an external hard drive, do not include the hard drive software when copying
+    * Wait to bag until after the next step (unzipping)
+    * QUESTION: still want the initial manifest or format report? If so, wait until unzip
+
+ 
+2. Unzip all zipped files with 7-Zip.
+    * Document folders are often zipped as rar files
+    * Remote into Hub for unzipping to make it faster
+    * Retain the zips until processing is done
+
+   
+3. Bag the accession now the files are unzipped, so we can better verify authenticity after processing.
 
 ### Appraisal Copy
 
-Make another copy to work on, so it is easier to recover if there are errors during arrangement or appraisal.
+1. Set up folders within the collection folder.
 
 Within the collection folder, make a new folder named CSSAppraisalCopy or CMSAppraisalCopy (name with export type).
-This will keep constituent mail separate from other born-digital.
-Within that, make a folder names smith_constituent_mail_export, where "Smith" is the last name of the congressperson.
-Then copy the accession (if bagged, just the contents of the objects folder, without any zips) to the export folder.
+This will keep constituent mail separate from other born-digital content.
+Within that, make a folder named name_constituent_mail_export, where "name" is the last name of the congressperson.
 
+Make a folder named "reports and logs" within AppraisalCopy. 
+All permanent script outputs should be added to this folder throughout this workflow.
+
+2. Copy files to AppraisalCopy.
+
+Copy the accession (if bagged, just the contents of the data folder), without any zips, to the export folder. 
 For smaller exports, use TeraCopy over the network. 
 For larger exports (unclear what the threshold is, but it is from file count),
 remote into Hub and use robocopy instead. This may still take multiple hours.
@@ -40,8 +54,9 @@ The number of "100%" (indicates success) may be lower than that, as it doesn't c
 
 For extra confidence, compare the file count and size in bytes between this copy and the original accession folder.
 
-Make a folder named "reports and logs" within AppraisalCopy and move AppraisalCopy.log to it.
-All script outputs of permanent value should be added to this folder throughout this workflow.
+Move AppraisalCopy.log to it to reports and logs.
+
+3. Start processing plan.
 
 Use the [processing plan template](TEMPLATE%20Constituent%20Mail%20Processing%20Plan.docx) 
 to start a processing plan in the AppraisalCopy folder. Reference the template for what to document.
@@ -206,7 +221,7 @@ Check which columns have a high number of blanks.
 This is especially a problem for in/out date, topic, and document path, which are essential for access and analysis.
 Other columns are less essential.
 
-### Acceptance of the accession
+## Acceptance of the accession
 
 We have received some incomplete exports, which are less useful because of missing metadata.
 If the problem is in the portion of the export received, we could ask for missing files at the time of receipt.
