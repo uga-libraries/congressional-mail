@@ -112,31 +112,24 @@ but it may save time to catch the problem before starting, if possible.
 
 ### Script
 
-Unless the export is particularly small, this should be done by remoting into Hub.
+Produces usability and appraisal reports; export not changed
 
 `python accession.py input_directory accession`
 
 The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
+The output_directory will be AppraisalCopy.
 
 ### Script Outputs
 
 All script outputs will be saved to AppraisalCopy.
 
-* appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal)
-* appraisal_delete_log.csv (metadata rows likely to be appraisal)
+* appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal - not used in acceptance review)
+* appraisal_delete_log.csv (metadata rows likely to be appraisal - not used in acceptance review)
 * metadata_formatting_errors_COLUMN.csv (1 per column with errors)
 * usability_report_matching.csv (how well the document metadata matches the files in the export)
 * usability_report_matching_details.csv (the document paths in the metadata or files in the export with no match)
 * usability_report_metadata.csv (how many columns are missing, blank, or have formatting errors)
 * topics_report.csv (number of occurrences of each topic or topic combination if the export allows delimiters)
-
-The appraisal reports are only searching columns we believe have any probability of showing a restriction, 
-like topics, file paths, office notes, and fill in text fields.
-It results in too many false positives to search other columns, 
-due to columns like names and addresses that would never show a restriction. 
-
-The usability reports for matching removes duplicates before attempting to match (response letters often repeat).
-so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
 
 ## Review script results
 
@@ -201,8 +194,8 @@ For topics, consider the number of blanks and how understandable the topics are 
 We can only provide access to letters with topics.
 
 The topic report shows every topic combination separately.
-Make a unique list of topics for easier review with Excel: 
-split the column at the delimiter (^), merge into one column, and deduplicate.
+Make a unique list of topics for easier review with Excel if there are delimiters: 
+split the column at the delimiter (^), copy everything into one column, and deduplicate.
 Save this to "reports and logs" with the name "topics_report_unique.csv"
 
 ### Usability Reports for Matching
@@ -211,15 +204,22 @@ The matching report shows how well the metadata and files in the export match.
 We haven't determined a threshold of matching required, but we can only provide access to files that are matched.
 When there are large numbers of files, a lower percent match can still be useful, since it is a lot of content.
 
+The script removes duplicates before attempting to match (response letters often repeat),
+so the number of metadata rows matched, unmatched, and blank will be fewer than the total metadata rows.
+
 Also review the matching details report for any errors caused by how the expected paths were generated.
-There might be a lot of metadata only and directory only where the filenames match but the paths are a little off.
+There might be a lot of metadata only and directory only where the filenames do match but the paths are a little off.
 This happened once where the metadata had "formletter" and the directory had "form letter".
+If this happens, rename the folder in the export to match what is in the metadata.
+If that isn't enough, update the function update_path() to work with how the export is named and regenerate the report.
 
 ### Usability Report for Metadata
 
 Check which columns have a high number of blanks.
 This is especially a problem for in/out date, topic, and document path, which are essential for access and analysis.
 Other columns are less essential.
+
+If the formatting has "uncheckable", that means it is a text field with no pattern to verify.
 
 ## Acceptance of the accession
 

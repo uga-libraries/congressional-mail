@@ -7,19 +7,19 @@ If time allows, we may process at the time of accessioning to streamline the wor
 
 ## Run Script in Access Mode
 
-`python accession.py input_directory access`
+The script will remove metadata rows for appraisal and restrictions and columns for PII, 
+make copy of metadata split by calendar year,
+make a copy of incoming and outgoing correspondence in folders by topic
+make the start of an inventory for ArchiveSpace with title, dates, and extent
 
-The script will read the metadata, combine it if there are multiple metadata files, and create:
-* Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
-* Make a copy of the redacted metadata split by calendar year, for smaller files that are easier to open
-* Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included), 
-  with a CSV with the redacted metadata for each letter found in the export.
-* Make inventory for ArchiveSpace with title, dates, and extent.
-
-Unless the export is particularly small, this should be done by remoting into Hub.
-You may need to unfreeze it periodically by typing any letter in the terminal window.
+When running on Hub, you may need to unfreeze it periodically by typing any letter in the terminal window.
 If it was frozen, it will start printing that it started the next topic right away.
 If it is just on a topic with a lot of letters, that will do nothing.
+
+`python accession.py input_directory access`
+
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
+The output_directory will be AppraisalCopy.
 
 Prior to running the script, verify:
 * Output directory contains appraisal_delete_log.csv, created in accession mode and edited during appraisal.
@@ -42,7 +42,16 @@ Do not include the other form letter file, 8E, as it links to the individual let
 
 ## Restarting the script
 
+start topics sorting where the script left off,
+make the start of an inventory for ArchiveSpace with title, dates, and extent
+
 `python accession.py input_directory access_restart`
+
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
+The output_directory will be AppraisalCopy.
+
+For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
+If it didn't get that far, delete the outputs and run the access mode again.
 
 Just css_archiving has this right now, although css_dif has a more manual (have to comment things out) version.
 The topic sorting takes a long time and can either break (path length issues) 
@@ -78,14 +87,20 @@ This is in development, but rename to add access number, maybe zip.
 
 ### Letters by Topic
 
-Each topic folder is a separate DIP.
+Each topic folder is a separate DIP. Characters that cannot be in a Windows folder name are replaced with an underscore.
+It will have a csv with the metadata for every file that was in the export and sorted into the DIP. 
+Rows are not included if they didn't have a document or the document wasn't in the export (or both documents, for archiving).
+If topics were delemited, each topic is sorted separately, with the same file copied to each topic.
+Export folder structure is maintained with the topic folders.
 
 ### Form Letters
 
 Copy the entire form letter folder form the export.
-For exports with multiple files, use the combined form letter metadata.
 
-If the export has a form letter DAT file, convert to CSV (just for access copy)
+For data interchange exports with multiple form letter metadata files, 
+only include the combined form letter metadata made by the script.
+
+For the archiving export with a form letter DAT file, convert to CSV (just for access copy, preservation has DAT)
 1. Open in Excel, selecting tab as the delimiter.
 2. Use filter to check each column has the right kind of information and there are no extra columns.
 3. Save as a CSV.
@@ -98,11 +113,29 @@ We have deleted rows with nothing but a document_id before.
 
 Full redacted metadata and by_year folder are in one DIP together.
 
+The by_year is the same metadata as full redacted, just for that calendar year to make smaller csvs for easier review.
+The calendar year is based on date received ("in"), and if blank then date responded ("out"), and for data interchange format "update" or "reminder/tickler".
+If all of these are blank, it goes in undated.
+
 ## ArchivesSpace  
 
 Include an explanation of the export and how it has been altered during processing in each DIP
-and summarize that information in the finding aid as a processing note. 
+and summarize that information in the finding aid as a processing note.
 
-I had been expanding on acronyms and abbreviations (from looking at the form letter to be sure) for better search
-within the folder name, but that does cause problems with path length.
-Instead, wait until they are in the inventory and expand only there.
+Start with aspace_inventory.csv, which will have the title, start and end date, and extent in GB for every topic folder,
+and the title for the other folders. Edit here, because filtering doesn't work well in the Excel template.
+
+* Edit dates
+  * Start and end same = delete end, type single, expression blank
+  * Start and end diff = type inclusive, expression start-end
+  * Date unknown = check metadata.csv (possible typo in filename or path length)
+* Round extent if still not working correctly (TBD - make a text formatted column to avoid conversion to scientific notation in ASpace if small)
+  * Size count_not_calculate = get from folder properties
+* Get dates and extent for form letters, metadata, and original export
+
+Dates are from date received ("in"), which is sufficient estimate of the date range without factoring the other dates.
+
+Edit titles to include explanations of acronyms and abbreviations.
+Don't change the folder name, as that impacts path length and can cause errors.
+This can surface things that need to be combined, so update the inventory.
+Or if have a lot of abbreviations, do the research first and reorganize before re-generating the inventory.

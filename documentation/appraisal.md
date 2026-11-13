@@ -6,12 +6,24 @@ See the processing plan (started during accessioning) for what to document from 
 
 Save an unedited copy of both in "reports and logs" folder.
 
+The appraisal reports are only searching columns we believe have any probability of showing a restriction, 
+which are topics, file paths and file names, office notes, and fill in text fields (data for mail merge templates).
+It results in too many false positives to search all columns, 
+due to columns like names and addresses that would never show a restriction. 
+
+Categories deleted: academy applications, case mail (requests for help with individual situation), 
+job applications to work in the office, letters of recommendation, 
+and routine office transactions (flag requests, tours, etc.)
+
 ### Appraisal Delete Log
 
 The appraisal delete log is more likely to be appraisal.
 * Delete any rows that are false positives
 * !!! Add tips and tricks for what to look for
 * !!! Add tips and tricks if cannot open in Excel.
+
+Watch for patterns for ones that are not appraisal and potentially make an issue to adjust the 
+find_CATEGORY_rows() function to skip before we process another export. Add to scripts for all export types.
 
 ### Appraisal Check Log
 
@@ -33,6 +45,10 @@ If the metadata is inconclusive (e.g., don't have enough detail), do not remove 
 * Do delete individual help with finding a job , which is casework-like (likely to come up as possible job application)
 * !!!Any more tips and tricks?
 * Add any rows for appraisal to the appraisal delete log
+
+Watch for patterns for ones that are appraisal and potentially make an issue to adjust the 
+find_CATEGORY_rows() function to include it in the delete log before we process another export. 
+Add to scripts for all export types.
 
 ## Select topics for routine office appraisal
 
@@ -56,13 +72,12 @@ This will result in some false positives.
 
 ## Run Script in Appraisal Mode
 
+Delete letters due to appraisal (leaves form letters) and make report of possible restrictions; metadata not changed
+
 `python accession.py input_directory appraisal`
 
-The script will read the metadata, combine it if there are multiple metadata files, and create:
-* Delete letters due to appraisal
-* Make restrictions review report
-
-Unless the export is particularly small, this should be done by remoting into Hub.
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export.
+The output_directory will be AppraisalCopy.
 
 Prior to running the script, verify:
 * The appraisal_delete_log.csv in output_dir with only rows to be deleted (from previous step)
@@ -104,11 +119,14 @@ Financial and health are personal and can be deleted (like casemail).
 TBD on how to do that. Maybe this report does need to be made before I run appraisal?
 
 Criminal justice or immigration could be personal but of historical value.
-Haven't encountered any yet. Will decide then if delete or just restrict.
+Haven't encountered any yet. Will decide then if delete or just restrict (remove from access metadata and topic sort).
+
+The end result is review_restrictions.csv with just the metadata rows of ones to restrict in the output directory.
 
 ## Complete Accessioning
 
-Continue with the standard accessioning workflow to complete the accession.
+Continue with the standard accessioning workflow to complete the accession (is there anything?)
 
-Do some QC to compare the original to the appraised copy?
+Do some QC to compare the original to the appraised copy and only retain appraisal?
 Do less if going to do preservation and access immediately?
+Do something to help Hub with scale if millions of files and waiting to process?
