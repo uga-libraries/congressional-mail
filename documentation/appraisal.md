@@ -159,11 +159,13 @@ All outputs are saved in AppraisalCopy.
 * Verify the number of files in the deletion log matches the number in appraisal delete log
 
 
-* Check a few files in the log are not in the export
+* Check a few files in the log, both deleted and not found, are not in the export
 
 ## Folder Level Review
 
 Review folders with the letters as an additional check for private information missed by the metadata review.
+This is done after the script runs in appraisal mode and deletes files based on the metadata,
+to avoid any of these files showing up in the script's log as not found.
 
 When checking files, copy a sample and only open the copy, or it risks metadata changing.
 Select the sample based on file names and formats, to get at least one of each type.

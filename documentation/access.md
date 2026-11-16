@@ -15,6 +15,7 @@ The usual practice for born-digital is separate AppraisalCopy and ProcessingCopy
 But for constituent mail, the script makes a copy of the input to generate the access copy, 
 and that is all the processing happening. 
 So, I'm planning to use AppraisalCopy for the script input without making a new copy.
+UNLESS, are there standard born-digital processing steps that should be happening?
 
 ## Run Script in Access Mode
 
@@ -123,8 +124,7 @@ even if the script is restarted multiple times.
 ## Review Correspondence by Topic
 
 The aspace_inventory.csv must be updated to reflect these changes.
-If enough changes are going to be made, 
-recreate the aspace_inventory.csv with the script 
+If enough changes are going to be made, recreate the aspace_inventory.csv with the script 
 by commenting out the rest of access mode instead.
 
 ### Delete
@@ -137,7 +137,7 @@ Delete folders for topics that do not provide meaningful access, such as:
 
 Unless it is obviously staffer initials, do leave folders named with letter codes, as they may be a meaningful acronym.
 
-Do not add these to the deletion log, since they are still in present in the restricted original export.
+Do not add these to the deletion log, since they are still in the restricted original export.
 
 ### Edit
 
@@ -161,7 +161,7 @@ Combining the metadata can typically be done by opening in a plain text editor a
 We could make a script to do this if we do it frequently enough.
 
 QUESTION: researching acronyms and abbreviations can surface topics that need to be combined or deleted.
-Should the research be done sooner? I don't want to edit the aspace_inventory at this stage, 
+Should the research be done sooner? I don't want to edit the aspace_inventory.csv at this stage, 
 since it may need to be re-generated.
 
 ## Package DIPs
@@ -176,7 +176,8 @@ Constituent mail has one DIP per topic, as well as one for the redacted correspo
 ### Correspondence by topic
 
 Each topic folder is a separate DIP. 
-The folder name matches the topic assigned by the office, except characters that cannot be in a Windows folder name are replaced with an underscore.
+The folder name matches the topic assigned by the office, 
+except characters that cannot be in a Windows folder name are replaced with an underscore.
 The export folder structure is maintained with the topic folders.
 If topics were delimited (more than one topic assigned to a file), 
 each topic has its own folder and the file with be in each topic.
@@ -186,6 +187,7 @@ Rows are not included if they didn't have a file path or the file wasn't in the 
 
 Use [dip-numbering.py](https://github.com/uga-libraries/processing-scripts) to add access ids to the start of each topic folder.
 Start the sequential number at 1 unless there are already born-digital access copies for this collection.
+The AIP ID (the er number) is a separate numbering scheme, so that doesn't factor in to assigning the access number.
 
 Once they are numbered, they can be moved out of the Correspondence_by_Topic folder (and that empty folder deleted),
 into the AccessCopies folder.
@@ -206,7 +208,7 @@ Make a folder named "form_letters in AccessCopies".
 Add the access id to this folder, using the next sequential number after correspondence_metadata.
 
 This DIP contains:
-* all form letters (copy from the export folder)
+* all form letters (copy from the export folder - it will repeat the folder name form_letters)
 * form letter metadata
 
 For the archiving export with a form letter DAT file, convert to CSV (just for access copy, preservation has DAT)

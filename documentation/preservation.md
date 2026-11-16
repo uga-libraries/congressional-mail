@@ -60,7 +60,7 @@ Follow the quality control and documentation portions of the [born-digital proce
 except for checking bag size, since these AIPs are purposefully much larger.
 
 TBD: Does the AIP to accession fixity comparison scale?
-Is there even accession fixity information for the files, or is it just their zips?
+Is there even accession fixity information for the files, or is it just their zips, for legacy collections?
 
 After ingesting into ARCHive, add the Special Access Policy restriction to each AIP. 
 TBD: make a Russell restriction related to these? Constituent Mail or more generic Privacy?

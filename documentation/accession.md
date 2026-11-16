@@ -179,7 +179,7 @@ There will be one report for each column with potential errors.
 The columns tested are dates, document paths, states, and zip codes.
 
 We do not currently do any data cleanup, so these reports are not needed to find and fix formatting errors.
-Instead, they are used to find errors in the metadata.
+Instead, they are used to find other kinds of errors in the metadata.
 
 #### Column Parsing Error
 
