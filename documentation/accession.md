@@ -21,6 +21,11 @@ Accession as soon as possible after the donation is received, so we can address 
    
 3. Bag the accession now the files are unzipped, so we can better verify authenticity after processing.
 
+QUESTION: see note in appraisal for more detail, but if we decide not to do appraisal until processing, 
+do we just reorganize the files copies for the accession and update the bag?
+Or wait to bag until it is reorganized?
+I think the scripts should still work if the export folder was already inside a bag.
+
 ### Appraisal Copy
 
 1. Set up folders within the collection folder.
