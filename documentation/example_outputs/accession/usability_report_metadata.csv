@@ -1,0 +1,35 @@
+Column_Name,Present,Blank_Count,Blank_Percent,Formatting_Errors
+prefix,True,0,0.0,uncheckable
+first,True,0,0.0,uncheckable
+middle,True,0,0.0,uncheckable
+last,True,0,0.0,uncheckable
+suffix,True,6,85.71,uncheckable
+appellation,True,6,85.71,uncheckable
+title,True,6,85.71,uncheckable
+org,True,6,85.71,uncheckable
+addr1,True,0,0.0,uncheckable
+addr2,True,5,71.43,uncheckable
+addr3,True,6,85.71,uncheckable
+addr4,True,6,85.71,uncheckable
+city,True,0,0.0,uncheckable
+state,True,0,0.0,2
+zip,True,0,0.0,0
+country,True,7,100.0,uncheckable
+in_id,True,0,0.0,uncheckable
+in_type,True,0,0.0,uncheckable
+in_method,True,0,0.0,uncheckable
+in_date,True,0,0.0,0
+in_topic,True,0,0.0,uncheckable
+in_text,True,4,57.14,uncheckable
+in_document_name,True,1,14.29,see in_document_name_split
+in_fillin,True,7,100.0,uncheckable
+out_id,True,0,0.0,uncheckable
+out_type,True,0,0.0,uncheckable
+out_method,True,0,0.0,uncheckable
+out_date,True,0,0.0,1
+out_topic,True,2,28.57,uncheckable
+out_text,True,7,100.0,uncheckable
+out_document_name,True,0,0.0,see out_document_name_split
+out_fillin,True,6,85.71,uncheckable
+in_document_name_split,True,1,14.29,0
+out_document_name_split,True,0,0.0,0

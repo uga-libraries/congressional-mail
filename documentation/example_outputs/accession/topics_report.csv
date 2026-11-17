@@ -1,0 +1,8 @@
+Topic,In_Topic_Count,Out_Topic_Count,Total
+B1^B2,1,2,3
+BLANK,0,2,2
+Casework,1,0,1
+E,1,2,3
+Misc,2,0,2
+Recommendations,1,1,2
+Social Security^Casework,1,0,1

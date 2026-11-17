@@ -1,0 +1,2 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,out_id,out_type,out_method,out_date,out_topic,out_document_name
+A city,AL,12345,,a100,General,Email,20210101,A1,..\documents\BlobExport\objects\111111.txt^..\documents\BlobExport\objects\111111_add.txt,r100,General,Email,20210111,A,..\documents\BlobExport\indivletters\000001.txt
