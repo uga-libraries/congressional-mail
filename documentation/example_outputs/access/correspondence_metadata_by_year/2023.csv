@@ -1,0 +1,3 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,out_id,out_type,out_method,out_date,out_topic,out_document_name
+B city,WY,23456,,b200,General,Email,20230202,B1^B2,..\documents\BlobExport\objects\222222.txt,r200,General,Email,20230212,B1^B2,..\documents\BlobExport\indivletters\000002.txt
+F city,FL,10234,,f600,General,Email,20230202,B1,..\documents\BlobExport\objects\xxxxxx.txt,r600,General,Email,20230212,B,..\documents\BlobExport\indivletters\00000Z.txt

@@ -1,0 +1,8 @@
+File,SizeKB,DateCreated,DateDeleted,MD5,Notes
+test_data\script\output_dir\constituent_mail_export\documents\objects\333333.txt,0.8,2026-11-17,2026-11-17,09F83C9A1604F2DBCB8471DACCB99A49,Casework
+test_data\script\output_dir\constituent_mail_export\documents\indivletters\000003.txt,3.5,2026-11-17,2026-11-17,3E273CCDD4D24DBFCD55B519999BABC7,Casework
+test_data\script\output_dir\constituent_mail_export\documents\objects\111111.txt,0.0,2026-11-17,2026-11-17,C53D3BB354B533DE159BB7C89E0433D5,Academy_Application
+test_data\script\output_dir\constituent_mail_export\documents\indivletters\000001.txt,0.1,2026-11-17,2026-11-17,21E65C7B733959A8B3E6071EB0748BF6,Academy_Application
+test_data\script\output_dir\constituent_mail_export\documents\objects\444444.txt,,,,,Cannot delete: FileNotFoundError
+test_data\script\output_dir\constituent_mail_export\documents\objects\555555.txt,,,,,Cannot delete: FileNotFoundError
+test_data\script\output_dir\constituent_mail_export\documents\indivletters\000005.txt,1.2,2026-11-17,2026-11-17,EFBB58E35027F2382E2C58F22B895B7C,Recommendation

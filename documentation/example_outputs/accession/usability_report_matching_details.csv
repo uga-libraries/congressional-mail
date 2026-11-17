@@ -1,0 +1,6 @@
+Category,Path
+Metadata Only,test_data\script\output_dir\constituent_mail_export\documents\objects\b.txt
+Metadata Only,test_data\script\output_dir\constituent_mail_export\documents\objects\555555.txt
+Metadata Only,test_data\script\output_dir\constituent_mail_export\documents\objects\444444.txt
+Directory Only,test_data\script\output_dir\constituent_mail_export\documents\objects\666666.txt
+Directory Only,test_data\script\output_dir\constituent_mail_export\documents\formletters\b.txt

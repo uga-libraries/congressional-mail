@@ -645,6 +645,7 @@ def split_year(df, output_dir):
 
 def topics_report(df, output_dir):
     """Makes a report with the frequency of each group name, the only topic information we've seen in exports so far"""
+    # TODO switch to actual topic if we receive that file
 
     # Replace blanks with BLANK so that it is counted as a topic.
     df['group_name'] = df['group_name'].fillna('BLANK')

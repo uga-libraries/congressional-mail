@@ -1,0 +1,2 @@
+city,state,zip,country,in_id,in_type,in_method,in_date,in_topic,in_document_name,in_document_name_present,out_id,out_type,out_method,out_date,out_topic,out_document_name,out_document_name_present
+B city,WY,23456,,b200,General,Email,20230202,B1^B2,..\documents\BlobExport\objects\222222.txt,True,r200,General,Email,20230212,B1^B2,..\documents\BlobExport\indivletters\000002.txt,True
