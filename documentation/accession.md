@@ -134,10 +134,10 @@ All outputs are saved in AppraisalCopy. The export is not changed.
 * appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal)
 * appraisal_delete_log.csv (metadata rows likely to be appraisal)
 * metadata_formatting_errors_COLUMN.csv (1 per column with errors, used to find parsing errors)
+* topics_report.csv (number of occurrences of each topic, or each topic combination if the export allows delimiters)
 * usability_report_matching.csv (how well the document paths in the metadata match the files in the export)
 * usability_report_matching_details.csv (the document paths in the metadata or files in the export with no match)
 * usability_report_metadata.csv (how many columns are missing, blank, or have formatting errors)
-* topics_report.csv (number of occurrences of each topic, or each topic combination if the export allows delimiters)
 
 ## Review script results
 

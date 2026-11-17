@@ -150,6 +150,7 @@ The input_directory is the path to AppraisalCopy/name_constituent_mail_export
 All outputs are saved in AppraisalCopy. 
 
 * Deletes letters due to appraisal (except for form letters)
+* file_deletion_log_DATE.csv
 * restriction_review.csv (some exports have 1 report per review category)
 
 ### Script QC

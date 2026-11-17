@@ -51,15 +51,21 @@ If it is just on a topic with a lot of letters, that will do nothing.
 All outputs are saved in AppraisalCopy. 
 
 * archiving_correspondence_redacted.csv
-* by_year with the redacted metadata split into one csv per year
-* correspondence_by_topic with a copy of correspondence organized by topic
-* logs from sorting by topic
 * aspace_inventory.csv (the start of an inventory for ArchiveSpace with title, dates, and extent)
+* correspondence_by_topic with a copy of correspondence organized by topic
+* correspondence_metadata_by_year with the redacted metadata split into one csv per year
+* topic_sort_complete.txt
+* topic_sort_expected_file_count.csv
+* topic_sort_file_move_errors.csv
+* topic_sort_metadata.csv
 
 Redacted metadata means that all rows from appraisal_delete_log.csv and restriction_review.csv are removed,
 as are all columns intended for PII.
 
 If the script breaks during topic sorting, aspace_inventory.csv will not be made.
+
+All topic sorting logs are currently only produced for the CSS archiving format,
+but will be added to the others in the future.
 
 ### Script QC
 
@@ -107,16 +113,8 @@ The script may be restarted as many times as needed to finish sorting all the to
 
 ### Script outputs
 
-The output_directory is AppraisalCopy.
-
-AppraisalCopy will already contain the following from the script running in access mode the first time:
-* archiving_correspondence_redacted.csv
-* by_year with the redacted metadata split into one csv per year
-
-These are added by restarting the script:
-* correspondence_by_topic with a copy of correspondence organized by topic
-* logs from sorting by topic
-* aspace_inventory.csv
+The output_directory is AppraisalCopy. 
+See the outputs section for running the script the first time for a complete list.
 
 The ArchivesSpace inventory is not made until after topic sorting completes, so it will contain all the folders,
 even if the script is restarted multiple times.
