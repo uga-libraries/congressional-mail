@@ -22,7 +22,7 @@ class MyTestCase(unittest.TestCase):
         # Confirm the contents of form_letter_metadata.csv.
         result = csv_to_list(os.path.join(output_dir, 'form_letter_metadata.csv'))
         expected = [['letter_code', 'letter_description', 'document_name', 'owner', 'creation_date', 'revision_date',
-                     'archive_flag', '1', '2', '3', '4'],
+                     'archive_flag', 'untitled_1', 'untitled_2', 'untitled_3', 'untitled_4'],
                     ['60', 'BLANK', 'BLANK', '958584', '20150518', '20170522', 'Closed', 'BLANK',
                      'Small Business & Grants Workshop', 'enewsletters\\60.html', 'eNewsletter'],
                     ['68', 'Version:3 Letter_Name:DEF- Air Tanker Contract', 'forms\\68.doc', '321897', '20080703',

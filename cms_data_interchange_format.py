@@ -375,11 +375,12 @@ def form_letter_metadata(input_dir, output_dir):
     # TODO: if we ever get 8D (form letter merge) or 8E (form letter code), review for inclusion
 
     # Reads the metadata file into a dataframe, including supplying column headings.
-    # The numbered columns at the end are present in one of our exports but not named in the export description.
+    # The untitled columns at the end are present in some of our exports but not named in the export description.
+    # Since this is about form letters, it is public information and can be included even though we don't know what it is.
     # Prints an error if the file is not in the expected location.
     md_path = os.path.join(input_dir, '8C.out')
     columns = ['record_type', 'letter_code', 'letter_description', 'document_name', 'owner',
-               'creation_date', 'revision_date', 'archive_flag', '1', '2', '3', '4']
+               'creation_date', 'revision_date', 'archive_flag', 'untitled_1', 'untitled_2', 'untitled_3', 'untitled_4']
     try:
         df = pd.read_csv(md_path, delimiter='\t', dtype=str, on_bad_lines='warn', names=columns)
     except FileNotFoundError:
