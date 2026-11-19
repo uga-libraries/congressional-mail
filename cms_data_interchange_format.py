@@ -289,7 +289,7 @@ def find_academy_rows(df):
 
 
 def find_appraisal_rows(df, output_dir):
-    """Find metadata rows for all the categories for appraisal, return df and log results"""
+    """Find metadata rows for all the categories for appraisal and save to csvs"""
 
     # Calls the functions for each appraisal category.
     df_academy, df_academy_check = find_academy_rows(df)
@@ -305,19 +305,13 @@ def find_appraisal_rows(df, output_dir):
                          axis=0, ignore_index=True)
     df_check.to_csv(os.path.join(output_dir, 'appraisal_check_log.csv'), index=False)
 
-    # Makes a single dataframe with all rows that indicate appraisal
-    # and also saves to a log for review for any that are not correct identifications.
+    # Makes a log with likely appraisal rows for review for any that are not correct identifications.
     # Rows that fit more than one appraisal category are combined.
     df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation, df_routine], axis=0, ignore_index=True)
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])[
         'Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
-
-    # Removes the column 'correspondence_text', which is the only column currently likely to contain PII
-    # that is needed for more comprehensive appraisal.
-    df_appraisal.drop(['correspondence_text'], axis=1, inplace=True)
-    return df_appraisal
 
 
 def find_casework_rows(df):
@@ -741,7 +735,7 @@ if __name__ == '__main__':
     elif script_mode == 'appraisal_review':
         print("\nThe script is running in appraisal_review mode.")
         print("It will produce reports to review for appraisal and restriction decisions and not change the export.")
-        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        find_appraisal_rows(md_df, output_directory)
         restriction_report(md_df, output_directory)
 
     # For appraisal_delete, deletes letters to implement appraisal decisions.
