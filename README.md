@@ -18,8 +18,8 @@ We intend to phase out data interchange and focus on archiving, or else would ha
 
 ### Script Arguments
 
-appraisal_delete_log.csv (created in accession mode) must be in the output_directory before running appraisal or access modes.
-restriction_review.csv (created in appraisal mode) must be in the output_directory before running access mode.
+appraisal_delete_log.csv (created in appraisal_review mode) must be in the output_directory before running appraisal_delete or access modes.
+restriction_review.csv (created in appraisal_review mode) must be in the output_directory before running access mode.
 topics_sort_metadata.csv and topics_sort_complete.txt must be in the output_directory before running access_restart mode.
 The output_directory is the parent folder of input_directory
 
@@ -28,7 +28,7 @@ This is required by all the scripts.
 The export directory will be named Lastname_Constituent_Mail_Export (UGA naming convention)
 and contain the metadata files and a folder named "documents" with the letters.
 
-script_mode: access, access_restart, accession, appraisal
+script_mode: access, access_restart, accession, appraisal_review, appraisal_delete
 
 access
 * Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
@@ -42,13 +42,16 @@ access_restart (only implemented with css_archiving)
 * Make inventory for ArchivesSpace with title, dates, and extent.
 
 accession
-* Make appraisal reports
-* Make metadata usability reports, including how many files in the export match the metadata
-* Make topic report
+* Make metadata matching reports
+* Make metadata usability reports
+* Make topics report
 
-appraisal
-* Delete letters due to appraisal
+appraisal_review
+* Make appraisal reports
 * Make restrictions review report
+
+appraisal_delete
+* Delete letters due to appraisal
 
 ### Testing
 
