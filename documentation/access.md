@@ -29,6 +29,11 @@ AppraisalCopy must contain:
 The metadata in appraisal_delete_log.csv and restriction_review.csv, and their associated files (if present),
 will not be included in the access copy.
 
+Check the number of columns in 8C.out, which is form letter metadata.
+We've encountered 3-4 additional columns besides the ones in the export description. These are kept and named untitled_#.
+Open a copy in Excel and turn on filters to detect the maximum number of columns in the file.
+Update the columns list in form_letter_metadata() to have the correct number of columns.
+
 QUESTION: should we give these files a more obvious name, to differentiate from the originals in "reports and logs"?
 
 For the Data Interchange Formats, check for new files received for form letters and decide if they should be included.
