@@ -45,12 +45,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('accession', script_mode, "Problem with correct - accession, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - accession, errors_list")
 
-    def test_correct_appraisal(self):
+    def test_correct_appraisal_review(self):
         """Test for when both required arguments are present, input_directory path exists and
-        all metadata files are present, and mode is appraisal."""
+        all metadata files are present, and mode is appraisal_review."""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['cms_data_interchange_format.py', input_dir, 'appraisal']
+        sys_argv = ['cms_data_interchange_format.py', input_dir, 'appraisal_review']
         input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
@@ -60,10 +60,30 @@ class MyTestCase(unittest.TestCase):
                          '2C': os.path.join(input_dir, '2C.out'),
                          '2D': os.path.join(input_dir, '2D.out'),
                          '8A': os.path.join(input_dir, '8A.out')}
-        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal, input_directory")
-        self.assertEqual(expected_dict, metadata_paths_dict, "Problem with correct - appraisal, metadata_paths_dict")
-        self.assertEqual('appraisal', script_mode, "Problem with correct - appraisal, script_mode")
-        self.assertEqual([], errors_list, "Problem with correct - appraisal, errors_list")
+        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal_review, input_directory")
+        self.assertEqual(expected_dict, metadata_paths_dict, "Problem with correct - appraisal_review, metadata_paths_dict")
+        self.assertEqual('appraisal_review', script_mode, "Problem with correct - appraisal_review, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - appraisal_review, errors_list")
+
+    def test_correct_appraisal_delete(self):
+        """Test for when both required arguments are present, input_directory path exists and
+        all metadata files are present, and mode is appraisal_delete."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['cms_data_interchange_format.py', input_dir, 'appraisal_delete']
+        input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        expected_dict = {'1B': os.path.join(input_dir, '1B.out'),
+                         '2A': os.path.join(input_dir, '2A.out'),
+                         '2B': os.path.join(input_dir, '2B.out'),
+                         '2C': os.path.join(input_dir, '2C.out'),
+                         '2D': os.path.join(input_dir, '2D.out'),
+                         '8A': os.path.join(input_dir, '8A.out')}
+        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal_delete, input_directory")
+        self.assertEqual(expected_dict, metadata_paths_dict, "Problem with correct - appraisal_delete, metadata_paths_dict")
+        self.assertEqual('appraisal_delete', script_mode, "Problem with correct - appraisal_delete, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - appraisal_delete, errors_list")
 
     def test_error_input_directory(self):
         """Test for when the input_directory path does not exist"""
