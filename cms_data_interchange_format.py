@@ -370,6 +370,33 @@ def find_recommendation_rows(df):
     return df_rec, df_rec_check
 
 
+def form_letter_metadata(input_dir, output_dir):
+    """Convert the table with metadata related to form letters into a csv"""
+
+    # Reads the metadata file into a dataframe, including supplying column headings.
+    # The untitled columns at the end are present in some of our exports but not named in the export description.
+    # Since this is about form letters, it is public information and can be included even though we don't know what it is.
+    # Prints an error if the file is not in the expected location.
+    md_path = os.path.join(input_dir, '8C.out')
+    columns = ['record_type', 'letter_code', 'letter_description', 'document_name', 'owner', 'creation_date',
+               'revision_date', 'archive_flag', 'untitled_1', 'untitled_2', 'untitled_3', 'untitled_4']
+    try:
+        df = pd.read_csv(md_path, delimiter='\t', dtype=str, on_bad_lines='warn', names=columns)
+    except FileNotFoundError:
+        print(f"\n Could not locate form letter file 8C in {input_dir}")
+        return
+    except UnicodeDecodeError:
+        print(f"\nUnicodeDecodeError when trying to read the form letter file 8C.")
+        print("The form letter file will be read by ignoring encoding errors, skipping characters that cause an error.\n")
+        df = pd.read_csv(md_path, delimiter='\t', dtype=str, encoding_errors='ignore', on_bad_lines='warn', names=columns)
+
+    # Removes the record_type column (the name of the table) because we never retain that.
+    df.drop(['record_type'], axis=1, inplace=True)
+
+    # Saves to CSV.
+    df.to_csv(os.path.join(output_dir, 'form_letter_metadata.csv'), index=False)
+
+
 def read_metadata(paths):
     """Combine the metadata files into a dataframe"""
 
@@ -727,5 +754,6 @@ if __name__ == '__main__':
         md_df.drop(['correspondence_text'], axis=1, inplace=True)
         md_df.to_csv(os.path.join(output_directory, 'archiving_correspondence_redacted.csv'), index=False)
         split_year(md_df, output_directory)
+        form_letter_metadata(input_directory, output_directory)
         topics_sort(md_df, input_directory, output_directory)
         css_dif.make_metadata_csv(output_directory)

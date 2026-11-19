@@ -152,6 +152,44 @@ class MyTestCase(unittest.TestCase):
                      'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, undated")
 
+        # Tests the contents of form_letter_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'form_letter_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['letter_code', 'letter_description', 'document_name', 'owner', 'creation_date', 'revision_date',
+                     'archive_flag', 'untitled_1', 'untitled_2', 'untitled_3', 'untitled_4'],
+                    ['224246', 'Information:letters opposing Medicaid cuts', 'forms\\224246.doc', '64951300', '20050223',
+                     '20060503', 'Closed', 'BD.Medicaidcutsin06budget (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about the proposed budget cuts to Medicaid...', 'BLANK'],
+                    ['224328', 'Information:letter in support of funding', 'forms\\224328.doc', '64951298', '20050502',
+                     '20140409', 'Closed', 'EDU.MathandScienceFunding (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about funding...', 'BLANK'],
+                    ['224873', 'Version:1 Letter_Name:ENV.HR4200 revised', 'forms\\224873.doc', '64951292', '20060413',
+                     '20060726', 'Closed', 'ENV.HR4200 revised (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about H.R. 4200...', 'BLANK'],
+                    ['224906', 'Version:4 Letter_Name:metter.congress.3/24/07', 'forms\\224906.doc', '64951290', '20070402',
+                     '20070402', 'Closed', 'metter.congress on the corner.3/24/07 (version 4)', 'Responding to your message...',
+                     'Thank you for taking time to attend...', 'BLANK'],
+                    ['225014', 'Version:2 Letter_Name:HC.HealthFreedomAct', 'forms\\225014.doc', '64951293', '20060425',
+                     '20060726', 'Closed', 'HC.HealthFreedomAct (version 2)', 'Responding to your message...',
+                     'Thank you for your letter regarding H.R. 4282...', 'BLANK'],
+                    ['225976', 'Version:2 Letter_Name:FMAP Extension', 'forms\\225976.doc', '64951312', '20100823',
+                     '20100823', 'Closed', 'FMAP Extension (version 2)', 'Responding to your message...',
+                     'Thank you for contacting me about extending the increases...', 'BLANK'],
+                    ['225977', 'Version:1 Letter_Name:FMAP Extension 2010', 'forms\\225977.doc', '64951312', '20100823',
+                     '20100823', 'Closed', 'FMAP Extension 2010 (version 1)', 'Responding to your message...',
+                     '[Date]Thank you for contacting me about...', 'BLANK'],
+                    ['239476', 'JU.FL.113 Protect the First Amendment', 'forms\\239476.doc', '65562958', '20140501',
+                     '20140501', 'Approved', 'JU.FL.113 Protect the First Amendment', 'Responding to your message...',
+                     '<TAB>Thank you for contacting me about protecting...', 'BLANK'],
+                    ['239484', 'ED.FL.113 Common Core', 'forms\\239484.doc', '65562958', '20140501', '20140501', 'Approved',
+                     'ED.FL.113 Common Core', 'Responding to your message...',
+                     'Thank&nbsp;you for contacting me about the Department of Ed...', 'BLANK'],
+                    ['239528', 'MIL.FL.113 HR 231', 'forms\\239528.doc', '65562958', '20140502', '20140502',
+                     'Approved', 'MIL.FL.113 HR 231 Establishing a Committee on POW and MIA Affairs',
+                     'Responding to your message...', 'Thank you <br /><CR><LF><br /><CR><LF>There is nothing...',
+                     'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access, form_letter")
+
         # Tests that Correspondence_by_Topic has the expected files.
         by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
         result = make_dir_list(by_topic)
