@@ -717,7 +717,9 @@ if __name__ == '__main__':
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     # Columns with PII must be removed now to save memory, given the size of the data.
-    md_df = read_metadata(metadata_paths_dict)
+    # Reading can be slow, so skips reading if the script mode does not need it.
+    if not script_mode == 'appraisal_delete':
+        md_df = read_metadata(metadata_paths_dict)
 
     # For accession, generates reports about the usability of the export.
     # The export is not changed in this mode.
@@ -748,8 +750,6 @@ if __name__ == '__main__':
         except FileNotFoundError:
             print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
             sys.exit(1)
-        # TODO - any reason to drop correspondence_text, since it isn't saving something users see?
-        md_df.drop(['correspondence_text'], axis=1, inplace=True)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
