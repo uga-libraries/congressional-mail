@@ -3,15 +3,16 @@ Script to automate workflows for an export in the CSS Data Interchange Format.
 Required arguments: input_directory (path to the folder with the export) and script_mode.
 
 Script modes
-accession: produce usability and appraisal reports; export not changed
-appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
+accession: produce usability reports; export not changed
+appraisal: produce appraisal and restriction reports; export not changed
+appraisal: delete letters due to appraisal; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic
         make the start of an inventory for ArchiveSpace with title, dates, and extent
 
-For appraisal and access, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
-For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
+For appraisal_delete and access, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
+For access mode, review_restrictions.csv (made by appraisal_review mode) must also be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
 """
 import csv
