@@ -391,6 +391,7 @@ def find_appraisal_rows(df, output_dir):
     df_casework, df_casework_check = find_casework_rows(df)
     df_job, df_job_check = find_job_rows(df)
     df_recommendation, df_recommendation_check = find_recommendation_rows(df)
+    df_routine = find_routine_office_rows(df)
 
     # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
     # but have a simple keyword (e.g., case) that could be new indicators for appraisal.
@@ -402,7 +403,7 @@ def find_appraisal_rows(df, output_dir):
     # Makes a single dataframe with all rows that indicate appraisal
     # and also saves to a log for review for any that are not correct identifications.
     # Rows that fit more than one appraisal category are combined.
-    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation, df_routine], axis=0, ignore_index=True)
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
