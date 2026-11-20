@@ -374,6 +374,25 @@ def find_recommendation_rows(df):
     return df_rec, df_rec_check
 
 
+def find_routine_office_rows(df):
+    """Find metadata rows with topics that indicate they are routine office transactions
+    and return as a df"""
+
+    # Topics list: updated for every export based on the topics_report.csv
+    # Because it is an exact match, include every delimited pairing, if applicable.
+    # topics_list = []
+    topics_list = ['Flag Request', 'congrats^scouts']  # for unit tests
+
+    # Makes df where the topic exactly matches one of the items in the topics_list.
+    match = df['group_name'].isin(topics_list)
+    df_routine = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_routine['Appraisal_Category'] = 'Routine_Office'
+
+    return df_routine
+
+
 def form_letter_metadata(input_dir, output_dir):
     """Combine metadata from the tables related to form letters to a single csv"""
 
