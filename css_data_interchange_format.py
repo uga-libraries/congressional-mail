@@ -287,15 +287,14 @@ def find_academy_rows(df):
 
 
 def find_appraisal_rows(df, output_dir):
-    """Find metadata rows with topics or text that indicate they are different categories for appraisal,
-     return as a df and log results"""
+    """Find metadata rows for all the categories for appraisal and save to csvs"""
 
     # Call the functions for each appraisal category.
     df_academy, df_academy_check = find_academy_rows(df)
     df_casework, df_casework_check = find_casework_rows(df)
     df_job, df_job_check = find_job_rows(df)
     df_recommendation, df_recommendation_check = find_recommendation_rows(df)
-    df_routine = find_routine_office_rows()
+    df_routine = find_routine_office_rows(df)
 
     # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
     # but have a simple keyword (e.g., case) that could be new indicators for appraisal.
@@ -311,11 +310,6 @@ def find_appraisal_rows(df, output_dir):
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
-
-    # Removes the column 'text', which is the only column currently likely to contain PII
-    # that is needed for more comprehensive appraisal.
-    df_appraisal.drop(['text'], axis=1, inplace=True)
-    return df_appraisal
 
 
 def find_casework_rows(df):
@@ -873,7 +867,7 @@ if __name__ == '__main__':
     elif script_mode == 'appraisal_review':
         print("\nThe script is running in appraisal_review mode.")
         print("It will produce reports to review for appraisal and restriction decisions and not change the export.")
-        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        find_appraisal_rows(md_df, output_directory)
         restriction_report(md_df, output_directory)
 
     # For appraisal_delete, deletes letters to implement appraisal decisions.
