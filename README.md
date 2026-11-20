@@ -28,18 +28,7 @@ This is required by all the scripts.
 The export directory will be named Lastname_Constituent_Mail_Export (UGA naming convention)
 and contain the metadata files and a folder named "documents" with the letters.
 
-script_mode: access, access_restart, accession, appraisal_review, appraisal_delete
-
-access
-* Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
-* Make a copy of the redacted metadata split by calendar year, for smaller files that are easier to open
-* Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included), 
-  with a CSV with the redacted metadata for each letter found in the export.
-* Make inventory for ArchiveSpace with title, dates, and extent.
-
-access_restart (only implemented with css_archiving)
-* Continue sorting by topic where access mode left off.
-* Make inventory for ArchivesSpace with title, dates, and extent.
+script_mode: accession, appraisal_review, appraisal_delete, access, access_restart
 
 accession
 * Make metadata matching reports
@@ -52,6 +41,17 @@ appraisal_review
 
 appraisal_delete
 * Delete letters due to appraisal
+
+access
+* Redact a copy of the metadata: remove rows for appraisal and restrictions and columns for PII
+* Make a copy of the redacted metadata split by calendar year, for smaller files that are easier to open
+* Make a copy of incoming and outgoing correspondence in folders by topic (restricted not included), 
+  with a CSV with the redacted metadata for each letter found in the export.
+* Make inventory for ArchiveSpace with title, dates, and extent.
+
+access_restart (only implemented with css_archiving)
+* Continue sorting by topic where access mode left off.
+* Make inventory for ArchivesSpace with title, dates, and extent.
 
 ### Testing
 
