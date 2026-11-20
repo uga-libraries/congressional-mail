@@ -3,8 +3,9 @@ Script to automate workflows for an export in the CSS Archiving Format.
 Required arguments: input_directory (path to the folder with the export) and script_mode.
 
 Script modes
-accession: produce usability and appraisal reports; export not changed
-appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
+accession: produce usability reports; export not changed
+appraisal: produce appraisal and restriction reports; export not changed
+appraisal: delete letters due to appraisal; metadata not changed
 access: make copy of metadata without metadata rows for appraisal and restrictions and columns for PII,
         make another copy of the redacted metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic,
@@ -12,8 +13,8 @@ access: make copy of metadata without metadata rows for appraisal and restrictio
 access_restart: start topics sorting where the script left off,
                 make the start of an inventory for ArchiveSpace with title, dates, and extent
 
-For appraisal and access modes, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
-For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
+For appraisal_delete and access modes, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
+For access mode, review_restrictions.csv (made by appraisal_review mode) must be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
 
 For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
