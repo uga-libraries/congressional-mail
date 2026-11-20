@@ -294,13 +294,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
-                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR',
-                     '22222', 'MINWAGE', 'Y'],
+                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
+                     'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y'],
                     ['EMAIL', 'Staffer_3', '20220330', '2022-03-30', 'BLANK', '20220330', 'EMAIL', 'City Three',
-                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK', 'COR', '33333',
-                     'RIGHTS', 'Y']]
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', 'forms\\1.txt', 'BLANK',
+                     'CASEWORK', 'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_date_out.csv")
 
         # Tests the contents of the metadata_formatting_errors_state.csv.
@@ -309,10 +309,10 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_2', '20220220', '2022 Feb', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
-                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK', 'COR',
-                     '22222', 'MINWAGE', 'Y']]
+                     'Georgia', '30002', 'USA', '22222', 'PRO', '1', 'main', 'in-email\\2.txt', 'BLANK',
+                     'Letter of Recommendation', 'COR', '22222', 'MINWAGE', 'Y']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_state.csv")
 
         # Tests the contents of the topics_report.csv.

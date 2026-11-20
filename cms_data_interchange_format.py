@@ -726,8 +726,6 @@ if __name__ == '__main__':
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
         print("It will produce usability reports and not change the export.")
-        # TODO - any reason to drop correspondence_text, since it isn't saving something users see?
-        md_df.drop(['correspondence_text'], axis=1, inplace=True)
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
