@@ -461,6 +461,25 @@ def find_recommendation_rows(df):
     return df_recommendation, df_recommendation_check
 
 
+def find_routine_office_rows(df):
+    """Find metadata rows with topics that indicate they are routine office transactions
+    and return as a df"""
+
+    # Topics list: updated for every export based on the topics_report.csv
+    # Because it is an exact match, include every delimited pairing, if applicable.
+    # topics_list = []
+    topics_list = ['Flag Request', 'congrats^scouts']  # for unit tests
+
+    # Makes df where either topic column exactly matches one of the items in the topics_list.
+    match = df[['in_topic', 'out_topic']].isin(topics_list).any(axis=1)
+    df_routine = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_routine['Appraisal_Category'] = 'Routine_Office'
+
+    return df_routine
+
+
 def make_metadata_csv(output_dir):
     """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
 
