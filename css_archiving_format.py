@@ -928,30 +928,34 @@ if __name__ == '__main__':
     if not script_mode == 'access_restart':
         md_df = read_metadata(csv_path)
 
-    # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
+    # For accession, generates reports about the usability of the export.
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
-        print("It will produce usability and appraisal reports and not change the export.")
-        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        print("It will produce usability and not change the export.")
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
-    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
-    # Restricted letters would not be included in the access copy.
-    # The metadata file is not changed in this mode.
-    elif script_mode == 'appraisal':
-        print("\nThe script is running in appraisal mode.")
-        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
-              "but not change the metadata file.")
+    # For appraisal_review, makes reports with metadata for letters that should potentially be deleted or restricted.
+    # The metadata is not changed in this mode.
+    elif script_mode == 'appraisal_review':
+        print("\nThe script is running in appraisal_review mode.")
+        print("It will produce report to review for appraisal and restriction decisions and not change the export.")
+        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        restriction_report(md_df, output_directory)
+
+    # For appraisal_delete, deletes letters to implement appraisal decisions.
+    # The metadata is not changed in this mode.
+    elif script_mode == 'appraisal_delete':
+        print("\nThe script is running in appraisal_delete mode.")
+        print("It will delete letters due to appraisal but not change the metadata.")
         try:
             appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
-            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal deletion without it.")
             sys.exit(1)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, makes a copy of the letters organized by topic,
