@@ -849,7 +849,9 @@ if __name__ == '__main__':
 
     # Reads the metadata files, removes columns with PII, and combines into a pandas dataframe.
     # Columns with PII must be removed now to save memory, given the size of the data.
-    md_df = read_metadata(metadata_paths_dict)
+    # Reading can be slow, so skips reading if the script mode does not need it.
+    if not script_mode == 'appraisal_delete':
+        md_df = read_metadata(metadata_paths_dict)
 
     # For accession, generates reports about the usability of the export.
     # The column 'text' is removed after appraisal_df is made because it has PII but is used to evaluate for appraisal.
