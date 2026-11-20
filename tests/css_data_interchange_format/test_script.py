@@ -232,7 +232,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the print statement.
         result = output.stdout
         expected = ('\nThe script is running in accession mode.\n'
-                    'It will produce usability and appraisal reports and not change the export.\n')
+                    'It will produce usability reports and not change the export.\n')
         self.assertEqual(expected, result, "Problem with test for accession, printed statement")
 
         # Tests the contents of the metadata_formatting_errors_update_date.csv.
@@ -241,13 +241,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name'],
+                     'file_name', 'text'],
                     ['usmail', 'BLANK', 'C', '20000427', '20000427', 'BLANK', '2000-04-27', 'usmail', 'CASEWORK2',
                      'Ellijay', 'GA', '30540', 'USA', 'OUTGOING', r'..\documents\indivletters\00002.doc',
-                     '00002.doc', ' ', 'BLANK'],
+                     '00002.doc', ' ', 'BLANK', 'text1'],
                     ['BLANK', '513', 'C', '20000427', '20000427', 'BLANK', '2000 April 27', 'imail', 'BLANK',
                      'Marietta', 'GA', '30067-8581', 'USA', 'OUTGOING',
-                     r'..\documents\indivletters\casework_12345.doc', 'BLANK', ' ', 'BLANK']]
+                     r'..\documents\indivletters\casework_12345.doc', 'BLANK', ' ', 'BLANK', 'text5']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_update_date.csv")
 
         # Tests the contents of the metadata_formatting_errors_state_code.csv.
@@ -256,19 +256,19 @@ class MyTestCase(unittest.TestCase):
         expected = [['communication_type', 'approved_by', 'status', 'date_in', 'date_out', 'reminder_date',
                      'update_date', 'response_type', 'group_name', 'city', 'state_code', 'zip_code', 'country',
                      'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                     'file_name'],
+                     'file_name', 'text'],
                     ['usmail', 'BLANK', 'C', '19990331', '19990402', 'BLANK', '19990331', 'usmail', 'C1', ' ', ' ',
                      'BLANK', 'POLAND', 'OUTGOING', r'..\documents\indivletters\case work\00001.doc', '00001.doc',
-                     ' ', 'BLANK'],
+                     ' ', 'BLANK', 'text3'],
                     ['BLANK', '551', 'C', '19990315', '19990402', 'BLANK', '19990315', 'imail', 'CASEWORK2',
                      'Marietta', 'Georgia', '30062-1668', 'USA', 'INCOMING', r'..\documents\objects\4007000.eml',
-                     'BLANK', '1c8614bf01caf83e00010e44.eml', 'BLANK'],
+                     'BLANK', '1c8614bf01caf83e00010e44.eml', 'BLANK', 'text7'],
                     ['BLANK', '513', 'C', '20120914', '20120914', 'BLANK', '20120914', 'imail', 'CASEWORK2',
                      'Marietta', 'Georgia', '30062-1668', 'USA', 'OUTGOING', r'..\documents\formletters\2103422.html',
-                     '2103422.html', ' ', 'BLANK'],
+                     '2103422.html', ' ', 'BLANK', 'text9'],
                     ['usmail', 'BLANK', 'C', '19990315', '19990402', 'BLANK', '19990315', 'usmail', 'INTTAX',
                      ' ', ' ', 'BLANK', 'POLAND', 'OUTGOING', r'..\documents\formletters\busintax.doc',
-                     'busintax.doc', ' ', 'BLANK']]
+                     'busintax.doc', ' ', 'BLANK', 'text6']]
         self.assertEqual(expected, result, "Problem with test for accession, metadata_formatting_errors_state_code.csv")
 
         # Tests the contents of the topics_report.csv.
@@ -323,7 +323,8 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '0', '0.0', '0'],
                     ['communication_document_id', 'True', '2', '22.22', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
-                    ['file_name', 'True', '9', '100.0', 'uncheckable']]
+                    ['file_name', 'True', '9', '100.0', 'uncheckable'],
+                    ['text', 'True', '0', '0.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for accession, usability_report_metadata.csv")
 
     def test_appraisal_delete(self):
