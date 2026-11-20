@@ -473,13 +473,13 @@ class MyTestCase(unittest.TestCase):
         expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
                      'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
                      '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                     'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag'],
                     ['EMAIL', 'Staffer_6', '20230616', '20230617', 'BLANK', '20230617', 'EMAIL', 'City Six', 'GA',
-                     '30006', 'USA', '66666', 'CON', '1', 'main', 'out-custom\\6006.txt', 'BLANK', 'COR', '66666',
-                     'immigration', 'Y'],
+                     '30006', 'USA', '66666', 'CON', '1', 'main', 'out-custom\\6006.txt', 'BLANK',
+                     'Info about six', 'COR', '66666', 'immigration', 'Y'],
                     ['EMAIL', 'Staffer_7', '20230717', '20230718', 'BLANK', '20230718', 'EMAIL', 'City Svn', 'GA',
-                     '30007', 'USA', '77777', 'NEU', '1', 'main', 'out-custom\\7007.txt', 'BLANK', 'COR', '77777',
-                     'citizenship', 'Y']]
+                     '30007', 'USA', '77777', 'NEU', '1', 'main', 'out-custom\\7007.txt', 'BLANK',
+                     'Info about seven', 'COR', '77777', 'citizenship', 'Y']]
         self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
 
     def test_error_access_no_delete(self):
