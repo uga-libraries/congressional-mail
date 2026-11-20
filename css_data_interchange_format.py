@@ -878,7 +878,7 @@ if __name__ == '__main__':
         try:
             appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
-            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal deletion without it.")
             sys.exit(1)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
