@@ -373,7 +373,7 @@ def find_routine_office_rows(df):
     # Topics list: updated for every export based on the topics_report.csv
     # Because it is an exact match, include every delimited pairing, if applicable.
     # topics_list = []
-    topics_list = ['Apple', 'pear^fruit'] # for unit tests
+    topics_list = ['Flag Request', 'congrats^scouts'] # for unit tests
 
     # Makes df where the topic exactly matches one of the items in the topics_list.
     match = df['code_description'].isin(topics_list)

@@ -4,6 +4,8 @@ import unittest
 from cms_data_interchange_format import find_appraisal_rows
 from test_script import csv_to_list
 
+# Before running these tests, change the topics_list in the function find_routine_office_rows() 
+# to the standard test values ['Flag Request', 'congrats^scouts']
 
 class MyTestCase(unittest.TestCase):
 
@@ -46,7 +48,7 @@ class MyTestCase(unittest.TestCase):
                               ['file_7.doc', 'create jobs now', 'x'],
                               ['file_8.doc', 'x', 'academy nomination'],
                               ['file_9.doc', 'good job with this one', 'x'],
-                              ['file10.doc', 'x', 'Apple']],
+                              ['file10.doc', 'x', 'Flag Request']],
                              columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         find_appraisal_rows(md_df, 'test_data')
 
@@ -61,7 +63,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the values in appraisal_delete_log.csv are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
         expected = [['correspondence_document_name', 'correspondence_text', 'code_description', 'Appraisal_Category'],
-                    ['file10.doc', 'x', 'Apple', 'Routine_Office'],
+                    ['file10.doc', 'x', 'Flag Request', 'Routine_Office'],
                     ['file_1.doc', 'academy idea', 'x', 'Academy_Application'],
                     ['file_5.doc', 'casework - forwarded to me for a response', 'x', 'Casework'],
                     ['file_6.doc', 'Internship applicant', 'x', 'Job_Application'],
@@ -76,7 +78,7 @@ class MyTestCase(unittest.TestCase):
                               ['file_3.doc', 'internship recommendation letter', 'x'],
                               ['file_4.doc', 'internship recommendation letter closed case file', 'x'],
                               ['file_5.doc', 'rec.doc', 'case > rec'],
-                              ['file_6.doc', 'academy', 'pear^fruit']],
+                              ['file_6.doc', 'academy', 'congrats^scouts']],
                              columns=['correspondence_document_name', 'correspondence_text', 'code_description'])
         find_appraisal_rows(md_df, 'test_data')
 
@@ -94,7 +96,7 @@ class MyTestCase(unittest.TestCase):
                     ['file_3.doc', 'internship recommendation letter', 'x', 'Job_Application|Recommendation'],
                     ['file_4.doc', 'internship recommendation letter closed case file', 'x',
                      'Casework|Job_Application|Recommendation'],
-                    ['file_6.doc', 'academy', 'pear^fruit', 'Academy_Application|Routine_Office']]
+                    ['file_6.doc', 'academy', 'congrats^scouts', 'Academy_Application|Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for multiple categories, appraisal_delete_log.csv")
 
 
