@@ -397,7 +397,9 @@ class MyTestCase(unittest.TestCase):
                     [os.path.join(input_directory, 'documents', 'in-email', '2.txt'),
                      '0.1', today, today, 'BFC30C1C407A46A42D322B493E783D8A', 'Recommendation'],
                     [os.path.join(input_directory, 'documents', 'in-email', '3.txt'),
-                     '0.2', today, today, '3372E0A98AEBE7DB66A368010DB78AF3', 'Casework']]
+                     '0.2', today, today, '3372E0A98AEBE7DB66A368010DB78AF3', 'Casework'],
+                    [os.path.join(input_directory, 'documents', 'out-custom', '1003.txt'),
+                     '2.8', today, today, '2F48B70AB29E2B466768B6897A1640E2', 'Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for appraisal, file_delete_log.csv")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
@@ -465,7 +467,10 @@ class MyTestCase(unittest.TestCase):
                      'Recommendation for legislation', 'COR', '33333', 'RIGHTS', 'Y', 'Recommendation'],
                     ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA', '30001',
                      'USA', '33333', 'PRO', '1', 'main', 'in-email\\3.txt', 'BLANK', 'Add to case work file',
-                     'COR', '33333', 'RIGHTS', 'Y', 'Casework']]
+                     'COR', '33333', 'RIGHTS', 'Y', 'Casework'],
+                    ['EMAIL', 'Staffer_8', '20230817', '20230818', 'BLANK', '20230818', 'EMAIL', 'City Egt', 'GA',
+                     '30008', 'USA', '88888', 'NEU', '1', 'main', 'out-custom\\1003.txt', 'BLANK', 'Info about eight',
+                     'COR', '88888', 'Flag Request', 'Y', 'Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for appraisal, appraisal_delete_log.csv")
 
         # Tests the contents of restriction_review.csv
