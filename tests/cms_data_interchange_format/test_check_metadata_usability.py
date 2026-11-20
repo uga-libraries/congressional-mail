@@ -13,7 +13,7 @@ def make_df(rows_list):
     column_names = ['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                     'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                    'code_type', 'code', 'code_description', 'inactive_flag']
+                    'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag']
     df = pd.DataFrame(rows_list, columns=column_names)
     return df
 
@@ -36,11 +36,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when all aspects of column testing are fully correct and there are no blanks"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'GA', '30600', 'b', 'c', 'd', '20240810', '20240811', '20240812', '20240813',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n'],
+                      'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                      ['a', 'GA', '30601', 'b', 'c', 'd', '20240910', '20240911', '20240912', '20240913',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n'],
+                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                      ['a', 'GA', '30602', 'b', 'c', 'd', '20241010', '20241011', '20241012', '20241013',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n']]
+                      'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n', 'o']]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -64,6 +64,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '0', '0.0', '0'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '0', '0.0', 'uncheckable'],
                     ['code_type', 'True', '0', '0.0', 'uncheckable'],
                     ['code', 'True', '0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0', '0.0', 'uncheckable'],
@@ -84,9 +85,9 @@ class MyTestCase(unittest.TestCase):
     def test_blank(self):
         """Test for when every row is blank"""
         # Makes a dataframe to use as test input and runs the function.
-        rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
+        rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
                       np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
-                     [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
+                     [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
                       np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
@@ -111,6 +112,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '2', '100.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '2', '100.0', 'column_blank'],
                     ['file_location', 'True', '2', '100.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '2', '100.0', 'uncheckable'],
                     ['code_type', 'True', '2', '100.0', 'uncheckable'],
                     ['code', 'True', '2', '100.0', 'uncheckable'],
                     ['code_description', 'True', '2', '100.0', 'uncheckable'],
@@ -131,16 +133,16 @@ class MyTestCase(unittest.TestCase):
     def test_blank_partial(self):
         """Test for some rows of each column have blanks but no column is entirely blank"""
         # Makes a dataframe to use as test input and runs the function.
-        rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
+        rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
                       np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
                      ['a', np.nan, np.nan, np.nan, 'c', np.nan, np.nan, np.nan, '20241012', np.nan,
-                      np.nan, np.nan, 'g', np.nan, np.nan, np.nan, 'j', np.nan, np.nan, np.nan, 'n'],
+                      np.nan, np.nan, 'g', np.nan, np.nan, np.nan, 'j', np.nan, np.nan, np.nan, 'n', 'o'],
                      ['a', 'GA', np.nan, np.nan, 'c', 'd', np.nan, np.nan, '20241012', '20241013',
-                      np.nan, np.nan, 'g', 'h', np.nan, np.nan, 'j', 'k', np.nan, np.nan, 'n'],
+                      np.nan, np.nan, 'g', 'h', np.nan, np.nan, 'j', 'k', np.nan, np.nan, 'n', 'o'],
                      ['a', 'GA', '30602', np.nan, 'c', 'd', '20241010', np.nan, '20241012', '20241013',
-                      'e', np.nan, 'g', 'h', 'i', np.nan, 'j', 'k', 'l', np.nan, 'n'],
+                      'e', np.nan, 'g', 'h', 'i', np.nan, 'j', 'k', 'l', np.nan, 'n', 'o'],
                      ['a', 'GA', '30602', 'b', 'c', 'd', '20241010', '20241011', '20241012', '20241013',
-                     'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n']]
+                     'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n', 'o']]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -164,9 +166,10 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '3', '60.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '4', '80.0', '0'],
                     ['file_location', 'True', '1', '20.0', 'uncheckable'],
-                    ['code_type', 'True', '2', '40.0', 'uncheckable'],
-                    ['code', 'True', '3', '60.0', 'uncheckable'],
-                    ['code_description', 'True', '4', '80.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '2', '40.0', 'uncheckable'],
+                    ['code_type', 'True', '3', '60.0', 'uncheckable'],
+                    ['code', 'True', '4', '80.0', 'uncheckable'],
+                    ['code_description', 'True', '1', '20.0', 'uncheckable'],
                     ['inactive_flag', 'True', '1', '20.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for blank_partial, usability_report_metadata.csv")
 
@@ -185,9 +188,9 @@ class MyTestCase(unittest.TestCase):
         """Test for when there are additional columns beyond what is expected"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'GA', '30600', 'b', 'c', 'd', '20240810', '20240811', '20240812', '20240813',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n'],
+                      'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                      ['a', 'GA', '30601', 'b', 'c', 'd', '20240910', '20240911', '20240912', '20240913',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n']]
+                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n', 'o']]
         md_df = make_df(rows_list)
         md_df.insert(0, 'extra_beginning', 'x')
         md_df.insert(10, 'extra_middle', 'y')
@@ -204,6 +207,7 @@ class MyTestCase(unittest.TestCase):
                     ['code_type', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_code', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '0', '0.0', '0'],
+                    ['correspondence_text', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_type', 'True', '0', '0.0', 'uncheckable'],
                     ['country', 'True', '0', '0.0', 'uncheckable'],
                     ['date_in', 'True', '0', '0.0', '0'],
@@ -264,6 +268,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['correspondence_document_name', 'False', 'BLANK', 'BLANK', 'column_missing'],
                     ['file_location', 'False', 'BLANK', 'BLANK', 'uncheckable'],
+                    ['correspondence_text', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['code_type', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['code', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['code_description', 'False', 'BLANK', 'BLANK', 'uncheckable'],
@@ -286,11 +291,11 @@ class MyTestCase(unittest.TestCase):
         Can't test for all missing at once without mixing it with a test for extra columns"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'GA', '30600', 'b', 'c', 'd', '20240810', '20240811', '20240812', '20240813',
-                     'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n'],
+                     'e', 'f', 'g', 'h', 'i', 'forms\\1.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                     ['a', 'GA', '30601', 'b', 'c', 'd', '20240910', '20240911', '20240912', '20240913',
-                     'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n'],
+                     'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                     ['a', 'GA', '30602', 'b', 'c', 'd', '20241010', '20241011', '20241012', '20241013',
-                     'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n']]
+                     'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n', 'o']]
         md_df = make_df(rows_list)
         md_df.drop(['date_in', 'date_out', 'tickler_date', 'update_date'], axis=1, inplace=True)
         check_metadata_usability(md_df, 'test_data')
@@ -315,6 +320,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '0.0', '0.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '0.0', '0.0', '0'],
                     ['file_location', 'True', '0.0', '0.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '0.0', '0.0', 'uncheckable'],
                     ['code_type', 'True', '0.0', '0.0', 'uncheckable'],
                     ['code', 'True', '0.0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0.0', '0.0', 'uncheckable'],
@@ -336,11 +342,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when each column with formatting tests has errors"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'Georgia', '3', 'b', 'c', 'd', '2024-08-10', '2024-08-11', '2024-08-12', 'Aug 24',
-                      'e', 'f', 'g', 'h', 'i', '1.txt', 'j', 'k', 'l', 'm', 'n'],
+                      'e', 'f', 'g', 'h', 'i', '1.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                      ['a', 'GA', '306011', 'b', 'c', 'd', '2024', '20240911', '2024', 'Sept 24',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n'],
+                      'e', 'f', 'g', 'h', 'i', 'forms\\2.txt', 'j', 'k', 'l', 'm', 'n', 'o'],
                      ['a', 'GA', '30602', 'b', 'c', 'd', 'October 10', '20241011', '20241012', 'Oct 24',
-                      'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n']]
+                      'e', 'f', 'g', 'h', 'i', 'forms\\3.txt', 'j', 'k', 'l', 'm', 'n', 'o']]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -364,6 +370,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '0', '0.0', '1'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '0', '0.0', 'uncheckable'],
                     ['code_type', 'True', '0', '0.0', 'uncheckable'],
                     ['code', 'True', '0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0', '0.0', 'uncheckable'],

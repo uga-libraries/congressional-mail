@@ -160,7 +160,7 @@ def check_metadata_usability(df, output_dir):
     expected = ['city', 'state', 'zip_code', 'country', 'correspondence_type', 'staff', 'date_in', 'date_out',
                 'tickler_date', 'update_date', 'response_type', 'correspondence_code', 'position',
                 '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
-                'code_type', 'code', 'code_description', 'inactive_flag']
+                'correspondence_text', 'code_type', 'code', 'code_description', 'inactive_flag']
     columns_dict = dict.fromkeys(expected)
     match = list(set(expected).intersection(column_names))
     for column in match:
@@ -196,7 +196,7 @@ def check_metadata_usability(df, output_dir):
                                  'uncheckable', date_in_mismatch, date_out_mismatch, tickler_mismatch,
                                  update_mismatch, 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable',
                                  'uncheckable', cdn_mismatch, 'uncheckable', 'uncheckable', 'uncheckable',
-                                 'uncheckable', 'uncheckable'], index=expected)
+                                 'uncheckable', 'uncheckable', 'uncheckable'], index=expected)
 
     # Combines the data about each column into a dataframe and saves as a CSV.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)

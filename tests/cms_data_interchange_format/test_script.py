@@ -364,6 +364,7 @@ class MyTestCase(unittest.TestCase):
                     ['document_type', 'True', '0', '0.0', 'uncheckable'],
                     ['correspondence_document_name', 'True', '0', '0.0', '0'],
                     ['file_location', 'True', '6', '100.0', 'uncheckable'],
+                    ['correspondence_text', 'True', '0', '0.0', 'uncheckable'],
                     ['code_type', 'True', '0', '0.0', 'uncheckable'],
                     ['code', 'True', '0', '0.0', 'uncheckable'],
                     ['code_description', 'True', '0', '0.0', 'uncheckable'],
