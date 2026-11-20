@@ -47,19 +47,33 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('accession', script_mode, "Problem with correct - accession, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - accession, errors_list")
 
-    def test_correct_appraisal(self):
-        """Test for when both required arguments are present, input_directory path exists, and mode is appraisal."""
+    def test_correct_appraisal_delete(self):
+        """Test for when both required arguments are present, input_directory path exists, and mode is appraisal_delete."""
         # Runs the function being tested.
         input_dir = os.path.join('test_data', 'check_arguments', 'correct')
-        sys_argv = ['css_archiving_format.py', input_dir, 'appraisal']
+        sys_argv = ['css_archiving_format.py', input_dir, 'appraisal_delete']
         input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
 
         # Tests the value of each of the four variables returned by the function
-        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal, input_directory")
+        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal_delete, input_directory")
         self.assertEqual(os.path.join(input_dir, 'archiving_correspondence.dat'), metadata_path,
-                         "Problem with correct - appraisal, metadata_path")
-        self.assertEqual('appraisal', script_mode, "Problem with correct - appraisal, script_mode")
-        self.assertEqual([], errors_list, "Problem with correct - access, errors_list")
+                         "Problem with correct - appraisal_delete, metadata_path")
+        self.assertEqual('appraisal_delete', script_mode, "Problem with correct - appraisal_delete, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - appraisal_delete, errors_list")
+
+    def test_correct_appraisal_review(self):
+        """Test for when both required arguments are present, input_directory path exists, and mode is appraisal_review."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['css_archiving_format.py', input_dir, 'appraisal_review']
+        input_directory, metadata_path, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        self.assertEqual(input_dir, input_directory, "Problem with correct - appraisal_review, input_directory")
+        self.assertEqual(os.path.join(input_dir, 'archiving_correspondence.dat'), metadata_path,
+                         "Problem with correct - appraisal_review, metadata_path")
+        self.assertEqual('appraisal_review', script_mode, "Problem with correct - appraisal_review, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - access_review, errors_list")
 
     def test_error_missing_one(self):
         """Test for when one required argument (mode) is missing."""
