@@ -57,6 +57,10 @@ access_restart (only implemented with css_archiving)
 
 To keep the expected test results manageable, most tests only use a small subset of the metadata fields.
 
+The unit tests require the working directory to be the parent directory of the test files (tests/export_type).
+In PyCharm, this will automatically work when running all tests in an exports folder,
+but will need to be adjusted when running tests from within the files.
+
 ## Workflow
 
 1. As soon as a constituent mail is received, [accession](documentation/accession.md)
