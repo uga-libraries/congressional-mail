@@ -6,7 +6,7 @@ Accession as soon as possible after the donation is received, so we can address 
 
 ### Copy from Transfer Media
 
-1.  Follow the usual [Born Digital Accessioning](https://github.com/uga-libraries/born-digital-accessioning) 
+1. Follow the usual [Born Digital Accessioning](https://github.com/uga-libraries/born-digital-accessioning) 
    steps for transfer media (virus scanning, copy to Hub, documentation). 
     * If received on an external hard drive, do not include the hard drive software when copying
     * Wait to bag until after the next step (unzipping)
@@ -131,8 +131,6 @@ The input_directory is the path to AppraisalCopy/name_constituent_mail_export
 
 All outputs are saved in AppraisalCopy. The export is not changed.
 
-* appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal)
-* appraisal_delete_log.csv (metadata rows likely to be appraisal)
 * metadata_formatting_errors_COLUMN.csv (1 per column with errors, used to find parsing errors)
 * topics_report.csv (number of occurrences of each topic, or each topic combination if the export allows delimiters)
 * usability_report_matching.csv (how well the document paths in the metadata match the files in the export)

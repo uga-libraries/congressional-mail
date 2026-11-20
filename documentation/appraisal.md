@@ -8,7 +8,65 @@ However, for constituent mail, that means replicating millions of files (slows t
 And our appraisal criteria for constituent mail is evolving.
 Should we wait to do appraisal on constituent mail that isn't being processed immediately,
 to avoid slowing Hub maintenance tasks and so the most current appraisal criteria is used?
-If we do, make the appraisal reports in a separate mode from accessioning, since that can be slow.
+
+## Review Topics Report
+
+We need to adjust the topics used for routine office appraisal and restriction review with every export, to exactly match what is in that export.
+The other appraisal categories are identified based on a consistent list of keywords.
+
+### Select topics for routine office appraisal
+
+Review the topic report for any topic related to routine office interactions:
+* congratulations
+* flag requests
+* holiday greetings (Christmas cards, etc.)
+* invitations
+* scouts (congratulatory)
+* thank you’s
+* tours
+
+Check with Russell staff if there are other likely categories from the topic list.
+We do want to keep exchanges with students writing for class.
+
+If the export has delimited topics, note every delimited combination to delete, so we can match the topic field exactly.
+Do delete if the other topic is also generic, like administrative. Do not delete if the other topic is subject-based.
+Routine office appraisal is just because of limited research use rather than privacy protection like the other categories, 
+so it is acceptable to err on the side of retaining it.
+
+Add these terms to the topics_list in the find_routine_office_rows() function.
+Comment out `topics_list = ['Flag Request', 'congrats^scouts']`, which is used for unit testing.
+
+### Select topics for restriction review
+
+We are doing additional review for topics related to criminal justice, finances, health, and immigration.
+Requests for assistance on these topics are likely to include highly sensitive information.
+
+Review the topics report and update the list in the restriction_report() function with the exact topics to review.
+Include any delimited versions of these topics.
+If this is too many topics, switch to a search for the "in" instead of "equals" - already did for css dif.
+This will result in some false positives.
+
+## Run Script in Appraisal_Review Mode
+
+### Script preparation
+
+Prior to running the script, verify:
+* Add topics for routine_office to topics list in find_routine_office_rows() - see above
+* Add topics for restriction review to restrictions list in restriction_report() - see above
+
+### Script command
+
+`python path/to/script input_directory appraisal_review`
+
+The input_directory is the path to AppraisalCopy/name_constituent_mail_export
+
+### Script actions and outputs
+
+All outputs are saved in AppraisalCopy. 
+
+* appraisal_check_log.csv (metadata rows that might be a new indicator of appraisal)
+* appraisal_delete_log.csv (metadata rows likely to be appraisal)
+* restriction_review.csv (CSS DIF export has 1 report per review category)
 
 ## Review Appraisal Logs
 
@@ -31,15 +89,18 @@ Appraisal categories:
 * letters of recommendation 
 * routine office transactions (flag requests, tours, etc.)
 
-The routine office transactions are based on exact topic matches, so they do not need review. 
-The other categories are based on keywords that are not guaranteed to be appraisal and do require review.
+The routine office transactions are based on exact topic matches, so they need less review.
+Do check for form letter names or other indicators in the metadata that they are not routine, but default to deleting.
+For example, we've kept ones with a topic of flag about flag burning and scouts about who can participate.
+
+The other categories are based on keywords that are not guaranteed to be appraisal and require detailed review.
 
 ### Appraisal delete log
 
 The appraisal delete log is based on more detailed matches and will most likely be appraisal.
 
 Using the appraisal tips and tricks below, 
-remove the rows for any that clearly should not be deleted for appraisal.
+remove the rows from the log in AppraisalCopy for any that clearly should not be deleted for appraisal.
 If it is ambiguous, leave them in the log.
 
 Make a GitHub issue for any common patterns with these false positives that should be skipped when appraising future exports.
@@ -53,11 +114,12 @@ There will likely be a lot of false positives.
 Using the appraisal tips and tricks below, identify any rows that should be deleted for appraisal.
 If it is ambiguous (e.g., the topic could be an issue or case mail and there are no notes), it should not be deleted.
 
-Copy any rows that should be deleted to the edited version of appraisal_delete_log.csv within AppraisalCopy,
-and then delete the review column from appraisal_delete_log.csv.
-Move appraisal_check_log.csv with the review column to the reports and log folder once review is complete.
-
 Make a GitHub issue for any common patterns that indicate appraisal that should be part of the delete log when appraising future exports.
+
+Once review is complete:
+1. Copy any rows that should be deleted to the edited version of appraisal_delete_log.csv in AppraisalCopy
+2. Delete the review column from the edited version of appraisal_delete_log.csv, which now has just the ones we've decided to delete for appraisal
+3. Move appraisal_check_log.csv with the review column to the reports and log folder
 
 ### Appraisal tips and tricks
 
@@ -75,6 +137,10 @@ For appraisal_check_log.csv, this also serves as a permanent record of our decis
 Start by identifying ones without enough information to make a decision.
 These have blank or non-descriptive document, notes, and fill-in (if it has that).
 If they are in the delete log, delete as appraisal. If they are in the check log, do not delete.
+
+Metadata rows may be flagged as fitting different appraisal criteria.
+If they are obviously one (usually from the topic or form letter name), 
+they do not need to be checked for the other criteria.
 
 Common indicators for appraisal:
 * Privacy form or PARF referenced
@@ -95,53 +161,40 @@ Common indicators for not appraisal:
 New terms to include in the delete log are added to the find_rows() function for that category.
 Include in the scripts for all export types.
 
-## Select Topics for Routine Office Appraisal
+## Review Restriction Review Log
 
-This workflow is not yet integrated into the scripts. It was applied after the fact for the first three processed exports.
-
-Review the topic report for any topic related to routine office interactions:
-* congratulations
-* flag requests
-* holiday greetings (Christmas cards, etc.)
-* invitations
-* scouts (congratulatory)
-* thank you’s
-* tours
-
-Check with Russell staff if there are other likely categories from the topic list.
-We do want to keep exchanges with students writing for class.
-
-If the export has delimited topics, note every delimited combination to delete, so we can match the topic field exactly.
-Do delete if the other topic is also generic, like administrative. Do not delete if the other topic is subject-based.
-Routine office appraisal is just because of limited research use rather than privacy protection like the other categories, 
-so it is acceptable to err on the side of retaining it.
-
-Process is TBD. Need to add all rows with topics that exactly match the exclude list to appraisal_delete_log.csv before running the script in appraisal mode.
-This will ensure the files are deleted and logged properly during appraisal mode
-and that they are not included in the public metadata during access mode.
-
-## Select Topics for Restriction Review
-
-We are doing additional review for topics related to criminal justice, finances, health, and immigration.
+We are doing additional metadata review for topics related to criminal justice, finances, health, and immigration.
 Requests for assistance on these topics are likely to include highly sensitive information.
+The file is restriction_review.csv, although there will be one for each topic for bigger exports (just CSS DIF currently).
 
-Review the topics report and update the list in the restriction_report() function with the exact topics to review.
-Include any delimited versions of these topics.
-If this is too many topics, switch to a search for the "in" instead of "equals" - already did for css dif.
-This will result in some false positives.
+Like with the appraisal logs, make a new column for review decisions.
 
-## Run Script in Appraisal Mode
+The metadata must show that it is about their personal situation to restrict.
+If there is too little information to decide, it is not restricted.
+
+Financial and health are personal and can be deleted as case mail 
+by copying them to appraisal_delete_log.csv in AppraisalCopy.
+
+Requests for individual assistance related to criminal justice or immigration could be of historical value.
+If we find any of these, make a decision with Russell.
+If they are being retained, they should not be in the access copies (metadata or topical sort) 
+but would stay in the preservation version (not part of appraisal_delete_log.csv).
+
+Save a copy of review_restrictions.csv (or all 4) to "reports and logs" as a record our decision.
+Edit the copy of review_restrictions.csv in AppraisalCopy to just have the metadata rows of ones to restricted.
+If there is a separate CSV for each category, combine these to a single CSV.
+
+## Run Script in Appraisal_Delete Mode
 
 ### Script preparation
 
 Prior to running the script, verify:
-* The appraisal_delete_log.csv in AppraisalCopy has all rows to be deleted, including from appraisal_check_log.csv and routine office
-* Add topics for restriction review to restrictions list in restriction_report() 
+* The appraisal_delete_log.csv in AppraisalCopy has all rows to be deleted, including from appraisal check and restriction review.
 * Calculate the number of files in the documents folder, to check the right number of files were deleted
 
 ### Script command
 
-`python path/to/script input_directory appraisal`
+`python path/to/script input_directory appraisal_delete`
 
 The input_directory is the path to AppraisalCopy/name_constituent_mail_export
 
@@ -151,7 +204,6 @@ All outputs are saved in AppraisalCopy.
 
 * Deletes letters due to appraisal (except for form letters)
 * file_deletion_log_DATE.csv
-* restriction_review.csv (some exports have 1 report per review category)
 
 ### Script QC
 * Verify the number of files in the documents folder decreases by the expected amount (number of files in the deletion log without a path error)
@@ -180,37 +232,13 @@ Even if the folder is named casework, check it. If it is just form letters or ot
 Only delete if it is about an individual's situation.
 
 If you decide to delete, that process is TBD.
+Put them in a separate folder for now.
 Metadata for these files needs to be added to the file_deletion_log.csv, alongside the files deleted by the appraisal mode of the script.
 
 ## Metadata Review
 
 For exports with multiple metadata files, delete any metadata file that is for casework only.
 Use the export descroption to identify these files.
-
-## Restriction Review
-
-We are doing additional metadata review for topics related to criminal justice, finances, health, and immigration.
-Requests for assistance on these topics are likely to include highly sensitive information.
-The file is restriction_review.csv, although there will be one for each topic for some exports.
-
-Like with the appraisal logs, make a new column for review decisions.
-
-The metadata must show that it is about their personal situation to restrict.
-If there is too little information to decide, it is not restricted.
-
-Financial and health are personal and can be deleted as case mail.
-TBD on how to do that. 
-Maybe this report does need to be made before I run appraisal, to be done automatically?
-Or it could maybe be added to what I end up doing for routine office.
-
-Requests for individual assistance related to criminal justice or immigration could be of historical value.
-If we find any of these, make a decision with Russell.
-If they are being retained, they should not be in the access copies (metadata or topical sort) 
-but would stay in the preservation version.
-
-Save a copy of review_restrictions.csv (or all 4) to "reports and logs" as a record our decision.
-Edit the copy of review_restrictions.csv in AppraisalCopy to just have the metadata rows of ones to restricted.
-If there is a separate CSV for each category, combine these to a single CSV.
 
 ## Complete Accessioning
 

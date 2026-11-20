@@ -138,6 +138,9 @@ Delete folders for topics that do not provide meaningful access, such as:
 * Staff names or roles (e.g., answered by intern)
 * Workflow steps (e.g., no response required)
 
+For exports with delimited topics, it might be possible for a topic selected for routine office to show up in the topic sort,
+if it was paired with another topic that is retained. If so, delete the routine office topic folder.
+
 Unless it is obviously staffer initials, do leave folders named with letter codes, as they may be a meaningful acronym.
 
 Do not add these to the deletion log, since they are still in the restricted original export.

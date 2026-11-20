@@ -3,8 +3,9 @@ Script to automate workflows for an export in the CSS Archiving Format.
 Required arguments: input_directory (path to the folder with the export) and script_mode.
 
 Script modes
-accession: produce usability and appraisal reports; export not changed
-appraisal: delete letters due to appraisal and make report of possible restrictions; metadata not changed
+accession: produce usability reports; export not changed
+appraisal: produce appraisal and restriction reports; export not changed
+appraisal: delete letters due to appraisal; metadata not changed
 access: make copy of metadata without metadata rows for appraisal and restrictions and columns for PII,
         make another copy of the redacted metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic,
@@ -12,8 +13,8 @@ access: make copy of metadata without metadata rows for appraisal and restrictio
 access_restart: start topics sorting where the script left off,
                 make the start of an inventory for ArchiveSpace with title, dates, and extent
 
-For appraisal and access modes, appraisal_delete_log.csv (made by accession mode) must be in the output directory.
-For access mode, review_restrictions.csv (made by appraisal mode) must be in the output directory.
+For appraisal_delete and access modes, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
+For access mode, review_restrictions.csv (made by appraisal_review mode) must be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
 
 For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
@@ -71,7 +72,7 @@ def check_arguments(arg_list):
     # Both required arguments are present.
     # Verifies the second is one of the expected modes.
     if len(arg_list) > 2:
-        if arg_list[2] in ('accession', 'appraisal', 'access', 'access_restart'):
+        if arg_list[2] in ('accession', 'appraisal_review', 'appraisal_delete', 'access', 'access_restart'):
             mode = arg_list[2]
         else:
             errors.append(f"Provided mode '{arg_list[2]}' is not one of the expected modes")
@@ -382,14 +383,14 @@ def find_academy_rows(df):
 
 
 def find_appraisal_rows(df, output_dir):
-    """Find metadata rows with topics or text that indicate they are different categories for appraisal,
-     return as a df and log results"""
+    """Find metadata rows for all the categories for appraisal and save to csvs"""
 
     # Call the functions for each appraisal category.
     df_academy, df_academy_check = find_academy_rows(df)
     df_casework, df_casework_check = find_casework_rows(df)
     df_job, df_job_check = find_job_rows(df)
     df_recommendation, df_recommendation_check = find_recommendation_rows(df)
+    df_routine = find_routine_office_rows(df)
 
     # Makes a log with rows to check to refine appraisal decisions. These were not marked for appraisal
     # but have a simple keyword (e.g., case) that could be new indicators for appraisal.
@@ -401,11 +402,10 @@ def find_appraisal_rows(df, output_dir):
     # Makes a single dataframe with all rows that indicate appraisal
     # and also saves to a log for review for any that are not correct identifications.
     # Rows that fit more than one appraisal category are combined.
-    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation], axis=0, ignore_index=True)
+    df_appraisal = pd.concat([df_academy, df_casework, df_job, df_recommendation, df_routine], axis=0, ignore_index=True)
     df_appraisal = df_appraisal.astype(str)
     df_appraisal = df_appraisal.groupby([col for col in df_appraisal.columns if col != 'Appraisal_Category'])['Appraisal_Category'].apply(lambda x: '|'.join(map(str, x))).reset_index()
     df_appraisal.to_csv(os.path.join(output_dir, 'appraisal_delete_log.csv'), index=False)
-    return df_appraisal
 
 
 def find_casework_rows(df):
@@ -458,6 +458,25 @@ def find_recommendation_rows(df):
     df_recommendation_check, df_unmatched = df_search(df_unmatched, check_list, 'Recommendation')
 
     return df_recommendation, df_recommendation_check
+
+
+def find_routine_office_rows(df):
+    """Find metadata rows with topics that indicate they are routine office transactions
+    and return as a df"""
+
+    # Topics list: updated for every export based on the topics_report.csv
+    # Because it is an exact match, include every delimited pairing, if applicable.
+    # topics_list = []
+    topics_list = ['Flag Request', 'congrats^scouts']  # for unit tests
+
+    # Makes df where either topic column exactly matches one of the items in the topics_list.
+    match = df[['in_topic', 'out_topic']].isin(topics_list).any(axis=1)
+    df_routine = df[match].copy()
+
+    # Adds a column with the appraisal category.
+    df_routine['Appraisal_Category'] = 'Routine_Office'
+
+    return df_routine
 
 
 def make_metadata_csv(output_dir):
@@ -923,35 +942,39 @@ if __name__ == '__main__':
     # Calculates parent folder of the input_directory, which is where script outputs are saved.
     output_directory = os.path.dirname(input_directory)
 
-    # Reads the metadata file into a pandas dataframe, unless the mode is access_restart,
-    # in which case it saves time by reading topics_sort_metadata.csv instead.
-    if not script_mode == 'access_restart':
+    # Reads the metadata file into a pandas dataframe.
+    # Reading can be slow, so skips reading if the script mode does not need it.
+    if not script_mode in ('appraisal_delete', 'access_restart'):
         md_df = read_metadata(csv_path)
 
-    # For accession, generates reports about the usability of the export and what might be deleted for appraisal.
+    # For accession, generates reports about the usability of the export.
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
-        print("It will produce usability and appraisal reports and not change the export.")
-        appraisal_df = find_appraisal_rows(md_df, output_directory)
+        print("It will produce usability reports and not change the export.")
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
 
-    # For appraisal, deletes letters due to appraisal and makes a report of letters that might be restricted.
-    # Restricted letters would not be included in the access copy.
-    # The metadata file is not changed in this mode.
-    elif script_mode == 'appraisal':
-        print("\nThe script is running in appraisal mode.")
-        print("It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
-              "but not change the metadata file.")
+    # For appraisal_review, makes reports with metadata for letters that should potentially be deleted or restricted.
+    # The metadata is not changed in this mode.
+    elif script_mode == 'appraisal_review':
+        print("\nThe script is running in appraisal_review mode.")
+        print("It will produce report to review for appraisal and restriction decisions and not change the export.")
+        find_appraisal_rows(md_df, output_directory)
+        restriction_report(md_df, output_directory)
+
+    # For appraisal_delete, deletes letters to implement appraisal decisions.
+    # The metadata is not changed in this mode.
+    elif script_mode == 'appraisal_delete':
+        print("\nThe script is running in appraisal_delete mode.")
+        print("It will delete letters due to appraisal but not change the metadata.")
         try:
             appraisal_df = read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
-            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.")
+            print("No appraisal_delete_log.csv in the output directory. Cannot do appraisal deletion without it.")
             sys.exit(1)
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
-        restriction_report(md_df, output_directory)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, makes a copy of the letters organized by topic,
