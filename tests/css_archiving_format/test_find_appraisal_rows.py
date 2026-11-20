@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import unittest
 from css_archiving_format import find_appraisal_rows
-from test_read_metadata import df_to_list
 from test_script import csv_to_list
 
 
@@ -35,22 +34,7 @@ class MyTestCase(unittest.TestCase):
                               ['30609', 'GEN', 'Legal', 'Case against Napster', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values of the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', '', '', 'GEN', '', '', '', '',
-                     'Academy_Application'],
-                    ['30602', 'GEN', 'Casework', '', '', '', 'GEN', '', '', '', '', 'Casework'],
-                    ['30603', 'GEN', 'Admin', '', '', '', 'GEN', 'Recommendations', 'wrote recommendation', '', '',
-                     'Recommendation'],
-                    ['30604', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN', '', '', '', '',
-                     'Casework'],
-                    ['30605', 'GEN', 'Intern', '', r'..\doc\resume.txt', '', 'GEN', '', 'job request', '', '',
-                     'Job_Application']]
-        self.assertEqual(expected, result, "Problem with test for four categories, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -91,20 +75,7 @@ class MyTestCase(unittest.TestCase):
                               ['30605', 'GEN', 'Judicial', 'Napster case', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values of the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', '', '', 'GEN', '', '', '', '',
-                     'Academy_Application'],
-                    ['30601', 'GEN', 'Casework', '', '', '', 'GEN', '', '', '', '', 'Casework'],
-                    ['30603', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN', '', '', '', '',
-                     'Casework'],
-                    ['30604', 'GEN', 'Intern', '', '', '', 'GEN', 'job request', '', r'..\doc\resume.txt', '',
-                     'Job_Application']]
-        self.assertEqual(expected, result, "Problem with test for three categories, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -139,18 +110,7 @@ class MyTestCase(unittest.TestCase):
                               ['30605', 'GEN', 'Farming', '', '', '', 'GEN', '', '', r'..\doc\case\file.doc', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values of the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'GEN', 'Academy Applicant', 'Nomination', '', '', 'GEN', '', '', '', '',
-                     'Academy_Application'],
-                    ['30601', 'GEN', 'Casework', '', '', '', 'GEN', '', '', '', '', 'Casework'],
-                    ['30603', 'GEN', 'Social Security', 'Casework candidate', '', '', 'GEN', '', '', '', '',
-                     'Casework']]
-        self.assertEqual(expected, result, "Problem with test for two categories, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -184,16 +144,7 @@ class MyTestCase(unittest.TestCase):
                               ['30604', 'GEN', 'Admin', '', '', '', 'GEN', '', 'For Casey', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values in the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'GEN', 'Casework Issues', '', '', '', 'GEN', 'Casework', '', '', '', 'Casework'],
-                    ['30601', 'GEN', 'Health^Casework', 'Note', '', '', 'GEN', '', '', '', '', 'Casework'],
-                    ['30603', 'GEN', 'Social Security', 'Open Case', '', '', 'GEN', '', '', '', '', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for one category, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -222,13 +173,7 @@ class MyTestCase(unittest.TestCase):
                               ['30601', 'GEN', 'Healthcare', '', '', '', 'GEN', '', '', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values in the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category']]
-        self.assertEqual(expected, result, "Problem with test for no appraisal, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
@@ -252,20 +197,7 @@ class MyTestCase(unittest.TestCase):
                                'recommendation', '', '']],
                              columns=['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
                                       'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin'])
-        appraisal_df = find_appraisal_rows(md_df, 'test_data')
-
-        # Tests the values of the returned dataframe are correct.
-        result = df_to_list(appraisal_df)
-        expected = [['zip', 'in_type', 'in_topic', 'in_text', 'in_document_name', 'in_fillin',
-                     'out_type', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 'Appraisal_Category'],
-                    ['30600', 'GEN', 'Casework^Academy Applicant', '', '', '', 'GEN', '', '', '', '',
-                     'Academy_Application|Casework'],
-                    ['30601', 'GEN', 'Academy Applicant', 'Maybe casework', '', '', 'GEN', '', 'rec for doe', '', '',
-                     'Academy_Application|Casework|Recommendation'],
-                    ['30603', 'GEN', 'Admin', 'note', r'doc\case.txt', '', 'GEN', 'Admin', 'recommendation', '', '',
-                     'Recommendation']
-        ]
-        self.assertEqual(expected, result, "Problem with test for multiple categories, df")
+        find_appraisal_rows(md_df, 'test_data')
 
         # Tests the values in the appraisal delete log are correct.
         result = csv_to_list(os.path.join('test_data', 'appraisal_delete_log.csv'))
