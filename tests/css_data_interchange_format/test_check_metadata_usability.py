@@ -13,7 +13,7 @@ def make_df(rows_list):
     column_names = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                     'date_in', 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name',
                     'document_type', 'communication_document_name', 'communication_document_id', 'file_location',
-                    'file_name']
+                    'file_name', 'text']
     df = pd.DataFrame(rows_list, columns=column_names)
     return df
 
@@ -36,11 +36,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when all aspects of column testing are fully correct, including no blanks"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'GA', '11111', 'd', 'e', 'f', 'g', '20010101', '20010102', '20010103', '20010104',
-                      'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r'],
+                      'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r', 's'],
                      ['a', 'GA', '22222', 'd', 'e', 'f', 'g', '20020101', '20020102', '20020103', '20020104',
-                      'l', 'm', 'n', '..\\documents\\file2.txt', 'p', 'q', 'r'],
+                      'l', 'm', 'n', '..\\documents\\file2.txt', 'p', 'q', 'r', 's'],
                      ['a', 'GA', '33333', 'd', 'e', 'f', 'g', '20030101', '20030102', '20030103', '20030104',
-                     'l', 'm', 'n', '..\\documents\\file3.txt', 'p', 'q', 'r']]
+                     'l', 'm', 'n', '..\\documents\\file3.txt', 'p', 'q', 'r', 's']]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -64,16 +64,17 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '0', '0.0', '0'],
                     ['communication_document_id', 'True', '0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
-                    ['file_name', 'True', '0', '0.0', 'uncheckable']]
+                    ['file_name', 'True', '0', '0.0', 'uncheckable'],
+                    ['text', 'True', '0', '0.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for all correct")
 
     def test_blank(self):
         """Test for when every row is blank"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
-                      np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
+                      np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],
                      [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
-                      np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+                      np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -97,18 +98,19 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '2', '100.0', 'column_blank'],
                     ['communication_document_id', 'True', '2', '100.0', 'uncheckable'],
                     ['file_location', 'True', '2', '100.0', 'uncheckable'],
-                    ['file_name', 'True', '2', '100.0', 'uncheckable']]
+                    ['file_name', 'True', '2', '100.0', 'uncheckable'],
+                    ['text', 'True', '2', '100.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for blank")
 
     def test_blank_partial(self):
         """Test for when some rows of each column have blanks but no columns are all blank"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [[np.nan, 'GA', '11111', np.nan, 'e', 'f', np.nan, np.nan, '20010102', '20010103', '20010104',
-                      np.nan, np.nan, 'n', '..\\documents\\file1.txt', np.nan, 'q', 'r'],
+                      np.nan, np.nan, 'n', '..\\documents\\file1.txt', np.nan, 'q', 'r', 's'],
                      ['a', np.nan, '22222', np.nan, np.nan, np.nan, 'g', '20020101', np.nan, np.nan, '20020104',
-                      np.nan, np.nan, np.nan, np.nan, 'p', np.nan, 'r'],
+                      np.nan, np.nan, np.nan, np.nan, 'p', np.nan, 'r', 's'],
                      ['a', 'GA', np.nan, 'd', np.nan, np.nan, np.nan, '20030101', '20030102', '20030103', np.nan,
-                      'l', 'm', np.nan, np.nan, 'p',  'q', np.nan]]
+                      'l', 'm', np.nan, np.nan, 'p',  'q', np.nan, np.nan]]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -132,14 +134,15 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '2', '66.67', '0'],
                     ['communication_document_id', 'True', '1', '33.33', 'uncheckable'],
                     ['file_location', 'True', '1', '33.33', 'uncheckable'],
-                    ['file_name', 'True', '1', '33.33', 'uncheckable']]
+                    ['file_name', 'True', '1', '33.33', 'uncheckable'],
+                    ['text', 'True', '1', '33.33', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for blank, partial")
 
     def test_columns_extra(self):
         """Test for when there are additional columns beyond what is expected"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'GA', '11111', 'd', 'e', 'f', 'g', '20010101', '20010102', '20010103', '20010104',
-                      'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r']]
+                      'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r', 's']]
         md_df = make_df(rows_list)
         md_df.insert(0, 'extra_beginning', 'x')
         md_df.insert(7, 'extra_middle', 'y')
@@ -171,6 +174,7 @@ class MyTestCase(unittest.TestCase):
                     ['response_type', 'True', '0', '0.0', 'uncheckable'],
                     ['state_code', 'True', '0', '0.0', '0'],
                     ['status', 'True', '0', '0.0', 'uncheckable'],
+                    ['text', 'True', '0', '0.0', 'uncheckable'],
                     ['update_date', 'True', '0', '0.0', '0'],
                     ['zip_code', 'True', '0', '0.0', '0']]
         self.assertEqual(expected, result, "Problem with test for columns extra")
@@ -179,11 +183,11 @@ class MyTestCase(unittest.TestCase):
         """Test for when each column with formatting tests has errors"""
         # Makes a dataframe to use as test input and runs the function.
         rows_list = [['a', 'Georgia', '1', 'd', 'e', 'f', 'g', '2001', '2001-01-02', 'n.d.', '010104',
-                      'l', 'm', 'n', 'documents\\file1.txt', 'p', 'q', 'r'],
+                      'l', 'm', 'n', 'documents\\file1.txt', 'p', 'q', 'r', 's'],
                      ['a', 'GA', 'unknown', 'd', 'e', 'f', 'g', '2002', '2002-01-02', 'n.d.', '020104',
-                      'l', 'm', 'n', '..\\docs\\file2.txt', 'p', 'q', 'r'],
+                      'l', 'm', 'n', '..\\docs\\file2.txt', 'p', 'q', 'r', 's'],
                      ['a', 'GA', '33333', 'd', 'e', 'f', 'g', '20030101', '20030102', '20030103', '20030104',
-                      'l', 'm', 'n', 'file3.txt', 'p', 'q', 'r']]
+                      'l', 'm', 'n', 'file3.txt', 'p', 'q', 'r', 's']]
         md_df = make_df(rows_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -207,7 +211,8 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '0', '0.0', '3'],
                     ['communication_document_id', 'True', '0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0', '0.0', 'uncheckable'],
-                    ['file_name', 'True', '0', '0.0', 'uncheckable']]
+                    ['file_name', 'True', '0', '0.0', 'uncheckable'],
+                    ['text', 'True', '0', '0.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for formatting")
 
     def test_columns_missing(self):
@@ -238,17 +243,18 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'False', 'BLANK', 'BLANK', 'column_missing'],
                     ['communication_document_id', 'False', 'BLANK', 'BLANK', 'uncheckable'],
                     ['file_location', 'False', 'BLANK', 'BLANK', 'uncheckable'],
-                    ['file_name', 'False', 'BLANK', 'BLANK', 'uncheckable']]
+                    ['file_name', 'False', 'BLANK', 'BLANK', 'uncheckable'],
+                    ['text', 'False', 'BLANK', 'BLANK', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for columns missing")
 
     def test_columns_missing_dates(self):
         """Test for when the date columns are missing
         Can't test for all missing at once without mixing it with a test for extra columns"""
         # Makes a dataframe to use as test input and runs the function.
-        rows_list = [['a', 'GA', '11111', 'd', 'e', 'f', 'g', 'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r']]
+        rows_list = [['a', 'GA', '11111', 'd', 'e', 'f', 'g', 'l', 'm', 'n', '..\\documents\\file1.txt', 'p', 'q', 'r', 's']]
         columns_list = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status',
                         'response_type', 'group_name', 'document_type', 'communication_document_name',
-                        'communication_document_id', 'file_location', 'file_name']
+                        'communication_document_id', 'file_location', 'file_name', 'text']
         md_df = pd.DataFrame(rows_list, columns=columns_list)
         check_metadata_usability(md_df, 'test_data')
 
@@ -272,7 +278,8 @@ class MyTestCase(unittest.TestCase):
                     ['communication_document_name', 'True', '0.0', '0.0', '0'],
                     ['communication_document_id', 'True', '0.0', '0.0', 'uncheckable'],
                     ['file_location', 'True', '0.0', '0.0', 'uncheckable'],
-                    ['file_name', 'True', '0.0', '0.0', 'uncheckable']]
+                    ['file_name', 'True', '0.0', '0.0', 'uncheckable'],
+                    ['text', 'True', '0.0', '0.0', 'uncheckable']]
         self.assertEqual(expected, result, "Problem with test for columns missing dates")
 
 

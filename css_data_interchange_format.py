@@ -159,7 +159,7 @@ def check_metadata_usability(df, output_dir):
     column_names = df.columns.tolist()
     expected = ['city', 'state_code', 'zip_code', 'country', 'communication_type', 'approved_by', 'status', 'date_in',
                 'date_out', 'reminder_date', 'update_date', 'response_type', 'group_name', 'document_type',
-                'communication_document_name', 'communication_document_id', 'file_location', 'file_name']
+                'communication_document_name', 'communication_document_id', 'file_location', 'file_name', 'text']
     columns_dict = dict.fromkeys(expected)
     match = list(set(expected).intersection(column_names))
     for column in match:
@@ -194,7 +194,7 @@ def check_metadata_usability(df, output_dir):
     formatting = pd.Series(data=['uncheckable', state_mismatch, zip_mismatch, 'uncheckable', 'uncheckable',
                                  'uncheckable', 'uncheckable', date_in_mismatch, date_out_mismatch, reminder_mismatch,
                                  update_mismatch, 'uncheckable', 'uncheckable', 'uncheckable', cdm_mismatch,
-                                 'uncheckable', 'uncheckable', 'uncheckable'], index=expected)
+                                 'uncheckable', 'uncheckable', 'uncheckable', 'uncheckable'], index=expected)
 
     # Combines the data about each column into a dataframe and saves as a CSV.
     columns_df = pd.concat([columns_present, blank_count, blank_percent, formatting], axis=1)
@@ -854,12 +854,10 @@ if __name__ == '__main__':
         md_df = read_metadata(metadata_paths_dict)
 
     # For accession, generates reports about the usability of the export.
-    # The column 'text' is removed after appraisal_df is made because it has PII but is used to evaluate for appraisal.
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
         print("It will produce usability reports and not change the export.")
-        md_df.drop(['text'], axis=1, inplace=True)
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)
