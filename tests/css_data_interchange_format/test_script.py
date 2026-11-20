@@ -51,7 +51,11 @@ class MyTestCase(unittest.TestCase):
                     'It will remove rows for deleted or restricted letters and columns with PII, '
                     'make copies of the metadata split by calendar year, '
                     'make a copy of the letters to and from constituents organized by topic,'
-                    'and make the metadata inventory for the finding aid\n')
+                    'and make the metadata inventory for the finding aid\n'
+                    '\nFor QC'
+                    '\nRows removed for appraisal: 1'
+                    '\nRows removed for restriction: 2'
+                    '\nFor topic sort prep, must have archiving_correspondence_redacted.csv and topics_group_name.csv in the output directory\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
@@ -92,9 +96,9 @@ class MyTestCase(unittest.TestCase):
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'form_letter_metadata.csv')
         result = csv_to_list(csv_path)
         expected = [['document_id', 'version', 'document_grouping_id', 'document_type', 'document_display_name',
-                     'document_description', 'document_name_x', 'created_by', 'revised_by', 'approved_by',
+                     'document_description', 'document_name_6A', 'created_by', 'revised_by', 'approved_by',
                      'creation_date', 'revision_date', 'last_used_date', 'status', 'inactive_flag',
-                     'virtual_directory', 'fill-in_field_name', 'label', 'code', 'code_type', 'document_name_y',
+                     'virtual_directory', 'fill-in_field_name', 'label', 'code', 'code_type', 'document_name_6D',
                      'user_id', 'attached_date', 'text', 'form_letter_attachment_flag', 'file_name', 'owned_by'],
                     ['000001', '1', '123456', 'Form', 'Economy', 'BLANK', r'..\doc\formletter\econ.pdf', '17',
                      'JSmith', '17', '20101212', '20110101', '20150101', 'Approved', 'BLANK', 'Form Letters',
