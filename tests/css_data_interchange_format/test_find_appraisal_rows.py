@@ -16,12 +16,13 @@ class MyTestCase(unittest.TestCase):
                 os.remove(log_path)
 
     def test_all_multiple(self):
-        """Test for when all appraisal categories are present and reach row matches multiple categories"""
+        """Test for when all appraisal categories are present and each row matches multiple categories"""
         # Makes a dataframe to use as test input and runs the function.
         md_df = pd.DataFrame([['20240101', 'case1', r'..\documents\academy rejection.txt', 'academy rejection.txt', 'x'],
                               ['20240202', 'academy 01', r'..\documents\formletters\good job.doc', 'good job.doc', 'x'],
                               ['20240303', 'case admin', r'..\documents\formletters\good job.doc', 'good job.doc', 'x'],
-                              ['20240404', 'academy02', r'..\documents\casework\good job.doc', 'good job.doc', 'x']],
+                              ['20240404', 'academy02', r'..\documents\casework\good job.doc', 'good job.doc', 'x'],
+                              ['20240405', 'congrats^scouts', r'..\documents\good job.doc', 'good job.doc', 'x']],
                              columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         find_appraisal_rows(md_df, 'test_data')
 
@@ -40,7 +41,9 @@ class MyTestCase(unittest.TestCase):
                     ['20240303', 'case admin', r'..\documents\formletters\good job.doc', 'good job.doc', 'x',
                      'Casework|Job_Application'],
                     ['20240404', 'academy02', r'..\documents\casework\good job.doc', 'good job.doc', 'x',
-                     'Academy_Application|Casework|Job_Application']]
+                     'Academy_Application|Casework|Job_Application'],
+                    ['20240405', 'congrats^scouts', r'..\documents\good job.doc', 'good job.doc', 'x',
+                     'Job_Application|Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for all - multiple, appraisal_delete_log.csv")
 
     def test_all_single(self):
@@ -51,7 +54,8 @@ class MyTestCase(unittest.TestCase):
                               ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x'],
                               ['20240404', 'Arts', '', 'artist jobs.txt', 'x'],
                               ['20240505', 'Admin', r'..\documents\objects\page rec.txt', '', 'x'],
-                              ['20240606', 'Admin',  '', 'legal_case.txt', 'x']],
+                              ['20240606', 'Admin',  '', 'legal_case.txt', 'x'],
+                              ['20240607', 'Flag Request',  '', 'response.txt', 'x']],
                              columns=['date_in', 'group_name', 'communication_document_name', 'file_name', 'text'])
         find_appraisal_rows(md_df, 'test_data')
 
@@ -68,7 +72,8 @@ class MyTestCase(unittest.TestCase):
                     ['20240101', 'Admin', r'..\documents\objects\academy.txt', 'academy.txt', 'x', 'Academy_Application'],
                     ['20240202', 'Case1', 'BLANK', 'BLANK', 'x', 'Casework'],
                     ['20240303', 'jobapp', r'..\documents\objects\position.txt', 'position.txt', 'x', 'Job_Application'],
-                    ['20240505', 'Admin', r'..\documents\objects\page rec.txt', 'BLANK', 'x', 'Recommendation']]
+                    ['20240505', 'Admin', r'..\documents\objects\page rec.txt', 'BLANK', 'x', 'Recommendation'],
+                    ['20240607', 'Flag Request',  'BLANK', 'response.txt', 'x', 'Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for all - single, appraisal_delete_log.csv")
 
     def test_one(self):
