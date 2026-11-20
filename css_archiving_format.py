@@ -951,7 +951,7 @@ if __name__ == '__main__':
     # The export is not changed in this mode.
     if script_mode == 'accession':
         print("\nThe script is running in accession mode.")
-        print("It will produce usability and not change the export.")
+        print("It will produce usability reports and not change the export.")
         check_metadata_usability(md_df, output_directory)
         check_letter_matching(md_df, output_directory, input_directory)
         topics_report(md_df, output_directory)

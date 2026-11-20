@@ -460,7 +460,7 @@ class MyTestCase(unittest.TestCase):
         # Tests the printed statement.
         result = printed.stdout
         expected = ("\nThe script is running in accession mode.\n"
-                    "It will produce usability and appraisal reports and not change the export.\n")
+                    "It will produce usability reports and not change the export.\n")
         self.assertEqual(expected, result, "Problem with test for accession, printed statement")
 
         # Tests the contents of metadata_formatting_errors_state.csv.
