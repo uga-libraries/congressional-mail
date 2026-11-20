@@ -618,7 +618,11 @@ class MyTestCase(unittest.TestCase):
                     ['..\\documents\\objects\\555555.txt'.replace('..', input_directory),
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     ['..\\documents\\indivletters\\000005.txt'.replace('..', input_directory),
-                     '1.2', today, today, 'EFBB58E35027F2382E2C58F22B895B7C', 'Recommendation']]
+                     '1.2', today, today, 'EFBB58E35027F2382E2C58F22B895B7C', 'Recommendation'],
+                    ['..\\documents\\objects\\100000.txt'.replace('..', input_directory),
+                     '0.0', today, today, 'C8C6E6C6592E2BFE70CDFA4257730BE5', 'Routine_Office'],
+                    ['..\\documents\\objects\\200000.txt'.replace('..', input_directory),
+                    '0.1', today, today, '04F481CBD40B72FF94AFDC987B454602', 'Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for appraisal_delete, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
@@ -698,7 +702,17 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'F city', 'fl', '67890', 'BLANK', 'f100', 'General', 'Email', '20210101',
                      'Social Security^Casework', 'BLANK', 'BLANK', 'BLANK', 'r600', 'General', 'Email', '20210111',
                      'E', 'BLANK', '..\\documents\\BlobExport\\formletters\\F.txt', 'BLANK', 'BLANK',
-                     '..\\documents\\BlobExport\\formletters\\F.txt', 'Casework']]
+                     '..\\documents\\BlobExport\\formletters\\F.txt', 'Casework'],
+                    ['Mx.', 'Kyle', 'K.', 'Kris', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '444 K St', 'BLANK',
+                     'BLANK', 'BLANK', 'K city', 'GA', '44444', 'BLANK', 'k100', 'General', 'Email', '20210101',
+                     'Flag Request', 'note', '..\\documents\\BlobExport\\objects\\100000.txt', 'fill', 'r111',
+                     'General', 'Email', '20210111', 'Flag Request', 'BLANK', 'BLANK', 'fill',
+                     '..\\documents\\BlobExport\\objects\\100000.txt', 'BLANK', 'Routine_Office'],
+                    ['Mx.', 'Lyla', 'L.', 'Lemon', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '555 L St', 'BLANK',
+                     'BLANK', 'BLANK', 'L city', 'GA', '55555', 'BLANK', 'l100', 'General', 'Email', '20210101',
+                     'congrats^scouts', 'note', '..\\documents\\BlobExport\\objects\\200000.txt', 'fill', 'r112',
+                     'General', 'Email', '20210111', 'congrats^scouts', 'BLANK', 'BLANK', 'fill',
+                     '..\\documents\\BlobExport\\objects\\200000.txt', 'BLANK', 'Routine_Office']]
         self.assertEqual(expected, result, "Problem with test for appraisal_review, appraisal delete log")
 
         # Tests the contents of restriction_review.csv
