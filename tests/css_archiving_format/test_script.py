@@ -39,12 +39,12 @@ def make_dir_list(dir_path):
 
 class MyTestCase(unittest.TestCase):
 
-    # def tearDown(self):
-    #     """Remove script outputs and copies of test data, if they were made"""
-    #     # These same folder name is used for the copied input, regardless of mode, to simplify deletion.
-    #     folder_path = os.path.join('test_data', 'script', 'output_dir')
-    #     if os.path.exists(folder_path):
-    #         shutil.rmtree(folder_path)
+    def tearDown(self):
+        """Remove script outputs and copies of test data, if they were made"""
+        # These same folder name is used for the copied input, regardless of mode, to simplify deletion.
+        folder_path = os.path.join('test_data', 'script', 'output_dir')
+        if os.path.exists(folder_path):
+            shutil.rmtree(folder_path)
 
     def test_correct_access(self):
         """Test for when the script runs correctly and is in access mode."""
