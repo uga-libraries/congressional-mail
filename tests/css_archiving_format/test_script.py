@@ -770,16 +770,15 @@ class MyTestCase(unittest.TestCase):
 
         # Runs the script and tests that it exits.
         with self.assertRaises(subprocess.CalledProcessError):
-            subprocess.run(f"python {script_path} {input_directory} appraisal",
+            subprocess.run(f"python {script_path} {input_directory} appraisal_delete",
                            shell=True, check=True, stdout=subprocess.PIPE)
 
         # Runs the script and tests that it prints the correct error.
-        output = subprocess.run(f"python {script_path} {input_directory} appraisal", shell=True, stdout=subprocess.PIPE)
+        output = subprocess.run(f"python {script_path} {input_directory} appraisal_delete", shell=True, stdout=subprocess.PIPE)
         result = output.stdout.decode('utf-8')
-        expected = ("\r\nThe script is running in appraisal mode.\r\n"
-                    "It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
-                    "but not change the metadata file.\r\n"
-                    "No appraisal_delete_log.csv in the output directory. Cannot do appraisal without it.\r\n")
+        expected = ("\r\nThe script is running in appraisal_delete mode.\r\n"
+                    "It will delete letters due to appraisal but not change the metadata.\r\n"
+                    "No appraisal_delete_log.csv in the output directory. Cannot do appraisal deletion without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error appraisal, no delete")
 
     def test_error_argument(self):
