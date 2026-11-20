@@ -463,61 +463,6 @@ class MyTestCase(unittest.TestCase):
                     "It will produce usability and appraisal reports and not change the export.\n")
         self.assertEqual(expected, result, "Problem with test for accession, printed statement")
 
-        # Tests the contents of the appraisal check log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin', 
-                     'in_document_name_split', 'out_document_name_split', 'Appraisal_Category'],
-                    ['Ms.', 'Gretel', 'G.', 'Green', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '789 G St', 'BLANK',
-                     'BLANK', 'BLANK', 'G city', 'GA', '78901', 'BLANK', 'g100', 'General', 'Email', '20210101',
-                     'E', 'BLANK', '..\\documents\\BlobExport\\objects\\777777.txt', 'BLANK', 'r700', 'General',
-                     'Email', '20210111', 'BLANK', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000007.txt',
-                     'Court case', '..\\documents\\BlobExport\\objects\\777777.txt',
-                     '..\\documents\\BlobExport\\indivletters\\000007.txt', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for accession, appraisal check log")
-
-        # Tests the contents of the appraisal delete log.
-        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
-        result = csv_to_list(csv_path)
-        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
-                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
-                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
-                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
-                     'in_document_name_split', 'out_document_name_split', 'Appraisal_Category'],
-                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
-                     '345 C St', 'C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'Misc',
-                     'Maybe case work', '..\\documents\\BlobExport\\objects\\333333.txt', 'BLANK', 'r300', 'General',
-                     'Email', '2024-03-13', 'B1^B2', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000003.txt',
-                     'BLANK', '..\\documents\\BlobExport\\objects\\333333.txt',
-                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'Casework'],
-                    ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK',
-                     'BLANK', 'A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'Misc',
-                     'academy nomination', '..\\documents\\BlobExport\\objects\\111111.txt', 'BLANK', 'r100', 'General',
-                     'Email', '20210111', 'BLANK', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000001.txt',
-                     'BLANK', '..\\documents\\BlobExport\\objects\\111111.txt',
-                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'Academy_Application'],
-                    ['Ms.', 'Diane', 'D.', 'Dudly', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '456 D St', 'BLANK', 'BLANK',
-                     'BLANK', 'D city', 'DEL', '45678', 'BLANK', 'd100', 'General', 'Email', '20210101', 'Casework',
-                     'BLANK', '..\\documents\\BlobExport\\objects\\444444.txt', 'BLANK', 'r400', 'General', 'Email',
-                     '20210111', 'Recommendations', 'BLANK', '..\\documents\\BlobExport\\formletters\\D.txt', 'BLANK',
-                     '..\\documents\\BlobExport\\objects\\444444.txt', '..\\documents\\BlobExport\\formletters\\D.txt',
-                     'Casework|Recommendation'],
-                    ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK',
-                     'BLANK', 'E city', 'ME', '56789', 'BLANK', 'e100', 'General', 'Email', '20210101', 
-                     'Recommendations', 'BLANK', '..\\documents\\BlobExport\\objects\\555555.txt', 'BLANK', 'r500', 
-                     'General', 'Email', '20210111', 'E', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000005.txt', 
-                     'BLANK', '..\\documents\\BlobExport\\objects\\555555.txt',
-                     '..\\documents\\BlobExport\\indivletters\\000005.txt', 'Recommendation'],
-                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '678 F St', 'BLANK', 'BLANK',
-                     'BLANK', 'F city', 'fl', '67890', 'BLANK', 'f100', 'General', 'Email', '20210101',
-                     'Social Security^Casework', 'BLANK', 'BLANK', 'BLANK', 'r600', 'General', 'Email', '20210111',
-                     'E', 'BLANK', '..\\documents\\BlobExport\\formletters\\F.txt', 'BLANK', 'BLANK',
-                     '..\\documents\\BlobExport\\formletters\\F.txt', 'Casework']]
-        self.assertEqual(expected, result, "Problem with test for accession, appraisal delete log")
-
         # Tests the contents of metadata_formatting_errors_state.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'metadata_formatting_errors_state.csv')
         result = csv_to_list(csv_path)
@@ -637,24 +582,23 @@ class MyTestCase(unittest.TestCase):
                     ['out_document_name_split', 'True', '0', '0.0', '0']]
         self.assertEqual(expected, result, "Problem with test for accession, usability_report_metadata.csv")
 
-    def test_correct_appraisal(self):
-        """Test for when the script runs correctly and is in appraisal mode."""
+    def test_correct_appraisal_delete(self):
+        """Test for when the script runs correctly and is in appraisal_delete mode."""
         # Makes a copy of the test data in the repo, since the script alters the data.
-        shutil.copytree(os.path.join('test_data', 'script', 'Appraisal'),
+        shutil.copytree(os.path.join('test_data', 'script', 'Appraisal_Delete'),
                         os.path.join('test_data', 'script', 'output_dir'))
 
         # Runs the script.
         script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
         input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
-        printed = subprocess.run(f"python {script_path} {input_directory} appraisal",
+        printed = subprocess.run(f"python {script_path} {input_directory} appraisal_delete",
                                  shell=True, capture_output=True, text=True)
 
         # Tests the printed statement.
         result = printed.stdout
-        expected = ("\nThe script is running in appraisal mode.\n"
-                    "It will delete letters due to appraisal and make a report of metadata to review for restrictions,"
-                    "but not change the metadata file.\n")
-        self.assertEqual(expected, result, "Problem with test for appraisal, printed statement")
+        expected = ("\nThe script is running in appraisal_delete mode.\n"
+                    "It will delete letters due to appraisal but not change the metadata.\n")
+        self.assertEqual(expected, result, "Problem with test for appraisal_delete, printed statement")
 
         # Tests the contents of the file deletion log.
         today = date.today().strftime('%Y-%m-%d')
@@ -675,13 +619,87 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'BLANK', 'BLANK', 'BLANK', 'Cannot delete: FileNotFoundError'],
                     ['..\\documents\\indivletters\\000005.txt'.replace('..', input_directory),
                      '1.2', today, today, 'EFBB58E35027F2382E2C58F22B895B7C', 'Recommendation']]
-        self.assertEqual(expected, result, "Problem with test for appraisal, file deletion log")
+        self.assertEqual(expected, result, "Problem with test for appraisal_delete, file deletion log")
 
         # Tests the contents of the input_directory, that all files that should be deleted are gone.
         result = files_in_dir(input_directory)
         expected = ['archiving_correspondence.dat', 'B.txt', 'D.txt', 'F.txt', '000007.txt',
                     '222222.txt', '666666.txt', '777777.txt']
-        self.assertEqual(expected, result, "Problem with test for appraisal, input_directory contents")
+        self.assertEqual(expected, result, "Problem with test for appraisal_delete, input_directory contents")
+
+    def test_correct_appraisal_review(self):
+        """Test for when the script runs correctly and is in appraisal_review mode."""
+        # Makes a copy of the test data in the repo, since the script alters the data.
+        shutil.copytree(os.path.join('test_data', 'script', 'Appraisal_Review'),
+                        os.path.join('test_data', 'script', 'output_dir'))
+
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'css_archiving_format.py')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
+        printed = subprocess.run(f"python {script_path} {input_directory} appraisal_review",
+                                 shell=True, capture_output=True, text=True)
+
+        # Tests the printed statement.
+        result = printed.stdout
+        expected = ("\nThe script is running in appraisal_review mode.\n"
+                    "It will produce report to review for appraisal and restriction decisions and not change the export.\n")
+        self.assertEqual(expected, result, "Problem with test for appraisal_review, printed statement")
+
+        # Tests the contents of the appraisal check log.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_check_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
+                     'in_document_name_split', 'out_document_name_split', 'Appraisal_Category'],
+                    ['Ms.', 'Gretel', 'G.', 'Green', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '789 G St', 'BLANK',
+                     'BLANK', 'BLANK', 'G city', 'GA', '78901', 'BLANK', 'g100', 'General', 'Email', '20210101',
+                     'E', 'BLANK', '..\\documents\\BlobExport\\objects\\777777.txt', 'BLANK', 'r700', 'General',
+                     'Email', '20210111', 'BLANK', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000007.txt',
+                     'Court case', '..\\documents\\BlobExport\\objects\\777777.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000007.txt', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for appraisal_review, appraisal check log")
+
+        # Tests the contents of the appraisal delete log.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'appraisal_delete_log.csv')
+        result = csv_to_list(csv_path)
+        expected = [['prefix', 'first', 'middle', 'last', 'suffix', 'appellation', 'title', 'org', 'addr1', 'addr2',
+                     'addr3', 'addr4', 'city', 'state', 'zip', 'country', 'in_id', 'in_type', 'in_method', 'in_date',
+                     'in_topic', 'in_text', 'in_document_name', 'in_fillin', 'out_id', 'out_type', 'out_method',
+                     'out_date', 'out_topic', 'out_text', 'out_document_name', 'out_fillin',
+                     'in_document_name_split', 'out_document_name_split', 'Appraisal_Category'],
+                    ['Mr.', 'Clive', 'C.', 'Cooper', 'Jr.', 'BLANK', 'CEO', 'Company', 'Attn: C', 'Division', 'POBox',
+                     '345 C St', 'C city', 'CO', '34567', 'BLANK', 'c300', 'General', 'Letter', '20240303', 'Misc',
+                     'Maybe case work', '..\\documents\\BlobExport\\objects\\333333.txt', 'BLANK', 'r300', 'General',
+                     'Email', '2024-03-13', 'B1^B2', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000003.txt',
+                     'BLANK', '..\\documents\\BlobExport\\objects\\333333.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000003.txt', 'Casework'],
+                    ['Ms.', 'Ann', 'A.', 'Anderson', 'BLANK', 'MD', 'BLANK', 'BLANK', '123 A St', 'BLANK', 'BLANK',
+                     'BLANK', 'A city', 'AL', '12345', 'BLANK', 'a100', 'General', 'Email', '20210101', 'Misc',
+                     'academy nomination', '..\\documents\\BlobExport\\objects\\111111.txt', 'BLANK', 'r100', 'General',
+                     'Email', '20210111', 'BLANK', 'BLANK', '..\\documents\\BlobExport\\indivletters\\000001.txt',
+                     'BLANK', '..\\documents\\BlobExport\\objects\\111111.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000001.txt', 'Academy_Application'],
+                    ['Ms.', 'Diane', 'D.', 'Dudly', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '456 D St', 'BLANK', 'BLANK',
+                     'BLANK', 'D city', 'DEL', '45678', 'BLANK', 'd100', 'General', 'Email', '20210101', 'Casework',
+                     'BLANK', '..\\documents\\BlobExport\\objects\\444444.txt', 'BLANK', 'r400', 'General', 'Email',
+                     '20210111', 'Recommendations', 'BLANK', '..\\documents\\BlobExport\\formletters\\D.txt', 'BLANK',
+                     '..\\documents\\BlobExport\\objects\\444444.txt', '..\\documents\\BlobExport\\formletters\\D.txt',
+                     'Casework|Recommendation'],
+                    ['Ms.', 'Emma', 'E.', 'Evans', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '567 E St', 'BLANK', 'BLANK',
+                     'BLANK', 'E city', 'ME', '56789', 'BLANK', 'e100', 'General', 'Email', '20210101',
+                     'Recommendations', 'BLANK', '..\\documents\\BlobExport\\objects\\555555.txt', 'BLANK', 'r500',
+                     'General', 'Email', '20210111', 'E', 'BLANK',
+                     '..\\documents\\BlobExport\\indivletters\\000005.txt',
+                     'BLANK', '..\\documents\\BlobExport\\objects\\555555.txt',
+                     '..\\documents\\BlobExport\\indivletters\\000005.txt', 'Recommendation'],
+                    ['Ms.', 'Fiona', 'F.', 'Fowler', 'BLANK', 'BLANK', 'BLANK', 'BLANK', '678 F St', 'BLANK', 'BLANK',
+                     'BLANK', 'F city', 'fl', '67890', 'BLANK', 'f100', 'General', 'Email', '20210101',
+                     'Social Security^Casework', 'BLANK', 'BLANK', 'BLANK', 'r600', 'General', 'Email', '20210111',
+                     'E', 'BLANK', '..\\documents\\BlobExport\\formletters\\F.txt', 'BLANK', 'BLANK',
+                     '..\\documents\\BlobExport\\formletters\\F.txt', 'Casework']]
+        self.assertEqual(expected, result, "Problem with test for appraisal_review, appraisal delete log")
 
         # Tests the contents of restriction_review.csv
         result = csv_to_list(os.path.join('test_data', 'script', 'output_dir', 'restriction_review.csv'))
@@ -719,7 +737,7 @@ class MyTestCase(unittest.TestCase):
                      'Email', '20210111', 'citizen^citizenship', 'note', '..\\documents\\BlobExport\\formletters\\J.txt',
                      'fill', '..\\documents\\BlobExport\\objects\\101010.txt',
                      '..\\documents\\BlobExport\\formletters\\J.txt', 'immigrant', 'citizenship']]
-        self.assertEqual(expected, result, "Problem with test for appraisal, restriction_review.csv")
+        self.assertEqual(expected, result, "Problem with test for appraisal_review, restriction_review.csv")
 
     def test_error_access_no_delete(self):
         """Test for when the script exits due to a missing appraisal_delete_log."""
