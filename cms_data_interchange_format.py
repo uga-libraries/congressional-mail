@@ -626,13 +626,11 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
             continue
 
         # Gets the path for the subfolder for where the doc will be saved,
-        # which replicates all original subfolders within the to_constituents or from_constituents folder,
+        # which replicates all original subfolders within the topic folder,
         # and makes the folder if it doesn't exist.
         doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
         subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        subfolder_new = False
         if not os.path.exists(subfolder_path):
-            subfolder_new = True
             os.makedirs(subfolder_path)
 
         # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
@@ -649,8 +647,6 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
                 log_writer = csv.writer(log)
                 topic = folder_path.split('\\')[-2]
                 log_writer.writerow([topic, doc])
-            if subfolder_new:
-                os.rmdir(subfolder_path)
 
     return df
 
