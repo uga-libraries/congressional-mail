@@ -582,7 +582,7 @@ def topics_sort(df, input_dir, output_dir, restart=False):
     # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
     # During restarts, the parameter df is ready to be df_topics and an additional file of topics to skip is read.
     if not restart:
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, output_dir)
         os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
         skip_list = []
     else:
@@ -632,8 +632,9 @@ def topics_sort(df, input_dir, output_dir, restart=False):
     css_arch.topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
 
-def topics_sort_df(df):
-    """Update dataframe to remove rows missing topic or document name and add column for missing docs"""
+def topics_sort_df(df, output_dir):
+    """Update dataframe to remove rows missing topic or document name and add column for missing docs
+    and save to a CSV in case topic sorting needs to be restarted to save time"""
 
     # Removes rows with blank in code_description or correspondence_document_name columns.
     df = df.dropna(subset=['code_description', 'correspondence_document_name'])
@@ -641,6 +642,9 @@ def topics_sort_df(df):
     # Adds column for when the files are sorted to indicate if the file was present in the export or not.
     # Assigning a default value of TBD, which will be replaced with a Boolean after sorting.
     df.insert(16, 'correspondence_document_name_present', 'TBD', True)
+
+    # Save the df to the output_directory to use if topic sorting needs to be restarted.
+    df.to_csv(os.path.join(output_dir, 'topics_sort_metadata.csv'), index=False)
 
     return df
 
