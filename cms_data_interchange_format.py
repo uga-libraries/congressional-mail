@@ -648,7 +648,7 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
         try:
             shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = True
-        except FileNotFoundError:
+        except (FileNotFoundError, PermissionError):
             df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
