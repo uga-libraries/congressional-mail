@@ -754,7 +754,8 @@ if __name__ == '__main__':
         delete_appraisal_letters(input_directory, output_directory, appraisal_df)
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
-    # makes a copy of the data split by calendar year, and makes a copy of the letters organized by topic.
+    # makes a copy of the data split by calendar year, makes a copy of the letters organized by topic,
+    # and makes a CSV with title, date, and size information needed for the finding aid in ArchivesSpace.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted or restricted letters and columns with PII, "
@@ -784,4 +785,16 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         form_letter_metadata(input_directory, output_directory)
         topics_sort(md_df, input_directory, output_directory)
+        css_dif.make_metadata_csv(output_directory)
+
+    # For access_restarts, finishes the topics sort and makes the metadata inventory for the finding aid.
+    # The rest of access will already be done.
+    # Uses topics_sort_metadata.csv and topics_sort_complete.txt (in output_directory from access mode) to restart.
+    elif script_mode == 'access_restart':
+        print("\nThe script is running in access_restart mode.")
+        print("It will continue copying the letters to and from constituents organized by topic, "
+              "skipping topics already done prior to the script being stopped,"
+              "and make the metadata inventory for the finding aid.")
+        md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
+        topics_sort(md_df, input_directory, output_directory, restart=True)
         css_dif.make_metadata_csv(output_directory)
