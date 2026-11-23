@@ -565,8 +565,7 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir):
-    """Sort copy of incoming and outgoing correspondence into folders by topic
-    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders"""
+    """Sort copy of all correspondence into folders by topic."""
 
     # New version of df with blanks removed from 'code_description' or 'correspondence_document_name' columns
     df_topics = topics_sort_df(df)
@@ -586,18 +585,9 @@ def topics_sort(df, input_dir, output_dir):
             os.mkdir(topic_path)
         df_topic = df_topics[df_topics['code_description'] == topic].copy()
 
-        # Sorts correspondence from constituents (in folders attachments or in-email).
+        # Copies all letters to this topic folder, maintaining all subfolders.
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
-        from_path = os.path.join(topic_path, 'from_constituents')
-        if not os.path.exists(from_path):
-            os.mkdir(from_path)
-        df_topic = topics_sort_files(df_topic, 'attachments|in-email', input_dir, output_dir, from_path)
-
-        # Sorts correspondence to constituents (in folders forms or out-custom).
-        to_path = os.path.join(topic_path, 'to_constituents')
-        if not os.path.exists(to_path):
-            os.mkdir(to_path)
-        df_topic = topics_sort_files(df_topic, 'forms|out-custom', input_dir, output_dir, to_path)
+        df_topic = topics_sort_files(df_topic, 'attachments|in-email', input_dir, output_dir, topic_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         css_arch.topics_sort_delete_empty(topic_path)
