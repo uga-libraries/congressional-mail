@@ -617,18 +617,18 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
-        doc_path = update_path(doc, input_dir)
+        doc_current_path = update_path(doc, input_dir)
 
         # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
         # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
         # Cannot use os.path.isdir() to test for directory because the folder may not exist.
-        if doc_path == 'error_new' or '.' not in doc_path:
+        if doc_current_path == 'error_new' or '.' not in doc_current_path:
             continue
 
         # Gets the path for the subfolder for where the doc will be saved,
         # which replicates all original subfolders within the to_constituents or from_constituents folder,
         # and makes the folder if it doesn't exist.
-        doc_relative_path = Path(doc_path).relative_to(os.path.join(input_dir, 'documents'))
+        doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
         subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
         subfolder_new = False
         if not os.path.exists(subfolder_path):
@@ -641,7 +641,7 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
         doc_name = doc.split('\\')[-1]
         doc_new_path = os.path.join(subfolder_path, doc_name)
         try:
-            shutil.copy2(doc_path, doc_new_path)
+            shutil.copy2(doc_current_path, doc_new_path)
             df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = True
         except FileNotFoundError:
             df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = False
