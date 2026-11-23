@@ -58,6 +58,9 @@ class MyTestCase(unittest.TestCase):
                     '\nFor QC'
                     '\nRows removed for appraisal: 0'
                     '\nRows removed for restriction: 1'
+                    '\nStarting topic LEGAL CASE, which has 1 unique document paths in the df'
+                    '\nStarting topic MINWAGE, which has 1 unique document paths in the df'
+                    '\nStarting topic RIGHTS, which has 3 unique document paths in the df'
                     '\n\nDeleting empty folders at all levels\n')
         self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
