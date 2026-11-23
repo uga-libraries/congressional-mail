@@ -252,6 +252,14 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, RIGHTS_metadata.csv")
 
+        # Tests the contents of topics_sort_expected_file_count.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_expected_file_count.csv')
+        result = csv_to_list(csv_path)
+        expected = [['LEGAL CASE', '1'],
+                    ['MINWAGE', '1'],
+                    ['RIGHTS', '3']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_expected_file_count.csv")
+
         # Tests the contents of topics_sort_file_not_found.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
         result = csv_to_list(csv_path)

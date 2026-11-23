@@ -589,8 +589,12 @@ def topics_sort(df, input_dir, output_dir):
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
         df_topic = topics_sort_files(df_topic, input_dir, output_dir, topic_path)
 
-        # Prints the topic and number of unique files information to track progress and if the script appears to be stuck.
+        # Saves the topic and number of unique files to a log for QC of the number moved.
+        # Also prints the information to track progress and if the script appears to be stuck.
         file_count = df_topic['correspondence_document_name'].nunique()
+        with open(os.path.join(output_dir, 'topics_sort_expected_file_count.csv'), 'a') as count_log:
+            log_writer = csv.writer(count_log)
+            log_writer.writerow([topic_norm, file_count])
         print(f"Starting topic {topic}, which has {file_count} unique document paths in the df")
 
         # Cleans up and saves the metadata for this topic.

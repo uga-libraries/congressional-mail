@@ -57,8 +57,15 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv')]
         self.assertEqual(expected, result, "Problem with test for empty_missing, directory")
+
+        # Verifies the contents of topics_sort_expected_file_count.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
+        expected = [['cats', '2'],
+                    ['dogs', '3']]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, expected_file_count")
 
         # Verifies the contents of topics_sort_file_not_found.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
@@ -80,6 +87,7 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
                     os.path.join(self.by_topic, '_dogs'),
                     os.path.join(self.by_topic, '_dogs', 'forms'),
                     os.path.join(self.by_topic, '_dogs', 'out-custom'),
@@ -88,6 +96,12 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_dogs', 'forms', 'Thanks.txt'),
                     os.path.join(self.by_topic, '_dogs', 'out-custom', 'Brown.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
+
+        # Verifies the contents of topics_sort_expected_file_count.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
+        expected = [['_dogs', '2'],
+                    ['_dogs', '1']]
+        self.assertEqual(expected, result, "Problem with test for duplicate, expected_file_count")
 
         # Verifies the contents of dogs_metadata.csv
         result = csv_to_list(os.path.join(self.by_topic, '_dogs', '_dogs_metadata.csv'))
@@ -131,6 +145,7 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
                     os.path.join(self.by_topic, 'cats'),
                     os.path.join(self.by_topic, 'dogs'),
@@ -192,6 +207,12 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30617', '*', '*', '*', '*', '*',
                      'attachments\\scan2.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for unique, dogs_metadata.csv")
+
+        # Verifies the contents of topics_sort_expected_file_count.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
+        expected = [['dogs', '6'],
+                    ['cats', '7']]
+        self.assertEqual(expected, result, "Problem with test for unique, expected_file_count")
 
         # Verifies the contents of topics_sort_file_not_found.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
