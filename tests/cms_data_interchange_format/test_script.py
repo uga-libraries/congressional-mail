@@ -49,18 +49,17 @@ class MyTestCase(unittest.TestCase):
                                 shell=True, capture_output=True, text=True)
 
         # Tests the print statement.
-        # TODO - need to update topic sort to delete at end - right now deletes after each
-        # result = output.stdout
-        # expected = ('\nThe script is running in access mode.\n'
-        #             'It will remove rows for deleted or restricted letters and columns with PII, '
-        #             'make copies of the metadata split by calendar year, '
-        #             'make a copy of the letters to and from constituents organized by topic,'
-        #             'and make the metadata inventory for the finding aid\n'
-        #             '\nFor QC'
-        #             '\nRows removed for appraisal: 0'
-        #             '\nRows removed for restriction: 1'
-        #             '\nDeleting empty folders at all levels.\n')
-        # self.assertEqual(expected, result, "Problem with test for access, printed statement")
+        result = output.stdout
+        expected = ('\nThe script is running in access mode.\n'
+                    'It will remove rows for deleted or restricted letters and columns with PII, '
+                    'make copies of the metadata split by calendar year, '
+                    'make a copy of the letters to and from constituents organized by topic,'
+                    'and make the metadata inventory for the finding aid\n'
+                    '\nFor QC'
+                    '\nRows removed for appraisal: 0'
+                    '\nRows removed for restriction: 1'
+                    '\n\nDeleting empty folders at all levels\n')
+        self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
@@ -199,19 +198,16 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(by_topic, 'LEGAL CASE'),
                     os.path.join(by_topic, 'MINWAGE'),
                     os.path.join(by_topic, 'RIGHTS'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email'),
                     os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email', '1.txt'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email', '1.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email'),
                     os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email', '2.txt'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email', '2.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom'),
                     os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '33.txt'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '333.txt')]
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '33.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of LEGAL CASE_metadata.csv.
