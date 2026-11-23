@@ -627,19 +627,18 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
         # Gets the path for the current doc location by updating the path from the metadata.
         doc_current_path = update_path(doc, input_dir)
 
-        # Skip any path that doesn't match a known pattern (error_new) or if the doc is a directory rather than a file.
-        # error_new happens when there is data in the document column that cannot be mapped to a path in the export.
-        # Cannot use os.path.isdir() to test for directory because the folder may not exist.
+        # If the current path isn't an error (which would break the script trying to calculate the relative path),
+        # or an entire folder (just want to get files, and can't test with os because it may not exist),
+        # gets the path for the subfolder for where the doc will be saved and makes the folder if it doesn't exist.
+        # The path replicates all original subfolders within the export.
+        # If it is an error, it will be logged in the next step when the path doesn't exist.
         if doc_current_path == 'error_new' or '.' not in doc_current_path:
-            continue
-
-        # Gets the path for the subfolder for where the doc will be saved,
-        # which replicates all original subfolders within the topic folder,
-        # and makes the folder if it doesn't exist.
-        doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
-        subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
-        if not os.path.exists(subfolder_path):
-            os.makedirs(subfolder_path)
+            subfolder_path = 'error'
+        else:
+            doc_relative_path = Path(doc_current_path).relative_to(os.path.join(input_dir, 'documents'))
+            subfolder_path = os.path.join(folder_path, os.path.dirname(doc_relative_path))
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
 
         # Copies the doc to the subfolder matching its original subfolder and updates the df with if it was found.
         # If the doc is not in the expected location, logs it instead.
