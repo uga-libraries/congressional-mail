@@ -10,10 +10,20 @@ access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic
         make the start of an inventory for ArchiveSpace with title, dates, and extent
+access_restart: start topics sorting where the script left off,
+                make the start of an inventory for ArchiveSpace with title, dates, and extent
 
 For appraisal_delete and access, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal_review mode) must also be in the output directory.
 This allows the archivist to review and edit these documents without needing to update the script.
+
+For access_restart mode, the access mode must have created topics_sort_metadata.csv and topics_sort_complete.txt.
+If it didn't get that far, delete the outputs and run the access mode again.
+Access mode needs to be restarted periodically because topic sorting takes multiple days
+and is prone to the script breaking due to special characters and network restarts.
+
+The ArchivesSpace inventory is not made until after topic sorting finishes,
+so it will be made either the first time access runs or the last time access_restart runs.
 """
 import csv
 from datetime import date
