@@ -624,6 +624,10 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         # Cleans up and saves the metadata for this topic.
         topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
+        # Saves the original (not normalized) version of the topic to a log for if topic sorting needs to be restarted.
+        with open(os.path.join(output_dir, 'topics_sort_complete.txt'), 'a') as file:
+            file.write(topic + '\n')
+
     # Deletes empty folders at any level, including folders that only contain empty folders.
     css_arch.topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
