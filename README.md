@@ -49,7 +49,7 @@ access
   with a CSV with the redacted metadata for each letter found in the export.
 * Make inventory for ArchiveSpace with title, dates, and extent.
 
-access_restart (only implemented with css_archiving)
+access_restart (implemented with cms_dif and css_archiving)
 * Continue sorting by topic where access mode left off.
 * Make inventory for ArchivesSpace with title, dates, and extent.
 
