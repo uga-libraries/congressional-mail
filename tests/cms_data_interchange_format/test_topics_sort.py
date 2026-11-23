@@ -64,8 +64,8 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
         expected = [['cats', 'attachments\\scan0.txt'],
                     ['cats', 'in-email\\file0.txt'],
-                    ['dogs', 'in-email\\file_missing.txt'],
                     ['dogs', 'forms\\con.txt'],
+                    ['dogs', 'in-email\\file_missing.txt'],
                     ['dogs', 'out-custom\\Smith.doc']]
         self.assertEqual(expected, result, "Problem with test for empty_missing, not_found")
 
@@ -81,13 +81,12 @@ class MyTestCase(unittest.TestCase):
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
                     os.path.join(self.by_topic, '_dogs'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents'),
+                    os.path.join(self.by_topic, '_dogs', 'forms'),
+                    os.path.join(self.by_topic, '_dogs', 'out-custom'),
                     os.path.join(self.by_topic, '_dogs', '_dogs_metadata.csv'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'out-custom'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms', 'Support.txt'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'forms', 'Thanks.txt'),
-                    os.path.join(self.by_topic, '_dogs', 'to_constituents', 'out-custom', 'Brown.txt')]
+                    os.path.join(self.by_topic, '_dogs', 'forms', 'Support.txt'),
+                    os.path.join(self.by_topic, '_dogs', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, '_dogs', 'out-custom', 'Brown.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
 
         # Verifies the contents of dogs_metadata.csv
@@ -104,75 +103,8 @@ class MyTestCase(unittest.TestCase):
                      'forms\\Thanks.txt', '*', '*', '*', '<dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate, dogs_metadata.csv")
 
-    def test_from(self):
-        """Test for when all files are from constituents"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', np.nan, 'cats'],
-                      ['30600', 'attachments\\scan1.txt', 'cats'],
-                      ['30601', 'attachments\\scan2.txt', 'cats'],
-                      ['30602', 'in-email\\file1.txt', 'cats'],
-                      ['30603', 'in-email\\file2.txt', 'dogs'],
-                      ['30604', 'in-email\\file3.txt', 'dogs'],
-                      ['30605', 'in-email\\file3.txt', 'dogs'],
-                      ['30606', 'in-email\\file0.txt', 'dogs'],
-                      ['30607', 'in-email\\file4.txt', np.nan]])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the contents of the output directory.
-        result = make_dir_list(self.output_dir)
-        expected = [self.by_topic,
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.by_topic, 'cats'),
-                    os.path.join(self.by_topic, 'dogs'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents'),
-                    os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan2.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email', 'file1.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents'),
-                    os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file3.txt')]
-        self.assertEqual(expected, result, "Problem with test for from, directory")
-
-        # Verifies the contents of cats_metadata.csv
-        result = csv_to_list(os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'))
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30600', '*', '*', '*', '*', '*',
-                     'attachments\\scan1.txt', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
-                     'attachments\\scan2.txt', '*', '*', '*', 'cats', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'in-email\\file1.txt', '*', '*', '*', 'cats', '*']]
-        self.assertEqual(expected, result, "Problem with test for from, cats_metadata.csv")
-
-        # Verifies the contents of dogs_metadata.csv
-        result = csv_to_list(os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'))
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
-                     'in-email\\file2.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
-                     'in-email\\file3.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
-                     'in-email\\file3.txt', '*', '*', '*', 'dogs', '*']]
-        self.assertEqual(expected, result, "Problem with test for from, dogs_metadata.csv")
-
-        # Verifies the contents of topics_sort_file_not_found.csv
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
-        expected = [['dogs', 'in-email\\file0.txt']]
-        self.assertEqual(expected, result, "Problem with test for from, not_found")
-
-    def test_from_to(self):
-        """Test for when files are from and to constituents"""
+    def test_unique(self):
+        """Test for when all topics are unique"""
         # Makes a dataframe to use as test input and runs the function being tested.
         df = make_df([['30601', 'out-custom\\Brown.txt', np.nan],
                       ['30602', 'out-custom\\Jones.txt', 'dogs'],
@@ -202,30 +134,26 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
                     os.path.join(self.by_topic, 'cats'),
                     os.path.join(self.by_topic, 'dogs'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents'),
+                    os.path.join(self.by_topic, 'cats', 'attachments'),
+                    os.path.join(self.by_topic, 'cats', 'forms'),
+                    os.path.join(self.by_topic, 'cats', 'in-email'),
+                    os.path.join(self.by_topic, 'cats', 'out-custom'),
                     os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'attachments', 'scan1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'from_constituents', 'in-email', 'file1.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms', 'Support.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'forms', 'Thanks.txt'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom', 'Doe.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents'),
+                    os.path.join(self.by_topic, 'cats', 'attachments', 'scan1.txt'),
+                    os.path.join(self.by_topic, 'cats', 'forms', 'Support.txt'),
+                    os.path.join(self.by_topic, 'cats', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'cats', 'in-email', 'file1.txt'),
+                    os.path.join(self.by_topic, 'cats', 'out-custom', 'Doe.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'attachments'),
+                    os.path.join(self.by_topic, 'dogs', 'forms'),
+                    os.path.join(self.by_topic, 'dogs', 'in-email'),
+                    os.path.join(self.by_topic, 'dogs', 'out-custom'),
                     os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'attachments'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'attachments', 'scan2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'from_constituents', 'in-email', 'file2.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Thanks.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Jones.txt')]
-        self.assertEqual(expected, result, "Problem with test for from_to, directory")
+                    os.path.join(self.by_topic, 'dogs', 'attachments', 'scan2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'forms', 'Thanks.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'in-email', 'file2.txt'),
+                    os.path.join(self.by_topic, 'dogs', 'out-custom', 'Jones.txt')]
+        self.assertEqual(expected, result, "Problem with test for unique, directory")
 
         # Verifies the contents of cats_metadata.csv
         result = csv_to_list(os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'))
@@ -243,7 +171,7 @@ class MyTestCase(unittest.TestCase):
                     'forms\\Support.txt', '*', '*', '*', 'cats', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30614', '*', '*', '*', '*', '*',
                      'attachments\\scan1.txt', '*', '*', '*', 'cats', '*']]
-        self.assertEqual(expected, result, "Problem with test for from_to, cats_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for unique, cats_metadata.csv")
 
         # Verifies the contents of dogs_metadata.csv
         result = csv_to_list(os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'))
@@ -263,87 +191,15 @@ class MyTestCase(unittest.TestCase):
                      'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30617', '*', '*', '*', '*', '*',
                      'attachments\\scan2.txt', '*', '*', '*', 'dogs', '*']]
-        self.assertEqual(expected, result, "Problem with test for from_to, dogs_metadata.csv")
+        self.assertEqual(expected, result, "Problem with test for unique, dogs_metadata.csv")
 
         # Verifies the contents of topics_sort_file_not_found.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
-        expected = [['dogs', 'in-email\\file0.txt'],
-                    ['dogs', 'forms\\missing.txt'],
+        expected = [['dogs', 'forms\\missing.txt'],
+                    ['dogs', 'in-email\\file0.txt'],
                     ['cats', 'out-custom\\missing.txt'],
                     ['cats', 'forms\\missing.txt']]
-        self.assertEqual(expected, result, "Problem with test for from_to, not_found")
-
-    def test_to(self):
-        """Test for when all files are to constituents"""
-        # Makes a dataframe to use as test input and runs the function being tested.
-        df = make_df([['30600', 'out-custom\\Brown.txt', np.nan],
-                      ['30601', 'out-custom\\Jones.txt', 'dogs'],
-                      ['30602', 'out-custom\\Doe.txt', 'cats'],
-                      ['30603', np.nan, 'cats'],
-                      ['30604', 'out-custom\\Smith.txt', 'dogs'],
-                      ['30605', 'forms\\Thanks.txt', 'dogs'],
-                      ['30606', 'out-custom\\missing.txt', 'cats'],
-                      ['30607', 'forms\\missing.txt', 'cats'],
-                      ['30608', 'forms\\Thanks.txt', 'dogs'],
-                      ['30609', 'forms\\Support.txt', 'dogs'],
-                      ['30610', 'forms\\Thanks.txt', 'dogs']])
-        topics_sort(df, self.input_dir, self.output_dir)
-
-        # Verifies the contents of the output directory.
-        result = make_dir_list(self.output_dir)
-        expected = [self.by_topic,
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
-                    os.path.join(self.by_topic, 'cats'),
-                    os.path.join(self.by_topic, 'dogs'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents'),
-                    os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom'),
-                    os.path.join(self.by_topic, 'cats', 'to_constituents', 'out-custom', 'Doe.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents'),
-                    os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Support.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'forms', 'Thanks.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Jones.txt'),
-                    os.path.join(self.by_topic, 'dogs', 'to_constituents', 'out-custom', 'Smith.txt')]
-        self.assertEqual(expected, result, "Problem with test for to, directory")
-
-        # Verifies the contents of cats_metadata.csv
-        result = csv_to_list(os.path.join(self.by_topic, 'cats', 'cats_metadata.csv'))
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
-                     'out-custom\\Doe.txt', '*', '*', '*', 'cats', '*']]
-        self.assertEqual(expected, result, "Problem with test for from, cats_metadata.csv")
-
-        # Verifies the contents of dogs_metadata.csv
-        result = csv_to_list(os.path.join(self.by_topic, 'dogs', 'dogs_metadata.csv'))
-        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
-                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
-                     '2C_sequence_number', 'document_type', 'correspondence_document_name',
-                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
-                     'out-custom\\Jones.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
-                     'out-custom\\Smith.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30608', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30609', '*', '*', '*', '*', '*',
-                     'forms\\Support.txt', '*', '*', '*', 'dogs', '*'],
-                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30610', '*', '*', '*', '*', '*',
-                     'forms\\Thanks.txt', '*', '*', '*', 'dogs', '*']]
-        self.assertEqual(expected, result, "Problem with test for to, dogs_metadata.csv")
-
-        # Verifies the contents of topics_sort_file_not_found.csv
-        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'))
-        expected = [['cats', 'out-custom\\missing.txt'],
-                    ['cats', 'forms\\missing.txt']]
-        self.assertEqual(expected, result, "Problem with test for to, not_found")
+        self.assertEqual(expected, result, "Problem with test for unique, not_found")
 
 
 if __name__ == '__main__':
