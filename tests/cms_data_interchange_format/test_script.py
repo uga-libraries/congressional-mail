@@ -56,6 +56,9 @@ class MyTestCase(unittest.TestCase):
         #             'make copies of the metadata split by calendar year, '
         #             'make a copy of the letters to and from constituents organized by topic,'
         #             'and make the metadata inventory for the finding aid\n'
+        #             '\nFor QC'
+        #             '\nRows removed for appraisal: 0'
+        #             '\nRows removed for restriction: 1'
         #             '\nDeleting empty folders at all levels.\n')
         # self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
