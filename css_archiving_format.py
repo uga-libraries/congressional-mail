@@ -714,7 +714,8 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir, restart=False):
-    """Sort copy of all correspondence into folders by topic."""
+    """Sort copy of all correspondence into folders by topic,
+    with the option to restart from where a previous sort left off."""
 
     # Set up for topic sort varies depending on if this is the first time or a restart.
     # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
