@@ -574,14 +574,20 @@ def topics_report(df, output_dir):
     topic_counts.to_csv(os.path.join(output_dir, 'topics_report.csv'), index=False)
 
 
-def topics_sort(df, input_dir, output_dir):
-    """Sort copy of all correspondence into folders by topic."""
+def topics_sort(df, input_dir, output_dir, restart=False):
+    """Sort copy of all correspondence into folders by topic,
+    with the option to restart from where a previous sort left off."""
 
-    # New version of df with blanks removed from 'code_description' or 'correspondence_document_name' columns
-    df_topics = topics_sort_df(df)
+    # Set up for topic sort varies depending on if this is the first time or a restart.
+    # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
+    # During restarts, the parameter df is ready to be df_topics and an additional file of topics to skip is read.
+    if not restart:
+        df_topics = topics_sort_df(df)
+        os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+    else:
+        df_topics = df.copy()
 
     # Sorts a copy of all correspondence by topic.
-    os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
     topic_list = df_topics['code_description'].unique().tolist()
     for topic in topic_list:
 
