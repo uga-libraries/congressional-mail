@@ -587,7 +587,7 @@ def topics_sort(df, input_dir, output_dir):
 
         # Copies all letters to this topic folder, maintaining all subfolders.
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
-        df_topic = topics_sort_files(df_topic, 'attachments|in-email', input_dir, output_dir, topic_path)
+        df_topic = topics_sort_files(df_topic, input_dir, output_dir, topic_path)
 
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         css_arch.topics_sort_delete_empty(topic_path)
@@ -609,12 +609,11 @@ def topics_sort_df(df):
     return df
 
 
-def topics_sort_files(df, corr_type_folders, input_dir, output_dir, folder_path):
+def topics_sort_files(df, input_dir, output_dir, folder_path):
     """Copy all documents to a topic folder, update df for if each document was found and log if missing"""
 
-    # Gets a list of unique documents of the specified correspondence type (in or out) to copy.
-    df_type = df[df['correspondence_document_name'].str.contains(corr_type_folders, na=False)]
-    doc_list = df_type['correspondence_document_name'].unique().tolist()
+    # Gets a list of unique documents to copy.
+    doc_list = df['correspondence_document_name'].unique().tolist()
     for doc in doc_list:
 
         # Gets the path for the current doc location by updating the path from the metadata.
