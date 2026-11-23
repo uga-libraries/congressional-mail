@@ -439,6 +439,7 @@ def find_job_rows(df):
     df_job, df_unmatched = df_search(df, keywords_list, 'Job_Application')
 
     # Makes df with less certainty, only searching rows that are not in df_job, to look for new keywords.
+    # Note: intern is not in both lists. The keywords above has a trailing space to avoid false positives like internet.
     check_list = ['application', 'hire', 'intern', 'job']
     df_job_check, df_unmatched = df_search(df_unmatched, check_list, 'Job_Application')
 
