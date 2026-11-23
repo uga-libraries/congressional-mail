@@ -592,9 +592,8 @@ def topics_sort(df, input_dir, output_dir):
         # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
         css_arch.topics_sort_delete_empty(topic_path)
 
-        # Saves the metadata for this topic if the topic folder was not deleted for being empty.
-        if os.path.exists(topic_path):
-            topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+        # Cleans up and saves the metadata for this topic.
+        topics_sort_save_metadata(df_topic, topic_path, topic_norm)
 
 
 def topics_sort_df(df):
