@@ -633,7 +633,7 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
 
-        # Copies the doc to the to_constituents or from_constituents folder and updates the df with if it was found.
+        # Copies the doc to the subfolder matching its original subfolder and updates the df with if it was found.
         # If the doc is not in the expected location, logs it instead.
         # It is common to have docs in the metadata but not in the input directory.
         doc_name = doc.split('\\')[-1]
