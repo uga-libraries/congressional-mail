@@ -589,11 +589,11 @@ def topics_sort(df, input_dir, output_dir):
         # Updates df_topic with if the letter was in the export and makes a log of missing letters.
         df_topic = topics_sort_files(df_topic, input_dir, output_dir, topic_path)
 
-        # Deletes empty folders, which happens if all documents (in and/or out) for a topic are only in the metadata.
-        css_arch.topics_sort_delete_empty(topic_path)
-
         # Cleans up and saves the metadata for this topic.
         topics_sort_save_metadata(df_topic, topic_path, topic_norm)
+
+    # Deletes empty folders at any level, including folders that only contain empty folders.
+    css_arch.topics_sort_delete_empty(os.path.join(output_dir, 'correspondence_by_topic'))
 
 
 def topics_sort_df(df):
