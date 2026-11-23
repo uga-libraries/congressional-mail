@@ -645,7 +645,7 @@ def topics_sort_files(df, input_dir, output_dir, folder_path):
             df.loc[df['correspondence_document_name'] == doc, 'correspondence_document_name_present'] = False
             with open(os.path.join(output_dir, 'topics_sort_file_not_found.csv'), 'a', newline='') as log:
                 log_writer = csv.writer(log)
-                topic = folder_path.split('\\')[-2]
+                topic = folder_path.split('\\')[-1]
                 log_writer.writerow([topic, doc])
 
     return df
