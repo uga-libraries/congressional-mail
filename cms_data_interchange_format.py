@@ -584,12 +584,20 @@ def topics_sort(df, input_dir, output_dir, restart=False):
     if not restart:
         df_topics = topics_sort_df(df)
         os.mkdir(os.path.join(output_dir, 'correspondence_by_topic'))
+        skip_list = []
     else:
         df_topics = df.copy()
+        skip_df = pd.read_csv(os.path.join(output_dir, 'topics_sort_complete.txt'), header=None)
+        skip_list = skip_df[0].tolist()
 
     # Sorts a copy of all correspondence by topic.
     topic_list = df_topics['code_description'].unique().tolist()
     for topic in topic_list:
+
+        # Skips any topics already done if this is a restart.
+        # The topic folder will not be in correspondence_by_topic if all files were missing.
+        if topic in skip_list:
+            continue
 
         # Makes folder and metadata df for this topic.
         # The metadata is updated with if the documents are found and eventually saved to the topic folder.
