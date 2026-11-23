@@ -663,13 +663,14 @@ def topics_sort_save_metadata(df, topic_path, topic_norm):
     # Removes duplicate rows. Not sure if this would happen, but have seen in other export type.
     df.drop_duplicates(inplace=True)
 
-    # Saves the updated dataframe to the folder for this topic within correspondence_by_topic.
+    # Saves to the topic folder, unless it has no rows because no files were found.
     # If it already exists from another topic normalized to the same thing, adds to the end of that csv.
-    metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
-    if os.path.exists(metadata_path):
-        df.to_csv(metadata_path, mode='a', header=False, index=False)
-    else:
-        df.to_csv(metadata_path, index=False)
+    if len(df.index) > 0:
+        metadata_path = os.path.join(topic_path, f'{topic_norm}_metadata.csv')
+        if os.path.exists(metadata_path):
+            df.to_csv(metadata_path, mode='a', header=False, index=False)
+        else:
+            df.to_csv(metadata_path, index=False)
 
 
 def update_path(md_path, input_dir):
