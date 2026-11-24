@@ -444,9 +444,8 @@ def make_finding_aid_inventory(output_dir):
     # Starts a csv for the metadata.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'start_date',
-                         'end_date', 'container instance type', 'top container type',
-                         'extent portion', 'extent', 'extent type'])
+        writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'start_date', 'end_date',
+                         'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'])
         writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True', '', '', '', '', '', '', ''])
         writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True', '', '', '', '', '', '', ''])
 
@@ -493,19 +492,19 @@ def make_finding_aid_inventory(output_dir):
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, '3', 'file', 'True', start_year, end_year, 'electronic_records',
-                             'electronic_records', 'Whole', extent_rounded, 'gigabyte(s)'])
+            writer.writerow([title, '3', 'file', 'True', start_year, end_year, 'Whole', extent_rounded, 'gigabyte(s)',
+                             'electronic_records', 'electronic_records'])
 
     # Adds titles for the other three folders (same title for every export), as a reminder.
     # The dates and size are added manually.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'TBD', 'TBD',
-                         'electronic_records', 'electronic_records', 'Whole', 'TBD', 'gigabyte(s)'])
+                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records'])
         writer.writerow(['Form Letters [electronic files]', '2', 'file', 'True', 'TBD', 'TBD',
-                         'electronic_records', 'electronic_records', 'Whole', 'TBD', 'gigabyte(s)'])
+                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records'])
         writer.writerow(['Original Export [electronic files]', '2', 'file', 'True', 'TBD', 'TBD',
-                         'electronic_records', 'electronic_records', 'Whole', 'TBD', 'gigabyte(s)'])
+                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records'])
 
 
 def read_metadata(paths):
