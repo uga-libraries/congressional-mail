@@ -612,7 +612,7 @@ def topics_sort(df, input_dir, output_dir, restart=False):
         # Saves the topic and number of unique files to a log for QC of the number moved.
         # Also prints the information to track progress and if the script appears to be stuck.
         file_count = df_topic['correspondence_document_name'].nunique()
-        with open(os.path.join(output_dir, 'topics_sort_expected_file_count.csv'), 'a') as count_log:
+        with open(os.path.join(output_dir, 'topics_sort_expected_file_count.csv'), 'a', newline='') as count_log:
             log_writer = csv.writer(count_log)
             log_writer.writerow([topic_norm, file_count])
         print(f"Starting topic {topic}, which has {file_count} unique document paths in the df")
