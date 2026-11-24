@@ -5,7 +5,7 @@ See the processing plan (started during accessioning) for what to document from 
 Processing typically does not take place until after the collection can open.
 If time allows, we may process at the time of accessioning to streamline the work and backlog validation process.
 
-QUESTION: how to update appraisal to match current practice?
+QUESTION: if there is a delay before processing, how to update appraisal to match current practice?
 Do we have to run appraisal mode again? 
 Is there a risk we've removed things that current practice would retain?
 Would it be better to not appraisal until it is time to process, since it doesn't save much space?
@@ -50,6 +50,10 @@ The input_directory is the path to AppraisalCopy/name_constituent_mail_export
 When running on Hub, you may need to unfreeze the script periodically by typing any letter in the terminal window.
 If it was frozen, it will print that it started the next topic right away.
 If it is just on a topic with a lot of letters, that will do nothing.
+
+For CMS DIF and CSS Archiving, if the script is interrupted during topic sort,
+see Restarting the Script (below) to continue without losing what is already done.
+This hasn't been implemented for CSS DIF yet.
 
 ### Script actions and outputs
 
@@ -97,9 +101,8 @@ Because topic sorting can involve copying millions of files,
 the script runs over multiple days and is vulnerable to being interrupted.
 The script has also broken due to path length errors and strange characters in filenames.
 
-The CSS Archiving format is currently the only one set up to restart.
+The CMS DIF and CSS Archiving formats are currently the only ones set up to restart.
 Something similar has been done with CSS Data Interchange format by commenting out different parts of the code.
-We haven't needed this yet for CMS Data Interchange format.
 
 ### Script preparation
 
