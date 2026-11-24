@@ -447,10 +447,8 @@ def make_finding_aid_inventory(output_dir):
         writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'start_date',
                          'end_date', 'container instance type', 'top container type',
                          'extent portion', 'extent', 'extent type'])
-        writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True', '', '',
-                         'electronic_records', 'electronic_records', 'Whole', '', 'gigabyte(s)'])
-        writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True', '', '',
-                         'electronic_records', 'electronic_records', 'Whole', '', 'gigabyte(s)'])
+        writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True', '', '', '', '', '', '', ''])
+        writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True', '', '', '', '', '', '', ''])
 
     # Gets metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
