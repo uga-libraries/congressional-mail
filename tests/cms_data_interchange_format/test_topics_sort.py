@@ -180,7 +180,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(expected, result, "Problem with test for empty_missing, metadata")
 
     def test_restart(self):
-        """Test for when all topics are restart"""
+        """Test for when topic sorting is interrupted and restarted"""
         # Makes a copy of the test data, since it is altered by the test,
         # makes path variables since different from the other tests,
         # and reads the csv into a df
