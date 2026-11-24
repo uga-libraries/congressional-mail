@@ -815,7 +815,7 @@ if __name__ == '__main__':
     elif script_mode == 'access_restart':
         print("\nThe script is running in access_restart mode.")
         print("It will continue copying the letters to and from constituents organized by topic, "
-              "skipping topics already done prior to the script being stopped,"
+              "skipping topics already done prior to the script being stopped, "
               "and make the metadata inventory for the finding aid.")
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
         topics_sort(md_df, input_directory, output_directory, restart=True)
