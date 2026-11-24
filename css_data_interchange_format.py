@@ -442,7 +442,7 @@ def make_finding_aid_inventory(output_dir):
     """Make a CSV with most of the information needed for the finding aid."""
 
     # Starts a csv for the metadata.
-    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
+    with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['title', 'start_date', 'end_date', 'extent'])
         writer.writerow(['Constituent Mail Export [electronic files]', '', '', ''])
@@ -489,13 +489,13 @@ def make_finding_aid_inventory(output_dir):
             extent_rounded = 'could_not_calculate'
 
         # Saves metadata for this topic to the CSV.
-        with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+        with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([title, start_year, end_year, extent_rounded])
 
     # Adds titles for the other three folders (same title for every export), as a reminder.
     # The dates and size are added manually.
-    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+    with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'])
         writer.writerow(['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'])

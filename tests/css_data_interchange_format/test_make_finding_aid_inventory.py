@@ -17,8 +17,8 @@ class MyTestCase(unittest.TestCase):
         test_names = ['missing_metadata', 'size_differences', 'year_differences']
         for test_name in test_names:
             test_path = os.path.join('test_data', 'make_metadata_csv', test_name)
-            if os.path.exists(os.path.join(test_path, 'aspace_inventory.csv')):
-                os.remove(os.path.join(test_path, 'aspace_inventory.csv'))
+            if os.path.exists(os.path.join(test_path, 'finding_aid_inventory.csv')):
+                os.remove(os.path.join(test_path, 'finding_aid_inventory.csv'))
             by_topic_path = os.path.join(test_path, 'correspondence_by_topic')
             for topic in os.listdir(by_topic_path):
                 if os.path.exists(os.path.join(by_topic_path, topic, 'document.txt')):
@@ -33,8 +33,8 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'farm'), 5000)
         make_finding_aid_inventory(output_directory)
 
-        # Tests the contents of aspace_inventory.csv.
-        result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
+        # Tests the contents of finding_aid_inventory.csv.
+        result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
@@ -55,8 +55,8 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '4-decimal-up'), 11000)
         make_finding_aid_inventory(output_directory)
 
-        # Tests the contents of aspace_inventory.csv.
-        result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
+        # Tests the contents of finding_aid_inventory.csv.
+        result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
@@ -77,8 +77,8 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'one year'), 70000)
         make_finding_aid_inventory(output_directory)
 
-        # Tests the contents of aspace_inventory.csv.
-        result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
+        # Tests the contents of finding_aid_inventory.csv.
+        result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
         expected = [['title', 'start_date', 'end_date', 'extent'],
                     ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
