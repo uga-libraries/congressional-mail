@@ -17,6 +17,17 @@ def csv_to_list(csv_path, sort=False):
     return csv_list
 
 
+def text_to_list(text_path):
+    """Convert the contents of a text file to a list which contains one item per row for easier comparison"""
+    with open(text_path, 'r') as file:
+        text_list = file.readlines()
+
+    # Remove newline characters
+    text_list = [line.strip() for line in text_list]
+
+    return text_list
+
+
 def make_dir_list(dir_path):
     """Make a list of the files in the folder created by the function to compare to expected results"""
     contents_list = []
