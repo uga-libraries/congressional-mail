@@ -1,8 +1,11 @@
+import os
+
 import numpy as np
 import pandas as pd
 import unittest
 from cms_data_interchange_format import topics_sort_df
 from test_read_metadata import df_to_list
+from test_script import csv_to_list
 
 
 def make_df(rows):
@@ -22,6 +25,12 @@ def make_df(rows):
 
 class MyTestCase(unittest.TestCase):
 
+    def tearDown(self):
+        """Delete the csv version of the df, if made"""
+        md_path = os.path.join(os.getcwd(), 'topics_sort_metadata.csv')
+        if os.path.exists(md_path):
+            os.remove(md_path)
+
     def test_basic(self):
         """Test for when there are no blanks and the function just adds a column"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -29,7 +38,7 @@ class MyTestCase(unittest.TestCase):
                       ['30602', 'path\\file2.txt', 'berry'],
                       ['30603', 'path\\file3.txt', 'pears'],
                       ['30604', 'path\\file1.txt', 'apple']])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -46,7 +55,24 @@ class MyTestCase(unittest.TestCase):
                      'path\\file3.txt', 'TBD', '*', '*', '*', 'pears', '*'],
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
                      'path\\file1.txt', 'TBD', '*', '*', '*', 'apple', '*']]
-        self.assertEqual(expected, result, "Problem with test for basic")
+        self.assertEqual(expected, result, "Problem with test for basic, df")
+
+        # Verifies the contents of topics_sort_metadata.csv are correct.
+        result = csv_to_list(os.path.join(os.getcwd(), 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
+                     'code_description', 'inactive_flag'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
+                     'path\\file1.txt', 'TBD', '*', '*', '*', 'apple', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
+                     'path\\file2.txt', 'TBD', '*', '*', '*', 'berry', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
+                     'path\\file3.txt', 'TBD', '*', '*', '*', 'pears', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
+                     'path\\file1.txt', 'TBD', '*', '*', '*', 'apple', '*']]
+        self.assertEqual(expected, result, "Problem with test for basic, csv")
 
     def test_blanks(self):
         """Test for when there are blanks"""
@@ -56,7 +82,7 @@ class MyTestCase(unittest.TestCase):
                       ['30603', 'path\\file3.txt', 'pears'],
                       ['30604', 'path\\file4.txt', np.nan],
                       ['30605', np.nan, np.nan]])
-        df_topics = topics_sort_df(df)
+        df_topics = topics_sort_df(df, os.getcwd())
 
         # Verifies the contents of the df_topics are correct.
         result = df_to_list(df_topics)
@@ -70,6 +96,19 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
                      'path\\file3.txt', 'TBD', '*', '*', '*', 'pears', '*']]
         self.assertEqual(expected, result, "Problem with test for blanks")
+
+        # Verifies the contents of topics_sort_metadata.csv are correct.
+        result = csv_to_list(os.path.join(os.getcwd(), 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'correspondence_document_name_present', 'file_location', 'code_type', 'code',
+                     'code_description', 'inactive_flag'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
+                     'path\\file1.txt', 'TBD', '*', '*', '*', 'apple', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
+                     'path\\file3.txt', 'TBD', '*', '*', '*', 'pears', '*']]
+        self.assertEqual(expected, result, "Problem with test for blanks, csv")
 
 
 if __name__ == '__main__':
