@@ -4,7 +4,7 @@ import pandas as pd
 import shutil
 import unittest
 from cms_data_interchange_format import topics_sort
-from test_script import csv_to_list, make_dir_list
+from test_script import csv_to_list, make_dir_list, text_to_list
 from test_topics_sort_df import make_df
 
 
@@ -41,8 +41,16 @@ class MyTestCase(unittest.TestCase):
 
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
-        expected = [self.by_topic]
+        expected = [self.by_topic, os.path.join(self.output_dir, 'topics_sort_metadata.csv')]
         self.assertEqual(expected, result, "Problem with test for empty_blank, directory")
+
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+                     'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+                     'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag']]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, metadata")
 
     def test_empty_missing(self):
         """Test for when all files are only in the metadata and not the directory"""
@@ -57,9 +65,16 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
-                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv')]
+                    os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv')]
         self.assertEqual(expected, result, "Problem with test for empty_missing, directory")
+
+        # Verifies the contents of topics_sort_complete.txt
+        result = text_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = ['cats', 'dogs']
+        self.assertEqual(expected, result, "Problem with test for empty_missing, complete")
 
         # Verifies the contents of topics_sort_expected_file_count.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
@@ -76,6 +91,24 @@ class MyTestCase(unittest.TestCase):
                     ['dogs', 'out-custom\\Smith.doc']]
         self.assertEqual(expected, result, "Problem with test for empty_missing, not_found")
 
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+                     'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+                     'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30600', '*', '*', '*', '*', '*',
+                     'attachments\\scan0.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
+                     'forms\\con.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
+                     'in-email\\file0.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
+                     'in-email\\file_missing.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
+                     'out-custom\\Smith.doc', 'TBD', '*', '*', '*', 'dogs', '*']]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, metadata")
+
     def test_duplicate(self):
         """Test for duplicate topics after normalizing"""
         # Makes a dataframe to use as test input and runs the function being tested.
@@ -87,7 +120,9 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, '_dogs'),
                     os.path.join(self.by_topic, '_dogs', 'forms'),
                     os.path.join(self.by_topic, '_dogs', 'out-custom'),
@@ -96,6 +131,11 @@ class MyTestCase(unittest.TestCase):
                     os.path.join(self.by_topic, '_dogs', 'forms', 'Thanks.txt'),
                     os.path.join(self.by_topic, '_dogs', 'out-custom', 'Brown.txt')]
         self.assertEqual(expected, result, "Problem with test for duplicate, directory")
+
+        # Verifies the contents of topics_sort_complete.txt
+        result = text_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = ['/dogs', '<dogs']
+        self.assertEqual(expected, result, "Problem with test for duplicate, complete")
 
         # Verifies the contents of topics_sort_expected_file_count.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
@@ -116,6 +156,20 @@ class MyTestCase(unittest.TestCase):
                     ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
                      'forms\\Thanks.txt', '*', '*', '*', '<dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for duplicate, dogs_metadata.csv")
+
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+                     'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+                     'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30600', '*', '*', '*', '*', '*',
+                     'out-custom\\Brown.txt', 'TBD', '*', '*', '*', '/dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30601', '*', '*', '*', '*', '*',
+                     'forms\\Support.txt', 'TBD', '*', '*', '*', '/dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', 'TBD', '*', '*', '*', '<dogs', '*']]
+        self.assertEqual(expected, result, "Problem with test for empty_missing, metadata")
 
     def test_unique(self):
         """Test for when all topics are unique"""
@@ -145,8 +199,10 @@ class MyTestCase(unittest.TestCase):
         # Verifies the contents of the output directory.
         result = make_dir_list(self.output_dir)
         expected = [self.by_topic,
+                    os.path.join(self.output_dir, 'topics_sort_complete.txt'),
                     os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'),
                     os.path.join(self.output_dir, 'topics_sort_file_not_found.csv'),
+                    os.path.join(self.output_dir, 'topics_sort_metadata.csv'),
                     os.path.join(self.by_topic, 'cats'),
                     os.path.join(self.by_topic, 'dogs'),
                     os.path.join(self.by_topic, 'cats', 'attachments'),
@@ -208,6 +264,11 @@ class MyTestCase(unittest.TestCase):
                      'attachments\\scan2.txt', '*', '*', '*', 'dogs', '*']]
         self.assertEqual(expected, result, "Problem with test for unique, dogs_metadata.csv")
 
+        # Verifies the contents of topics_sort_complete.txt
+        result = text_to_list(os.path.join(self.output_dir, 'topics_sort_complete.txt'))
+        expected = ['dogs', 'cats']
+        self.assertEqual(expected, result, "Problem with test for unique, complete")
+
         # Verifies the contents of topics_sort_expected_file_count.csv
         result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_expected_file_count.csv'))
         expected = [['dogs', '6'],
@@ -221,6 +282,44 @@ class MyTestCase(unittest.TestCase):
                     ['cats', 'out-custom\\missing.txt'],
                     ['cats', 'forms\\missing.txt']]
         self.assertEqual(expected, result, "Problem with test for unique, not_found")
+
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join(self.output_dir, 'topics_sort_metadata.csv'))
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+                     'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+                     'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30602', '*', '*', '*', '*', '*',
+                     'out-custom\\Jones.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30603', '*', '*', '*', '*', '*',
+                     'in-email\\file2.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30604', '*', '*', '*', '*', '*',
+                     'out-custom\\Doe.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30605', '*', '*', '*', '*', '*',
+                     'in-email\\file1.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30607', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30608', '*', '*', '*', '*', '*',
+                     'out-custom\\missing.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30609', '*', '*', '*', '*', '*',
+                     'forms\\missing.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30610', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30611', '*', '*', '*', '*', '*',
+                     'forms\\Support.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30612', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30614', '*', '*', '*', '*', '*',
+                     'attachments\\scan1.txt', 'TBD', '*', '*', '*', 'cats', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30615', '*', '*', '*', '*', '*',
+                     'forms\\missing.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30616', '*', '*', '*', '*', '*',
+                     'forms\\Thanks.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30617', '*', '*', '*', '*', '*',
+                     'attachments\\scan2.txt', 'TBD', '*', '*', '*', 'dogs', '*'],
+                    ['*', '*', '*', '*', '*', '*', '*', '*', '*', '30618', '*', '*', '*', '*', '*',
+                     'in-email\\file0.txt', 'TBD', '*', '*', '*', 'dogs', '*']]
+        self.assertEqual(expected, result, "Problem with test for unique, metadata")
 
 
 if __name__ == '__main__':
