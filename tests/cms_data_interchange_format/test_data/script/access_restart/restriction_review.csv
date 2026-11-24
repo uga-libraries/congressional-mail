@@ -1,0 +1,3 @@
+correspondence_type,staff,date_in,date_out,tickler_date,update_date,response_type,city,state,zip_code,country,correspondence_code,position,2C_sequence_number,document_type,correspondence_document_name,file_location,code_type,code,code_description,inactive_flag
+EMAIL,Staffer_9,20230930,20230930,,20230930,EMAIL,City Nine,GA,30009,USA,99999,CON,1,main,in-email\9.txt,,COR,99999,court,Y
+					 
