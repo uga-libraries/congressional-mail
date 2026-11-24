@@ -25,6 +25,26 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('access', script_mode, "Problem with correct - access, script_mode")
         self.assertEqual([], errors_list, "Problem with correct - access, errors_list")
 
+    def test_correct_access_restart(self):
+        """Test for when both required arguments are present, input_directory path exists and
+        all metadata files are present, and mode is access_restart."""
+        # Runs the function being tested.
+        input_dir = os.path.join('test_data', 'check_arguments', 'correct')
+        sys_argv = ['cms_data_interchange_format.py', input_dir, 'access_restart']
+        input_directory, metadata_paths_dict, script_mode, errors_list = check_arguments(sys_argv)
+
+        # Tests the value of each of the four variables returned by the function
+        expected_dict = {'1B': os.path.join(input_dir, '1B.out'),
+                         '2A': os.path.join(input_dir, '2A.out'),
+                         '2B': os.path.join(input_dir, '2B.out'),
+                         '2C': os.path.join(input_dir, '2C.out'),
+                         '2D': os.path.join(input_dir, '2D.out'),
+                         '8A': os.path.join(input_dir, '8A.out')}
+        self.assertEqual(input_dir, input_directory, "Problem with correct - access_restart, input_directory")
+        self.assertEqual(expected_dict, metadata_paths_dict, "Problem with correct - access_restart, metadata_paths_dict")
+        self.assertEqual('access_restart', script_mode, "Problem with correct - access_restart, script_mode")
+        self.assertEqual([], errors_list, "Problem with correct - access_restart, errors_list")
+
     def test_correct_accession(self):
         """Test for when both required arguments are present, input_directory path exists and
         all metadata files are present, and mode is accession."""

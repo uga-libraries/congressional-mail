@@ -17,6 +17,17 @@ def csv_to_list(csv_path, sort=False):
     return csv_list
 
 
+def text_to_list(text_path):
+    """Convert the contents of a text file to a list which contains one item per row for easier comparison"""
+    with open(text_path, 'r') as file:
+        text_list = file.readlines()
+
+    # Remove newline characters
+    text_list = [line.strip() for line in text_list]
+
+    return text_list
+
+
 def make_dir_list(dir_path):
     """Make a list of the files in the folder created by the function to compare to expected results"""
     contents_list = []
@@ -49,18 +60,20 @@ class MyTestCase(unittest.TestCase):
                                 shell=True, capture_output=True, text=True)
 
         # Tests the print statement.
-        # TODO - need to update topic sort to delete at end - right now deletes after each
-        # result = output.stdout
-        # expected = ('\nThe script is running in access mode.\n'
-        #             'It will remove rows for deleted or restricted letters and columns with PII, '
-        #             'make copies of the metadata split by calendar year, '
-        #             'make a copy of the letters to and from constituents organized by topic,'
-        #             'and make the metadata inventory for the finding aid\n'
-        #             '\nFor QC'
-        #             '\nRows removed for appraisal: 0'
-        #             '\nRows removed for restriction: 1'
-        #             '\nDeleting empty folders at all levels.\n')
-        # self.assertEqual(expected, result, "Problem with test for access, printed statement")
+        result = output.stdout
+        expected = ('\nThe script is running in access mode.\n'
+                    'It will remove rows for deleted or restricted letters and columns with PII, '
+                    'make copies of the metadata split by calendar year, '
+                    'make a copy of the letters to and from constituents organized by topic,'
+                    'and make the metadata inventory for the finding aid\n'
+                    '\nFor QC'
+                    '\nRows removed for appraisal: 0'
+                    '\nRows removed for restriction: 1'
+                    '\nStarting topic LEGAL CASE, which has 1 unique document paths in the df'
+                    '\nStarting topic MINWAGE, which has 1 unique document paths in the df'
+                    '\nStarting topic RIGHTS, which has 3 unique document paths in the df'
+                    '\n\nDeleting empty folders at all levels\n')
+        self.assertEqual(expected, result, "Problem with test for access, printed statement")
 
         # Tests the contents of archiving_correspondence_redacted.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
@@ -199,19 +212,16 @@ class MyTestCase(unittest.TestCase):
         expected = [os.path.join(by_topic, 'LEGAL CASE'),
                     os.path.join(by_topic, 'MINWAGE'),
                     os.path.join(by_topic, 'RIGHTS'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email'),
                     os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email'),
-                    os.path.join(by_topic, 'LEGAL CASE', 'from_constituents', 'in-email', '1.txt'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email', '1.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email'),
                     os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email'),
-                    os.path.join(by_topic, 'MINWAGE', 'from_constituents', 'in-email', '2.txt'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email', '2.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom'),
                     os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '33.txt'),
-                    os.path.join(by_topic, 'RIGHTS', 'to_constituents', 'out-custom', '333.txt')]
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '33.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '333.txt')]
         self.assertEqual(expected, result, "Problem with test for access, Correspondence_by_Topic")
 
         # Tests the contents of LEGAL CASE_metadata.csv.
@@ -253,11 +263,48 @@ class MyTestCase(unittest.TestCase):
                      'BLANK', 'COR', '33333', 'RIGHTS', 'Y']]
         self.assertEqual(expected, result, "Problem with test for access, RIGHTS_metadata.csv")
 
+        # Verifies the contents of topics_sort_complete.txt
+        result = text_to_list(os.path.join('test_data', 'script', 'output_dir', 'topics_sort_complete.txt'))
+        expected = ['LEGAL CASE', 'MINWAGE', 'RIGHTS']
+        self.assertEqual(expected, result, "Problem with test for access, 'topics_sort_complete.txt'")
+
+        # Tests the contents of topics_sort_expected_file_count.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_expected_file_count.csv')
+        result = csv_to_list(csv_path)
+        expected = [['LEGAL CASE', '1'],
+                    ['MINWAGE', '1'],
+                    ['RIGHTS', '3']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_expected_file_count.csv")
+
         # Tests the contents of topics_sort_file_not_found.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
         result = csv_to_list(csv_path)
         expected = [['RIGHTS', r'in-email\3.txt']]
         self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
+
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join('test_data', 'script', 'output_dir', 'topics_sort_metadata.csv'))
+        expected = [
+            ['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+             'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+             'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+             'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+            ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+             'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'TBD', 'BLANK',
+             'COR', '11111', 'LEGAL CASE', 'Y'],
+            ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+             'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'TBD', 'BLANK',
+             'COR', '22222', 'MINWAGE', 'Y'],
+            ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+             'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y'],
+            ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+             '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y'],
+            ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+             'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access, topics_sort_metadata.csv")
 
         # Tests the contents of aspace_inventory.csv.
         csv_path = os.path.join('test_data', 'script', 'output_dir', 'aspace_inventory.csv')
@@ -272,6 +319,278 @@ class MyTestCase(unittest.TestCase):
                     ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
                     ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
         self.assertEqual(expected, result, "Problem with test for access, aspace_inventory.csv")
+
+    def test_access_restart(self):
+        """Test for when the script runs correctly in access_restart mode."""
+        # Makes a copy of the test data for easier deletion of script outputs.
+        shutil.copytree(os.path.join('test_data', 'script', 'access_restart'),
+                        os.path.join('test_data', 'script', 'output_dir'))
+
+        # Runs the script.
+        script_path = os.path.join(os.getcwd(), '..', '..', 'cms_data_interchange_format.py')
+        input_directory = os.path.join('test_data', 'script', 'output_dir', 'constituent_mail_export')
+        output = subprocess.run(f"python {script_path} {input_directory} access_restart",
+                                shell=True, capture_output=True, text=True)
+
+        # Tests the print statement.
+        result = output.stdout
+        expected = ('\nThe script is running in access_restart mode.\n'
+                    'It will continue copying the letters to and from constituents organized by topic, '
+                    'skipping topics already done prior to the script being stopped, '
+                    'and make the metadata inventory for the finding aid.'
+                    '\nStarting topic MINWAGE, which has 1 unique document paths in the df'
+                    '\nStarting topic RIGHTS, which has 3 unique document paths in the df'
+                    '\n\nDeleting empty folders at all levels\n')
+        self.assertEqual(expected, result, "Problem with test for access_restart, printed statement")
+
+        # Tests the contents of archiving_correspondence_redacted.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'archiving_correspondence_redacted.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y'],
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, archiving_correspondence_redacted.csv")
+
+        # Tests the contents of 2021.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2021.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, 2021")
+
+        # Tests the contents of 2022.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2022.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+                     'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, 2022")
+
+        # Tests the contents of 2023.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', '2023.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_6', '20230630', '20230630', 'BLANK', '20230630', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', '66666', 'NEU', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'COR', '66666', 'OPINION', 'Y'],
+                    ['EMAIL', 'Staffer_7', '20230730', '20230730', 'BLANK', '20230730', 'EMAIL',
+                     'City Seven', 'GA', '30007', 'USA', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['EMAIL', 'Staffer_8', '20230830', '20230830', 'BLANK', '20230830', 'EMAIL',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, 2023")
+
+        # Tests the contents of undated.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'correspondence_metadata_by_year', 'undated.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position',
+                     '2C_sequence_number', 'document_type', 'correspondence_document_name', 'file_location',
+                     'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'BLANK',
+                     'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, undated")
+
+        # Tests the contents of form_letter_metadata.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'form_letter_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['letter_code', 'letter_description', 'document_name', 'owner', 'creation_date', 'revision_date',
+                     'archive_flag', 'untitled_1', 'untitled_2', 'untitled_3', 'untitled_4'],
+                    ['224246', 'Information:letters opposing Medicaid cuts', 'forms\\224246.doc', '64951300',
+                     '20050223',
+                     '20060503', 'Closed', 'BD.Medicaidcutsin06budget (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about the proposed budget cuts to Medicaid...', 'BLANK'],
+                    ['224328', 'Information:letter in support of funding', 'forms\\224328.doc', '64951298', '20050502',
+                     '20140409', 'Closed', 'EDU.MathandScienceFunding (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about funding...', 'BLANK'],
+                    ['224873', 'Version:1 Letter_Name:ENV.HR4200 revised', 'forms\\224873.doc', '64951292', '20060413',
+                     '20060726', 'Closed', 'ENV.HR4200 revised (version 1)', 'Responding to your message...',
+                     'Thank you for contacting me about H.R. 4200...', 'BLANK'],
+                    ['224906', 'Version:4 Letter_Name:metter.congress.3/24/07', 'forms\\224906.doc', '64951290',
+                     '20070402',
+                     '20070402', 'Closed', 'metter.congress on the corner.3/24/07 (version 4)',
+                     'Responding to your message...',
+                     'Thank you for taking time to attend...', 'BLANK'],
+                    ['225014', 'Version:2 Letter_Name:HC.HealthFreedomAct', 'forms\\225014.doc', '64951293', '20060425',
+                     '20060726', 'Closed', 'HC.HealthFreedomAct (version 2)', 'Responding to your message...',
+                     'Thank you for your letter regarding H.R. 4282...', 'BLANK'],
+                    ['225976', 'Version:2 Letter_Name:FMAP Extension', 'forms\\225976.doc', '64951312', '20100823',
+                     '20100823', 'Closed', 'FMAP Extension (version 2)', 'Responding to your message...',
+                     'Thank you for contacting me about extending the increases...', 'BLANK'],
+                    ['225977', 'Version:1 Letter_Name:FMAP Extension 2010', 'forms\\225977.doc', '64951312', '20100823',
+                     '20100823', 'Closed', 'FMAP Extension 2010 (version 1)', 'Responding to your message...',
+                     '[Date]Thank you for contacting me about...', 'BLANK'],
+                    ['239476', 'JU.FL.113 Protect the First Amendment', 'forms\\239476.doc', '65562958', '20140501',
+                     '20140501', 'Approved', 'JU.FL.113 Protect the First Amendment', 'Responding to your message...',
+                     '<TAB>Thank you for contacting me about protecting...', 'BLANK'],
+                    ['239484', 'ED.FL.113 Common Core', 'forms\\239484.doc', '65562958', '20140501', '20140501',
+                     'Approved',
+                     'ED.FL.113 Common Core', 'Responding to your message...',
+                     'Thank&nbsp;you for contacting me about the Department of Ed...', 'BLANK'],
+                    ['239528', 'MIL.FL.113 HR 231', 'forms\\239528.doc', '65562958', '20140502', '20140502',
+                     'Approved', 'MIL.FL.113 HR 231 Establishing a Committee on POW and MIA Affairs',
+                     'Responding to your message...', 'Thank you <br /><CR><LF><br /><CR><LF>There is nothing...',
+                     'BLANK']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, form_letter")
+
+        # Tests that Correspondence_by_Topic has the expected files.
+        by_topic = os.path.join(os.getcwd(), 'test_data', 'script', 'output_dir', 'Correspondence_by_Topic')
+        result = make_dir_list(by_topic)
+        expected = [os.path.join(by_topic, 'LEGAL CASE'),
+                    os.path.join(by_topic, 'MINWAGE'),
+                    os.path.join(by_topic, 'RIGHTS'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv'),
+                    os.path.join(by_topic, 'LEGAL CASE', 'in-email', '1.txt'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email'),
+                    os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv'),
+                    os.path.join(by_topic, 'MINWAGE', 'in-email', '2.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom'),
+                    os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '33.txt'),
+                    os.path.join(by_topic, 'RIGHTS', 'out-custom', '333.txt')]
+        self.assertEqual(expected, result, "Problem with test for access_restart, Correspondence_by_Topic")
+
+        # Tests the contents of LEGAL CASE_metadata.csv.
+        csv_path = os.path.join(by_topic, 'LEGAL CASE', 'LEGAL CASE_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+                     'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'BLANK',
+                     'COR', '11111', 'LEGAL CASE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, LEGAL CASE_metadata.csv")
+
+        # Tests the contents of MINWAGE_metadata.csv.
+        csv_path = os.path.join(by_topic, 'MINWAGE', 'MINWAGE_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+                     'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'BLANK',
+                     'COR', '22222', 'MINWAGE', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, MINWAGE_metadata.csv")
+
+        # Tests the contents of RIGHTS_metadata.csv.
+        csv_path = os.path.join(by_topic, 'RIGHTS', 'RIGHTS_metadata.csv')
+        result = csv_to_list(csv_path)
+        expected = [['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date',
+                     'response_type', 'city', 'state', 'zip_code', 'country', 'correspondence_code',
+                     'position', '2C_sequence_number', 'document_type', 'correspondence_document_name',
+                     'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+                    ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+                     '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt',
+                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y'],
+                    ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+                     'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt',
+                     'BLANK', 'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, RIGHTS_metadata.csv")
+
+        # Verifies the contents of topics_sort_complete.txt
+        result = text_to_list(os.path.join('test_data', 'script', 'output_dir', 'topics_sort_complete.txt'))
+        expected = ['LEGAL CASE', 'MINWAGE', 'RIGHTS']
+        self.assertEqual(expected, result, "Problem with test for access_restart, 'topics_sort_complete.txt'")
+
+        # Tests the contents of topics_sort_expected_file_count.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_expected_file_count.csv')
+        result = csv_to_list(csv_path)
+        expected = [['LEGAL CASE', '1'],
+                    ['MINWAGE', '1'],
+                    ['RIGHTS', '3']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, topics_sort_expected_file_count.csv")
+
+        # Tests the contents of topics_sort_file_not_found.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'topics_sort_file_not_found.csv')
+        result = csv_to_list(csv_path)
+        expected = [['RIGHTS', r'in-email\3.txt']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, topics_sort_file_not_found.csv")
+
+        # Verifies the contents of topics_sort_metadata.csv
+        result = csv_to_list(os.path.join('test_data', 'script', 'output_dir', 'topics_sort_metadata.csv'))
+        expected = [
+            ['correspondence_type', 'staff', 'date_in', 'date_out', 'tickler_date', 'update_date', 'response_type',
+             'city', 'state', 'zip_code', 'country', 'correspondence_code', 'position', '2C_sequence_number',
+             'document_type', 'correspondence_document_name', 'correspondence_document_name_present',
+             'file_location', 'code_type', 'code', 'code_description', 'inactive_flag'],
+            ['LETTER', 'Staffer_1', '20210110', '20210110', 'BLANK', '20210110', 'LETTER', 'City One',
+             'GA', '30001', 'USA', '11111', 'CON', '1', 'main', r'in-email\1.txt', 'TBD', 'BLANK',
+             'COR', '11111', 'LEGAL CASE', 'Y'],
+            ['EMAIL', 'Staffer_2', '20220220', '20220220', 'BLANK', '20220220', 'EMAIL', 'Caseyville',
+             'GA', '30002', 'USA', '22222', 'PRO', '1', 'main', r'in-email\2.txt', 'TBD', 'BLANK',
+             'COR', '22222', 'MINWAGE', 'Y'],
+            ['EMAIL', 'Staffer_3', '20220330', '20220330', 'BLANK', '20220330', 'EMAIL', 'City Three',
+             'GA', '30003', 'USA', '33333', 'PRO', '1', 'main', r'in-email\3.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y'],
+            ['EMAIL', 'Staffer_3', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'EMAIL', 'City One', 'GA',
+             '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\33.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y'],
+            ['EMAIL', 'Staffer_3', '20230330', '20230330', 'BLANK', '20230330', 'EMAIL', 'City One',
+             'GA', '30001', 'USA', '33333', 'PRO', '1', 'main', r'out-custom\333.txt', 'TBD', 'BLANK',
+             'COR', '33333', 'RIGHTS', 'Y']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, topics_sort_metadata.csv")
+
+        # Tests the contents of aspace_inventory.csv.
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'aspace_inventory.csv')
+        result = csv_to_list(csv_path)
+        expected = [['title', 'start_date', 'end_date', 'extent'],
+                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
+                    ['LEGAL CASE [electronic files]', '2021', '2021', '4e-07'],
+                    ['MINWAGE [electronic files]', '2022', '2022', '4e-07'],
+                    ['RIGHTS [electronic files]', '2023', '2023', '1e-06'],
+                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
+                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access_restart, aspace_inventory.csv")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode"""

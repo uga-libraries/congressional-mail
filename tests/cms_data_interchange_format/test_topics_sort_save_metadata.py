@@ -80,6 +80,21 @@ class MyTestCase(unittest.TestCase):
                     ['rivers', '30604', 'path\\file4.txt']]
         self.assertEqual(expected, result, "Problem with test for found_some")
 
+    def test_found_none(self):
+        """Test for when no documents were found and no metadata.csv made"""
+        # Makes test input and runs the function.
+        df = make_df([['rivers', '30601', 'path\\file1.txt', False],
+                      ['rivers', '30602', 'path\\file2.txt', False],
+                      ['rivers', '30603', 'path\\file3.txt', False]])
+        topic_path = os.path.join('test_data', 'topics_sort_save_metadata', 'rivers')
+        os.makedirs(topic_path)
+        topics_sort_save_metadata(df, topic_path, 'rivers')
+
+        # Verifies rivers_metadata.csv was not made
+        result = os.path.exists(os.path.join(topic_path, 'rivers_metadata.csv'))
+        expected = False
+        self.assertEqual(expected, result, "Problem with test for found_none")
+
     def test_update_csv(self):
         """Test for when the metadata.csv already exists"""
         # Makes test input and runs the function to make the metadata.csv.

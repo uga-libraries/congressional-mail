@@ -714,9 +714,8 @@ def topics_report(df, output_dir):
 
 
 def topics_sort(df, input_dir, output_dir, restart=False):
-    """Sort copy of incoming and outgoing correspondence into folders by topic
-    Letters to and from constituents with the same topic are in the same topic folder, but different subfolders.
-    Letters with multiple topics are in multiple topic folders."""
+    """Sort copy of all correspondence into folders by topic,
+    with the option to restart from where a previous sort left off."""
 
     # Set up for topic sort varies depending on if this is the first time or a restart.
     # The first time, it updates md_df to df_topics and makes a folder for the sorted files.
@@ -756,7 +755,7 @@ def topics_sort(df, input_dir, output_dir, restart=False):
             log_writer.writerow([topic_norm, file_count])
         print(f"Starting topic {topic}, which has {file_count} unique document paths in the df")
 
-        # Sorts correspondence from constituents ("in" letters) and to constituents ("out" letters).
+        # Copies all letters to this topic folder, maintaining all subfolders.
         # Updates df_topic with a column for if the letter was in the export and makes a log of missing letters.
         df_topic = topics_sort_files(df_topic, 'in_document_name_split', input_dir, output_dir, topic_path)
         df_topic = topics_sort_files(df_topic, 'out_document_name_split', input_dir, output_dir, topic_path)
