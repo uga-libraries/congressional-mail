@@ -807,7 +807,7 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         form_letter_metadata(input_directory, output_directory)
         topics_sort(md_df, input_directory, output_directory)
-        css_dif.make_metadata_csv(output_directory)
+        css_dif.make_finding_aid_inventory(output_directory)
 
     # For access_restarts, finishes the topics sort and makes the metadata inventory for the finding aid.
     # The rest of access will already be done.
@@ -819,4 +819,4 @@ if __name__ == '__main__':
               "and make the metadata inventory for the finding aid.")
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
         topics_sort(md_df, input_directory, output_directory, restart=True)
-        css_dif.make_metadata_csv(output_directory)
+        css_dif.make_finding_aid_inventory(output_directory)

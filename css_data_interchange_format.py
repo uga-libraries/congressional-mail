@@ -438,8 +438,8 @@ def form_letter_metadata_read(table_id, input_dir):
     return df
 
 
-def make_metadata_csv(output_dir):
-    """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
+def make_finding_aid_inventory(output_dir):
+    """Make a CSV with most of the information needed for the finding aid."""
 
     # Starts a csv for the metadata.
     with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
@@ -915,5 +915,5 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         topics_sort_prep(output_directory)
         #topics_sort(input_directory, output_directory)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
 
