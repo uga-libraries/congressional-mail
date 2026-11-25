@@ -920,7 +920,7 @@ if __name__ == '__main__':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
-              "make a copy of the letters to and from constituents organized by topic,"
+              "make a copy of the letters to and from constituents organized by topic, "
               "and make the inventory for the finding aid.")
         try:
             appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
