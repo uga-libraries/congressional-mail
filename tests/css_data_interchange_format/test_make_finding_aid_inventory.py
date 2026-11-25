@@ -35,8 +35,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
-                    'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'extent portion', 'extent number', 'extent type',
+                     'container instance type', 'top container type'],
                     ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['cats [electronic files]', '3', 'file', 'True', 'BLANK', 'unknown', 'unknown', 'Whole', '0.0001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
@@ -58,8 +59,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
-                    'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'extent portion', 'extent number', 'extent type',
+                     'container instance type', 'top container type'],
                     ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['2-decimal [electronic files]', '3', 'file', 'True', 'BLANK', '1999', '1999', 'Whole', '0.026', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
@@ -81,8 +83,9 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
-                    'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'extent portion', 'extent number', 'extent type',
+                     'container instance type', 'top container type'],
                     ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
                     ['blank years [electronic files]', '3', 'file', 'True', 'BLANK', '2011', '2023', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],

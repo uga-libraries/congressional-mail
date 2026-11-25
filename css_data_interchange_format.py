@@ -444,8 +444,8 @@ def make_finding_aid_inventory(output_dir):
     # Starts a csv for the metadata.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions',
-                         'start_date', 'end_date', 'extent portion', 'extent', 'extent type',
+        writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                         'date begin', 'date end', 'extent portion', 'extent number', 'extent type',
                          'container instance type', 'top container type'])
         writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True', '', '', '', '', '', '', '', ''])
         writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True', '', '', '', '', '', '', '', ''])
@@ -467,11 +467,11 @@ def make_finding_aid_inventory(output_dir):
             df = pd.read_csv(topic_csv, dtype=str)
             df['year'] = df['date_in'].astype(str).str[:4]
             df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
-            start_year = int(df['year_num'].min())
-            end_year = int(df['year_num'].max())
+            date_begin = int(df['year_num'].min())
+            date_end = int(df['year_num'].max())
         except FileNotFoundError:
-            start_year = 'unknown'
-            end_year = 'unknown'
+            date_begin = 'unknown'
+            date_end = 'unknown'
 
         # Gets the size of the topics folder and converts to GB,
         # rounding to 3 decimal places or the minimum number to not be 0.
@@ -483,17 +483,17 @@ def make_finding_aid_inventory(output_dir):
                     topic_bytes += os.path.getsize(os.path.join(root, file))
             extent = topic_bytes / 1000000000
             rounder = 3
-            extent_rounded = round(extent, rounder)
-            while extent_rounded == 0.0:
+            extent_number = round(extent, rounder)
+            while extent_number == 0.0:
                 rounder += 1
-                extent_rounded = round(extent, rounder)
+                extent_number = round(extent, rounder)
         except FileNotFoundError:
-            extent_rounded = 'could_not_calculate'
+            extent_number = 'could_not_calculate'
 
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, '3', 'file', 'True', '', start_year, end_year, 'Whole', extent_rounded, 'gigabyte(s)',
+            writer.writerow([title, '3', 'file', 'True', '', date_begin, date_end, 'Whole', extent_number, 'gigabyte(s)',
                              'electronic_records', 'electronic_records'])
 
     # Adds titles for the other three folders (same title for every export), as a reminder.
