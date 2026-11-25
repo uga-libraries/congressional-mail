@@ -483,12 +483,16 @@ def find_routine_office_rows(df):
 def make_finding_aid_inventory(output_dir):
     """Make a CSV with most of the information needed for the finding aid."""
 
-    # Starts a csv for the metadata.
-    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'w', newline='') as csv_file:
+    # Starts a csv for the inventory, including a header and consistent hierarchical levels for constituent mail.
+    with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['title', 'start_date', 'end_date', 'extent'])
-        writer.writerow(['Constituent Mail Export [electronic files]', '', '', ''])
-        writer.writerow(['Correspondence by Topic [electronic files]', '', '', ''])
+        writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                         'date begin', 'date end', 'date type', 'date expression', 'extent portion', 'extent number',
+                         'extent type', 'container instance type', 'top container type', 'top container', 'barcode'])
+        writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True',
+                         '', '', '', '', '', '', '', '', '', '', '', ''])
+        writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True',
+                         '', '', '', '', '', '', '', '', '', '', '', ''])
 
     # Gets metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
