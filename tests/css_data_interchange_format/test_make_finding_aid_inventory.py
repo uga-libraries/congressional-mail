@@ -35,16 +35,16 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'start_date', 'end_date',
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
                     'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
-                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['cats [electronic files]', '3', 'file', 'True', 'unknown', 'unknown', 'Whole', '0.0001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['dogs [electronic files]', '3', 'file', 'True', '2021', '2024', 'Whole', '0.0002', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['farm [electronic files]', '3', 'file', 'True', 'unknown', 'unknown', 'Whole', '0.0003', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Form Letters [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Original Export [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['cats [electronic files]', '3', 'file', 'True', 'BLANK', 'unknown', 'unknown', 'Whole', '0.0001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['dogs [electronic files]', '3', 'file', 'True', 'BLANK', '2021', '2024', 'Whole', '0.0002', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['farm [electronic files]', '3', 'file', 'True', 'BLANK', 'unknown', 'unknown', 'Whole', '0.0003', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
         self.assertEqual(expected, result, "Problem with test for missing metadata")
 
     def test_size_differences(self):
@@ -58,16 +58,16 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'start_date', 'end_date',
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
                     'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
-                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['2-decimal [electronic files]', '3', 'file', 'True', '1999', '1999', 'Whole', '0.026', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['4-decimal-down [electronic files]', '3', 'file', 'True', '2001', '2003', 'Whole', '0.0001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['4-decimal-up [electronic files]', '3', 'file', 'True', '2001', '2003', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Form Letters [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Original Export [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['2-decimal [electronic files]', '3', 'file', 'True', 'BLANK', '1999', '1999', 'Whole', '0.026', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['4-decimal-down [electronic files]', '3', 'file', 'True', 'BLANK', '2001', '2003', 'Whole', '0.0001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['4-decimal-up [electronic files]', '3', 'file', 'True', 'BLANK', '2001', '2003', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
         self.assertEqual(expected, result, "Problem with test for size differences")
 
     def test_year_differences(self):
@@ -81,16 +81,16 @@ class MyTestCase(unittest.TestCase):
 
         # Tests the contents of finding_aid_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'finding_aid_inventory.csv'))
-        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'start_date', 'end_date',
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions', 'start_date', 'end_date',
                     'extent portion', 'extent', 'extent type', 'container instance type', 'top container type'],
-                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
-                    ['blank years [electronic files]', '3', 'file', 'True', '2011', '2023', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['multiple years [electronic files]', '3', 'file', 'True', '2001', '2003', 'Whole', '0.003', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['one year [electronic files]', '3', 'file', 'True', '1999', '1999', 'Whole', '0.004', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Form Letters [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
-                    ['Original Export [electronic files]', '2', 'file', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['blank years [electronic files]', '3', 'file', 'True', 'BLANK', '2011', '2023', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['multiple years [electronic files]', '3', 'file', 'True', 'BLANK', '2001', '2003', 'Whole', '0.003', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['one year [electronic files]', '3', 'file', 'True', 'BLANK', '1999', '1999', 'Whole', '0.004', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records']]
         self.assertEqual(expected, result, "Problem with test for year differences")
 
 
