@@ -560,13 +560,18 @@ def make_finding_aid_inventory(output_dir):
                              'Whole', extent_number, 'gigabyte(s)', 'electronic_records', 'electronic_records',
                              top_container, barcode])
 
-    # Adds titles for the other three folders (same title for every export), as a reminder.
-    # The dates and size are added manually.
-    with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow(['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'])
-        writer.writerow(['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'])
-        writer.writerow(['Original Export [electronic files]', 'TBD', 'TBD', 'TBD'])
+        # Adds information for the other three folders included in every export.
+        # Anything with TBD needs to be calculated manually.
+        with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(['Correspondence Metadata [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD',
+                             'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                             f'ER collid-access-{id_sequential:06d}', f'collid-access-{id_sequential:06d}'])
+            writer.writerow(['Form Letters [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD', 'TBD',
+                             'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                             f'ER collid-access-{id_sequential + 1:06d}', f'collid-access-{id_sequential + 1:06d}'])
+            writer.writerow(['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'TBD', 'TBD',
+                             'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records', 'TBD', 'TBD'])
 
 def read_csv(path):
     """Read a CSV produced by a previous mode of this script into a dataframe"""
