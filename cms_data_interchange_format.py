@@ -9,9 +9,9 @@ appraisal: delete letters due to appraisal; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic
-        make the start of an inventory for ArchiveSpace with title, dates, and extent
+        make the inventory for the finding aid
 access_restart: start topics sorting where the script left off,
-                make the start of an inventory for ArchiveSpace with title, dates, and extent
+                make the inventory for the finding aid
 
 For appraisal_delete and access, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal_review mode) must also be in the output directory.
@@ -22,7 +22,7 @@ If it didn't get that far, delete the outputs and run the access mode again.
 Access mode needs to be restarted periodically because topic sorting takes multiple days
 and is prone to the script breaking due to special characters and network restarts.
 
-The ArchivesSpace inventory is not made until after topic sorting finishes,
+The finding aid inventory is not made until after topic sorting finishes,
 so it will be made either the first time access runs or the last time access_restart runs.
 """
 import csv
@@ -777,13 +777,13 @@ if __name__ == '__main__':
 
     # For access, removes rows for appraisal and restriction and columns with PII from the metadata,
     # makes a copy of the data split by calendar year, makes a copy of the letters organized by topic,
-    # and makes a CSV with title, date, and size information needed for the finding aid in ArchivesSpace.
+    # and makes a CSV with most of the information needed for the finding aid in ArchivesSpace.
     elif script_mode == 'access':
         print("\nThe script is running in access mode.")
         print("It will remove rows for deleted or restricted letters and columns with PII, "
               "make copies of the metadata split by calendar year, "
               "make a copy of the letters to and from constituents organized by topic,"
-              "and make the metadata inventory for the finding aid")
+              "and make the inventory for the finding aid.")
         try:
             appraisal_df = css_arch.read_csv(os.path.join(output_directory, 'appraisal_delete_log.csv'))
         except FileNotFoundError:
@@ -807,16 +807,16 @@ if __name__ == '__main__':
         split_year(md_df, output_directory)
         form_letter_metadata(input_directory, output_directory)
         topics_sort(md_df, input_directory, output_directory)
-        css_dif.make_metadata_csv(output_directory)
+        css_dif.make_finding_aid_inventory(output_directory)
 
-    # For access_restarts, finishes the topics sort and makes the metadata inventory for the finding aid.
+    # For access_restarts, finishes the topics sort and makes the inventory for the finding aid.
     # The rest of access will already be done.
     # Uses topics_sort_metadata.csv and topics_sort_complete.txt (in output_directory from access mode) to restart.
     elif script_mode == 'access_restart':
         print("\nThe script is running in access_restart mode.")
         print("It will continue copying the letters to and from constituents organized by topic, "
               "skipping topics already done prior to the script being stopped, "
-              "and make the metadata inventory for the finding aid.")
+              "and make the inventory for the finding aid.")
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
         topics_sort(md_df, input_directory, output_directory, restart=True)
-        css_dif.make_metadata_csv(output_directory)
+        css_dif.make_finding_aid_inventory(output_directory)
