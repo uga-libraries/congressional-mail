@@ -540,12 +540,12 @@ def make_finding_aid_inventory(output_dir):
                     topic_bytes += os.path.getsize(os.path.join(root, file))
             extent = topic_bytes / 1000000000
             rounder = 3
-            extent_rounded = round(extent, rounder)
-            while extent_rounded == 0.0:
+            extent_number = round(extent, rounder)
+            while extent_number == 0.0:
                 rounder += 1
-                extent_rounded = round(extent, rounder)
+                extent_number = round(extent, rounder)
         except FileNotFoundError:
-            extent_rounded = 'could_not_calculate'
+            extent_number = 'could_not_calculate'
 
         # Calculates the barcode (access id number) and top container (ER barcode),
         # with a placeholder for the collection id that needs to be updated before importing into ArchivesSpace.
@@ -553,10 +553,12 @@ def make_finding_aid_inventory(output_dir):
         top_container = f'ER {barcode}'
         id_sequential += 1
 
-        # Saves metadata for this topic to the CSV.
-        with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
+        # Saves the information for this topic to the inventory, including supplying default values.
+        with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, start_year, end_year, extent_rounded])
+            writer.writerow([title, '3', 'file', 'True', '', start_year, end_year, date_type, date_expression,
+                             'Whole', extent_number, 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                             top_container, barcode])
 
     # Adds titles for the other three folders (same title for every export), as a reminder.
     # The dates and size are added manually.
