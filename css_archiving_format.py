@@ -516,6 +516,19 @@ def make_finding_aid_inventory(output_dir):
             start_year = 'unknown'
             end_year = 'unknown'
 
+        # Calculates the type and date expression based on the begin and end date.
+        if start_year == 'unknown':
+            date_type = 'unknown'
+            date_expression = 'unknown'
+        else:
+            if start_year == end_year:
+                end_year = ''
+                date_type = 'single'
+                date_expression = ''
+            else:
+                date_type = 'inclusive'
+                date_expression = f'{start_year}-{end_year}'
+
         # Gets the size of the topics folder and converts to GB,
         # rounding to 3 decimal places or the minimum number to not be 0.
         # Assigns a default if the file isn't found, which can happen due to path lengths.
