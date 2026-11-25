@@ -244,6 +244,29 @@ We have deleted rows with nothing but a document_id before.
 Most of the information needed is in finding_aid_inventory.csv. 
 It must be copied to the ArchivesSpace import template, as we couldn't generate something that ArchivesSpace accepted.
 
+Template columns used:
+
+| Template Column           | Values for Constituent Mail                                    |
+|---------------------------|----------------------------------------------------------------|
+| EAD ID                    | ID in the finding aid section of ASpace                        |
+| Title                     | Title [electronic files]                                       |
+| Hierarchical Relationship | 1 for the first row, 3 for the topic folders, 2 for the rest   |
+| Description Level         | "series" for the first row and "file" for the rest             |
+| Publish?                  | True (or False if adding to ArchivesSpace before can go live)  |
+| Restrictions apply?       | True for original export, blank for rest                       |
+| Date(1) Begin             | Earliest year from date received column                        |
+| Date(1) end               | Latest year from date received column (blank if same as begin) |
+| Date(1) Type              | "inclusive" or "single"                                        |
+| Date(1) expression        | Begin-End or blank if "single"                                 |
+| Extent Portion            | Whole                                                          |
+| Extent number             | Folder size rounded to 3 decimals, or the fewest to not be 0   |
+| Extent type               | gigabyte(s)                                                    |
+| Container Instance Type   | electronic_records                                             |
+| Top Container type        | electronic_records                                             |
+| Top Container             | ER barcode                                                     |
+| Barcode                   | DIP ID (rbrl-123-access-000001) or AIP ID (rbrl-123-er-000001) |
+
+
 1. Edit titles
   * Explain acronyms and abbreviations in square brackets after the text but before [electronic records]
   * Use the form letters as evidence to be confident in the information, since most acronyms have multiple meanings
@@ -275,25 +298,6 @@ It must be copied to the ArchivesSpace import template, as we couldn't generate 
 4. Add dates and extent for form letters, metadata, and original export, which are the last rows in the inventory.
 
 
-| Column                    | Data                                                                                                                                        |
-|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| EAD ID                    | ID in the finding aid section of ASpace                                                                                                     |
-| Title                     | from aspace_inventory.csv                                                                                                                   |
-| Hierarchical Relationship | 1 for the first row, 2 for correspondence_by_topic, correspondence_metadata, form letters, and original export, and 3 for the topic folders |
-| Description Level         | "series" for the first row and "file" for the rest                                                                                          |
-| Publish                   | True (or False if adding to ASpace before can go live)                                                                                      |
-| Restrictions apply?       | True for original export, blank for rest                                                                                                    |
-| Date(1) begin             | from aspace_inventory.csv                                                                                                                   |
-| Date(1) end               | from aspace_inventory.csv                                                                                                                   |
-| Date(1) type              | from aspace_inventory.csv                                                                                                                   |
-| Date(1) expression        | from aspace_inventory.csv                                                                                                                   |
-| Container Instance Type   | electronic_records                                                                                                                          |
-| Top Container Type        | electronic_records                                                                                                                          |
-| Top Container             | ER barcode                                                                                                                                  |
-| Barcode                   | DIP ID or AIP ID                                                                                                                            |
-| Extent Portion            | Whole                                                                                                                                       |
-| Extent Number             | from aspace_inventory.csv                                                                                                                   |
-| Extent Type               | gigabyte(s)                                                                                                                                 |
 
 While the export is rarely a series, it needs to be designated as one for the spreadsheet import to work.
 It will be updated to the correct descriptive level after the import into ASpace. 
