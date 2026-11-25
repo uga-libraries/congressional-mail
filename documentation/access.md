@@ -300,6 +300,11 @@ Changes to make before importing into ArchivesSpace:
 
 TBD: we might include a link to the redacted metadata for each DIP in the finding aid.
 
+NOTE: we can prevent the scientific notation in the initial inventory by formatting to fix number of decimal places,
+but that will result in extra trailing 0 (e.g., 0.00100)
+To do this, use `format(extent_number, ".#f")`, where # is the number of decimals.
+We could use rounder for the number of decimals to reduce the number of trailing 0s.
+
 ### Import into ArchivesSpace
 
 1. Use ArchivesSpace import functionality to add the spreadsheet to the finding aid
