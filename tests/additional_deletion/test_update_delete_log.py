@@ -1,16 +1,9 @@
 import csv
 from datetime import date
 import os
-import pandas as pd
 import unittest
 from additional_deletion import update_delete_log
-
-
-def csv_to_list(csv_path):
-    """Convert the contents of a CSV to a list which contains one list per row for easier comparison"""
-    df = pd.read_csv(csv_path, dtype=str)
-    csv_list = [df.columns.tolist()] + df.values.tolist()
-    return csv_list
+from test_script import csv_to_list
 
 
 class MyTestCase(unittest.TestCase):
