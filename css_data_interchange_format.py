@@ -9,7 +9,7 @@ appraisal: delete letters due to appraisal; metadata not changed
 access: remove metadata rows for appraisal and restrictions and columns for PII,
         make copy of metadata split by calendar year,
         make a copy of incoming and outgoing correspondence in folders by topic
-        mmake the inventory for the finding aid
+        make the inventory for the finding aid
 
 For appraisal_delete and access, appraisal_delete_log.csv (made by appraisal_review mode) must be in the output directory.
 For access mode, review_restrictions.csv (made by appraisal_review mode) must also be in the output directory.
