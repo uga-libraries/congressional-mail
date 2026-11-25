@@ -278,7 +278,7 @@ Changes to make before importing into ArchivesSpace:
 2. Enhance titles
   * Explain acronyms and abbreviations in square brackets after the text but before [electronic records] to improve searchability
   * Use the form letters as evidence to be confident in the information, since most acronyms have multiple meanings
-  * If there are too many to research, focus on the ones with the most files (!!!Add link once script to count files is in GitHub)
+  * If there are too many to research, focus on the ones with the most files (use topics_sort_expected_file_count.csv)
   * Delete the folder if it turns out to be a staffer's initials or combine it with other topics if it turns out to be closely related, and update the inventory accordingly
 
 3. Supply missing information
