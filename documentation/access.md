@@ -60,7 +60,7 @@ This hasn't been implemented for CSS DIF yet.
 All outputs are saved in AppraisalCopy. 
 
 * archiving_correspondence_redacted.csv
-* aspace_inventory.csv (the start of an inventory for ArchiveSpace with title, dates, and extent)
+* finding_aid_inventory.csv (most of the information needed for the import template for ArchiveSpace)
 * correspondence_by_topic with a copy of correspondence organized by topic
 * correspondence_metadata_by_year with the redacted metadata split into one csv per year
 * topic_sort_complete.txt
@@ -71,19 +71,18 @@ All outputs are saved in AppraisalCopy.
 Redacted metadata means that all rows from appraisal_delete_log.csv and restriction_review.csv are removed,
 as are all columns intended for PII.
 
-If the script breaks during topic sorting, aspace_inventory.csv will not be made.
+If the script breaks during topic sorting, finding_aid_inventory.csv will not be made.
+It is not made until topic sorting finishes successfully.
 
-All topic sorting logs are currently only produced for the CSS archiving format,
-but will be added to the others in the future.
+CSS DIF does not have all topic sort logs. It needs to be updated to match the others still.
 
 ### Script QC
 
 The number of topics makes sense based on the topics report. 
 Not all topics will be included, since not all will have a letter in the export.
 
-Spot check the number of files in a few of the topics.
-For CSS Archiving, check with topics_sort_expected_file_count.csv.
-Otherwise, the number of unique files associated with a topic is printed at the start of the topic,
+Spot check the number of files in a few of the topics, 
+either from topics_sort_expected_file_count.csv or the number of files printed at the start of the topic,
 but not all of these files will be in the export.
 
 Spot check a few of the files in topics_sort_file_move_errors.csv are not in the export,
@@ -124,13 +123,13 @@ The script may be restarted as many times as needed to finish sorting all the to
 The output_directory is AppraisalCopy. 
 See the outputs section for running the script the first time for a complete list.
 
-The ArchivesSpace inventory is not made until after topic sorting completes, so it will contain all the folders,
+The finding aid inventory is not made until after topic sorting completes, so it will contain all the folders,
 even if the script is restarted multiple times.
 
 ## Review Correspondence by Topic
 
-The aspace_inventory.csv must be updated to reflect these changes.
-If enough changes are going to be made, recreate the aspace_inventory.csv with the script 
+The finding_aid_inventory.csv must be updated to reflect these changes.
+If enough changes are going to be made, recreate the finding_aid_inventory.csv with the script 
 by commenting out the rest of access mode instead.
 
 ### Delete
@@ -154,7 +153,7 @@ In most cases, we leave the topics as assigned by the office.
 Correct obvious misspellings and optionally replace the underscore from an unpermitted character with something more meaningful.
 If you change the folder name, also update the topic portion of the metadata.csv filename to match the change.
 
-Wait to expand acronyms or add other information to improve searching until making the ArchivesSpace inventory.
+Expand acronyms or add other information to improve searching in the finding aid inventory, not the folder name.
 Adding this text to the folder name frequently causes path length errors.
 
 ### Combine
@@ -170,8 +169,11 @@ Combining the metadata can typically be done by opening in a plain text editor a
 We could make a script to do this if we do it frequently enough.
 
 QUESTION: researching acronyms and abbreviations can surface topics that need to be combined or deleted.
-Should the research be done sooner? I don't want to edit the aspace_inventory.csv at this stage, 
+Should the research be done sooner? I don't want to edit the finding_aid_inventory.csv at this stage, 
 since it may need to be re-generated.
+
+NOTE: we could adjust the topic sort to use a CSV mapping current topics to intended topics,
+rather than editing after the fact. It could also skip ones without enough research value.
 
 ## Package DIPs
 
@@ -196,7 +198,10 @@ Rows are not included if they didn't have a file path or the file wasn't in the 
 
 Use [dip-numbering.py](https://github.com/uga-libraries/processing-scripts) to add access ids to the start of each topic folder.
 Start the sequential number at 1 unless there are already born-digital access copies for this collection.
+Verify the access numbers match what is in the inventory, since systems sort differently if there is punctuation in a title.
 The AIP ID (the er number) is a separate numbering scheme, so that doesn't factor in to assigning the access number.
+
+NOTE: if DIP numbers in alignment becomes too time-consuming, see issue #167 for an alternative idea.
 
 Once they are numbered, they can be moved out of the Correspondence_by_Topic folder (and that empty folder deleted),
 into the AccessCopies folder.
@@ -236,8 +241,8 @@ We have deleted rows with nothing but a document_id before.
 
 ### Folder list
 
-Start with aspace_inventory.csv, which will have the title, start and end date, and extent in GB for every topic folder,
-and the title for the other folders. Edit in the csv, because filtering doesn't work well in the ASpace Excel template.
+Most of the information needed is in finding_aid_inventory.csv. 
+It must be copied to the ArchivesSpace import template, as we couldn't generate something that ArchivesSpace accepted.
 
 1. Edit titles
   * Explain acronyms and abbreviations in square brackets after the text but before [electronic records]
@@ -269,10 +274,6 @@ and the title for the other folders. Edit in the csv, because filtering doesn't 
 
 4. Add dates and extent for form letters, metadata, and original export, which are the last rows in the inventory.
 
-
-5. Copy the information from aspace_inventory.csv into the correct columns in the ASpace Excel template,
-   and add additional information as described in the table below.
-   We could not get a csv generated by the script to be recognized by ASpace.
 
 | Column                    | Data                                                                                                                                        |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
