@@ -3,7 +3,7 @@ from datetime import date
 import os
 import pandas as pd
 import unittest
-from additional_appraisal import update_delete_log
+from additional_deletion import update_delete_log
 
 
 def csv_to_list(csv_path):
