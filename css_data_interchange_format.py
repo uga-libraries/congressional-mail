@@ -442,7 +442,7 @@ def form_letter_metadata_read(table_id, input_dir):
 def make_finding_aid_inventory(output_dir):
     """Make a CSV with most of the information needed for the finding aid."""
 
-    # Starts a csv for the metadata.
+    # Starts a csv for the inventory, including a header and consistent hierarchical levels for constituent mail.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
@@ -453,8 +453,7 @@ def make_finding_aid_inventory(output_dir):
         writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True',
                          '', '', '', '', '', '', '', '', '', '', '', ''])
 
-    # Gets metadata for every topic folder.
-    # The folders for form letters, metadata, and the original export are added manually after the script runs.
+    # Calculates the inventory information for every topic folder.
     id_sequential = 1
     topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
@@ -476,11 +475,12 @@ def make_finding_aid_inventory(output_dir):
         except FileNotFoundError:
             date_begin = 'unknown'
             date_end = 'unknown'
-            date_type = 'unknown'
-            date_expression = 'unknown'
 
         # Calculates the type and date expression based on the begin and end date.
-        if date_begin != 'unknown':
+        if date_begin == 'unknown':
+            date_type = 'unknown'
+            date_expression = 'unknown'
+        else:
             if date_begin == date_end:
                 date_end = ''
                 date_type = 'single'
@@ -512,15 +512,15 @@ def make_finding_aid_inventory(output_dir):
         top_container = f'ER {barcode}'
         id_sequential += 1
 
-        # Saves metadata for this topic to the CSV.
+        # Saves the information for this topic to the inventory, including supplying default values.
         with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([title, '3', 'file', 'True', '', date_begin, date_end, date_type, date_expression,
                              'Whole', extent_number, 'gigabyte(s)', 'electronic_records', 'electronic_records',
                              top_container, barcode])
 
-    # Adds titles for the other three folders (same title for every export), as a reminder.
-    # The dates and size are added manually.
+    # Adds information for the other three folders included in every export.
+    # Anything with TBD needs to be calculated manually.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['Correspondence Metadata [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD',
