@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
                     "make a copy of the letters to and from constituents organized by topic,"
-                    "and make the metadata inventory for the finding aid\n"
+                    "and make the inventory for the finding aid.\n"
                     "\nFor QC"
                     "\nRows removed for appraisal: 2"
                     "\nRows removed for restriction: 3\n"
@@ -264,20 +264,37 @@ class MyTestCase(unittest.TestCase):
                      'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access, B2_metadata.csv")
 
-        # Tests the contents of aspace_inventory.csv
-        csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
+        # Tests the contents of finding_aid_inventory.csv
+        csv_path = os.path.join(output_directory, 'finding_aid_inventory.csv')
         result = csv_to_list(csv_path)
-        expected = [['title', 'start_date', 'end_date', 'extent'],
-                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
-                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
-                    ['A [electronic files]', '2021', '2024', '2e-06'],
-                    ['A1 [electronic files]', '2021', '2024', '2e-06'],
-                    ['B1 [electronic files]', '2023', '2023', '4e-07'],
-                    ['B2 [electronic files]', '2023', '2023', '4e-07'],
-                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
-                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
-                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
-        self.assertEqual(expected, result, "Problem with test for access, aspace_inventory.csv")
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'date type', 'date expression', 'extent portion', 'extent number',
+                     'extent type', 'container instance type', 'top container type', 'top container', 'barcode'],
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['A [electronic files]', '3', 'file', 'True', 'BLANK', '2021', '2024', 'inclusive', '2021-2024',
+                     'Whole', '2e-06', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000001', 'collid-access-000001'],
+                    ['A1 [electronic files]', '3', 'file', 'True', 'BLANK', '2021', '2024', 'inclusive', '2021-2024',
+                     'Whole', '2e-06', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000002', 'collid-access-000002'],
+                    ['B1 [electronic files]', '3', 'file', 'True', 'BLANK', '2023', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000003', 'collid-access-000003'],
+                    ['B2 [electronic files]', '3', 'file', 'True', 'BLANK', '2023', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000004', 'collid-access-000004'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD',
+                     'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000005', 'collid-access-000005'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD', 'TBD',
+                     'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000006', 'collid-access-000006'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'TBD', 'TBD',
+                     'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access, finding_aid_inventory.csv")
 
     def test_correct_access_restart(self):
         """Test for when the script runs correctly and is in access_restart mode"""
@@ -296,7 +313,7 @@ class MyTestCase(unittest.TestCase):
         expected = ("\nThe script is running in access_restart mode.\n"
                     "It will continue copying the letters to and from constituents organized by topic, "
                     "skipping topics already done prior to the script being stopped,"
-                    "and make the metadata inventory for the finding aid.\n"
+                    "and make the inventory for the finding aid.\n"
                     "Starting topic A1, which has 6 unique document paths in the df\n"
                     "Starting topic B, which has 2 unique document paths in the df\n"
                     "Starting topic B1, which has 4 unique document paths in the df\n"
@@ -433,20 +450,37 @@ class MyTestCase(unittest.TestCase):
                      'B1^B2', '..\\documents\\BlobExport\\indivletters\\000002.txt', 'True']]
         self.assertEqual(expected, result, "Problem with test for access_restart, B2_metadata.csv")
 
-        # Tests the contents of aspace_inventory.csv
-        csv_path = os.path.join(output_directory, 'aspace_inventory.csv')
+        # Tests the contents of finding_aid_inventory.csv
+        csv_path = os.path.join(output_directory, 'finding_aid_inventory.csv')
         result = csv_to_list(csv_path)
-        expected = [['title', 'start_date', 'end_date', 'extent'],
-                    ['Constituent Mail Export [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
-                    ['Correspondence by Topic [electronic files]', 'BLANK', 'BLANK', 'BLANK'],
-                    ['A [electronic files]', '2021', '2024', '2e-06'],
-                    ['A1 [electronic files]', '2021', '2024', '2e-06'],
-                    ['B1 [electronic files]', '2023', '2023', '4e-07'],
-                    ['B2 [electronic files]', '2023', '2023', '4e-07'],
-                    ['Correspondence Metadata [electronic files]', 'TBD', 'TBD', 'TBD'],
-                    ['Form Letters [electronic files]', 'TBD', 'TBD', 'TBD'],
-                    ['Original Export [electronic files]', 'TBD', 'TBD', 'TBD']]
-        self.assertEqual(expected, result, "Problem with test for access_restart, aspace_inventory.csv")
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'date type', 'date expression', 'extent portion', 'extent number',
+                     'extent type', 'container instance type', 'top container type', 'top container', 'barcode'],
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['A [electronic files]', '3', 'file', 'True', 'BLANK', '2021', '2024', 'inclusive', '2021-2024',
+                     'Whole', '2e-06', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000001', 'collid-access-000001'],
+                    ['A1 [electronic files]', '3', 'file', 'True', 'BLANK', '2021', '2024', 'inclusive', '2021-2024',
+                     'Whole', '2e-06', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000002', 'collid-access-000002'],
+                    ['B1 [electronic files]', '3', 'file', 'True', 'BLANK', '2023', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000003', 'collid-access-000003'],
+                    ['B2 [electronic files]', '3', 'file', 'True', 'BLANK', '2023', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000004', 'collid-access-000004'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD',
+                     'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000005', 'collid-access-000005'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD', 'TBD',
+                     'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000006', 'collid-access-000006'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'TBD', 'TBD',
+                     'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records', 'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access, finding_aid_inventory.csv")
 
     def test_correct_accession(self):
         """Test for when the script runs correctly and is in accession mode."""
@@ -773,7 +807,7 @@ class MyTestCase(unittest.TestCase):
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
                     "make a copy of the letters to and from constituents organized by topic,"
-                    "and make the metadata inventory for the finding aid\r\n"
+                    "and make the inventory for the finding aid.\r\n"
                     "No appraisal_delete_log.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no delete")
 
@@ -794,7 +828,7 @@ class MyTestCase(unittest.TestCase):
                     "It will remove rows for deleted or restricted letters and columns with PII, "
                     "make copies of the metadata split by calendar year, "
                     "make a copy of the letters to and from constituents organized by topic,"
-                    "and make the metadata inventory for the finding aid\r\n"
+                    "and make the inventory for the finding aid.\r\n"
                     "No restriction_review.csv in the output directory. Cannot do access without it.\r\n")
         self.assertEqual(expected, result, "Problem with test for error access, no restriction")
 
