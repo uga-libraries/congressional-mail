@@ -60,9 +60,9 @@ This hasn't been implemented for CSS DIF yet.
 All outputs are saved in AppraisalCopy. 
 
 * archiving_correspondence_redacted.csv
-* finding_aid_inventory.csv (most of the information needed for the import template for ArchiveSpace)
 * correspondence_by_topic with a copy of correspondence organized by topic
 * correspondence_metadata_by_year with the redacted metadata split into one csv per year
+* finding_aid_inventory.csv (most of the information needed for the import template for ArchiveSpace)
 * topic_sort_complete.txt
 * topic_sort_expected_file_count.csv
 * topic_sort_file_move_errors.csv

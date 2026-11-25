@@ -376,6 +376,7 @@ def find_routine_office_rows(df):
 
     # Topics list: updated for every export based on the topics_report.csv
     # Because it is an exact match, include every delimited pairing, if applicable.
+    # TODO: update topics list for each export
     # topics_list = []
     topics_list = ['Flag Request', 'congrats^scouts']  # for unit tests
 
@@ -640,6 +641,7 @@ def remove_restricted_rows(df, df_restrict):
 
 def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
+    # TODO: update lists for each export
 
     crime_list = ['court', 'crime', 'hate', 'jud batch', 'jud54', 'judicial', 'judiciary', 'lawtrust', 'legal', 'police', 'prison', 'secret', 'selfdef']
     crime_df = df[df['group_name'].str.contains('|'.join(crime_list), case=False, na=False)]

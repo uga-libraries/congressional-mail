@@ -383,6 +383,7 @@ def find_routine_office_rows(df):
 
     # Topics list: updated for every export based on the topics_report.csv
     # Because it is an exact match, include every delimited pairing, if applicable.
+    # TODO: update topics list for each export
     # topics_list = []
     topics_list = ['Flag Request', 'congrats^scouts'] # for unit tests
 
@@ -517,6 +518,7 @@ def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    # TODO: update restrict_list for each export
     restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
                      'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
                      'migrant', 'refugee', 'social security', 'taxes', 'veterans']
