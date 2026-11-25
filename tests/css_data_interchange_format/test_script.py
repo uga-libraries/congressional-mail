@@ -50,8 +50,8 @@ class MyTestCase(unittest.TestCase):
         expected = ('\nThe script is running in access mode.\n'
                     'It will remove rows for deleted or restricted letters and columns with PII, '
                     'make copies of the metadata split by calendar year, '
-                    'make a copy of the letters to and from constituents organized by topic,'
-                    'and make the metadata inventory for the finding aid\n'
+                    'make a copy of the letters to and from constituents organized by topic, '
+                    'and make the inventory for the finding aid.\n'
                     '\nFor QC'
                     '\nRows removed for appraisal: 1'
                     '\nRows removed for restriction: 2'
@@ -220,6 +220,34 @@ class MyTestCase(unittest.TestCase):
         result = csv_to_list(csv_path)
         expected = [['TOUR5', r'..\documents\formletters\flag.doc']]
         self.assertEqual(expected, result, "Problem with test for access, topics_sort_file_not_found.csv")
+
+        # Tests the contents of finding_aid_inventory.csv.
+        # TODO once topic sort is updated, find the correct size
+        csv_path = os.path.join('test_data', 'script', 'output_dir', 'finding_aid_inventory.csv')
+        result = csv_to_list(csv_path)
+        expected = [['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
+                     'date begin', 'date end', 'date type', 'date expression', 'extent portion', 'extent number',
+                     'extent type', 'container instance type', 'top container type', 'top container', 'barcode'],
+                    ['Constituent Mail Export [electronic files]', '1', 'series', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['Correspondence by Topic [electronic files]', '2', 'file', 'True', 'BLANK', 'BLANK', 'BLANK',
+                     'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK', 'BLANK'],
+                    ['FARMING [electronic files]', '3', 'file', 'True', 'BLANK', '1999', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000001', 'collid-access-000001'],
+                    ['INTTAX [electronic files]', '3', 'file', 'True', 'BLANK', '1999', 'BLANK', 'single', 'BLANK',
+                     'Whole', '4e-07', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000002', 'collid-access-000002'],
+                    ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD',
+                     'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000003', 'collid-access-000003'],
+                    ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD',
+                     'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000004', 'collid-access-000004'],
+                    ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD',
+                     'TBD', 'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'TBD', 'TBD']]
+        self.assertEqual(expected, result, "Problem with test for access, finding_aid_inventory.csv")
 
     def test_accession(self):
         """Test for when the script runs correctly in accession mode."""
