@@ -243,12 +243,13 @@ We have deleted rows with nothing but a document_id before.
 
 Most of the information needed is in finding_aid_inventory.csv. 
 It must be copied to the ArchivesSpace import template, as we couldn't generate something that ArchivesSpace accepted.
+Update the inventory before copying to the template, as the template is cumbersome to filter due to hidden rows.
 
 Template columns used:
 
 | Template Column           | Values for Constituent Mail                                    |
 |---------------------------|----------------------------------------------------------------|
-| EAD ID                    | ID in the finding aid section of ASpace                        |
+| EAD ID                    | ID in the finding aid section of ArchivesSpace                        |
 | Title                     | Title [electronic files]                                       |
 | Hierarchical Relationship | 1 for the first row, 3 for the topic folders, 2 for the rest   |
 | Description Level         | "series" for the first row and "file" for the rest             |
@@ -266,61 +267,42 @@ Template columns used:
 | Top Container             | ER barcode                                                     |
 | Barcode                   | DIP ID (rbrl-123-access-000001) or AIP ID (rbrl-123-er-000001) |
 
+While the export is rarely a series, it needs to be designated as one for the spreadsheet import to work.
+It will be updated to the correct descriptive level after the import into ArchivesSpace. 
 
-1. Edit titles
-  * Explain acronyms and abbreviations in square brackets after the text but before [electronic records]
+Changes to make before importing into ArchivesSpace:
+
+1. Add EAD ID to every row
+
+
+2. Enhance titles
+  * Explain acronyms and abbreviations in square brackets after the text but before [electronic records] to improve searchability
   * Use the form letters as evidence to be confident in the information, since most acronyms have multiple meanings
   * If there are too many to research, focus on the ones with the most files (!!!Add link once script to count files is in GitHub)
-  * Delete the folder if it turns out to be a staffer's initials or combine it with other topics if it turns out to be closely related, and update the aspace_inventory.csv accordingly
+  * Delete the folder if it turns out to be a staffer's initials or combine it with other topics if it turns out to be closely related, and update the inventory accordingly
 
-
-2. Edit dates
-  * Make new columns for type and expression
-  * If the dates are "unknown", get them from the metadata.csv (possible typo in filename or path length error)
-  * If the start and end dates are the same
-    * Delete the end date
-    * Set the type to "single"
-    * Leave the expression blank
-  * If the start and end dates are not the same
-    * Set the type to "inclusive"
-    * Set the expression to "start-end" (use concatenate)
-
-
-3. Edit extent
+3. Supply missing information
+  * If the dates are "unknown", get them from the metadata.csv
   * If extent is "could_not_calculate", get the size from folder properties
-  * Round extent if still not working correctly (!!!I think it is though)
-    - Reformat cells with scientific notation to be numbers, so they are included
-    - Make a new column for the updated extent
-    - Use Excel to round the column to 3 decimals, or the minimum number to not be 0
-    - Type the rounded version in the new column (more efficient if sort by size first)
+  * If the value is "TBD", get from metadata or file properties (last 3 rows)
 
+3. Convert small extents in scientific format (e.g., 1e-05) to decimals
+  * Add a column with a sequential number, so you can put this back in order
+  * Sort by size, so the rows are all next to each other
+  * Highlight all cells with scientific format and change the format to number
+  * Highlight the column and change the format to text, so keep the decimal when importing into ArchivesSpace
+  * The cells need to show they are numbers stored as text (green triangle in the cell) for this - click on them if not
+  * Sort to get back in sequential order and delete that column
 
-4. Add dates and extent for form letters, metadata, and original export, which are the last rows in the inventory.
-
-
-
-While the export is rarely a series, it needs to be designated as one for the spreadsheet import to work.
-It will be updated to the correct descriptive level after the import into ASpace. 
-
-Container, barcode, and extent information is only for rows that describe a folder that can be requested,
-not for the first two rows (export and correspondence by topic).
-
-To prevent small extents from being converted to scientific notation when importing into ArchivesSpace, 
-change the cell formatting to text and then click on the cells so the Excel warning for number stored as text appears.
-
-The DIP ID is department-collection-access-###### and is part of the DIP folder name.
-It generally works to use Excel to generate these numbers independent of the folder names.
-However, if a folder title has punctuation early in the word (e.g., F-150),
-it may be alphabetized differently by Excel and Windows, which means the numbers are assigned in a different order.
-Do compare the numbers generated by Excel to the folder titles to check for differences,
-and update the folder title if needed.
-If this becomes a common issue, we'll figure out a better way to keep the inventory and folder name ids in alignment.
+4. Update top container and barcode
+  * Replace "collid" with the collection number, e.g., rbrl-123
+  * If there are other access copies already for this collection, update the sequential number in these ids.
 
 TBD: we might include a link to the redacted metadata for each DIP in the finding aid.
 
 ### Import into ArchivesSpace
 
-1. Use ASpace import functionality to add the spreadsheet to the finding aid
+1. Use ArchivesSpace import functionality to add the spreadsheet to the finding aid
    1. Open the collection in Edit mode
    2. Click "Load via Spreadsheet"
    3. Select the spreadsheet
@@ -328,12 +310,13 @@ TBD: we might include a link to the redacted metadata for each DIP in the findin
 2. Move it to the correct location (within the constituent mail series or subseries) 
 3. Adjust the description level of the export folder, which is usually file but occasionally subseries, 
    whichever comes next in the collection hierarchy.
-4. Process TBD: Include the AIP ID(s) on the original export folder. Not sure if these are as containers or a note restricted to staff since the export is restricted.
+4. Process TBD: Include the AIP ID(s) on the original export folder. 
+   Not sure if these are top containers or a note restricted to staff since the export is restricted.
 
 ### Finding aid notes
 
 First write these notes in a document in the collection folder, 
-for spell check and to have a copy in case we need to reimport into ASpace to fix issues.
+for spell check and to have a copy in case we need to reimport into ArchivesSpace to fix issues.
 Below are examples, with data that always needs to be updated in curly brackets.
 These should be customized to capture anything specific to this export that a researcher needs to know.
 
@@ -379,12 +362,12 @@ Selected columns from files {'out_1B.dat', 'out_2A.dat', 'out_2C.dat', 'out_2D.d
 The complete export is closed for 75 years to protect constituent privacy. 
 It will be open for research on January 1, {2090}.
 
-### Bulk editing in ASpace
+### Bulk editing in ArchivesSpace
 
-Once the inventory has been added to ASpace, it can be edited using the bulk updated feature.
+Once the inventory has been added to ArchivesSpace, it can be edited using the bulk updated feature.
 
 To get the spreadsheet to edit,
-1. Open the collection in ASpace
+1. Open the collection in ArchivesSpace
 2. Click on the collection name
 3. Under more, click on bulk updater
 4. Select the portion of the collection and the fields to include
@@ -392,7 +375,7 @@ To get the spreadsheet to edit,
 The spreadsheet will be downloaded to your downloads folder.
 Make a copy of the spreadsheet before editing, to have as a reference if more records are updated than you expect.
 
-Make the edits in the spreadsheet and then upload back to ASpace under create > background job > bulk update job.
+Make the edits in the spreadsheet and then upload back to ArchivesSpace under create > background job > bulk update job.
 
 Warning: updating the container is tricky!
 We ran into errors when renumbering after deleting a few folders.
