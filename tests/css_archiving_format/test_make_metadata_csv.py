@@ -1,6 +1,6 @@
 import os
 import unittest
-from css_archiving_format import make_metadata_csv
+from css_archiving_format import make_finding_aid_inventory
 from test_script import csv_to_list
 
 
@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'cats'), 1000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'dogs'), 3000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'farm'), 5000)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
 
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
@@ -53,7 +53,7 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '2-decimal'), 500000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '4-decimal-down'), 2000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '4-decimal-up'), 11000)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
 
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))
@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'blank years'), 10000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'multiple years'), 50000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', 'one year'), 70000)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
 
         # Tests the contents of aspace_inventory.csv.
         result = csv_to_list(os.path.join(output_directory, 'aspace_inventory.csv'))

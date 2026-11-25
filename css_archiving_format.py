@@ -480,7 +480,7 @@ def find_routine_office_rows(df):
     return df_routine
 
 
-def make_metadata_csv(output_dir):
+def make_finding_aid_inventory(output_dir):
     """Make a CSV with title, date, and size information needed for the finding aid in ArchivesSpace."""
 
     # Starts a csv for the metadata.
@@ -1006,7 +1006,7 @@ if __name__ == '__main__':
         md_df = remove_pii(md_df)
         save_redacted_metadata(md_df, output_directory)
         topics_sort(md_df, input_directory, output_directory)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
 
     # For access_restarts, finishes the topics sort and makes the metadata inventory for the finding aid.
     # The rest of access will already be done.
@@ -1018,4 +1018,4 @@ if __name__ == '__main__':
               "and make the metadata inventory for the finding aid.")
         md_df = pd.read_csv(os.path.join(output_directory, 'topics_sort_metadata.csv'), dtype=str)
         topics_sort(md_df, input_directory, output_directory, restart=True)
-        make_metadata_csv(output_directory)
+        make_finding_aid_inventory(output_directory)
