@@ -494,8 +494,7 @@ def make_finding_aid_inventory(output_dir):
         writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True',
                          '', '', '', '', '', '', '', '', '', '', '', ''])
 
-    # Gets metadata for every topic folder.
-    # The folders for form letters, metadata, and the original export are added manually after the script runs.
+    # Calculates the inventory information for every topic folder.
     topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
 

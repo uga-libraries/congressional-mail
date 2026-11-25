@@ -469,24 +469,24 @@ def make_finding_aid_inventory(output_dir):
             df = pd.read_csv(topic_csv, dtype=str)
             df['year'] = df['date_in'].astype(str).str[:4]
             df['year_num'] = pd.to_numeric(df['year'], errors='coerce')
-            date_begin = int(df['year_num'].min())
-            date_end = int(df['year_num'].max())
+            start_year = int(df['year_num'].min())
+            end_year = int(df['year_num'].max())
         except FileNotFoundError:
-            date_begin = 'unknown'
-            date_end = 'unknown'
+            start_year = 'unknown'
+            end_year = 'unknown'
 
         # Calculates the type and date expression based on the begin and end date.
-        if date_begin == 'unknown':
+        if start_year == 'unknown':
             date_type = 'unknown'
             date_expression = 'unknown'
         else:
-            if date_begin == date_end:
-                date_end = ''
+            if start_year == end_year:
+                end_year = ''
                 date_type = 'single'
                 date_expression = ''
             else:
                 date_type = 'inclusive'
-                date_expression = f'{date_begin}-{date_end}'
+                date_expression = f'{start_year}-{end_year}'
 
         # Gets the size of the topics folder and converts to GB,
         # rounding to 3 decimal places or the minimum number to not be 0.
@@ -514,7 +514,7 @@ def make_finding_aid_inventory(output_dir):
         # Saves the information for this topic to the inventory, including supplying default values.
         with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, '3', 'file', 'True', '', date_begin, date_end, date_type, date_expression,
+            writer.writerow([title, '3', 'file', 'True', '', start_year, end_year, date_type, date_expression,
                              'Whole', extent_number, 'gigabyte(s)', 'electronic_records', 'electronic_records',
                              top_container, barcode])
 
