@@ -68,6 +68,7 @@ class MyTestCase(unittest.TestCase):
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '2-decimal'), 500000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '4-decimal-down'), 2000)
         make_doc(os.path.join(output_directory, 'correspondence_by_topic', '4-decimal-up'), 11000)
+        make_doc(os.path.join(output_directory, 'correspondence_by_topic', '5-decimal'), 200)
         make_finding_aid_inventory(output_directory)
 
         # Tests the contents of finding_aid_inventory.csv.
@@ -88,12 +89,15 @@ class MyTestCase(unittest.TestCase):
                     ['4-decimal-up [electronic files]', '3', 'file', 'True', 'BLANK', '2001', '2003', 'inclusive',
                      '2001-2003', 'Whole', '0.001', 'gigabyte(s)', 'electronic_records', 'electronic_records',
                      'ER collid-access-000003', 'collid-access-000003'],
+                    ['5-decimal [electronic files]', '3', 'file', 'True', 'BLANK', '2001', '2003', 'inclusive',
+                     '2001-2003', 'Whole', '1e-05', 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                     'ER collid-access-000004', 'collid-access-000004'],
                     ['Correspondence Metadata [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD',
                      'TBD', 'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
-                     'ER collid-access-000004', 'collid-access-000004'],
+                     'ER collid-access-000005', 'collid-access-000005'],
                     ['Form Letters [electronic files]', '2', 'file', 'True', 'BLANK', 'TBD', 'TBD', 'TBD', 'TBD',
                      'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records',
-                     'ER collid-access-000005', 'collid-access-000005'],
+                     'ER collid-access-000006', 'collid-access-000006'],
                     ['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'TBD', 'TBD',
                      'Whole', 'TBD', 'gigabyte(s)', 'electronic_records', 'electronic_records', 'TBD', 'TBD']]
         self.assertEqual(expected, result, "Problem with test for size differences")
