@@ -15,9 +15,13 @@ Returns:
     file_deletion_log_addition.csv
     appraisal_delete_log_addition.csv
 """
+import csv
+from datetime import date, datetime
+import hashlib
 import os
 import pandas as pd
 import sys
+import time
 
 
 def check_arguments(arg_list):
@@ -57,6 +61,27 @@ def check_arguments(arg_list):
     return export, delete_dir, input_dir, output_dir, errors
 
 
+def update_delete_log(log_path, file_path):
+    """Get information about the specified file and add it to the log"""
+
+    # Get the metadata values required for the log.
+    # FileNotFoundError can happen due to path lengths or special characters.
+    try:
+        size_kb = round(int(os.path.getsize(file_path)) / 1000, 1)
+        date_c = datetime.strptime(time.ctime(os.path.getctime(file_path)), '%a %b %d %H:%M:%S %Y').strftime('%Y-%m-%d')
+        with open(file_path, 'rb') as f:
+            file_data = f.read()
+        md5 = hashlib.md5(file_data).hexdigest().upper()
+        date_d = date.today().strftime('%Y-%m-%d')
+        row = [file_path, size_kb, date_c, date_d, md5, 'Additional deletion: ADD REASON']
+    except FileNotFoundError:
+        row = [file_path, None, None, None, None, 'Additional deletion: FileNotFoundError']
+
+    # Save the metadata as a row in the log.
+    with open(log_path, 'a', newline='') as log:
+        log_writer = csv.writer(log)
+        log_writer.writerow(row)
+
 if __name__ == '__main__':
 
     # Validates the script argument values.
@@ -67,6 +92,16 @@ if __name__ == '__main__':
             print(error)
         sys.exit(1)
 
-    # Gets information for the file deletion log and saves to a csv in the output_directory.
+    # Starts the deletion log, with a header.
+    deletion_log_path = os.path.join(output_directory, 'file_deletion_log_addition.csv')
+    with open(deletion_log_path, 'w', newline='') as deletion_log:
+        deletion_log_writer = csv.writer(deletion_log)
+        deletion_log_writer.writerow(['File', 'SizeKB', 'DateCreated', 'DateDeleted', 'MD5', 'Notes'])
+
+    # Gets the path to every file in the delete_directory and adds it to the deletion log.
+    for root, dirs, files in os.walk(delete_directory):
+        for file in files:
+            delete_file_path = os.path.join(root, file)
+            update_delete_log(deletion_log_path, delete_file_path)
 
     # Gets metadata rows for the appraisal delete log and saves to a csv in the output_directory.
