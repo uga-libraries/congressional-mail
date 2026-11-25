@@ -641,6 +641,7 @@ def remove_restricted_rows(df, df_restrict):
 
 def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
+    # TODO: update lists for each export
 
     crime_list = ['court', 'crime', 'hate', 'jud batch', 'jud54', 'judicial', 'judiciary', 'lawtrust', 'legal', 'police', 'prison', 'secret', 'selfdef']
     crime_df = df[df['group_name'].str.contains('|'.join(crime_list), case=False, na=False)]

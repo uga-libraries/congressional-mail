@@ -518,6 +518,7 @@ def restriction_report(df, output_dir):
     """Make report of any row with a topic that require restriction if they are about individuals' situations"""
 
     # List of topics (adjust based on topics_report.csv from accession mode of this script)
+    # TODO: update restrict_list for each export
     restrict_list = ['children\'s issues (social issues)', 'civil rights', 'citizen', 'citizenship', 'court',
                      'crime', 'criminal justice', 'health', 'immigrant', 'immigration', 'judicial issues',
                      'migrant', 'refugee', 'social security', 'taxes', 'veterans']
