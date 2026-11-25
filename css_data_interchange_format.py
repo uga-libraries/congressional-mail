@@ -448,8 +448,10 @@ def make_finding_aid_inventory(output_dir):
         writer.writerow(['title', 'hierarchical relationship', 'description level', 'publish', 'restrictions apply',
                          'date begin', 'date end', 'date type', 'date expression', 'extent portion', 'extent number',
                          'extent type', 'container instance type', 'top container type', 'top container', 'barcode'])
-        writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True', '', '', '', '', '', '', '', '', '', '', '', ''])
-        writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True', '', '', '', '', '', '', '', '', '', '', '', ''])
+        writer.writerow(['Constituent Mail Export [electronic files]', '1', 'series', 'True',
+                         '', '', '', '', '', '', '', '', '', '', '', ''])
+        writer.writerow(['Correspondence by Topic [electronic files]', '2', 'file', 'True',
+                         '', '', '', '', '', '', '', '', '', '', '', ''])
 
     # Gets metadata for every topic folder.
     # The folders for form letters, metadata, and the original export are added manually after the script runs.
@@ -513,17 +515,20 @@ def make_finding_aid_inventory(output_dir):
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([title, '3', 'file', 'True', '', date_begin, date_end, date_type, date_expression, 'Whole', extent_number, 'gigabyte(s)',
-                             'electronic_records', 'electronic_records', top_container, barcode])
+            writer.writerow([title, '3', 'file', 'True', '', date_begin, date_end, date_type, date_expression,
+                             'Whole', extent_number, 'gigabyte(s)', 'electronic_records', 'electronic_records',
+                             top_container, barcode])
 
     # Adds titles for the other three folders (same title for every export), as a reminder.
     # The dates and size are added manually.
     with open(os.path.join(output_dir, 'finding_aid_inventory.csv'), 'a', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['Correspondence Metadata [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD', 'TBD',
-                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records', f'ER collid-access-{id_sequential:06d}', f'collid-access-{id_sequential:06d}'])
+        writer.writerow(['Correspondence Metadata [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD',
+                         'TBD', 'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records',
+                         f'ER collid-access-{id_sequential:06d}', f'collid-access-{id_sequential:06d}'])
         writer.writerow(['Form Letters [electronic files]', '2', 'file', 'True', '', 'TBD', 'TBD', 'TBD', 'TBD',
-                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records', f'ER collid-access-{id_sequential+1:06d}', f'collid-access-{id_sequential+1:06d}'])
+                         'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records',
+                         f'ER collid-access-{id_sequential+1:06d}', f'collid-access-{id_sequential+1:06d}'])
         writer.writerow(['Original Export [electronic files]', '2', 'file', 'True', 'True', 'TBD', 'TBD', 'TBD', 'TBD',
                          'Whole', 'TBD', 'gigabyte(s)','electronic_records', 'electronic_records', 'TBD', 'TBD'])
 
