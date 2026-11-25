@@ -42,23 +42,19 @@ def check_arguments(arg_list):
         else:
             errors.append("delete_directory is not a valid directory")
         if os.path.exists(arg_list[3]):
-            delete_dir = arg_list[3]
+            input_dir = arg_list[3]
         else:
             errors.append("input_directory is not a valid directory")
         if os.path.exists(arg_list[4]):
-            delete_dir = arg_list[4]
+            output_dir = arg_list[4]
         else:
             errors.append("output_directory is not a valid directory")
-    elif len(arg_list) > 5:
+    elif len(arg_list) < 5:
         errors.append("At least one of the four required arguments is missing")
     else:
         errors.append("More than the expected four required arguments were provided")
 
     return export, delete_dir, input_dir, output_dir, errors
-
-
-
-
 
 
 if __name__ == '__main__':
