@@ -495,6 +495,7 @@ def make_finding_aid_inventory(output_dir):
                          '', '', '', '', '', '', '', '', '', '', '', ''])
 
     # Calculates the inventory information for every topic folder.
+    id_sequential = 1
     topics_dir = os.path.join(output_dir, 'correspondence_by_topic')
     for topic in os.listdir(topics_dir):
 
@@ -545,6 +546,12 @@ def make_finding_aid_inventory(output_dir):
                 extent_rounded = round(extent, rounder)
         except FileNotFoundError:
             extent_rounded = 'could_not_calculate'
+
+        # Calculates the barcode (access id number) and top container (ER barcode),
+        # with a placeholder for the collection id that needs to be updated before importing into ArchivesSpace.
+        barcode = f'collid-access-{id_sequential:06d}'
+        top_container = f'ER {barcode}'
+        id_sequential += 1
 
         # Saves metadata for this topic to the CSV.
         with open(os.path.join(output_dir, 'aspace_inventory.csv'), 'a', newline='') as csv_file:
