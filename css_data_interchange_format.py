@@ -376,6 +376,7 @@ def find_routine_office_rows(df):
 
     # Topics list: updated for every export based on the topics_report.csv
     # Because it is an exact match, include every delimited pairing, if applicable.
+    # TODO: update topics list for each export
     # topics_list = []
     topics_list = ['Flag Request', 'congrats^scouts']  # for unit tests
 
